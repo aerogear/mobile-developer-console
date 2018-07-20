@@ -24,8 +24,23 @@ make ui
 
 ## Run
 
+### Run locally
+
 ```bash
 make serve
+```
+
+### Run on OpenShift
+
+```bash
+oc project <namespace>
+oc process -f mobile-client-service.template.yaml | oc create -f -
+```
+
+For more information on parameters, run:
+
+```bash
+oc process -f mobile-client-service.template.yaml --parameters
 ```
 
 ## Test
