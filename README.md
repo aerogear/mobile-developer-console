@@ -11,6 +11,13 @@
 
 ## Setup
 
+Checkout to $GOPATH/src/github.com/aerogear
+
+```bash
+mkdir -v $GOPATH/src/github.com/aerogear
+git clone https://github.com/aerogear/mobile-client-service $GOPATH/src/github.com/aerogear/mobile-client-service
+```
+
 ```bash
 make setup
 ```
@@ -27,6 +34,10 @@ make ui
 ## Run
 
 ### Run locally
+If you don't have openshift running
+```bash
+oc cluster up
+```
 
 ```bash
 make serve
