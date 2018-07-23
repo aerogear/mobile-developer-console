@@ -47,24 +47,24 @@ build_linux: setup
 	env GOOS=linux GOARCH=amd64 go build -o $(BINARY_LINUX_64) ./cmd/api-server/main.go
 
 .PHONY: docker_build
-docker_build: build_linux ui
+docker_build: build_linux
 	docker build -t $(DOCKER_LATEST_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
 .PHONY: docker_build_release
-docker_build_release: ui
+docker_build_release:
 	docker build -t $(DOCKER_LATEST_TAG) -t $(DOCKER_RELEASE_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
 .PHONY: docker_build_master
-docker_build_master: ui
+docker_build_master:
 	docker build -t $(DOCKER_MASTER_TAG) --build-arg BINARY=$(BINARY_LINUX_64) .
 
 .PHONY: docker_push_release
-docker_push_release: ui
+docker_push_release:
 	@docker login --username $(DOCKERHUB_USERNAME) --password $(DOCKERHUB_PASSWORD)
 	docker push $(DOCKER_LATEST_TAG)
 	docker push $(DOCKER_RELEASE_TAG)
 	
 .PHONY: docker_push_master
-docker_push_master: ui
+docker_push_master:
 	@docker login -u $(DOCKERHUB_USERNAME) -p $(DOCKERHUB_PASSWORD)
 	docker push $(DOCKER_MASTER_TAG)
