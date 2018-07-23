@@ -6,6 +6,7 @@
 
 * Golang (1.10)
  * [Dep tool](https://golang.github.io/dep/docs/installation.html)
+* [oc tools](https://github.com/openshift/origin/releases)
 * Nodejs
 
 ## Setup
