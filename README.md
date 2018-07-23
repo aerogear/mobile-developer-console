@@ -5,6 +5,7 @@
 ## Prerequisites
 
 * Golang (1.10)
+ * [Dep tool](https://golang.github.io/dep/docs/installation.html)
 * Nodejs
 
 ## Setup
