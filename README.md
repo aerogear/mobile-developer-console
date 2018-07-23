@@ -5,9 +5,18 @@
 ## Prerequisites
 
 * Golang (1.10)
+ * [Dep tool](https://golang.github.io/dep/docs/installation.html)
+* [oc tools >= 3.9.0](https://github.com/openshift/origin/releases)
 * Nodejs
 
 ## Setup
+
+Checkout to $GOPATH/src/github.com/aerogear
+
+```bash
+mkdir -v $GOPATH/src/github.com/aerogear
+git clone https://github.com/aerogear/mobile-client-service $GOPATH/src/github.com/aerogear/mobile-client-service
+```
 
 ```bash
 make setup
@@ -25,6 +34,10 @@ make ui
 ## Run
 
 ### Run locally
+If you don't have openshift running
+```bash
+oc cluster up
+```
 
 ```bash
 make serve
