@@ -1,5 +1,2 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-}
+@import url("~patternfly/dist/css/patternfly.min.css");
+@import url("~patternfly/dist/css/patternfly-additions.min.css");
