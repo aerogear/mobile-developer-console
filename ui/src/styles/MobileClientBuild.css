@@ -1,0 +1,33 @@
+.list-group-heading {
+    color: #757575;
+    font-size: 11px;
+    font-weight: 500;
+    padding-left: 20px;
+}
+
+.list-group-build {
+    padding-left: 7px;
+}
+
+.list-group-build-item {
+    font-size: 14px;
+}
+
+.list-group-build-item-description {
+    font-size: 12px;
+}
+
+.icon {
+    padding-right: 12px;
+}
+
+.build-info {
+ display: inline-block;
+}
+
+.timestamp {
+ color: #757575;
+ padding-left: 5px;
+ font-size: 10px;
+ display: inline-block;
+}
