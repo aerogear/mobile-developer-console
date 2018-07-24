@@ -23,9 +23,10 @@ func (hs MockHelloService) Hello(name string) (string, error) {
 }
 
 func setupHealthHandler(service HelloWorldable) *httptest.Server {
-	router := NewRouter()
+	router := NewRouter("")
+	apiGroup := router.Group("")
 	helloHandler := NewHelloHandler(service)
-	SetupHelloRoute(router, helloHandler)
+	SetupHelloRoute(apiGroup, helloHandler)
 	return httptest.NewServer(router)
 }
 

@@ -1,35 +1,27 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/aerogear/mobile-client-service/pkg/config"
 	"github.com/aerogear/mobile-client-service/pkg/hello"
 	"github.com/aerogear/mobile-client-service/pkg/web"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
 func main() {
 	config := config.GetConfig()
+	staticFilesDir := config.StaticFilesDir
 
 	initLogger(config.LogLevel, config.LogFormat)
 
-	router := web.NewRouter()
+	router := web.NewRouter(staticFilesDir)
+	apiGroup := router.Group(web.ApiPrefix)
 
+	// Register the hello route and handler.
 	{
 		helloService := hello.NewHelloWorldService()
 		helloHandler := web.NewHelloHandler(helloService)
-		web.SetupHelloRoute(router, helloHandler)
-	}
-
-	{
-		staticFilesDir := config.StaticFilesDir
-		if staticFilesDir != "" {
-			log.Infof("Serve static files from dir %s", staticFilesDir)
-			web.SetupStaticFilesRouter(router, staticFilesDir)
-		} else {
-			log.Infof("staticFilesDir is not set. No static files router setup.")
-		}
+		web.SetupHelloRoute(apiGroup, helloHandler)
 	}
 
 	log.WithFields(log.Fields{"listenAddress": config.ListenAddress}).Info("Starting application")
