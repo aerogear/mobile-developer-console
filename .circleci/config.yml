@@ -3,7 +3,7 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
-  build:
+  build_server:
     working_directory: /go/src/github.com/aerogear/mobile-client-service
 
     docker:
@@ -17,12 +17,29 @@ jobs:
       - run: make test_cover
       - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
 
+  build_ui:
+    working_directory: ~/mobile-client-service
+
+    docker:
+      - image: circleci/node:8.11.3
+    
+    steps:
+      - checkout
+      - run: make ui
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ui/build
+
+
   docker_push_master:
     working_directory: /go/src/github.com/aerogear/mobile-client-service
     docker:
       - image: circleci/golang:1.10
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run: go get -u github.com/golang/dep/cmd/dep
       - run: make setup
       - setup_remote_docker
@@ -36,6 +53,8 @@ jobs:
       - image: circleci/golang:1.10
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run: go get -u github.com/golang/dep/cmd/dep
       - run: make setup
       - run: curl -sL https://raw.githubusercontent.com/goreleaser/get/master/get | bash
@@ -49,20 +68,26 @@ workflows:
   version: 2
   build_and_push:
     jobs:
-      - build:
+      - build_server:
+          filters:
+            tags:
+              only: /.*/
+      - build_ui:
           filters:
             tags:
               only: /.*/
       - docker_push_master:
           requires:
-            - build
+            - build_server
+            - build_ui
           filters:
             branches:
               only:
                 - master
       - docker_release:
           requires:
-            - build
+            - build_server
+            - build_ui
           filters:
             tags:
               only: /\d\.\d\.\d/
