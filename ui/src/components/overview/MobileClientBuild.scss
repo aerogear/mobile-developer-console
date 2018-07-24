@@ -1,0 +1,26 @@
+.build-view-list-group.list-group {
+    border-top: none;
+    margin: 0;
+}
+
+.build-view-list-group h3 {
+    margin: 0 0 5px 0;
+}
+
+.build-view-list-group .list-group-item {
+    padding: 0;
+
+    .build-name, .build-details {
+        padding: 0;
+    }
+}
+
+.build-view-list-group .build-info {
+    margin-right: 15px;
+}
+
+.build-view-list-group .build-info.timestamp {
+    color: #757575;
+    padding-left: 5px;
+    font-size: 10px;
+}

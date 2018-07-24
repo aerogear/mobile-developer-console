@@ -75,6 +75,8 @@ func main() {
 		web.SetupMobileBuildConfigsRoute(apiGroup, mobileBuildConfigsHandler)
 	}
 
+        web.SetClientRoutes(apiGroup)
+
 	log.WithFields(log.Fields{"listenAddress": config.ListenAddress}).Info("Starting application")
 	log.Fatal(http.ListenAndServe(config.ListenAddress, router))
 }
