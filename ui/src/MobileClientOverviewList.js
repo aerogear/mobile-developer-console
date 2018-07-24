@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Row, ListView, DropdownKebab, MenuItem} from 'patternfly-react';
 
+import './OverviewListItemHeader.css';
+
 const actions = () => (
   <DropdownKebab id="mobile-client-actions" pullRight>
     <MenuItem>Edit</MenuItem>
@@ -10,13 +12,13 @@ const actions = () => (
 
 const headings = mobileClient => (
     <div className="pull-left text-left">
-        <div>
-            <span>{mobileClient.spec.clientType}</span>
+        <div className="detail">
+            <span className="text-uppercase">{mobileClient.spec.clientType}</span>
         </div>
-        <a>
-         <span>{mobileClient.spec.name}</span>
+        <a className="name">
+            <span>{mobileClient.spec.name}</span>
         </a>
-        <div>{mobileClient.spec.appIdentifier}</div>
+        <div className="detail">{mobileClient.spec.appIdentifier}</div>
     </div>
 );
 
@@ -30,6 +32,7 @@ class MobileClientOverviewList extends Component {
                     {mobileClients.map(
                         mobileClient => (
                             <ListView.Item
+                                className="mobile-client-list-view-item overview-list-view-item"
                                 key={mobileClient.metadata.uid}
                                 actions={actions()}
                                 checkboxInput={false}
