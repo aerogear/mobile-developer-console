@@ -15,7 +15,7 @@ DOCKER_RELEASE_TAG = aerogear/$(APP_NAME):$(RELEASE_TAG)
 
 .PHONY: setup
 setup:
-	dep ensure
+	glide install
 
 .PHONY: test
 test:
