@@ -1,21 +1,23 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/aerogear/mobile-client-service/pkg/config"
 	"github.com/aerogear/mobile-client-service/pkg/hello"
 	"github.com/aerogear/mobile-client-service/pkg/web"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 )
 
 func main() {
 	config := config.GetConfig()
 	staticFilesDir := config.StaticFilesDir
+	apiRoutePrefix := config.ApiRoutePrefix
 
 	initLogger(config.LogLevel, config.LogFormat)
 
-	router := web.NewRouter(staticFilesDir)
-	apiGroup := router.Group(web.ApiPrefix)
+	router := web.NewRouter(staticFilesDir, apiRoutePrefix)
+	apiGroup := router.Group(apiRoutePrefix)
 
 	// Register the hello route and handler.
 	{

@@ -15,6 +15,8 @@ type MockHelloService struct {
 	ReturnError bool
 }
 
+var testApiPrefix = "/api"
+
 func (hs MockHelloService) Hello(name string) (string, error) {
 	if hs.ReturnError {
 		return "", errors.New("Some internal error")
@@ -23,8 +25,8 @@ func (hs MockHelloService) Hello(name string) (string, error) {
 }
 
 func setupHealthHandler(service HelloWorldable) *httptest.Server {
-	router := NewRouter("")
-	apiGroup := router.Group("")
+	router := NewRouter("", testApiPrefix)
+	apiGroup := router.Group(testApiPrefix)
 	helloHandler := NewHelloHandler(service)
 	SetupHelloRoute(apiGroup, helloHandler)
 	return httptest.NewServer(router)
@@ -36,7 +38,7 @@ func TestHelloEndpoint(t *testing.T) {
 
 	defer server.Close()
 
-	res, err := http.Get(fmt.Sprintf("%s/hello", server.URL))
+	res, err := http.Get(fmt.Sprintf("%s%s/hello", server.URL, testApiPrefix))
 
 	if err != nil {
 		t.Fatal("error requesting / endpoint")
@@ -53,7 +55,7 @@ func TestHelloEndpointWhenHelloServiceReturnsError(t *testing.T) {
 
 	defer server.Close()
 
-	res, err := http.Get(fmt.Sprintf("%s/hello", server.URL))
+	res, err := http.Get(fmt.Sprintf("%s%s/hello", server.URL, testApiPrefix))
 
 	if err != nil {
 		t.Fatal("error requesting / endpoint")
