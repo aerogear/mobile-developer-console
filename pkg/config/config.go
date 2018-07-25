@@ -11,6 +11,7 @@ type config struct {
 	LogLevel       string
 	LogFormat      string
 	StaticFilesDir string
+	ApiRoutePrefix string
 }
 
 func GetConfig() config {
@@ -19,6 +20,7 @@ func GetConfig() config {
 		LogLevel:       strings.ToLower(getEnv("LOG_LEVEL", "info")),
 		LogFormat:      strings.ToLower(getEnv("LOG_FORMAT", "text")), //cann be text or json
 		StaticFilesDir: getEnv("STATIC_FILES_DIR", ""),
+		ApiRoutePrefix: "/api", //should start with a "/"
 	}
 }
 
