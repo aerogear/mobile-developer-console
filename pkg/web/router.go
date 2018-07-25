@@ -1,19 +1,20 @@
 package web
 
 import (
-	"github.com/labstack/echo/middleware"
-	"github.com/labstack/echo"
 	"strings"
+
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
-var ApiPrefix = "/api"
+var ApiPrefix = "/apis"
 
 func NewRouter(fileDir string) *echo.Echo {
 	router := echo.New()
 
 	router.Use(middleware.Logger())
 	router.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root: fileDir,
+		Root:  fileDir,
 		HTML5: true,
 		Index: "index.html",
 		Skipper: func(context echo.Context) bool {

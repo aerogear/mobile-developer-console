@@ -1,11 +1,12 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/aerogear/mobile-client-service/pkg/config"
 	"github.com/aerogear/mobile-client-service/pkg/hello"
 	"github.com/aerogear/mobile-client-service/pkg/web"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 )
 
 func main() {
@@ -23,6 +24,8 @@ func main() {
 		helloHandler := web.NewHelloHandler(helloService)
 		web.SetupHelloRoute(apiGroup, helloHandler)
 	}
+
+	web.SetClientRoutes(apiGroup)
 
 	log.WithFields(log.Fields{"listenAddress": config.ListenAddress}).Info("Starting application")
 	log.Fatal(http.ListenAndServe(config.ListenAddress, router))

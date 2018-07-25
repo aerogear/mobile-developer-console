@@ -24,7 +24,7 @@ const headings = mobileClient => (
 
 class MobileClientOverviewList extends Component {
     render = () => {
-        const mobileClients = Object.values(this.props.mobileClients || {});
+        const {mobileClients} = this.props;
 
         return (
             <div>
