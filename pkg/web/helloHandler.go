@@ -1,8 +1,8 @@
 package web
 
 import (
-	"encoding/json"
 	"net/http"
+	"github.com/labstack/echo"
 )
 
 var version = "1.0.0" // quick and dirty for demos
@@ -22,23 +22,19 @@ func NewHelloHandler(helloService HelloWorldable) *helloHandler {
 	}
 }
 
-func (hh *helloHandler) HelloEndpoint(w http.ResponseWriter, req *http.Request) {
-	query := req.URL.Query()
-
-	name := query.Get("name")
+func (hh *helloHandler) HelloEndpoint(c echo.Context) error {
+	name := c.QueryParam("name")
 
 	result, err := hh.helloService.Hello(name)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		c.Logger().Infof("An error occurred retrieving the hello world message: %v", err)
+		return c.NoContent(http.StatusInternalServerError)
 	}
 
 	message := helloMessage{
 		Message: result,
 		Version: version,
 	}
-
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(200)
-	json.NewEncoder(w).Encode(message)
+	return c.JSON(http.StatusOK, message)
 }
