@@ -5,6 +5,7 @@
 ## Prerequisites
 
 * Golang (1.10)
+* [Glide](https://github.com/Masterminds/glide)
 * Nodejs
 
 ## Setup

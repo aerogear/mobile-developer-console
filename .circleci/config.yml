@@ -12,7 +12,7 @@ jobs:
     steps:
       - checkout
       - run: go get github.com/mattn/goveralls
-      - run: go get -u github.com/golang/dep/cmd/dep
+      - run: curl https://glide.sh/get | sh
       - run: make build
       - run: make test_cover
       - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
@@ -40,7 +40,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run: go get -u github.com/golang/dep/cmd/dep
+      - run: curl https://glide.sh/get | sh
       - run: make setup
       - setup_remote_docker
       - run: make build_linux
@@ -55,7 +55,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run: go get -u github.com/golang/dep/cmd/dep
+      - run: curl https://glide.sh/get | sh
       - run: make setup
       - run: curl -sL https://raw.githubusercontent.com/goreleaser/get/master/get | bash
       - setup_remote_docker
