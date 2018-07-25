@@ -26,8 +26,8 @@
 
 
 [[constraint]]
-  name = "github.com/gorilla/mux"
-  version = "1.6.1"
+  name = "github.com/labstack/echo"
+  version = "3.3.5"
 
 [prune]
   go-tests = true
