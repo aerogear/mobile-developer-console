@@ -12,7 +12,7 @@ class App extends Component {
         <div className="App">
           <Switch>
             <Route exact path="/overview" component={Overview}/>
-            <Route exact path="/mobileclien/:id" component={Client}/>
+            <Route exact path="/mobileclient/:id" component={Client}/>
 
             {/* Default redirect */}
             <Redirect to="/overview" />
