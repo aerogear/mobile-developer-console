@@ -10,7 +10,10 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+.vscode
+
 vendor
 mobile-client-service
 dist
 gin-bin
+cmd/api-server/debug

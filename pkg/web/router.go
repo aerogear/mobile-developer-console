@@ -24,6 +24,6 @@ func NewRouter(fileDir string, apiRoutePrefix string) *echo.Echo {
 	return router
 }
 
-func SetupHelloRoute(r *echo.Group, handler *helloHandler) {
-	r.GET("/hello", handler.HelloEndpoint)
+func SetupMobileServicesRoute(r *echo.Group, handler *MobileServiceHandler) {
+	r.GET("/mobileservice", handler.List)
 }
