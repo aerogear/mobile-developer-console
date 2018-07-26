@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Redirect, Route } from 'react-router-d
 import Overview from './Overview';
 import Client from './Client';
 
-import './App.css';
+import './App.css'
 
 class App extends Component {
   render() {
