@@ -31,7 +31,7 @@ test_cover:
 	tail -n +2 coverage.out >> coverage-all.out;)
 
 .PHONY: build
-build: 
+build: setup
 	go build -o $(BINARY) ./cmd/api-server/main.go
 
 .PHONY: ui
