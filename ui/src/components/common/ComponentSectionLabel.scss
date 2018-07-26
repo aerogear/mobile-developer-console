@@ -1,0 +1,14 @@
+.component-label {
+    align-self: center;
+    color: #757575;
+    font-size: 10px;
+    padding: 0 10px 0 0;
+    text-transform: uppercase;
+}
+
+.component-label.section-label {
+    border-bottom: 1px solid #dcdcdc;
+    line-height: 1;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+}

@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
-import { Row, ListView, DropdownKebab, MenuItem} from 'patternfly-react';
+import { Row, Col, ListView, DropdownKebab, MenuItem} from 'patternfly-react';
+
+import MobileClientServiceChart from './MobileClientServiceChart';
+import ComponentSectionLabel from './common/ComponentSectionLabel';
 
 import './OverviewListItemHeader.css';
+
+// todo 
+const mobileServices = {
+    "mobileServices": {
+        "bound": 1,
+        "unbound": 2
+    }
+};
 
 const actions = () => (
   <DropdownKebab id="mobile-client-actions" pullRight>
@@ -41,7 +52,20 @@ class MobileClientOverviewList extends Component {
                                 hideCloseIcon={true}
                             >
                             <Row>
-                                {this.props.children}
+                                <Col md={12}>NOT BOUND NOTIFICATION COMPONENT</Col>
+                                <Col md={6}>
+                                    <ComponentSectionLabel>Mobile Services</ComponentSectionLabel>
+                                    <MobileClientServiceChart mobileServices={mobileServices}></MobileClientServiceChart>
+                                    <div>
+                                        <a>View All Mobile Services</a>
+                                    </div>
+                                </Col>
+                                <Col md={6}>
+                                    <ComponentSectionLabel>Client Info</ComponentSectionLabel>
+                                </Col>
+                                <Col md={12}>
+                                <ComponentSectionLabel>Mobile Builds</ComponentSectionLabel>
+                                </Col>
                             </Row>
                             </ListView.Item>
                         )

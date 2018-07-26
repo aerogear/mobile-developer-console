@@ -1,0 +1,41 @@
+.mobile-client-list-view-item.list-group-item.list-view-pf-expand-active {
+    background-color: #ededed;
+}
+
+.mobile-client-list-view-item .list-group-item-heading {
+    overflow: visible;
+}
+
+.mobile-client-list-view-item .list-view-pf-expand.active,
+.mobile-client-list-view-item .list-view-pf-expand:hover {
+    color: unset;;
+}
+
+.mobile-client-list-view-item .list-group-item-header {
+    position: relative;
+}
+
+.mobile-client-list-view-item .list-group-item-header .list-view-pf-expand {
+    margin: 0;
+} 
+
+.mobile-client-list-view-item .list-group-item-header .list-view-pf-expand .fa.fa-angle-right {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.mobile-client-list-view-item .list-group-item-header .list-view-pf-actions {
+    margin: 0;
+    position: absolute;
+    right: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    
+}
+
+.mobile-client-list-view-item .list-group-item-header .list-view-pf-main-info {
+    margin-left: 26px;
+    margin-right: 40px;
+}
