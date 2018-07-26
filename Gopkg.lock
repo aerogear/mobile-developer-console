@@ -141,6 +141,22 @@
   version = "1.0.1"
 
 [[projects]]
+  name = "github.com/kubernetes-incubator/service-catalog"
+  packages = [
+    "pkg/apis/servicecatalog",
+    "pkg/apis/servicecatalog/v1beta1",
+    "pkg/apis/settings",
+    "pkg/apis/settings/v1alpha1",
+    "pkg/client/clientset_generated/clientset",
+    "pkg/client/clientset_generated/clientset/scheme",
+    "pkg/client/clientset_generated/clientset/typed/servicecatalog/v1beta1",
+    "pkg/client/clientset_generated/clientset/typed/settings/v1alpha1",
+    "pkg/filter"
+  ]
+  revision = "f6f0e41fae6c4f1bdc5c507942ee7f1719555a19"
+  version = "v0.1.27"
+
+[[projects]]
   name = "github.com/labstack/echo"
   packages = [
     ".",
@@ -193,6 +209,21 @@
   packages = ["."]
   revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
   version = "1.0.1"
+
+[[projects]]
+  name = "github.com/openshift/api"
+  packages = ["build/v1"]
+  revision = "0d921e363e951d89f583292c60d013c318df64dc"
+  version = "v3.9.0"
+
+[[projects]]
+  name = "github.com/openshift/client-go"
+  packages = [
+    "build/clientset/versioned/scheme",
+    "build/clientset/versioned/typed/build/v1"
+  ]
+  revision = "1fa528d3be060e4c7178eb69e76d37cf7e699e3c"
+  version = "v3.9.0"
 
 [[projects]]
   branch = "master"
@@ -383,36 +414,7 @@
   name = "k8s.io/client-go"
   packages = [
     "discovery",
-    "kubernetes",
     "kubernetes/scheme",
-    "kubernetes/typed/admissionregistration/v1alpha1",
-    "kubernetes/typed/admissionregistration/v1beta1",
-    "kubernetes/typed/apps/v1",
-    "kubernetes/typed/apps/v1beta1",
-    "kubernetes/typed/apps/v1beta2",
-    "kubernetes/typed/authentication/v1",
-    "kubernetes/typed/authentication/v1beta1",
-    "kubernetes/typed/authorization/v1",
-    "kubernetes/typed/authorization/v1beta1",
-    "kubernetes/typed/autoscaling/v1",
-    "kubernetes/typed/autoscaling/v2beta1",
-    "kubernetes/typed/batch/v1",
-    "kubernetes/typed/batch/v1beta1",
-    "kubernetes/typed/batch/v2alpha1",
-    "kubernetes/typed/certificates/v1beta1",
-    "kubernetes/typed/core/v1",
-    "kubernetes/typed/events/v1beta1",
-    "kubernetes/typed/extensions/v1beta1",
-    "kubernetes/typed/networking/v1",
-    "kubernetes/typed/policy/v1beta1",
-    "kubernetes/typed/rbac/v1",
-    "kubernetes/typed/rbac/v1alpha1",
-    "kubernetes/typed/rbac/v1beta1",
-    "kubernetes/typed/scheduling/v1alpha1",
-    "kubernetes/typed/settings/v1alpha1",
-    "kubernetes/typed/storage/v1",
-    "kubernetes/typed/storage/v1alpha1",
-    "kubernetes/typed/storage/v1beta1",
     "pkg/version",
     "rest",
     "rest/watch",
@@ -422,7 +424,6 @@
     "tools/clientcmd/api/latest",
     "tools/clientcmd/api/v1",
     "tools/metrics",
-    "tools/reference",
     "transport",
     "util/cert",
     "util/flowcontrol",
@@ -484,6 +485,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "96655435a8ece0a0e9725aa9e4393984ade57ccfacf9fda3c739ae25ced659e8"
+  inputs-digest = "b6d7691575cab7cf532c80fd2842525ab3bf8063732156e605a1e666ee698c0b"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -31,7 +31,7 @@ test_cover:
 	tail -n +2 coverage.out >> coverage-all.out;)
 
 .PHONY: build
-build: setup
+build: 
 	go build -o $(BINARY) ./cmd/api-server/main.go
 
 .PHONY: ui
@@ -40,7 +40,7 @@ ui:
 
 .PHONY: serve
 serve: build ui
-	export STATIC_FILES_DIR=$(CURDIR)/ui/build; ./mobile-client-service
+	export STATIC_FILES_DIR=$(CURDIR)/ui/build; ./mobile-client-service -kubeconfig ~/.kube/config
 
 .PHONY: build_linux
 build_linux: setup

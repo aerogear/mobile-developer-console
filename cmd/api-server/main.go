@@ -11,7 +11,8 @@ import (
 	"github.com/aerogear/mobile-client-service/pkg/web"
 	log "github.com/sirupsen/logrus"
 
-	"k8s.io/client-go/kubernetes"
+	sc "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset"
+	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -22,24 +23,56 @@ var (
 
 func main() {
 	flag.Parse()
+
 	config := config.GetConfig()
 	staticFilesDir := config.StaticFilesDir
 	apiRoutePrefix := config.ApiRoutePrefix
 
 	initLogger(config.LogLevel, config.LogFormat)
 
+	if namespace == "" {
+		log.Fatalf("-namespace is a required flag or it can be set via NAMESPACE env var")
+	}
+
 	router := web.NewRouter(staticFilesDir, apiRoutePrefix)
 	apiGroup := router.Group(apiRoutePrefix)
 
-	kubeClient, err := intKubeClient()
+	cfg, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
-		log.Fatalf("Error init k8s client: %s", err.Error())
+		log.Fatalf("Error loading config: %v", err)
+	}
+
+	// k8sClient, err := kubernetes.NewForConfig(cfg)
+	// if err != nil {
+	// 	log.Fatalf("Error init k8s client: %s", err.Error())
+	// }
+
+	scClient, err := sc.NewForConfig(cfg)
+	if err != nil {
+		log.Fatalf("Error init service catalog client: %v", err)
+	}
+
+	buildClient, err := buildv1.NewForConfig(cfg)
+	if err != nil {
+		log.Fatalf("Error init build client: %v", err)
 	}
 
 	{
-		serviceLister := mobile.NewServiceLister(kubeClient)
-		mobileServiceHandler := web.NewMobileServiceHandler(serviceLister, namespace)
-		web.SetupMobileServicesRoute(apiGroup, mobileServiceHandler)
+		siLister := mobile.NewServiceInstanceLister(scClient)
+		mobileServiceInstancesHandler := web.NewMobileServiceInstancesHandler(siLister, namespace)
+		web.SetupMobileServicesRoute(apiGroup, mobileServiceInstancesHandler)
+	}
+
+	{
+		buildLister := mobile.NewBuildLister(buildClient)
+		mobileBuildsHandler := web.NewMobileBuildsHandler(buildLister, namespace)
+		web.SetupMobileBuildsRoute(apiGroup, mobileBuildsHandler)
+	}
+
+	{
+		buildConfigLister := mobile.NewBuildConfigLister(buildClient)
+		mobileBuildConfigsHandler := web.NewMobileBuildConfigsHandler(buildConfigLister, namespace)
+		web.SetupMobileBuildConfigsRoute(apiGroup, mobileBuildConfigsHandler)
 	}
 
 	log.WithFields(log.Fields{"listenAddress": config.ListenAddress}).Info("Starting application")
@@ -64,20 +97,6 @@ func initLogger(level, format string) {
 	default:
 		log.Fatalf("log format %v is not allowed. Must be one of [text, json]", format)
 	}
-}
-
-func intKubeClient() (*kubernetes.Clientset, error) {
-	cfg, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-	if err != nil {
-		return nil, err
-	}
-
-	kubeClient, err := kubernetes.NewForConfig(cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	return kubeClient, nil
 }
 
 func init() {
