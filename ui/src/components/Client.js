@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Nav, NavItem, TabContent, TabPane, Tabs } from 'patternfly-react';
+import ConfigurationView from './ConfigurationView';
 
 class Client extends Component {
   render() {
@@ -15,7 +16,7 @@ class Client extends Component {
                 </Nav>
                     <TabContent>
                         <TabPane eventKey={1}>
-                            Configuration
+                            <ConfigurationView />
                         </TabPane>
                         <TabPane eventKey={2}>
                             Builds
