@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { DonutChart } from 'patternfly-react';
 
-import '../styles/MobileClientServiceChart.css'
+import '../style/MobileClientServiceChart.css'
 
 class MobileClientServiceChart extends Component {
     viewAllServices(){
