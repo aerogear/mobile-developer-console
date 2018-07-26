@@ -21,7 +21,8 @@ const mobileClientBuilds = [
       "selfLink": "/apis/build.openshift.io/v1/namespaces/myproject/builds/android-debug-2",
       "annotations": {
         "openshift.io/build.number": "2"
-      }
+      },
+      "uid": "5ea6f7ee-90c6-11e8-bd24-f6a35857c6e5"
     },
     "status": {
       "phase": "Failed",
@@ -43,7 +44,8 @@ const mobileClientBuilds = [
       "selfLink": "/apis/build.openshift.io/v1/namespaces/myproject/builds/ios-debug-1",
       "annotations": {
         "openshift.io/build.number": "1"
-      }
+      },
+      "uid": "5ea6f7ee-98c6-11e8-bd24-f6a35857c6e5"
     },
     "status": {
       "phase": "Complete",
@@ -65,7 +67,8 @@ const mobileClientBuilds = [
       "selfLink": "/apis/build.openshift.io/v1/namespaces/myproject/builds/ios-debug-1",
       "annotations": {
         "openshift.io/build.number": "3"
-      }
+      },
+      "uid": "5ea6f7ee-90c6-11e8-bd24-f6a35857c6e4"
     },
     "status": {
       "phase": "Running",

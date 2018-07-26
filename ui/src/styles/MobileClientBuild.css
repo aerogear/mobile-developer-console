@@ -1,33 +1,34 @@
-.list-group-heading {
+.build-view-header {
     color: #757575;
     font-size: 11px;
     font-weight: 500;
     padding-left: 20px;
 }
 
-.list-group-build {
+.build-view-list-group {
     padding-left: 7px;
 }
 
-.list-group-build-item {
+.build-view-list-group-item {
     font-size: 14px;
+    border-top: 0 none;
 }
 
-.list-group-build-item-description {
+.build-view-list-group-item-description {
     font-size: 12px;
 }
 
-.icon {
+.build-view-status-icon {
     padding-right: 12px;
 }
 
-.build-info {
- display: inline-block;
+.build-view-build-info {
+    display: inline-block;
 }
 
-.timestamp {
- color: #757575;
- padding-left: 5px;
- font-size: 10px;
- display: inline-block;
+.build-view-timestamp {
+    color: #757575;
+    padding-left: 5px;
+    font-size: 10px;
+    display: inline-block;
 }
