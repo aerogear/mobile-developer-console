@@ -130,16 +130,15 @@ class MobileClientOverviewList extends Component {
                                 <Col md={6}>
                                     <ComponentSectionLabel>Mobile Services</ComponentSectionLabel>
                                     <MobileClientServiceChart mobileServices={mobileServices}></MobileClientServiceChart>
-                                    <div>
-                                        <a>View All Mobile Services</a>
-                                    </div>
+                                    <a>View All Mobile Services</a>
                                 </Col>
                                 <Col md={6}>
                                     <ComponentSectionLabel>Client Info</ComponentSectionLabel>
                                 </Col>
                                 <Col md={12}>
-                                <ComponentSectionLabel>Mobile Builds</ComponentSectionLabel>
-                                <MobileClientBuildList mobileClientBuilds={mobileClientBuilds}></MobileClientBuildList>
+                                    <ComponentSectionLabel>Mobile Builds</ComponentSectionLabel>
+                                    <MobileClientBuildList mobileClientBuilds={mobileClientBuilds}></MobileClientBuildList>
+                                    <a>View All Mobile Builds</a>
                                 </Col>
                             </Row>
                             </ListView.Item>
