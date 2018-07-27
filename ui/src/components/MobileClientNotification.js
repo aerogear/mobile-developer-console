@@ -3,14 +3,8 @@ import { Alert } from 'patternfly-react'
 
 let view = true;
 class MobileClientNotification extends Component {
-    constructor(props) {
-        super(props)
-        this.view = true;
-        this.handleDismiss = this.handleDismiss.bind(this)
-    }
-
     // handler for alert dismiss button
-    handleDismiss() {
+    handleDismiss = () => {
         this.setState({})
         view = false;
     }
