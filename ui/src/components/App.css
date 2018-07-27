@@ -1,0 +1,25 @@
+.platform-item > .platform-item-icon {
+  align-items: center;
+  display: flex;
+  font-size: 48px;
+  height: 64px;
+  justify-content: center;
+  position: relative; }
+
+.platform-item > .platform-item-name {
+  flex: 1 1 0%;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4em;
+  max-height: 4.2em;
+  overflow: hidden;
+  position: relative;
+  word-wrap: break-word; }
+
+.platform-item > .platform-item-icon img {
+  width: 48px;
+  height: 48px;
+  padding: 2px; }
+
+.create-client-tabcontent {
+  padding-top: 16px; }
