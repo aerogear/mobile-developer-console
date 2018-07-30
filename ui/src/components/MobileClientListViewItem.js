@@ -6,6 +6,7 @@ import ComponentSectionLabel from './common/ComponentSectionLabel';
 import MobileClientBuildList from './MobileClientBuildList';
 
 import './OverviewListItemHeader.css';
+import './MobileClientListViewItem.css';
 
 // todo 
 const mobileServices = {
