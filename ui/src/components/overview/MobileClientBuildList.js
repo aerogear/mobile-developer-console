@@ -7,7 +7,7 @@ import BuildStatus from '../common/BuildStatus';
 class MobileClientBuildList extends Component {
     render = () => {
         const mobileClientBuilds = Object.values(this.props.mobileClientBuilds || {});
-        return ( 
+        return (
         <div>
             <ListGroup className="build-view-list-group">
                 {mobileClientBuilds.map(
@@ -32,7 +32,7 @@ class MobileClientBuildList extends Component {
                         </ListGroupItem>
                 )})}
             </ListGroup>
-        </div> 
+        </div>
         );
     }
 }
