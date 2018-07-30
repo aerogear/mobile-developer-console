@@ -17,3 +17,4 @@ mobile-client-service
 dist
 gin-bin
 cmd/api-server/debug
+main

@@ -1,15 +1,15 @@
 package mobile
 
 import (
-	sc "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset"
+	scv1beta1 "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset/typed/servicecatalog/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type ServiceInstanceListerImpl struct {
-	scClient *sc.Clientset
+	scClient scv1beta1.ServicecatalogV1beta1Interface
 }
 
-func NewServiceInstanceLister(scClient *sc.Clientset) *ServiceInstanceListerImpl {
+func NewServiceInstanceLister(scClient scv1beta1.ServicecatalogV1beta1Interface) *ServiceInstanceListerImpl {
 	return &ServiceInstanceListerImpl{
 		scClient: scClient,
 	}
@@ -17,5 +17,5 @@ func NewServiceInstanceLister(scClient *sc.Clientset) *ServiceInstanceListerImpl
 
 func (lister *ServiceInstanceListerImpl) List(namespace string) (*ServiceInstanceList, error) {
 	listOpts := v1.ListOptions{}
-	return lister.scClient.ServicecatalogV1beta1().ServiceInstances(namespace).List(listOpts)
+	return lister.scClient.ServiceInstances(namespace).List(listOpts)
 }

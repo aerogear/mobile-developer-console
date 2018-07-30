@@ -87,12 +87,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/google/btree"
-  packages = ["."]
-  revision = "e89373fe6b4a7413d7acd6da1725b83ef713e6e4"
-
-[[projects]]
-  branch = "master"
   name = "github.com/google/gofuzz"
   packages = ["."]
   revision = "24818f796faf91cd76ec7bddd72458fbced7a6c1"
@@ -109,15 +103,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/gregjones/httpcache"
-  packages = [
-    ".",
-    "diskcache"
-  ]
-  revision = "9cad4c3443a7200dd6400aef47183728de563a38"
-
-[[projects]]
-  branch = "master"
   name = "github.com/howeyc/gopass"
   packages = ["."]
   revision = "bf9dde6d0d2c004a008c27aaee91170c786f6db8"
@@ -125,20 +110,14 @@
 [[projects]]
   name = "github.com/imdario/mergo"
   packages = ["."]
-  revision = "9316a62528ac99aaecb4e47eadd6dc8aa6533d58"
-  version = "v0.3.5"
+  revision = "9f23e2d6bd2a77f959b2bf6acdbefd708a83a4a4"
+  version = "v0.3.6"
 
 [[projects]]
   name = "github.com/json-iterator/go"
   packages = ["."]
   revision = "ab8a2e0c74be9d3be70b3184d9acc634935ded82"
   version = "1.1.4"
-
-[[projects]]
-  name = "github.com/juju/ratelimit"
-  packages = ["."]
-  revision = "59fac5042749a5afb9af70e813da1dd5474f0167"
-  version = "1.0.1"
 
 [[projects]]
   name = "github.com/kubernetes-incubator/service-catalog"
@@ -148,9 +127,12 @@
     "pkg/apis/settings",
     "pkg/apis/settings/v1alpha1",
     "pkg/client/clientset_generated/clientset",
+    "pkg/client/clientset_generated/clientset/fake",
     "pkg/client/clientset_generated/clientset/scheme",
     "pkg/client/clientset_generated/clientset/typed/servicecatalog/v1beta1",
+    "pkg/client/clientset_generated/clientset/typed/servicecatalog/v1beta1/fake",
     "pkg/client/clientset_generated/clientset/typed/settings/v1alpha1",
+    "pkg/client/clientset_generated/clientset/typed/settings/v1alpha1/fake",
     "pkg/filter"
   ]
   revision = "f6f0e41fae6c4f1bdc5c507942ee7f1719555a19"
@@ -184,7 +166,7 @@
     "jlexer",
     "jwriter"
   ]
-  revision = "d5012789d6659eeed305f54c1b1542e7b65829e6"
+  revision = "03f2033d19d5860aef995fe360ac7d395cd8ce65"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -219,23 +201,14 @@
 [[projects]]
   name = "github.com/openshift/client-go"
   packages = [
+    "build/clientset/versioned",
+    "build/clientset/versioned/fake",
     "build/clientset/versioned/scheme",
-    "build/clientset/versioned/typed/build/v1"
+    "build/clientset/versioned/typed/build/v1",
+    "build/clientset/versioned/typed/build/v1/fake"
   ]
   revision = "1fa528d3be060e4c7178eb69e76d37cf7e699e3c"
   version = "v3.9.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/petar/GoLLRB"
-  packages = ["llrb"]
-  revision = "53be0d36a84c2a886ca057d34b6aa4468df9ccb4"
-
-[[projects]]
-  name = "github.com/peterbourgon/diskv"
-  packages = ["."]
-  revision = "5f041e8faa004a95c88a202771f4cc3e991971e6"
-  version = "v2.0.1"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
@@ -275,12 +248,13 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = [
+    "context",
     "http/httpguts",
     "http2",
     "http2/hpack",
     "idna"
   ]
-  revision = "3673e40ba22529d22c3fd7c93e97b0ce50fa7bdd"
+  revision = "a0f8a16cb08c06df97cbdf9c47f4731ba548c33c"
 
 [[projects]]
   branch = "master"
@@ -289,7 +263,7 @@
     "unix",
     "windows"
   ]
-  revision = "e072cadbbdc8dd3d3ffa82b8b4b9304c261d9311"
+  revision = "bd9dbc187b6e1dacfdd2722a87e83093c2d7bd6e"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -315,13 +289,19 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/time"
+  packages = ["rate"]
+  revision = "fbb02b2291d28baffd63558aa44b4b56f178d650"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
     "imports",
     "internal/fastwalk"
   ]
-  revision = "4d8a0ac9f66cf9815826183631c4da2e48d982c6"
+  revision = "0700b576e4d8bfc20051cc93cfb041e6e52ce8ed"
 
 [[projects]]
   name = "gopkg.in/inf.v0"
@@ -414,10 +394,15 @@
   name = "k8s.io/client-go"
   packages = [
     "discovery",
+    "discovery/fake",
     "kubernetes/scheme",
+    "pkg/apis/clientauthentication",
+    "pkg/apis/clientauthentication/v1alpha1",
     "pkg/version",
+    "plugin/pkg/client/auth/exec",
     "rest",
     "rest/watch",
+    "testing",
     "tools/auth",
     "tools/clientcmd",
     "tools/clientcmd/api",
@@ -430,7 +415,7 @@
     "util/homedir",
     "util/integer"
   ]
-  revision = "9389c055a838d4f208b699b3c7c51b70f2368861"
+  revision = "23781f4d6632d88e869066eaebb743857aa1ef9b"
 
 [[projects]]
   name = "k8s.io/code-generator"
@@ -485,6 +470,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b6d7691575cab7cf532c80fd2842525ab3bf8063732156e605a1e666ee698c0b"
+  inputs-digest = "42dffb263606ae514aa15e7ab78a5aa05de362be0c2d120161fe44bed11f3bb8"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -6,10 +6,10 @@ import (
 )
 
 type BuildListerImpl struct {
-	buildClient *buildv1.BuildV1Client
+	buildClient buildv1.BuildV1Interface
 }
 
-func NewBuildLister(client *buildv1.BuildV1Client) *BuildListerImpl {
+func NewBuildLister(client buildv1.BuildV1Interface) *BuildListerImpl {
 	return &BuildListerImpl{
 		buildClient: client,
 	}
