@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'patternfly-react';
 
-import './BuildConfig.css';
+import './BuildConfigDetails.css';
 
-class BuildConfig extends Component {
+class BuildConfigDetails extends Component {
   render() {
     const {repoUrl, branch, jobName, jenkinsfilePath} = this.props.buildConfig;
 
@@ -34,4 +34,4 @@ class BuildConfig extends Component {
   }
 }
 
-export default BuildConfig;
+export default BuildConfigDetails;
