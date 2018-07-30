@@ -3,6 +3,7 @@ import { ListGroup, ListGroupItem, Icon, Row, Col } from 'patternfly-react';
 import Moment from 'react-moment';
 import './MobileClientBuild.css';
 import BuildStatus from './BuildStatus';
+import BuildDownloadComponent from './BuildDownloadComponent'
 
 class MobileClientBuildList extends Component {
     render = () => {
@@ -30,7 +31,8 @@ class MobileClientBuildList extends Component {
                                             created <Moment fromNow>{mobileClientBuild.status.startTimestamp}</Moment>
                                     </span>
                                 </Col>
-                        </ListGroupItem>
+                                <BuildDownloadComponent downloadURL={mobileClientBuild.downloadURL}/>
+                            </ListGroupItem>
                 )})}
             </ListGroup>
         </div> 

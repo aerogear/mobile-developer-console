@@ -1,9 +1,14 @@
-.build-view-list-group {
-  padding-left: 7px;
-  border-top: 0 none; }
+.build-view-list-group.list-group {
+  border-top: none;
+  margin: 0; }
 
-.build-view-status-icon {
-  padding-right: 12px; }
+.build-view-list-group h3 {
+  margin: 0 0 5px 0; }
+
+.build-view-list-group .list-group-item {
+  padding: 0; }
+  .build-view-list-group .list-group-item .build-name, .build-view-list-group .list-group-item .build-details {
+    padding: 0; }
 
 .build-view-list-group .build-info {
   margin-right: 15px; }

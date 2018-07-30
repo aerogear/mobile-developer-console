@@ -1,0 +1,18 @@
+p {
+  font-weight: 600;
+}
+
+span, img {
+  font-weight: 600;
+  display: inline-block;
+  vertical-align: top;
+}
+
+img {
+  margin-left: 5em;
+}
+
+.build-download-component {
+  width: 100%;
+  padding: 2em 0;
+}
