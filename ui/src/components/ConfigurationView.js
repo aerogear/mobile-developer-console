@@ -5,6 +5,8 @@ import ServiceSDKInfo from './ServiceSDKInfo';
 import InlineEdit from './InlineEdit';
 import CopyToClipboardMultiline from './CopyToClipboardMultiline';
 
+import './ConfigurationView.css';
+
 const config = `{
   "version": 1,
   "clusterName": "https://192.168.0.106:8443",
@@ -49,7 +51,7 @@ class ConfigurationView extends Component {
           </Col>
           <Col md={6}>
             <Header>Mobile Client Config</Header>
-            <CopyToClipboardMultiline style={{ marginBottom: 25 }}>
+            <CopyToClipboardMultiline className="mobile-client-config">
               {config}
             </CopyToClipboardMultiline>
           </Col>
@@ -59,8 +61,8 @@ class ConfigurationView extends Component {
             <Header>SDK Configuration</Header>
             <h4><a>Android SDK Setup</a></h4>
           </Col>
-          <Col md={12} style={{ padding: 0 }}>
-            <Header style={{ margin: 20 }}>Service Configuration</Header>
+          <Col md={12} className="service-configuration">
+            <Header className="service-configuration-header">Service Configuration</Header>
             {
               serviceSDKInfo.map((info, index) =>
                 <ServiceSDKInfo

@@ -1,5 +1,8 @@
 import React from 'react';
 import { Button, FormControl } from 'patternfly-react';
+import classNames from 'classnames';
+
+import './InlineEdit.css';
 
 class InlineEdit extends React.Component {
   constructor(props) {
@@ -50,7 +53,7 @@ class InlineEdit extends React.Component {
   render() {
     return( 
       <div className={"form-control-pf-editable " + (this.state.editing ? "form-control-pf-edit" : "")}>
-        <button className="form-control-pf-value" onClick={this.setEditable} style={this.props.noHorizontalPadding ? { paddingRight: 0, paddingLeft: 0 } : {}}>
+        <button className={classNames('form-control-pf-value', { 'no-horizontal-padding': this.props.noHorizontalPadding })} onClick={this.setEditable}>
           <span className={"pull-left " + (this.currentValue ? "current-value" : "placeholder")}>{this.currentValue || this.props.placeholder}</span>
           <i className="glyphicon glyphicon-pencil"></i>
         </button>

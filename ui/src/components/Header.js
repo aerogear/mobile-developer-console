@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
+import classNames from 'classnames';
+
+import './Header.css';
 
 class Header extends Component {
   render() {
     return (
-      <h3
-        style={{
-          borderBottomWidth: 1,
-          borderBottomStyle: 'solid',
-          borderBottomColor: '#eee',
-          paddingBottom: 10,
-          ...this.props.style
-        }}
-      >
+      <h3 className={classNames('header', this.props.className)}>
         {this.props.children}
       </h3>
     );

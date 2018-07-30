@@ -1,0 +1,18 @@
+.copy-to-clipboard-multiline {
+  display: block;
+  overflow-x: auto
+}
+
+.copy-to-clipboard-multiline pre {
+  max-height: 350px;
+  background-color: #fff;
+  word-break: normal;
+  word-wrap: normal
+}
+
+.copy-to-clipboard-multiline .copy-btn {
+  box-shadow: none;
+  position: absolute;
+  right: 0;
+  top: 0
+}
