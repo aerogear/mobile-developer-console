@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { ListView, DropdownKebab, MenuItem, Button} from 'patternfly-react';
+import { ListView, DropdownKebab, MenuItem, Button, Row, Col} from 'patternfly-react';
 import BuildStatus from '../common/BuildStatus';
 import MobileListViewItem from '../common/MobileListViewItem';
+import BuildConfig from './BuildConfig';
+import ComponentSectionLabel from '../common/ComponentSectionLabel';
+
 
 const actions = () => (
   <React.Fragment id="mobile-client-actions" pullRight>
@@ -14,6 +17,13 @@ const actions = () => (
   </DropdownKebab>
 </React.Fragment>
 );
+
+const buildConfig = {
+  "jenkinsfilePath": "jenkinsfile",
+  "jobName": "ios-debug",
+  "branch": "ios-debug",
+  "repoUrl": "https://github.com/myusername/my-mobile-application"
+}
 
 const heading = mobileClientBuild => (
     <div className="pull-left text-left">
@@ -38,7 +48,14 @@ class MobileClientBuildListItem extends Component {
               heading={heading(mobileClientBuild)}
               hideCloseIcon={true}
           >
-          <p>Some info</p>
+          <Row>
+            <Col md={12}>
+              <ComponentSectionLabel>
+                Build Config
+              </ComponentSectionLabel>
+              <BuildConfig buildConfig={buildConfig}/>
+            </Col>
+          </Row>
           </MobileListViewItem>
       );
   }
