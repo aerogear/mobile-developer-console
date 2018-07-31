@@ -7,7 +7,7 @@ import (
 )
 
 func TestConfig(t *testing.T) {
-	expected := config{ListenAddress: ":4000", LogLevel: "info", LogFormat: "text"}
+	expected := config{ListenAddress: ":4000", LogLevel: "info", LogFormat: "text", ApiRoutePrefix: "/api"}
 	config := GetConfig()
 
 	if !reflect.DeepEqual(expected, config) {
@@ -16,7 +16,7 @@ func TestConfig(t *testing.T) {
 }
 
 func TestConfigEnvironmentVariables(t *testing.T) {
-	expected := config{ListenAddress: ":5000", LogLevel: "info", LogFormat: "text"}
+	expected := config{ListenAddress: ":5000", LogLevel: "info", LogFormat: "text", ApiRoutePrefix: "/api"}
 
 	os.Setenv("PORT", "5000")
 

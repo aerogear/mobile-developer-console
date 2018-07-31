@@ -40,7 +40,7 @@ ui:
 
 .PHONY: serve
 serve: build ui
-	export STATIC_FILES_DIR=$(CURDIR)/ui/build; ./mobile-client-service
+	export STATIC_FILES_DIR=$(CURDIR)/ui/build; ./mobile-client-service -kubeconfig ~/.kube/config
 
 .PHONY: build_linux
 build_linux: setup
