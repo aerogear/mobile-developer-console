@@ -15,6 +15,9 @@ import (
 	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
 	"github.com/operator-framework/operator-sdk/pkg/k8sclient"
 	"k8s.io/client-go/tools/clientcmd"
+	"github.com/operator-framework/operator-sdk/pkg/sdk"
+	"github.com/aerogear/mobile-client-service/pkg/stub"
+	"context"
 )
 
 var (
@@ -90,6 +93,14 @@ func main() {
 		mobileResourceHandler := web.NewMobileResourceHandler(mobileResourceLister)
 		web.SetMobileClientRoutes(apiGroup, mobileResourceHandler)
 	}
+
+	resource := "aerogear.org/v1alpha1"
+	kind := "MobileApp"
+	resyncPeriod := 5
+
+	sdk.Watch(resource, kind, namespace, resyncPeriod)
+	sdk.Handle(stub.NewHandler())
+	sdk.Run(context.TODO())
 
 	log.WithFields(log.Fields{"listenAddress": config.ListenAddress}).Info("Starting application")
 	log.Fatal(http.ListenAndServe(config.ListenAddress, router))
