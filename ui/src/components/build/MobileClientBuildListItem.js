@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListView, DropdownKebab, MenuItem, Button, Row, Col} from 'patternfly-react';
+import { DropdownKebab, MenuItem, Button, Row, Col} from 'patternfly-react';
 import BuildStatus from '../common/BuildStatus';
 import MobileListViewItem from '../common/MobileListViewItem';
 import BuildConfig from './BuildConfig';
