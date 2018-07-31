@@ -12,11 +12,23 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
-	mobile "github.com/aerogear/mobile-client-service/pkg/mobile"
+	"github.com/aerogear/mobile-client-service/pkg/mobile"
 
-	"github.com/labstack/echo"
 	"github.com/openshift/client-go/build/clientset/versioned/fake"
+	"fmt"
+	"io/ioutil"
 )
+
+func setupBuildsServer(lister mobile.BuildLister, apiPrefix string) *httptest.Server {
+	h := NewMobileBuildsHandler(lister, "test")
+
+	r := NewRouter("", apiPrefix)
+	apiRoute := r.Group(apiPrefix)
+
+	SetupMobileBuildsRoute(apiRoute, h)
+	server := httptest.NewServer(r)
+	return server
+}
 
 func TestListBuildsEndpoint(t *testing.T) {
 	cases := []struct {
@@ -51,33 +63,36 @@ func TestListBuildsEndpoint(t *testing.T) {
 		},
 	}
 
+	apiPrefix := "/api"
+
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
 			listImpl := tc.BuildLister()
-			h := NewMobileBuildsHandler(listImpl, "test")
-			// Setup
-			e := echo.New()
-			req := httptest.NewRequest(echo.GET, "/", nil)
-			rec := httptest.NewRecorder()
-			c := e.NewContext(req, rec)
-			c.SetPath("/")
-			err := h.List(c)
+			server := setupBuildsServer(listImpl, apiPrefix)
+			defer server.Close()
+
+			res, err := http.Get(fmt.Sprintf("%s%s/builds", server.URL, apiPrefix))
 			if err != nil {
 				t.Fatalf("Unexpected error %v", err)
 			}
+			defer res.Body.Close()
 
-			if rec.Code != tc.ExpectHTTPStatusCode {
-				t.Fatalf("expect http status code %v, but got %v", tc.ExpectHTTPStatusCode, rec.Code)
+			if res.StatusCode != tc.ExpectHTTPStatusCode {
+				t.Fatalf("expect http status code %v, but got %v", tc.ExpectHTTPStatusCode, res.StatusCode)
 			}
 
 			if tc.ExpectItemsListSize > 0 {
-				var buildList mobile.BuildList
-				jerr := json.Unmarshal(rec.Body.Bytes(), &buildList)
+				var list mobile.BuildList
+				data, err := ioutil.ReadAll(res.Body)
+				if err != nil {
+					t.Fatalf("can not read http response: %v", err)
+				}
+				jerr := json.Unmarshal(data, &list)
 				if jerr != nil {
 					t.Fatalf("can not parse json data: %v", jerr)
 				}
-				if len(buildList.Items) != tc.ExpectItemsListSize {
-					t.Fatalf("build list items size %v does not equal to %v", len(buildList.Items), tc.ExpectItemsListSize)
+				if len(list.Items) != tc.ExpectItemsListSize {
+					t.Fatalf("build list items size %v does not equal to %v", len(list.Items), tc.ExpectItemsListSize)
 				}
 			}
 		})
