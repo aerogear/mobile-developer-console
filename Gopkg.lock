@@ -217,6 +217,15 @@
   version = "v3.9.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/operator-framework/operator-sdk"
+  packages = [
+    "pkg/k8sclient",
+    "pkg/util/k8sutil"
+  ]
+  revision = "1c3780f1afb2cdfb6d796c9bb6e6dca6fa3dca87"
+
+[[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   revision = "3e01752db0189b9157070a0e1668a620f9a85da2"
@@ -260,7 +269,7 @@
     "http2/hpack",
     "idna"
   ]
-  revision = "a0f8a16cb08c06df97cbdf9c47f4731ba548c33c"
+  revision = "3673e40ba22529d22c3fd7c93e97b0ce50fa7bdd"
 
 [[projects]]
   branch = "master"
@@ -269,7 +278,7 @@
     "unix",
     "windows"
   ]
-  revision = "bd9dbc187b6e1dacfdd2722a87e83093c2d7bd6e"
+  revision = "e072cadbbdc8dd3d3ffa82b8b4b9304c261d9311"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -307,7 +316,7 @@
     "imports",
     "internal/fastwalk"
   ]
-  revision = "0700b576e4d8bfc20051cc93cfb041e6e52ce8ed"
+  revision = "4d8a0ac9f66cf9815826183631c4da2e48d982c6"
 
 [[projects]]
   name = "gopkg.in/inf.v0"
@@ -353,7 +362,8 @@
     "storage/v1alpha1",
     "storage/v1beta1"
   ]
-  revision = "acf347b865f29325eb61f4cd2df11e86e073a5ee"
+  revision = "73d903622b7391f3312dcbac6483fed484e185f8"
+  version = "kubernetes-1.10.0"
 
 [[projects]]
   name = "k8s.io/apimachinery"
@@ -363,7 +373,7 @@
     "pkg/api/resource",
     "pkg/apis/meta/v1",
     "pkg/apis/meta/v1/unstructured",
-    "pkg/apis/meta/v1alpha1",
+    "pkg/apis/meta/v1beta1",
     "pkg/conversion",
     "pkg/conversion/queryparams",
     "pkg/fields",
@@ -394,14 +404,46 @@
     "pkg/watch",
     "third_party/forked/golang/reflect"
   ]
-  revision = "19e3f5aa3adca672c153d324e6b7d82ff8935f03"
+  revision = "302974c03f7e50f16561ba237db776ab93594ef6"
+  version = "kubernetes-1.10.0"
 
 [[projects]]
   name = "k8s.io/client-go"
   packages = [
     "discovery",
+    "discovery/cached",
     "discovery/fake",
+    "dynamic",
+    "kubernetes",
     "kubernetes/scheme",
+    "kubernetes/typed/admissionregistration/v1alpha1",
+    "kubernetes/typed/admissionregistration/v1beta1",
+    "kubernetes/typed/apps/v1",
+    "kubernetes/typed/apps/v1beta1",
+    "kubernetes/typed/apps/v1beta2",
+    "kubernetes/typed/authentication/v1",
+    "kubernetes/typed/authentication/v1beta1",
+    "kubernetes/typed/authorization/v1",
+    "kubernetes/typed/authorization/v1beta1",
+    "kubernetes/typed/autoscaling/v1",
+    "kubernetes/typed/autoscaling/v2beta1",
+    "kubernetes/typed/batch/v1",
+    "kubernetes/typed/batch/v1beta1",
+    "kubernetes/typed/batch/v2alpha1",
+    "kubernetes/typed/certificates/v1beta1",
+    "kubernetes/typed/core/v1",
+    "kubernetes/typed/events/v1beta1",
+    "kubernetes/typed/extensions/v1beta1",
+    "kubernetes/typed/networking/v1",
+    "kubernetes/typed/policy/v1beta1",
+    "kubernetes/typed/rbac/v1",
+    "kubernetes/typed/rbac/v1alpha1",
+    "kubernetes/typed/rbac/v1beta1",
+    "kubernetes/typed/scheduling/v1alpha1",
+    "kubernetes/typed/settings/v1alpha1",
+    "kubernetes/typed/storage/v1",
+    "kubernetes/typed/storage/v1alpha1",
+    "kubernetes/typed/storage/v1beta1",
     "pkg/apis/clientauthentication",
     "pkg/apis/clientauthentication/v1alpha1",
     "pkg/version",
@@ -415,6 +457,7 @@
     "tools/clientcmd/api/latest",
     "tools/clientcmd/api/v1",
     "tools/metrics",
+    "tools/reference",
     "transport",
     "util/cert",
     "util/flowcontrol",
@@ -422,6 +465,7 @@
     "util/integer"
   ]
   revision = "23781f4d6632d88e869066eaebb743857aa1ef9b"
+  version = "v7.0.0"
 
 [[projects]]
   name = "k8s.io/code-generator"
@@ -435,16 +479,24 @@
     "cmd/client-gen/path",
     "cmd/client-gen/types",
     "cmd/conversion-gen",
+    "cmd/conversion-gen/args",
     "cmd/conversion-gen/generators",
     "cmd/deepcopy-gen",
+    "cmd/deepcopy-gen/args",
     "cmd/defaulter-gen",
+    "cmd/defaulter-gen/args",
     "cmd/informer-gen",
+    "cmd/informer-gen/args",
     "cmd/informer-gen/generators",
     "cmd/lister-gen",
+    "cmd/lister-gen/args",
     "cmd/lister-gen/generators",
-    "cmd/openapi-gen"
+    "cmd/openapi-gen",
+    "cmd/openapi-gen/args",
+    "pkg/util"
   ]
-  revision = "91d3f6a57905178524105a085085901bb73bd3dc"
+  revision = "7ead8f38b01cf8653249f5af80ce7b2c8aba12e2"
+  version = "kubernetes-1.10.0"
 
 [[projects]]
   branch = "master"
@@ -476,6 +528,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "81726a85a13a4879b2e2dec23ace75ac583505752fcda6d6c25c9c9436b7533a"
+  inputs-digest = "dc01e2e31952ac62a13ea4a65cabec1eab97fddd4c77d8c28e1f8f331a72a1f2"
   solver-name = "gps-cdcl"
   solver-version = 1

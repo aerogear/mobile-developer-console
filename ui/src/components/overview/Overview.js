@@ -3,14 +3,18 @@ import { Grid } from 'patternfly-react';
 
 import MobileClientOverviewList from './MobileClientOverviewList';
 
-const listClientsUrl = `/api/mobile.k8s.io/v1alpha1/namespaces/test1/mobileclients`;
+
+const listClientsUrl = `/api/mobileclients`;
+const serviceInstancesUrl = `/api/serviceinstances`;
+
 class Overview extends Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      mobileClients: []
+      mobileClients: [],
+      serviceInstances: []
     };
   }
 
@@ -19,6 +23,15 @@ class Overview extends Component {
       .then(response => response.json())
       .then(result => {
         this.setState({mobileClients: result.items});
+      })
+      .catch(err => {
+        console.error('Fetch error: ', err)
+      });
+  
+    fetch(serviceInstancesUrl)
+      .then(response => response.json())
+      .then(result => {
+        this.setState({serviceInstances: result.items});
       })
       .catch(err => {
         console.error('Fetch error: ', err)

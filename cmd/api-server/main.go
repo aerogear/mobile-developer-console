@@ -13,6 +13,7 @@ import (
 
 	sc "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset"
 	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
+	"github.com/operator-framework/operator-sdk/pkg/k8sclient"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -75,7 +76,16 @@ func main() {
 		web.SetupMobileBuildConfigsRoute(apiGroup, mobileBuildConfigsHandler)
 	}
 
-        web.SetClientRoutes(apiGroup)
+	{
+		mobileResourceClient, _, err := k8sclient.GetResourceClient("mobile.k8s.io/v1alpha1", "MobileClient", namespace)
+		if err != nil {
+			log.Fatalf("Error getting mobile custom resource client: %v", err)
+		}
+
+		mobileResourceLister := mobile.NewMobileResourceLister(mobileResourceClient)
+		mobileResourceHandler := web.NewMobileResourceHandler(mobileResourceLister)
+		web.SetMobileClientRoutes(apiGroup, mobileResourceHandler)
+	}
 
 	log.WithFields(log.Fields{"listenAddress": config.ListenAddress}).Info("Starting application")
 	log.Fatal(http.ListenAndServe(config.ListenAddress, router))

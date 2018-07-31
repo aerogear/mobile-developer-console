@@ -35,3 +35,14 @@ func SetupMobileBuildsRoute(r *echo.Group, handler *MobileBuildsHandler) {
 func SetupMobileBuildConfigsRoute(r *echo.Group, handler *MobileBuildConfigsHandler) {
 	r.GET("/buildconfigs", handler.List)
 }
+
+// SetMobileClientRoutes sets routes for mobile clients
+func SetMobileClientRoutes(router *echo.Group, handler *MobileResourceHandler) {
+	router.GET("/mobileclients", func(context echo.Context) error {
+		if context.QueryParam("watch") == "true" {
+			return handler.watch(context, context.Param("resourceVersion"))
+		}
+
+		return handler.list(context)
+	})
+}
