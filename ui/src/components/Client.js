@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Nav, NavItem, TabContent, TabPane, Tabs } from 'patternfly-react';
-import ConfigurationView from './ConfigurationView';
+import ConfigurationView from './configuration/ConfigurationView';
 import MobileClientBuildOverviewList from './build/MobileClientBuildOverviewList';
 
 const mobileClientBuilds = [
