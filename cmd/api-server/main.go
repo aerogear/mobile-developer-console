@@ -95,7 +95,7 @@ func main() {
 	}
 
 	resource := "aerogear.org/v1alpha1"
-	kind := "MobileApp"
+	kind := "MobileClient"
 	resyncPeriod := 5
 
 	sdk.Watch(resource, kind, namespace, resyncPeriod)
