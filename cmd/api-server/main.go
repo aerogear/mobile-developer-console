@@ -58,7 +58,7 @@ func main() {
 	}
 
 	{
-		siLister := mobile.NewServiceInstanceLister(scClient)
+		siLister := mobile.NewServiceInstanceLister(scClient.ServicecatalogV1beta1())
 		mobileServiceInstancesHandler := web.NewMobileServiceInstancesHandler(siLister, namespace)
 		web.SetupMobileServicesRoute(apiGroup, mobileServiceInstancesHandler)
 	}
