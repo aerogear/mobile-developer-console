@@ -60,6 +60,9 @@ class MobileClientBuildListItem extends Component {
               <BuildConfigDetails buildConfig={buildConfig}/>
             </Col>
             <Col md={12}>
+              <ComponentSectionLabel>
+                Builds
+              </ComponentSectionLabel>
               <BuildDownloadLinks downloadInfo={downloadInfo}/>
             </Col>
           </Row>
