@@ -44,7 +44,7 @@ export const HorizontalFormField = ({
           {label}
           <FieldLevelHelp content={htmlContent} close={close} />
         </Grid.Col>
-        <Grid.Col sm={9}>
+        <Grid.Col sm={5}>
           {formControl(controlProps)}
           {showHelp && help && <Form.HelpBlock>{help}</Form.HelpBlock>}
         </Grid.Col>
@@ -56,7 +56,7 @@ export const HorizontalFormField = ({
       <Grid.Col componentClass={Form.ControlLabel} sm={3}>
         {label}
       </Grid.Col>
-      <Grid.Col sm={9}>
+      <Grid.Col sm={5}>
         {formControl(controlProps)}
         {showHelp && help && <Form.HelpBlock>{help}</Form.HelpBlock>}
       </Grid.Col>
@@ -66,28 +66,28 @@ export const HorizontalFormField = ({
 
 /**
  * Renders form with some fields and button strip.
- * @param {Array} formFields 
- * @param {Array} formButtons 
+ * @param {string} title Form's title
+ * @param {Array} formFields fields to be rendered
  */
-export function renderForm(formFields,formButtons) {
+export function renderForm(title,formFields) {
   const generatedFields = formFields.map(formField => HorizontalFormField({ ...formField}));
-  const createButtons=formButtons.map(({ text, ...props }) => (
-    <span key={text}>
-      <Button {...props}>
-        {text}
-      </Button>{' '}
-    </span>
-  ))
-  return (
-      <Grid>
+  return (<div>
+      <h2>{title}</h2>
+      <Grid bsClass="create-client-form">
         <Form horizontal>
           {generatedFields}
-          <Row style={{ paddingTop: '10px', paddingBottom: '10px' }}>
-            <Col smOffset={3} sm={9}>
-               {createButtons}
-            </Col>
-          </Row>
         </Form>
       </Grid>
+      </div>
     );
+}
+
+export function validateAppName(appName) {
+  //TODO improve app name validation
+  return appName!==undefined && appName.length>0?"success":"error";
+}
+
+export function validateId(appId) {
+  //TODO improve app id validation
+  return appId!==undefined && appId.length>0?"success":"error";
 }

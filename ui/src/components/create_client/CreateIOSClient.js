@@ -27,26 +27,8 @@ class CreateIOSClient extends Component {
                   )
             },
         ] 
-        const formButtons = [
-            {
-              text: 'Create app',
-              bsStyle: 'primary',
-              onClick: (e)=> { 
-                  //TODO
-                  alert('create')
-              }
-            },
-            {
-              text: 'Cancel',
-              bsStyle: 'default',
-              onClick: (e)=>{
-                  //TODO
-                  alert('cancel')
-              }
-            }
-          ];
-                 
-        return renderForm(formFields,formButtons);
+                        
+        return renderForm("Configure iOS app",formFields);
     }
 
 }
