@@ -1,0 +1,48 @@
+.build-history-item, .build-history-item-top {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.build-history-item-top {
+  border: 1px solid grey;
+}
+
+.build-history-item {
+  border-left: 1px solid grey;
+  border-bottom: 1px solid grey;
+  border-right: 1px solid grey;
+}
+
+.build-history-item > .list-group-item, .build-history-item-top > .list-group-item {
+  padding: 0;
+}
+
+.list-group-item > .col-md-12 {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.left-margin-link {
+  margin-left: 2em;
+}
+
+p {
+  font-weight: 700;
+  display: inline-block;
+}
+
+button {
+  float: right;
+}
+
+.build-status {
+  font-size: 1.5em;
+}
+
+.col-md-2 > .fa {
+  font-size: 1.4em;
+}
+
+.incSizeLink {
+  font-size: 1.4em;
+}

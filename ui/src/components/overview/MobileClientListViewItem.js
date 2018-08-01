@@ -5,6 +5,7 @@ import MobileClientServiceChart from './MobileClientServiceChart';
 import ComponentSectionLabel from '../common/ComponentSectionLabel';
 import MobileClientBuildList from './MobileClientBuildList';
 import MobileListViewItem from '../common/MobileListViewItem';
+import MobileClientBuildHistoryList from './MobileClientBuildHistoryList'
 
 import './OverviewListItem.css';
 
@@ -165,6 +166,12 @@ class MobileClientOverviewList extends Component {
                         <ComponentSectionLabel>Mobile Builds</ComponentSectionLabel>
                         <MobileClientBuildList mobileClientBuilds={mobileClientBuilds}></MobileClientBuildList>
                         <a>View All Mobile Builds</a>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={12}>
+                    <a>Hide build history</a>
+                        <MobileClientBuildHistoryList mobileClientBuilds={mobileClientBuilds}/>
                     </Col>
                 </Row>
             </MobileListViewItem>
