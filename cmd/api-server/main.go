@@ -84,18 +84,15 @@ func main() {
 	}
 
 	{
-		mobileResourceClient, _, err := k8sclient.GetResourceClient("mobile.k8s.io/v1alpha1", "MobileClient", namespace)
-		if err != nil {
-			log.Fatalf("Error getting mobile custom resource client: %v", err)
-		}
-
-		mobileResourceLister := mobile.NewMobileResourceLister(mobileResourceClient)
-		mobileResourceHandler := web.NewMobileResourceHandler(mobileResourceLister)
-		web.SetMobileClientRoutes(apiGroup, mobileResourceHandler)
+		mobileClientsRepo := mobile.NewMobileClientRepo()
+		mobileClientsHandler := web.NewMobileClientsHandler(mobileClientsRepo, namespace)
+		web.SetupMoileClientsRoute(apiGroup, mobileClientsHandler)
 	}
 
-	resource := "aerogear.org/v1alpha1"
-	kind := "MobileClient"
+        web.SetClientRoutes(apiGroup)
+
+	resource := "v1"
+	kind := "Secret"
 	resyncPeriod := 5
 
 	sdk.Watch(resource, kind, namespace, resyncPeriod)

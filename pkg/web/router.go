@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-)
+	)
 
 func NewRouter(fileDir string, apiRoutePrefix string) *echo.Echo {
 	router := echo.New()
@@ -36,6 +36,7 @@ func SetupMobileBuildConfigsRoute(r *echo.Group, handler *MobileBuildConfigsHand
 	r.GET("/buildconfigs", handler.List)
 }
 
+
 // SetMobileClientRoutes sets routes for mobile clients
 func SetMobileClientRoutes(router *echo.Group, handler *MobileResourceHandler) {
 	router.GET("/mobileclients", func(context echo.Context) error {
@@ -45,4 +46,12 @@ func SetMobileClientRoutes(router *echo.Group, handler *MobileResourceHandler) {
 
 		return handler.list(context)
 	})
+}
+
+func SetupMoileClientsRoute(r *echo.Group, handler *MobileClientsHandler) {
+	r.GET("/mobileclients", handler.List)
+	r.POST("/mobileclients", handler.Create)
+	r.POST("/mobileclients/:name", handler.Update)
+	r.GET("/mobileclients/:name", handler.Read)
+	r.DELETE("/mobileclients/:name", handler.Delete)
 }
