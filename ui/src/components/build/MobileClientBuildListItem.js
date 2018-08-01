@@ -2,26 +2,11 @@ import React, { Component } from 'react';
 import { DropdownKebab, MenuItem, Button, Row, Col} from 'patternfly-react';
 import BuildStatus from '../common/BuildStatus';
 import MobileListViewItem from '../common/MobileListViewItem';
-<<<<<<< HEAD
-import BuildConfig from './BuildConfig';
-=======
 import BuildConfigDetails from './BuildConfigDetails';
->>>>>>> added build overview screen. using endpoint instead of mock data
 import ComponentSectionLabel from '../common/ComponentSectionLabel';
-
+import BuildDownloadLinks from './BuildDownloadLinks';
 
 const actions = () => (
-<<<<<<< HEAD
-  <React.Fragment id="mobile-client-actions" pullRight>
-  <Button>
-    Start Build
-  </Button>
-  <DropdownKebab>
-    <MenuItem>Edit</MenuItem>
-    <MenuItem>Delete</MenuItem>
-  </DropdownKebab>
-</React.Fragment>
-=======
   <React.Fragment>
     <Button>
       Start Build
@@ -31,7 +16,6 @@ const actions = () => (
       <MenuItem>Delete</MenuItem>
     </DropdownKebab>
   </React.Fragment>
->>>>>>> added build overview screen. using endpoint instead of mock data
 );
 
 const buildConfig = {
@@ -39,6 +23,10 @@ const buildConfig = {
   "jobName": "ios-debug",
   "branch": "ios-debug",
   "repoUrl": "https://github.com/myusername/my-mobile-application"
+}
+
+const downloadInfo = {
+  "downloadUrl": "https://github.com/somedownloadlink"
 }
 
 const heading = mobileClientBuild => (
@@ -57,11 +45,7 @@ class MobileClientBuildListItem extends Component {
 
       return (
           <MobileListViewItem
-<<<<<<< HEAD
-              className="overview-list-view-item"
-=======
               className="build-item"
->>>>>>> added build overview screen. using endpoint instead of mock data
               key={mobileClientBuild.metadata.uid}
               actions={actions()}
               checkboxInput={false}
@@ -73,11 +57,10 @@ class MobileClientBuildListItem extends Component {
               <ComponentSectionLabel>
                 Build Config
               </ComponentSectionLabel>
-<<<<<<< HEAD
-              <BuildConfig buildConfig={buildConfig}/>
-=======
               <BuildConfigDetails buildConfig={buildConfig}/>
->>>>>>> added build overview screen. using endpoint instead of mock data
+            </Col>
+            <Col md={12}>
+              <BuildDownloadLinks downloadInfo={downloadInfo}/>
             </Col>
           </Row>
           </MobileListViewItem>
