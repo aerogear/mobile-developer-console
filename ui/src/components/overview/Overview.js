@@ -3,7 +3,7 @@ import { Grid } from 'patternfly-react';
 
 import MobileClientOverviewList from './MobileClientOverviewList';
 
-const listClientsUrl = `/apis/mobile.k8s.io/v1alpha1/namespaces/test1/mobileclients`;
+const listClientsUrl = `/api/mobile.k8s.io/v1alpha1/namespaces/test1/mobileclients`;
 class Overview extends Component {
 
   constructor(props) {
