@@ -13,6 +13,7 @@ class CreateAndroidClient extends Component {
         let state = {}
         state[id] = change
         this.setState(state)
+        this.configureClient && this.configureClient(state)
     }
 
     render() {
