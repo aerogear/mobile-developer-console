@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Row, Col, DropdownKebab, MenuItem} from 'patternfly-react';
+import { Alert, Row, Col, DropdownKebab, MenuItem } from 'patternfly-react';
 
 import MobileClientServiceChart from './MobileClientServiceChart';
 import ComponentSectionLabel from '../common/ComponentSectionLabel';
@@ -8,7 +8,7 @@ import MobileListViewItem from '../common/MobileListViewItem';
 
 import './OverviewListItem.css';
 
-// todo 
+// todo
 const mobileServices = {
     "mobileServices": {
         "bound": 1,
@@ -39,7 +39,8 @@ const mobileClientBuilds = [
             "output": {}
         },
         "kind": "Build",
-        "apiVersion": "build.openshift.io/v1"
+        "apiVersion": "build.openshift.io/v1",
+        "downloadURL": "https://mcp-standalone-main.192.168.37.1.nip.io/build/my-job-1/download?token=26c2afda-d370-431e-85e2-b99a19cd4c20"
     },
     {
         "metadata": {
@@ -62,7 +63,8 @@ const mobileClientBuilds = [
             "output": {}
         },
         "kind": "Build",
-        "apiVersion": "build.openshift.io/v1"
+        "apiVersion": "build.openshift.io/v1",
+        "downloadURL": "https://mcp-standalone-main.192.168.37.1.nip.io/build/my-job-1/download?token=26c2afda-d370-431e-85e2-b99a19cd4c20"
     },
     {
         "metadata": {
@@ -85,7 +87,8 @@ const mobileClientBuilds = [
             "output": {}
         },
         "kind": "Build",
-        "apiVersion": "build.openshift.io/v1"
+        "apiVersion": "build.openshift.io/v1",
+        "downloadURL": "https://mcp-standalone-main.192.168.37.1.nip.io/build/my-job-1/download?token=26c2afda-d370-431e-85e2-b99a19cd4c20"
     }
 ];
 
@@ -113,7 +116,8 @@ class MobileClientOverviewList extends Component {
         super(props);
 
         this.state = {
-            dismissed: false
+            dismissed: false,
+            buildHistoryOpen: false
         };
     }
 

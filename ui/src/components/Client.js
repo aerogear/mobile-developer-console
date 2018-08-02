@@ -1,8 +1,31 @@
 import React, { Component } from 'react';
 import { Nav, NavItem, TabContent, TabPane, Tabs } from 'patternfly-react';
-import ConfigurationView from './ConfigurationView';
+import ConfigurationView from './configuration/ConfigurationView';
+import MobileClientBuildsList from './build/MobileClientBuildsList';
+
+const listBuildsUrl = `/api/builds`;
 
 class Client extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      mobileClientBuilds: []
+    };
+  }
+
+  componentDidMount = () => {
+    fetch(listBuildsUrl)
+      .then(response => response.json())
+      .then(result => {
+        this.setState({mobileClientBuilds: result.items});
+      })
+      .catch(err => {
+        console.error('Fetch error: ', err)
+      });
+  }
+
   render() {
     return (
       <div>
@@ -19,7 +42,7 @@ class Client extends Component {
                             <ConfigurationView />
                         </TabPane>
                         <TabPane eventKey={2}>
-                            Builds
+                            <MobileClientBuildsList mobileClientBuilds={this.state.mobileClientBuilds}></MobileClientBuildsList>
                         </TabPane>
                         <TabPane eventKey={3}>
                             Mobile Services
