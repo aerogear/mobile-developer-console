@@ -5,7 +5,6 @@ import MobileClientServiceChart from './MobileClientServiceChart';
 import ComponentSectionLabel from '../common/ComponentSectionLabel';
 import MobileClientBuildList from './MobileClientBuildList';
 import MobileListViewItem from '../common/MobileListViewItem';
-import MobileClientBuildHistoryList from '../build/MobileClientBuildHistoryList'
 
 import './OverviewListItem.css';
 
