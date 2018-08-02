@@ -84,7 +84,7 @@ func main() {
 	}
 
 	{
-		mobileClientsRepo := mobile.NewMobileClientRepo()
+		mobileClientsRepo := mobile.NewMobileClientRepo(namespace, nil)
 		mobileClientsHandler := web.NewMobileClientsHandler(mobileClientsRepo, namespace)
 		web.SetupMoileClientsRoute(apiGroup, mobileClientsHandler)
 	}

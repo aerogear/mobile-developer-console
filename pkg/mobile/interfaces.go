@@ -35,7 +35,11 @@ type MobileClientCrudler interface {
 type MobileClientRepo interface {
 	Create(app *v1alpha1.MobileClient) error
 	ReadByName(name string) (*v1alpha1.MobileClient, error)
-	Update(app v1alpha1.MobileClient) (*v1alpha1.MobileClient, error)
+	Update(app *v1alpha1.MobileClient) error
 	List(namespace string) (*v1alpha1.MobileClientList, error)
 	DeleteByName(name string) error
+}
+
+type MobileClientValidator interface {
+	Validate(mobileClient *v1alpha1.MobileClient) bool
 }
