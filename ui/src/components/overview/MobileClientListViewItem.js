@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Alert, Row, Col, DropdownKebab, MenuItem} from 'patternfly-react';
+import { Alert, Row, Col, DropdownKebab, MenuItem } from 'patternfly-react';
 
 import MobileClientServiceChart from './MobileClientServiceChart';
 import ComponentSectionLabel from '../common/ComponentSectionLabel';
 import MobileClientBuildList from './MobileClientBuildList';
 import MobileListViewItem from '../common/MobileListViewItem';
+import MobileClientBuildHistoryList from '../build/MobileClientBuildHistoryList'
 
 import './OverviewListItem.css';
 
@@ -116,7 +117,8 @@ class MobileClientOverviewList extends Component {
         super(props);
 
         this.state = {
-            dismissed: false
+            dismissed: false,
+            buildHistoryOpen: false
         };
     }
 
@@ -165,6 +167,27 @@ class MobileClientOverviewList extends Component {
                         <ComponentSectionLabel>Mobile Builds</ComponentSectionLabel>
                         <MobileClientBuildList mobileClientBuilds={mobileClientBuilds}></MobileClientBuildList>
                         <a>View All Mobile Builds</a>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={12}>
+                        <div className="mobile-chevron">
+                            <a
+                                href=""
+                                onClick={e => {
+                                    e.preventDefault();
+                                    this.setState({ buildHistoryOpen: !this.state.buildHistoryOpen })
+                                }}
+                            >
+                                <span className={ this.state.buildHistoryOpen ? "fa fa-angle-down" : "fa fa-angle-right" } />&nbsp;
+                                { this.state.buildHistoryOpen ? 'Hide' : 'Show' } build history
+                            </a>
+                        </div>
+                        { this.state.buildHistoryOpen ?
+                            <MobileClientBuildHistoryList className="collapse in" id="demo" mobileClientBuilds={mobileClientBuilds}/>
+                            :
+                            <React.Fragment />
+                        }
                     </Col>
                 </Row>
             </MobileListViewItem>
