@@ -16,8 +16,8 @@ class App extends Component {
             <Route exact path="/mobileclient/:id" component={Client}/>
             <Route exact path="/newclient" component={CreateClient}/>
             {/* Default redirect */}
-            {/*<Redirect to="/overview" */}
-            <Redirect to="/newclient" />
+            <Redirect to="/overview"/>
+            
           </Switch>
         </div>
       </Router>

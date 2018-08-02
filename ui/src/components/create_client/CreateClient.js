@@ -6,6 +6,7 @@ import CreateCordovaClient from './CreateCordovaClient'
 import CreateIOSClient from './CreateIOSClient'
 import CreateXamarinClient from './CreateXamarinClient'
 import { ResultsLine } from './ResultsLine';
+import './create_client.css'
 
 /**
  *  Component for the mobile client creation.
