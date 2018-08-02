@@ -13,6 +13,7 @@ import (
 
 	sc "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset"
 	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
+	"github.com/operator-framework/operator-sdk/pkg/k8sclient"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -32,6 +33,10 @@ func main() {
 
 	if namespace == "" {
 		log.Fatalf("-namespace is a required flag or it can be set via NAMESPACE env var")
+	}
+
+	if os.Getenv("KUBERNETES_CONFIG") == "" {
+		log.Fatalf("KUBERNETES_CONFIG is a required env var. Please set KUBERNETES_CONFIG to point to your kubeconfig file")
 	}
 
 	router := web.NewRouter(staticFilesDir, apiRoutePrefix)
@@ -75,7 +80,16 @@ func main() {
 		web.SetupMobileBuildConfigsRoute(apiGroup, mobileBuildConfigsHandler)
 	}
 
-        web.SetClientRoutes(apiGroup)
+	{
+		mobileResourceClient, _, err := k8sclient.GetResourceClient("mobile.k8s.io/v1alpha1", "MobileClient", namespace)
+		if err != nil {
+			log.Fatalf("Error getting mobile custom resource client: %v", err)
+		}
+
+		mobileResourceLister := mobile.NewMobileResourceLister(mobileResourceClient)
+		mobileResourceHandler := web.NewMobileResourceHandler(mobileResourceLister)
+		web.SetMobileClientRoutes(apiGroup, mobileResourceHandler)
+	}
 
 	log.WithFields(log.Fields{"listenAddress": config.ListenAddress}).Info("Starting application")
 	log.Fatal(http.ListenAndServe(config.ListenAddress, router))
@@ -102,6 +116,6 @@ func initLogger(level, format string) {
 }
 
 func init() {
-	flag.StringVar(&kubeconfig, "kubeconfig", "", "Path to a kubeconfig. Only required if out-of-cluster.")
+	flag.StringVar(&kubeconfig, "kubeconfig", os.Getenv("KUBERNETES_CONFIG"), "Path to a kubeconfig. Only required if out-of-cluster.")
 	flag.StringVar(&namespace, "namespace", os.Getenv("NAMESPACE"), "Name space. Only required if out-of-cluster.")
 }

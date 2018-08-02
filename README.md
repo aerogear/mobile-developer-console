@@ -39,6 +39,22 @@ If you don't have openshift running
 oc cluster up
 ```
 
+Create a new target project
+```bash
+oc new-project <target-project>
+```
+
+Now set the `NAMESPACE` env var to point at the `target-project`
+```bash
+export NAMESPACE=<target-project>
+```
+
+Also set `KUBERNETES_CONFIG` to point to your `.kube/config` which is usually at `$HOME/.kube/config`
+```bash
+export KUBERNETES_CONFIG=$HOME/.kube/config
+```
+
+Then
 ```bash
 make serve
 ```
