@@ -6,6 +6,7 @@ import (
 
 	fakesc "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset/fake"
 	scv1beta1 "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset/typed/servicecatalog/v1beta1"
+	scapisv1beta1 "github.com/kubernetes-incubator/service-catalog/pkg/apis/servicecatalog/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ktesting "k8s.io/client-go/testing"
@@ -26,6 +27,31 @@ func TestListMobileServiceInstaces(t *testing.T) {
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "serviceinstance1",
 						Namespace: "test",
+					},
+					Spec: scapisv1beta1.ServiceInstanceSpec{
+						ClusterServiceClassRef: &scapisv1beta1.ClusterObjectReference{
+							Name: "testclass",
+						},
+					},
+				}, &scapisv1beta1.ClusterServiceClass{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "testclass",
+						Namespace: "test",
+					},
+					Spec: scapisv1beta1.ClusterServiceClassSpec{
+						CommonServiceClassSpec: scapisv1beta1.CommonServiceClassSpec{
+							Tags: []string{"mobile-service"},
+						},
+					},
+				}, &scapisv1beta1.ClusterServiceClass{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "testclass1",
+						Namespace: "test",
+					},
+					Spec: scapisv1beta1.ClusterServiceClassSpec{
+						CommonServiceClassSpec: scapisv1beta1.CommonServiceClassSpec{
+							Tags: []string{},
+						},
 					},
 				})
 				return client.ServicecatalogV1beta1()
