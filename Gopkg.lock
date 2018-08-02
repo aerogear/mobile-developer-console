@@ -223,7 +223,7 @@
     "pkg/k8sclient",
     "pkg/util/k8sutil"
   ]
-  revision = "1c3780f1afb2cdfb6d796c9bb6e6dca6fa3dca87"
+  revision = "efc31221e6aa7f668bb9b3538b7d185bafa74061"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
@@ -269,7 +269,7 @@
     "http2/hpack",
     "idna"
   ]
-  revision = "3673e40ba22529d22c3fd7c93e97b0ce50fa7bdd"
+  revision = "f4c29de78a2a91c00474a2e689954305c350adf9"
 
 [[projects]]
   branch = "master"
@@ -278,7 +278,7 @@
     "unix",
     "windows"
   ]
-  revision = "e072cadbbdc8dd3d3ffa82b8b4b9304c261d9311"
+  revision = "3dc4335d56c789b04b0ba99b7a37249d9b614314"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -316,7 +316,7 @@
     "imports",
     "internal/fastwalk"
   ]
-  revision = "4d8a0ac9f66cf9815826183631c4da2e48d982c6"
+  revision = "1801cb7c1535809b97bb6628791b3fb0df73476e"
 
 [[projects]]
   name = "gopkg.in/inf.v0"
@@ -523,7 +523,7 @@
     "pkg/generators/rules",
     "pkg/util/sets"
   ]
-  revision = "d8ea2fe547a448256204cfc68dfee7b26c720acb"
+  revision = "e3762e86a74c878ffed47484592986685639c2cd"
 
 [solve-meta]
   analyzer-name = "dep"
