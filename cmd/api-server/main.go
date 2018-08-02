@@ -35,6 +35,10 @@ func main() {
 		log.Fatalf("-namespace is a required flag or it can be set via NAMESPACE env var")
 	}
 
+	if os.Getenv("KUBERNETES_CONFIG") == "" {
+		log.Fatalf("KUBERNETES_CONFIG is a required env var. Please set KUBERNETES_CONFIG to point to your kubeconfig file")
+	}
+
 	router := web.NewRouter(staticFilesDir, apiRoutePrefix)
 	apiGroup := router.Group(apiRoutePrefix)
 
@@ -112,6 +116,6 @@ func initLogger(level, format string) {
 }
 
 func init() {
-	flag.StringVar(&kubeconfig, "kubeconfig", "", "Path to a kubeconfig. Only required if out-of-cluster.")
+	flag.StringVar(&kubeconfig, "kubeconfig", os.Getenv("KUBERNETES_CONFIG"), "Path to a kubeconfig. Only required if out-of-cluster.")
 	flag.StringVar(&namespace, "namespace", os.Getenv("NAMESPACE"), "Name space. Only required if out-of-cluster.")
 }

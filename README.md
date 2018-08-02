@@ -49,7 +49,7 @@ Now set the `NAMESPACE` env var to point at the `target-project`
 export NAMESPACE=<target-project>
 ```
 
-Also set `KUBERNETES_CONFIG` to point to your `.kube/config`
+Also set `KUBERNETES_CONFIG` to point to your `.kube/config` which is usually at `$HOME/.kube/config`
 ```bash
 export KUBERNETES_CONFIG=$HOME/.kube/config
 ```

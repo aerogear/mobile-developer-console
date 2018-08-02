@@ -5,7 +5,6 @@ import MobileClientOverviewList from './MobileClientOverviewList';
 
 
 const listClientsUrl = `/api/mobileclients`;
-const serviceInstancesUrl = `/api/serviceinstances`;
 
 class Overview extends Component {
 
@@ -13,8 +12,7 @@ class Overview extends Component {
     super(props);
 
     this.state = {
-      mobileClients: [],
-      serviceInstances: []
+      mobileClients: []
     };
   }
 
@@ -23,15 +21,6 @@ class Overview extends Component {
       .then(response => response.json())
       .then(result => {
         this.setState({mobileClients: result.items});
-      })
-      .catch(err => {
-        console.error('Fetch error: ', err)
-      });
-  
-    fetch(serviceInstancesUrl)
-      .then(response => response.json())
-      .then(result => {
-        this.setState({serviceInstances: result.items});
       })
       .catch(err => {
         console.error('Fetch error: ', err)
