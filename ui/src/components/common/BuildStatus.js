@@ -4,9 +4,9 @@ import './BuildStatus.css';
 const getIcon = phase => {
     switch(phase) {
         case 'Complete':
-            return <span className="fa fa-check-circle-o fa-fw" aria-hidden="true"></span>;
+            return <span className="fa fa-check-circle fa-fw" aria-hidden="true"></span>;
         case 'Failed':
-            return <span className="fa fa-times-circle-o fa-fw" aria-hidden="true"></span>;
+            return <span className="fa fa-times-circle fa-fw" aria-hidden="true"></span>;
         case 'Cancelled':
             return <span className="fa fa-ban text-muted fa-fw" aria-hidden="true"></span>;
         case 'Completed':
