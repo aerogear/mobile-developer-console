@@ -24,6 +24,11 @@ objects:
           image: ${SERVER_IMAGE}
           ports:
           - containerPort: ${SERVER_PORT}
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
 - apiVersion: v1
   kind: Service
   metadata:
