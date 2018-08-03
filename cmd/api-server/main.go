@@ -38,7 +38,7 @@ func main() {
 	}
 
 	if os.Getenv("KUBERNETES_CONFIG") == "" {
-		log.Fatalf("KUBERNETES_CONFIG is a required env var. Please set KUBERNETES_CONFIG to point to your kubeconfig file")
+		log.Warnf("KUBERNETES_CONFIG is not set. It is required if you are running the application outside of a kubernetes cluster.")
 	}
 
 	router := web.NewRouter(staticFilesDir, apiRoutePrefix)
