@@ -80,6 +80,8 @@ make test
 
 ## Generate the API definition for the CRD
 
+If you are changing the type definition of (MobileClient)[./pkg/apis/aerogear/v1alpha1/types.go], you should run the following command to regenerate some of the files.
+
 Make sure you have the [operator-sdk](https://github.com/operator-framework/operator-sdk) installed locally, and then run
 
 ```
