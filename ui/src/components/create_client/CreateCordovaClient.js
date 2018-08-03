@@ -1,36 +1,21 @@
-import React, { Component } from 'react';
-import { Form  } from 'patternfly-react';
 import { renderForm } from './CreateClientFormUtils';
+import BaseCreateMobileClient from './BaseCreateMobileClient';
 
 /**
- * Component for the Android specific create mobile client form.
+ * Component for the Cordova specific create mobile client form.
  */
-class CreateIOSClient extends Component {
+class CreateCordovaClient extends BaseCreateMobileClient {
+       
     render() {
-        const formFields = [
-            {
-                controlId:'appName',
-                label:'* Application Name',
-                useFieldLevelHelp: true,
-                content:'Enter application name (like <em>myapp</em>)',
-                formControl: ({ validationState, ...props }) => (
-                    <Form.FormControl type="text" {...props} />
-                  )
-            },
-            {
-                controlId:'appIdentifier',
-                label:'* Package Name',
-                useFieldLevelHelp: true,
-                content:'Enter package name (like <em>org.aerogear.cordova.myapp</em>)',
-                formControl: ({ validationState, ...props }) => (
-                    <Form.FormControl type="text" {...props} />
-                  )
-            },
-        ] 
-      
+        const formFields = this.getFormFields().map(value=>{
+            if (value.controlId==='appIdentifier') {
+               value.content="Enter package name (like <em>org.aerogear.cordova.myapp</em>)"     
+            }
+            return value;
+        })
         return renderForm("Configure Cordova app",formFields);
     }
 
 }
 
-export default CreateIOSClient
+export default CreateCordovaClient

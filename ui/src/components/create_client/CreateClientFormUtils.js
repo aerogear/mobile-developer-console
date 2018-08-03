@@ -1,7 +1,7 @@
 /* eslint react/prop-types: 0 */
 
 import React from 'react';
-import { Grid, Form, FieldLevelHelp, Col, Row, Button  } from 'patternfly-react'; 
+import { Grid, Form, FieldLevelHelp } from 'patternfly-react'; 
 
 /**
  * Utilities for the create mobile client UI functionality.
@@ -82,12 +82,34 @@ export function renderForm(title,formFields) {
     );
 }
 
+/**
+ * Validates mobile client application name.
+ * @param {string} appName 
+ */
 export function validateAppName(appName) {
   //TODO improve app name validation
   return appName!==undefined && appName.length>0?"success":"error";
 }
 
+/**
+ * Validates mobile client application identifier / package name.
+ * @param {string} appName 
+ */
 export function validateId(appId) {
   //TODO improve app id validation
   return appId!==undefined && appId.length>0?"success":"error";
+}
+
+/**
+ * Updates clientConfiguration from form state
+ * @param {Object} obj object whose state will be modified (client form component)
+ * @param {string} id identifier
+ * @param {string} change change of value
+ * @param {Function} validationFunc validation function, retuns validation state upon change
+ */
+export function formChanged(obj,id, change,validationFunc)  {
+  let state = {clientConfiguration: { ...obj.state.clientConfiguration,[id]:change}, validation: {...obj.state.validation,[id]:validationFunc(change)}}        
+  obj.setState(state, () => {
+      obj.props.configureClient && obj.props.configureClient(state)
+  })        
 }

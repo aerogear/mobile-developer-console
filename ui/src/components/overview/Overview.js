@@ -3,6 +3,7 @@ import { Grid } from 'patternfly-react';
 
 import MobileClientOverviewList from './MobileClientOverviewList';
 import DataService from '../../DataService';
+import CreateClient from '../create_client/CreateClient'
 
 class Overview extends Component {
 
@@ -67,6 +68,8 @@ class Overview extends Component {
             mobileClients={mobileClients}
             mobileServiceInstances={mobileServiceInstances}
             mobileClientBuilds={mobileClientBuilds}></MobileClientOverviewList>
+        <MobileClientOverviewList mobileClients={this.state.mobileClients}></MobileClientOverviewList>
+        <CreateClient />
       </Grid>
     );
   }

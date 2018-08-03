@@ -7,7 +7,7 @@ class PlatformItem extends Component {
     render=()=> {
         return (
                <div>
-               <a class={this.state.selected?"platform-item selected":"platform-item"} href="#" onClick={this.handleClick}>
+               <a class={this.state.selected?"platform-item selected":"platform-item"} href="#nothing" onClick={this.handleClick}>
                             <div class="platform-item-icon-container">
                             {this.platformItemIcon()}                
                             </div>
