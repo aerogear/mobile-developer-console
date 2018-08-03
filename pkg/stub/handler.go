@@ -3,8 +3,8 @@ package stub
 import (
 	"context"
 
-		"github.com/operator-framework/operator-sdk/pkg/sdk"
-					)
+	"github.com/operator-framework/operator-sdk/pkg/sdk"
+)
 
 func NewHandler() sdk.Handler {
 	return &Handler{}

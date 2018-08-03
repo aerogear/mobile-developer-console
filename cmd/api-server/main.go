@@ -11,13 +11,12 @@ import (
 	"github.com/aerogear/mobile-client-service/pkg/web"
 	log "github.com/sirupsen/logrus"
 
+	"context"
+	"github.com/aerogear/mobile-client-service/pkg/stub"
 	sc "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset"
 	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
-	"github.com/operator-framework/operator-sdk/pkg/k8sclient"
-	"k8s.io/client-go/tools/clientcmd"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
-	"github.com/aerogear/mobile-client-service/pkg/stub"
-	"context"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 var (
@@ -84,20 +83,20 @@ func main() {
 	}
 
 	{
-		mobileClientsRepo := mobile.NewMobileClientRepo(namespace, nil)
+		mobileClientsRepo := mobile.NewMobileClientRepo(namespace)
 		mobileClientsHandler := web.NewMobileClientsHandler(mobileClientsRepo, namespace)
 		web.SetupMoileClientsRoute(apiGroup, mobileClientsHandler)
 	}
-
-        web.SetClientRoutes(apiGroup)
 
 	resource := "v1"
 	kind := "Secret"
 	resyncPeriod := 5
 
-	sdk.Watch(resource, kind, namespace, resyncPeriod)
-	sdk.Handle(stub.NewHandler())
-	sdk.Run(context.TODO())
+	go func() {
+		sdk.Watch(resource, kind, namespace, resyncPeriod)
+		sdk.Handle(stub.NewHandler())
+		sdk.Run(context.Background())
+	}()
 
 	log.WithFields(log.Fields{"listenAddress": config.ListenAddress}).Info("Starting application")
 	log.Fatal(http.ListenAndServe(config.ListenAddress, router))

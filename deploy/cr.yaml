@@ -2,3 +2,8 @@ apiVersion: "aerogear.org/v1alpha1"
 kind: "MobileClient"
 metadata:
   name: "example"
+spec:
+  clientType: "android"
+  name: "android-app"
+  appIdentifier: "test.aerogear.org"
+

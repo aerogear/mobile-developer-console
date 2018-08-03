@@ -1,53 +1,81 @@
 package web
 
 import (
-	"github.com/aerogear/mobile-client-service/pkg/mobile"
-	"github.com/labstack/echo"
 	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
+	"github.com/aerogear/mobile-client-service/pkg/mobile"
+	"github.com/gorilla/websocket"
+	"github.com/labstack/echo"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-		"net/http"
+	"net/http"
+)
+
+var (
+	upgrader = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+	}
 )
 
 type MobileClientsHandler struct {
-	namespace string
+	namespace        string
 	mobileClientRepo mobile.MobileClientRepo
 }
 
 func NewMobileClientsHandler(mobileClientRepo mobile.MobileClientRepo, namespace string) *MobileClientsHandler {
 	return &MobileClientsHandler{
-		namespace:namespace,
-		mobileClientRepo:mobileClientRepo,
+		namespace:        namespace,
+		mobileClientRepo: mobileClientRepo,
 	}
 }
 
 type MobileAppCreateRequest struct {
 	//has to be unique per namespace, can not be changed later
-	Name string `json:"name,required"`
-	ClientType string `json:"clientType,required"`
-	AppIdentifier string `json:appIdentifier,required`
+	Name          string `json:"name" validate:"required"`
+	ClientType    string `json:"clientType" validate:"required,oneof=android iOS cordova xamarin"`
+	AppIdentifier string `json:"appIdentifier"" validate:"required"`
 }
 
 type MobileAppUpdateRequest struct {
-	AppIdentifier string `json:appIdentifier`
+	AppIdentifier string `json:"appIdentifier" validate:"required"`
 }
 
 func newMobileClientObject(data MobileAppCreateRequest, namespace string) *v1alpha1.MobileClient {
 	return &v1alpha1.MobileClient{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "MobileClient",
+			APIVersion: "aerogear.org/v1alpha1",
+		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name: data.Name,
+			Name:      data.Name,
 			Namespace: namespace,
 		},
-		Spec:v1alpha1.MobileClientSpec{
-			ClientType:data.ClientType,
-			Name: data.Name,
+		Spec: v1alpha1.MobileClientSpec{
+			ClientType:    data.ClientType,
+			Name:          data.Name,
 			AppIdentifier: data.AppIdentifier,
 		},
+	}
+}
+
+func isNotFoundError(e error) bool {
+	switch t := e.(type) {
+	case *errors.StatusError:
+		if t.ErrStatus.Reason == metav1.StatusReasonNotFound {
+			return true
+		}
+		return false
+	default:
+		return false
 	}
 }
 
 func (h *MobileClientsHandler) Create(c echo.Context) error {
 	reqData := new(MobileAppCreateRequest)
 	if err := c.Bind(reqData); err != nil {
+		return err
+	}
+	if err := c.Validate(reqData); err != nil {
 		return err
 	}
 	app := newMobileClientObject(*reqData, h.namespace)
@@ -62,6 +90,9 @@ func (h *MobileClientsHandler) Read(c echo.Context) error {
 	name := c.Param("name")
 	app, err := h.mobileClientRepo.ReadByName(name)
 	if err != nil {
+		if isNotFoundError(err) {
+			return c.NoContent(http.StatusNotFound)
+		}
 		return err
 	}
 	return c.JSON(http.StatusOK, app)
@@ -81,12 +112,15 @@ func (h *MobileClientsHandler) Update(c echo.Context) error {
 	if err := c.Bind(reqData); err != nil {
 		return err
 	}
-	app, err := h.mobileClientRepo.ReadByName(name)
-	if err != nil {
+	if err := c.Validate(reqData); err != nil {
 		return err
 	}
-	if app == nil {
-		return c.NoContent(http.StatusNotFound)
+	app, err := h.mobileClientRepo.ReadByName(name)
+	if err != nil {
+		if isNotFoundError(err) {
+			return c.NoContent(http.StatusNotFound)
+		}
+		return err
 	}
 	if reqData.AppIdentifier != "" {
 		app.Spec.AppIdentifier = reqData.AppIdentifier
@@ -105,4 +139,23 @@ func (h *MobileClientsHandler) Delete(c echo.Context) error {
 		return err
 	}
 	return c.NoContent(http.StatusOK)
+}
+
+func (h *MobileClientsHandler) Watch(context echo.Context) error {
+	// TODO: Store open connections.
+	ws, err := upgrader.Upgrade(context.Response(), context.Request(), nil)
+	if err != nil {
+		return err
+	}
+
+	// TODO: Manage closing connections.
+	defer ws.Close()
+
+	err = ws.WriteMessage(websocket.TextMessage, []byte(""))
+	if err != nil {
+		context.Logger().Error(err)
+		return err
+	}
+
+	return nil
 }

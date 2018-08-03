@@ -71,6 +71,21 @@
   version = "0.15.0"
 
 [[projects]]
+  name = "github.com/go-playground/locales"
+  packages = [
+    ".",
+    "currency"
+  ]
+  revision = "f63010822830b6fe52288ee52d5a1151088ce039"
+  version = "v0.12.1"
+
+[[projects]]
+  name = "github.com/go-playground/universal-translator"
+  packages = ["."]
+  revision = "b32fa301c9fe55953584134cb6853a13c87ec0a1"
+  version = "v0.16.0"
+
+[[projects]]
   name = "github.com/gogo/protobuf"
   packages = [
     "proto",
@@ -162,8 +177,8 @@
     "pkg/client/clientset_generated/clientset/typed/settings/v1alpha1/fake",
     "pkg/filter"
   ]
-  revision = "f6f0e41fae6c4f1bdc5c507942ee7f1719555a19"
-  version = "v0.1.27"
+  revision = "0aaf02aba556b945a357fce4e82f62122d158f2a"
+  version = "v0.1.28"
 
 [[projects]]
   name = "github.com/labstack/echo"
@@ -252,7 +267,7 @@
     "pkg/sdk/internal/metrics",
     "pkg/util/k8sutil"
   ]
-  revision = "f7627c69befe257cf783bac4fdccecdf66b93f36"
+  revision = "ff510f4ae87569d3434248b31d6601c8a1d8d9ef"
 
 [[projects]]
   name = "github.com/prometheus/client_golang"
@@ -322,7 +337,7 @@
     "acme/autocert",
     "ssh/terminal"
   ]
-  revision = "c126467f60eb25f8f27e5a981f32a87e3965053f"
+  revision = "56440b844dfe139a8ac053f4ecac0b20b79058f4"
 
 [[projects]]
   branch = "master"
@@ -334,7 +349,7 @@
     "http2/hpack",
     "idna"
   ]
-  revision = "49c15d80dfbc983ea25246ee959d970efe09ec09"
+  revision = "f4c29de78a2a91c00474a2e689954305c350adf9"
 
 [[projects]]
   branch = "master"
@@ -343,7 +358,7 @@
     "unix",
     "windows"
   ]
-  revision = "bd9dbc187b6e1dacfdd2722a87e83093c2d7bd6e"
+  revision = "0ffbfd41fbef8ffcf9b62b0b0aa3a5873ed7a4fe"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -381,7 +396,13 @@
     "imports",
     "internal/fastwalk"
   ]
-  revision = "33176b2029f9538e722efa4a005f7aa00cf60010"
+  revision = "82515cf89538b3e8a206be74377c01dee420b76d"
+
+[[projects]]
+  name = "gopkg.in/go-playground/validator.v9"
+  packages = ["."]
+  revision = "ab2a8a99087e827c9af87ed6777ba897348fb178"
+  version = "v9.20.2"
 
 [[projects]]
   name = "gopkg.in/inf.v0"
@@ -601,6 +622,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "07fa3e3186e249b365e5f5895deca9a589b08fca21650150017712925b753040"
+  inputs-digest = "39af8aac3b5766b3ace77a9ff7317247053c2b0b373131a628dbb7ff83888d2e"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -2,7 +2,7 @@ package v1alpha1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	)
+)
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
@@ -23,24 +23,24 @@ type MobileClient struct {
 
 type MobileClientSpec struct {
 	// Fill me
-	ClientType string `json:"clientType,required"`
-	Name string `json:"name,required"`
+	ClientType    string `json:"clientType,required"`
+	Name          string `json:"name,required"`
 	AppIdentifier string `json:appIdentifier,required`
 }
 
 //for mobile-services.json
 type MobileClientStatus struct {
-	Version int `json:"version"`
-	ClusterName string `json:"clusterName"`
-	Namespace string `json:"namespace"`
-	ClientId string `json:"clientId"`
-	Services []MobileClientService `json:"services"`
+	Version     int                   `json:"version"`
+	ClusterName string                `json:"clusterName"`
+	Namespace   string                `json:"namespace"`
+	ClientId    string                `json:"clientId"`
+	Services    []MobileClientService `json:"services"`
 }
 
 type MobileClientService struct {
-	Id string `json:"id"`
-	Name string `json:name`
-	Type string `json:type`
-	Url string `json:url`
+	Id     string            `json:"id"`
+	Name   string            `json:name`
+	Type   string            `json:type`
+	Url    string            `json:url`
 	Config map[string]string `json:"config"`
 }
