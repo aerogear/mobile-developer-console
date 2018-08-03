@@ -2,8 +2,11 @@ package stub
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
+	"k8s.io/api/core/v1"
+	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
 )
 
 func NewHandler() sdk.Handler {
@@ -15,6 +18,39 @@ type Handler struct {
 }
 
 func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
+	switch o := event.Object.(type) {
+	case *v1.Secret:
+		secret := o
+		labels := secret.GetLabels()
+		if event.Deleted {
+			mobile, present := labels["mobile"]
+			if present && mobile == "enabled" {
+				fmt.Println("DELETED")
+				clientName := secret.StringData["clientName"]
+				clientId := secret.StringData["clientId"]
+				clientType := secret.StringData["type"]
+				url := secret.StringData["uri"]
+				config := secret.StringData["config"]
+				mcs := v1alpha1.MobileClientService{ Id: clientId, Name: clientName, Type: clientType, Url: url, Config: config}
+				// where mobileclientstatus.clientId = clientId
+				// mobileclientstatus.services.remove(mcs)
+			}
+		} else {
+			labels := secret.GetObjectMeta().GetLabels()
+			mobile, present := labels["mobile"]
+			if present && mobile == "enabled" {
+				fmt.Println("CREATED/UPDATED")
+				clientName := secret.StringData["clientName"]
+				clientId := secret.StringData["clientId"]
+				clientType := secret.StringData["type"]
+				url := secret.StringData["uri"]
+				config := secret.StringData["config"]
+				mcs := v1alpha1.MobileClientService{ Id: clientId, Name: clientName, Type: clientType, Url: url, Config: config}
+				// where mobileclientstatus.clientId = clientId
+				// mobileclientstatus.services.add(mcs)
+			}
+		}
+	}
 	//TODO: Implement Me!
 	//The handler here will watch the changes of the Secrets in the namespace, and update the MobileClientStatus of a mobile client to populate the Services field
 	//A Secret should be created/deleted when a mobile client is bound/unbound to a service. The secret data itself should contain information of the name of the mobile client, and the correspondibg service name
@@ -36,6 +72,15 @@ func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 	return nil
 }
 
+//
+//func (h *Handler) handleServiceCreateUpdate(service *v1alpha1.MobileClientService) error {
+//	service.
+//}
+//
+//func (h *Handler) handleServiceDelete(service *v1alpha1.MobileClientService) error {
+//	fmt.Printf("handling service delete\n")
+//	return nil
+//}
 // newbusyBoxPod demonstrates how to create a busybox pod
 //func newbusyBoxPod(cr *v1alpha1.MobileClient) *corev1.Pod {
 //	labels := map[string]string{
