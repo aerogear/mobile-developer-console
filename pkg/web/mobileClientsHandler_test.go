@@ -140,6 +140,17 @@ func TestMobileClientEndpoints(t *testing.T) {
 			ExpectListSize:   0,
 		},
 		{
+			Name: "test update a mobile client",
+			GetResponse: func(server *httptest.Server) (*http.Response, error) {
+				url := fmt.Sprintf("%s%s/mobileclients/testapp", server.URL, apiPrefix)
+				var jsonStr = []byte(`{"appIdentifier":"testAppIdUpdated"}`)
+				return http.Post(url, "application/json", bytes.NewBuffer(jsonStr))
+			},
+			ExpectError:      false,
+			ExpectStatusCode: 200,
+			ExpectListSize:   0,
+		},
+		{
 			Name: "test list mobile clients again",
 			GetResponse: func(server *httptest.Server) (*http.Response, error) {
 				url := fmt.Sprintf("%s%s/mobileclients", server.URL, apiPrefix)
