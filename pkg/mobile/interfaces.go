@@ -1,6 +1,8 @@
 package mobile
 
-import "k8s.io/apimachinery/pkg/runtime"
+import (
+	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
+)
 
 //ServiceInstanceLister can list service instances from a name space
 type ServiceInstanceLister interface {
@@ -15,6 +17,10 @@ type BuildConfigLister interface {
 	List(namespace string) (*BuildConfigList, error)
 }
 
-type MobileResourceLister interface {
-	List() (runtime.Object, error)
+type MobileClientRepo interface {
+	Create(app *v1alpha1.MobileClient) error
+	ReadByName(name string) (*v1alpha1.MobileClient, error)
+	Update(app *v1alpha1.MobileClient) error
+	List(namespace string) (*v1alpha1.MobileClientList, error)
+	DeleteByName(name string) error
 }

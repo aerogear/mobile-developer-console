@@ -33,6 +33,10 @@ func (lister *ServiceInstanceListerImpl) List(namespace string) (*ServiceInstanc
 		}
 
 		if isMobileService(sc) {
+			addAnnotation(&si, "aerogear.org/mobile-service", "true")
+			if isMobileClientEnabled(sc) {
+				addAnnotation(&si, "aerogear.org/mobile-client-enabled", "true")
+			}
 			serviceInstanceList.Items = append(serviceInstanceList.Items, si)
 		}
 	}
@@ -42,6 +46,17 @@ func (lister *ServiceInstanceListerImpl) List(namespace string) (*ServiceInstanc
 
 func isMobileService(sc *v1beta1.ClusterServiceClass) bool {
 	return contains(sc.Spec.Tags, "mobile-service")
+}
+
+func isMobileClientEnabled(sc *v1beta1.ClusterServiceClass) bool {
+	return contains(sc.Spec.Tags, "mobile-client-enabled")
+}
+
+func addAnnotation(si *v1beta1.ServiceInstance, name string, value string) {
+	if si.Annotations == nil {
+		si.Annotations = make(map[string]string)
+	}
+	si.Annotations[name] = value
 }
 
 func contains(s []string, e string) bool {

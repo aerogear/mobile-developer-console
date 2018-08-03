@@ -14,8 +14,8 @@ import (
 
 	"github.com/aerogear/mobile-client-service/pkg/mobile"
 
-	"github.com/openshift/client-go/build/clientset/versioned/fake"
 	"fmt"
+	"github.com/openshift/client-go/build/clientset/versioned/fake"
 	"io/ioutil"
 )
 

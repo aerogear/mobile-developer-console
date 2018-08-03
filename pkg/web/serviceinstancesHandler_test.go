@@ -16,8 +16,8 @@ import (
 
 	"github.com/aerogear/mobile-client-service/pkg/mobile"
 
-	fakesc "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset/fake"
 	scapisv1beta1 "github.com/kubernetes-incubator/service-catalog/pkg/apis/servicecatalog/v1beta1"
+	fakesc "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset/fake"
 )
 
 func setupServiceInstancesServer(lister mobile.ServiceInstanceLister, apiPrefix string) *httptest.Server {
@@ -51,7 +51,7 @@ func TestListServiceInstancesEndpoint(t *testing.T) {
 							Name: "testclass",
 						},
 					},
-				},  &scapisv1beta1.ClusterServiceClass{
+				}, &scapisv1beta1.ClusterServiceClass{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "testclass",
 						Namespace: "test",
@@ -61,7 +61,7 @@ func TestListServiceInstancesEndpoint(t *testing.T) {
 							Tags: []string{"mobile-service"},
 						},
 					},
-				},)
+				})
 				return mobile.NewServiceInstanceLister(client.ServicecatalogV1beta1())
 			},
 			ExpectItemsListSize:  1,

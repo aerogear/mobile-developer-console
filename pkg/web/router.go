@@ -5,7 +5,16 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"gopkg.in/go-playground/validator.v9"
 )
+
+type RequestValidator struct {
+	validator *validator.Validate
+}
+
+func (v *RequestValidator) Validate(i interface{}) error {
+	return v.validator.Struct(i)
+}
 
 func NewRouter(fileDir string, apiRoutePrefix string) *echo.Echo {
 	router := echo.New()
@@ -21,6 +30,7 @@ func NewRouter(fileDir string, apiRoutePrefix string) *echo.Echo {
 		},
 		Browse: false,
 	}))
+	router.Validator = &RequestValidator{validator: validator.New()}
 	return router
 }
 
@@ -37,12 +47,15 @@ func SetupMobileBuildConfigsRoute(r *echo.Group, handler *MobileBuildConfigsHand
 }
 
 // SetMobileClientRoutes sets routes for mobile clients
-func SetMobileClientRoutes(router *echo.Group, handler *MobileResourceHandler) {
-	router.GET("/mobileclients", func(context echo.Context) error {
-		if context.QueryParam("watch") == "true" {
-			return handler.watch(context, context.Param("resourceVersion"))
+func SetupMoileClientsRoute(r *echo.Group, handler *MobileClientsHandler) {
+	r.GET("/mobileclients", func(c echo.Context) error {
+		if c.QueryParam("watch") == "true" {
+			return handler.Watch(c)
 		}
-
-		return handler.list(context)
+		return handler.List(c)
 	})
+	r.POST("/mobileclients", handler.Create)
+	r.POST("/mobileclients/:name", handler.Update)
+	r.GET("/mobileclients/:name", handler.Read)
+	r.DELETE("/mobileclients/:name", handler.Delete)
 }

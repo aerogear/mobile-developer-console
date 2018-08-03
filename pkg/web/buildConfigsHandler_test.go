@@ -14,8 +14,8 @@ import (
 
 	"github.com/aerogear/mobile-client-service/pkg/mobile"
 
-		"github.com/openshift/client-go/build/clientset/versioned/fake"
 	"fmt"
+	"github.com/openshift/client-go/build/clientset/versioned/fake"
 	"io/ioutil"
 )
 
@@ -70,7 +70,6 @@ func TestListBuildConfigsEndpoint(t *testing.T) {
 			listImpl := tc.BuildConfigLister()
 			server := setupBuildConfigsServer(listImpl, apiPrefix)
 			defer server.Close()
-
 
 			res, err := http.Get(fmt.Sprintf("%s%s/buildconfigs", server.URL, apiPrefix))
 			if err != nil {

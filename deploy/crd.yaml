@@ -1,0 +1,32 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: mobileclients.aerogear.org
+spec:
+  group: aerogear.org
+  version: v1alpha1
+  scope: Namespaced
+  names:
+    plural: mobileclients
+    singular: mobileclient
+    kind: MobileClient
+    shortNames:
+    - mc
+  validation:
+    # openAPIV3Schema is the schema for validating custom objects.
+    openAPIV3Schema:
+      properties:
+        spec:
+          properties:
+            clientType:
+              type: string
+              pattern: 'cordova|iOS|android|xamarin'
+            name:
+              type: string
+              pattern: '([\w-])'
+            appIdentifier:
+              type: string
+              pattern: '([\w-])'
+            dmzUrl:
+              type: string
+              nullable: true
