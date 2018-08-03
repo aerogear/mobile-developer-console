@@ -77,3 +77,11 @@ oc process -f mobile-client-service.template.yaml --parameters
 ```bash
 make test
 ```
+
+## Generate the API definition for the CRD
+
+Make sure you have the [operator-sdk](https://github.com/operator-framework/operator-sdk) installed locally, and then run
+
+```
+ operator-sdk generate k8s
+```
