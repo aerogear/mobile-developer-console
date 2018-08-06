@@ -3,6 +3,9 @@ import { Nav, NavItem, TabContent, TabPane, Tabs } from 'patternfly-react';
 import ConfigurationView from './configuration/ConfigurationView';
 import MobileClientBuildsList from './build/MobileClientBuildsList';
 import DataService from '../DataService';
+import MobileServiceView from './mobileservices/MobileServiceView';
+
+const listBuildsUrl = `/api/builds`;
 
 class Client extends Component {
 
@@ -53,7 +56,7 @@ class Client extends Component {
                             <MobileClientBuildsList buildConfigs={this.state.buildConfigs} />
                         </TabPane>
                         <TabPane eventKey={3}>
-                            Mobile Services
+                            <MobileServiceView />
                         </TabPane>
                     </TabContent>
                 </div>
