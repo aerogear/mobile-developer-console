@@ -17,10 +17,15 @@ class Overview extends Component {
     };
   }
 
-  componentDidMount = () => {
+
+  fetchData = () => {
     this.getMobileClients();
     this.getMobileServiceInstances();
     this.getMobileClientBuilds();
+  }
+
+  componentDidMount = () => {
+    this.fetchData()
   }
 
   getMobileClients = () => {
@@ -59,6 +64,14 @@ class Overview extends Component {
       });
   }
 
+  componentDidMount = () => {
+    this.fetchData();
+  }
+
+  clientCreated= (result) => {
+    this.fetchData();
+  }
+
   render() {
     const {mobileClients, mobileServiceInstances, mobileClientBuilds} = this.state;
 
@@ -69,7 +82,7 @@ class Overview extends Component {
             mobileServiceInstances={mobileServiceInstances}
             mobileClientBuilds={mobileClientBuilds}></MobileClientOverviewList>
         <MobileClientOverviewList mobileClients={this.state.mobileClients}></MobileClientOverviewList>
-        <CreateClient />
+        <CreateClient clientCreated={this.clientCreated}/>
       </Grid>
     );
   }

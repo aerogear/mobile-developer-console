@@ -18,4 +18,4 @@ export const WIZARD_SELECT_PLATFORM=0;
 export const WIZARD_CONFIGURE_CLIENT=1;
 export const WIZARD_CREATION_RESULT=2;
 
-export const CREATE_CLIENT_API_PATH='/api/'
+export const CREATE_CLIENT_API_PATH='/api/mobileclients'
