@@ -39,6 +39,13 @@ If you don't have openshift running
 oc cluster up
 ```
 
+Create the Mobile Client custom resource definition
+```bash
+oc create -f deploy/crd.yaml
+```
+
+There is an example custom resource template at [deploy/cr.yaml](https://github.com/aerogear/mobile-client-service/blob/master/deploy/cr.yaml) to create Mobile Client instances.
+
 Create a new target project
 ```bash
 oc new-project <target-project>
