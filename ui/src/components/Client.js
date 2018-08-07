@@ -16,7 +16,7 @@ class Client extends Component {
   }
 
   componentDidMount = () => {
-    fetch(listBuildsUrl)
+    fetch(listBuildsUrl, {credentials: "same-origin"})
       .then(response => response.json())
       .then(result => {
         this.setState({mobileClientBuilds: result.items});
