@@ -1,96 +1,36 @@
 import React, { Component } from 'react';
-import { Alert, Row, Col, DropdownKebab, MenuItem } from 'patternfly-react';
+import { Alert, Button, Row, Col, DropdownKebab, MenuItem } from 'patternfly-react';
 
 import MobileClientServiceChart from './MobileClientServiceChart';
 import ComponentSectionLabel from '../common/ComponentSectionLabel';
+import CopyToClipboardMultiline from '../common/CopyToClipboardMultiline';
 import MobileClientBuildList from './MobileClientBuildList';
 import MobileListViewItem from '../common/MobileListViewItem';
 
 import './OverviewListItem.css';
 
-// todo
-const mobileServices = {
-    "mobileServices": {
-        "bound": 1,
-        "unbound": 2
-    }
-};
-
-// TODO: Mocked data for now.
-const mobileClientBuilds = [
-    {
-        "metadata": {
-            "name": "android-debug-2",
-            "selfLink": "/apis/build.openshift.io/v1/namespaces/myproject/builds/android-debug-2",
-            "annotations": {
-                "openshift.io/build.number": "2"
-            },
-            "uid": "5ea6f7ee-90c6-11e8-bd24-f6a35857c6e5"
-        },
-        "status": {
-            "phase": "Failed",
-            "startTimestamp": "2018-07-23T15:18:04Z",
-            "completionTimestamp": "2018-07-24T15:19:35Z",
-            "config": {
-                "kind": "BuildConfig",
-                "namespace": "myproject",
-                "name": "android-debug"
-            },
-            "output": {}
-        },
-        "kind": "Build",
-        "apiVersion": "build.openshift.io/v1",
-        "downloadURL": "https://mcp-standalone-main.192.168.37.1.nip.io/build/my-job-1/download?token=26c2afda-d370-431e-85e2-b99a19cd4c20"
-    },
-    {
-        "metadata": {
-            "name": "ios-debug-1",
-            "selfLink": "/apis/build.openshift.io/v1/namespaces/myproject/builds/ios-debug-1",
-            "annotations": {
-                "openshift.io/build.number": "1"
-            },
-            "uid": "5ea6f7ee-98c6-11e8-bd24-f6a35857c6e5"
-        },
-        "status": {
-            "phase": "Complete",
-            "startTimestamp": "2018-07-25T15:18:04Z",
-            "completionTimestamp": "2018-07-24T15:19:35Z",
-            "config": {
-                "kind": "BuildConfig",
-                "namespace": "myproject",
-                "name": "ios-debug"
-            },
-            "output": {}
-        },
-        "kind": "Build",
-        "apiVersion": "build.openshift.io/v1",
-        "downloadURL": "https://mcp-standalone-main.192.168.37.1.nip.io/build/my-job-1/download?token=26c2afda-d370-431e-85e2-b99a19cd4c20"
-    },
-    {
-        "metadata": {
-            "name": "cordova-release-2",
-            "selfLink": "/apis/build.openshift.io/v1/namespaces/myproject/builds/ios-debug-1",
-            "annotations": {
-                "openshift.io/build.number": "3"
-            },
-            "uid": "5ea6f7ee-90c6-11e8-bd24-f6a35857c6e4"
-        },
-        "status": {
-            "phase": "Running",
-            "startTimestamp": "2018-07-25T15:18:04Z",
-            "completionTimestamp": "2018-07-24T15:19:35Z",
-            "config": {
-                "kind": "BuildConfig",
-                "namespace": "myproject",
-                "name": "cordova-release"
-            },
-            "output": {}
-        },
-        "kind": "Build",
-        "apiVersion": "build.openshift.io/v1",
-        "downloadURL": "https://mcp-standalone-main.192.168.37.1.nip.io/build/my-job-1/download?token=26c2afda-d370-431e-85e2-b99a19cd4c20"
-    }
-];
+const config = `{
+    "version": 1,
+    "clusterName": "https://192.168.0.11:8443",
+    "namespace": "test",
+    "clientId": "myapp-android",
+    "services": [
+      {
+        "id": "keycloak-myapp-android-public",
+        "name": "keycloak",
+        "type": "keycloak",
+        "url": "https://keycloak-test.192.168.0.11.nip.io/auth",
+        "config": {
+          "auth-server-url": "https://keycloak-test.192.168.0.11.nip.io/auth",
+          "confidential-port": 0,
+          "public-client": true,
+          "realm": "test",
+          "resource": "myapp-android-public",
+          "ssl-required": "external"
+        }
+      }
+    ]
+}`;
 
 const actions = () => (
   <DropdownKebab id="mobile-client-actions" pullRight>
@@ -111,13 +51,35 @@ const headings = mobileClient => (
     </div>
 );
 
+const canBindToClient = serviceInstance => {
+    const {metadata={annotations:{}}} = serviceInstance;
+    return metadata.annotations['aerogear.org/mobile-client-enabled'] === 'true';
+};
+
+const getNumBoundAndUnboundServices = (mobileClient={}, mobileServiceInstances=[]) => {
+    return mobileServiceInstances.reduce((result, serviceInstance) => {
+
+        if (!canBindToClient(serviceInstance)) {
+            return result;
+        }
+
+        hasBinding(mobileClient, serviceInstance) ? result.bound++ : result.unbound++;
+
+        return result;
+    }, {bound: 0, unbound: 0});
+};
+
+const hasBinding = (mobileClient, serviceInstance) => {
+    const {services} = mobileClient.status;
+    return services && services.some(si => si.id === serviceInstance.metadata.name);
+};
+
 class MobileClientOverviewList extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            dismissed: false,
-            buildHistoryOpen: false
+            dismissed: false
         };
     }
 
@@ -125,17 +87,57 @@ class MobileClientOverviewList extends Component {
         this.setState({dismissed: true});
     }
 
-    alert = () => {
-        if (!this.state.dismissed) {
-            return <Alert type="info" onDismiss={this.handleDismiss}>2 mobile services are not bound to this client. <a>Bind them to use with this client.</a></Alert>;
-        }
+    getClientOverview = () => {
+        const {mobileClient, mobileServiceInstances, mobileClientBuilds} = this.props;
+        const numBoundAndUnbound = getNumBoundAndUnboundServices(mobileClient, mobileServiceInstances);
+        const {unbound} = numBoundAndUnbound;
 
-        return null;
+        return (
+            <React.Fragment>
+                <Row>
+                    <Col md={12}>
+                        {(unbound && !this.state.dismissed) ? <Alert type="info" onDismiss={this.handleDismiss}>{unbound} mobile services are not bound to this client. <a>Bind them to use with this client.</a></Alert> : null}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={6}>
+                        <ComponentSectionLabel>Mobile Services</ComponentSectionLabel>
+                        <MobileClientServiceChart data={numBoundAndUnbound}></MobileClientServiceChart>
+                        <a>View All Mobile Services</a>
+                    </Col>
+                    <Col md={6}>
+                        <ComponentSectionLabel>Client Info</ComponentSectionLabel>
+                        <CopyToClipboardMultiline className="mobile-client-config">
+                            {config}
+                        </CopyToClipboardMultiline>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col sm={12} md={12}>
+                        <ComponentSectionLabel>Mobile Builds</ComponentSectionLabel>
+                        <MobileClientBuildList mobileClientBuilds={mobileClientBuilds}></MobileClientBuildList>
+                        <a>View All Mobile Builds</a>
+                    </Col>
+                </Row>
+            </React.Fragment>
+        );
+    }
+
+    getEmptyState = () => {
+        return (
+            <React.Fragment>
+                <Row>
+                    <Col md={12} className="empty-state text-center">
+                        <p>Add a mobile service to your project. Or connect to external service.</p>
+                        <Button bsStyle="primary">Browse Mobile Services</Button>
+                    </Col>
+                </Row>
+            </React.Fragment>
+        );
     }
 
     render = () => {
-        const {mobileClient} = this.props;
-
+        const {mobileClient, mobileServiceInstances} = this.props;
         return (
             <MobileListViewItem
                 className="overview-list-view-item"
@@ -146,28 +148,7 @@ class MobileClientOverviewList extends Component {
                 stacked={false}
                 hideCloseIcon={true}
             >
-                <Row>
-                    <Col md={12}>
-                        {this.alert()}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md={6}>
-                        <ComponentSectionLabel>Mobile Services</ComponentSectionLabel>
-                        <MobileClientServiceChart mobileServices={mobileServices}></MobileClientServiceChart>
-                        <a>View All Mobile Services</a>
-                    </Col>
-                    <Col md={6}>
-                        <ComponentSectionLabel>Client Info</ComponentSectionLabel>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md={12}>
-                        <ComponentSectionLabel>Mobile Builds</ComponentSectionLabel>
-                        <MobileClientBuildList mobileClientBuilds={mobileClientBuilds}></MobileClientBuildList>
-                        <a>View All Mobile Builds</a>
-                    </Col>
-                </Row>
+                {mobileServiceInstances.length ? this.getClientOverview() : this.getEmptyState()}
             </MobileListViewItem>
         );
     }
