@@ -3,7 +3,7 @@ import { Grid, Row, Col } from 'patternfly-react';
 import Header from './Header';
 import ServiceSDKInfo from './ServiceSDKInfo';
 import InlineEdit from './InlineEdit';
-import CopyToClipboardMultiline from './CopyToClipboardMultiline';
+import CopyToClipboardMultiline from '../common/CopyToClipboardMultiline';
 
 import './ConfigurationView.css';
 

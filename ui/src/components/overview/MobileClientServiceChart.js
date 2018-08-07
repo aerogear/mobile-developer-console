@@ -4,9 +4,9 @@ import { DonutChart } from 'patternfly-react';
 class MobileClientServiceChart extends Component {
 
     render = () => {
-        const mobileServices = Object.values(this.props.mobileServices || {});
-        const boundTitle = `${mobileServices[0].bound} Bound Mobile Services`;
-        const unboundTitle = `${mobileServices[0].unbound} Unbound Mobile Services`;
+        const {data} = this.props;
+        const boundTitle = `${data.bound} Bound Mobile Services`;
+        const unboundTitle = `${data.unbound} Unbound Mobile Services`;
 
         return (
             <div>
@@ -17,8 +17,8 @@ class MobileClientServiceChart extends Component {
                         [boundTitle] : '#0088ce',
                         [unboundTitle]: '#ec7a08',
                     },columns: [
-                        [boundTitle, mobileServices[0].bound],
-                        [unboundTitle, mobileServices[0].unbound],
+                        [boundTitle, data.bound],
+                        [unboundTitle, data.unbound],
                     ],type: 'donut'}}
                     tooltip={{show: true}}
                     title={{type: 'total'}}
