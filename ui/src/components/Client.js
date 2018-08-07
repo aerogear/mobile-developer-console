@@ -5,7 +5,6 @@ import MobileClientBuildsList from './build/MobileClientBuildsList';
 import DataService from '../DataService';
 import MobileServiceView from './mobileservices/MobileServiceView';
 
-const listBuildsUrl = `/api/builds`;
 
 class Client extends Component {
 
