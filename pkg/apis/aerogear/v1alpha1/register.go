@@ -10,7 +10,7 @@ import (
 
 const (
 	version   = "v1alpha1"
-	groupName = "aerogear.org"
+	groupName = "mobile.k8s.io"
 )
 
 var (

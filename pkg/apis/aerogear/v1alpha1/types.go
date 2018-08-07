@@ -26,6 +26,8 @@ type MobileClientSpec struct {
 	ClientType    string `json:"clientType,required"`
 	Name          string `json:"name,required"`
 	AppIdentifier string `json:appIdentifier,required`
+	ApiKey        string `json:apiKey` //TODO: not sure if this is still required.
+	DmzUrl        string `json:dmzUrl`
 }
 
 //for mobile-services.json

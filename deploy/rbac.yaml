@@ -39,7 +39,7 @@ metadata:
   name: default-account-mobileclient-operator
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: mobile-client-service
 roleRef:
   kind: Role
   name: mobileclient-operator
