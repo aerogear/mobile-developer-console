@@ -19,6 +19,9 @@ objects:
         labels:
           app: "${SERVICE_NAME}"
       spec:
+        securityContext: {}
+        serviceAccount: "${SERVICE_ACCOUNT_NAME}"
+        serviceAccountName: "${SERVICE_ACCOUNT_NAME}"
         containers:
         - name: "${SERVICE_NAME}"
           image: ${SERVER_IMAGE}
@@ -69,5 +72,9 @@ parameters:
   required: true
 - name: SERVICE_NAME
   description: What to name the service/application in OpenShift. Selectors will be updated also.
+  value: mobile-client-service
+  required: true
+- name: SERVICE_ACCOUNT_NAME
+  description: What to name the service account to run this service
   value: mobile-client-service
   required: true

@@ -5,6 +5,7 @@ import (
 	"github.com/aerogear/mobile-client-service/pkg/mobile"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo"
+	"github.com/satori/go.uuid"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net/http"
@@ -34,6 +35,7 @@ type MobileAppCreateRequest struct {
 	Name          string `json:"name" validate:"required"`
 	ClientType    string `json:"clientType" validate:"required,oneof=android iOS cordova xamarin"`
 	AppIdentifier string `json:"appIdentifier"" validate:"required"`
+	DmzUrl        string `json:"dmzUrl"`
 }
 
 type MobileAppUpdateRequest struct {
@@ -44,7 +46,7 @@ func newMobileClientObject(data MobileAppCreateRequest, namespace string) *v1alp
 	return &v1alpha1.MobileClient{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "MobileClient",
-			APIVersion: "aerogear.org/v1alpha1",
+			APIVersion: "mobile.k8s.io/v1alpha1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      data.Name,
@@ -54,6 +56,8 @@ func newMobileClientObject(data MobileAppCreateRequest, namespace string) *v1alp
 			ClientType:    data.ClientType,
 			Name:          data.Name,
 			AppIdentifier: data.AppIdentifier,
+			ApiKey:        uuid.NewV4().String(),
+			DmzUrl:        data.DmzUrl,
 		},
 	}
 }

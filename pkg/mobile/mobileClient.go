@@ -20,7 +20,7 @@ func (r *MobileClientRepoImpl) ReadByName(name string) (*v1alpha1.MobileClient, 
 	c := &v1alpha1.MobileClient{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "MobileClient",
-			APIVersion: "aerogear.org/v1alpha1",
+			APIVersion: "mobile.k8s.io/v1alpha1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -44,7 +44,7 @@ func (r *MobileClientRepoImpl) List(namespace string) (*v1alpha1.MobileClientLis
 	list := &v1alpha1.MobileClientList{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "MobileClient",
-			APIVersion: "aerogear.org/v1alpha1",
+			APIVersion: "mobile.k8s.io/v1alpha1",
 		},
 	}
 	err := sdk.List(r.namespace, list, listOpts)

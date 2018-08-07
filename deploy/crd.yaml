@@ -1,9 +1,9 @@
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  name: mobileclients.aerogear.org
+  name: mobileclients.mobile.k8s.io
 spec:
-  group: aerogear.org
+  group: mobile.k8s.io
   version: v1alpha1
   scope: Namespaced
   names:
@@ -21,6 +21,9 @@ spec:
             clientType:
               type: string
               pattern: 'cordova|iOS|android|xamarin'
+            apiKey:
+              type: string
+              pattern: '(\w{8}-\w{4}-\w{4}-\w{4}-\w{11})'
             name:
               type: string
               pattern: '([\w-])'
