@@ -3,34 +3,11 @@ import { Alert, Button, Row, Col, DropdownKebab, MenuItem } from 'patternfly-rea
 
 import MobileClientServiceChart from './MobileClientServiceChart';
 import ComponentSectionLabel from '../common/ComponentSectionLabel';
-import CopyToClipboardMultiline from '../common/CopyToClipboardMultiline';
+import MobileClientConfig from '../common/MobileClientConfig';
 import MobileClientBuildList from './MobileClientBuildList';
 import MobileListViewItem from '../common/MobileListViewItem';
 
 import './OverviewListItem.css';
-
-const config = `{
-    "version": 1,
-    "clusterName": "https://192.168.0.11:8443",
-    "namespace": "test",
-    "clientId": "myapp-android",
-    "services": [
-      {
-        "id": "keycloak-myapp-android-public",
-        "name": "keycloak",
-        "type": "keycloak",
-        "url": "https://keycloak-test.192.168.0.11.nip.io/auth",
-        "config": {
-          "auth-server-url": "https://keycloak-test.192.168.0.11.nip.io/auth",
-          "confidential-port": 0,
-          "public-client": true,
-          "realm": "test",
-          "resource": "myapp-android-public",
-          "ssl-required": "external"
-        }
-      }
-    ]
-}`;
 
 const actions = () => (
   <DropdownKebab id="mobile-client-actions" pullRight>
@@ -44,7 +21,7 @@ const headings = mobileClient => (
         <div className="detail">
             <span className="text-uppercase">{mobileClient.spec.clientType}</span>
         </div>
-        <a className="name">
+        <a href={"/mobileclient/" + mobileClient.spec.name} className="name">
             <span>{mobileClient.spec.name}</span>
         </a>
         <div className="detail">{mobileClient.spec.appIdentifier}</div>
@@ -107,9 +84,7 @@ class MobileClientOverviewList extends Component {
                     </Col>
                     <Col md={6}>
                         <ComponentSectionLabel>Client Info</ComponentSectionLabel>
-                        <CopyToClipboardMultiline className="mobile-client-config">
-                            {config}
-                        </CopyToClipboardMultiline>
+                        <MobileClientConfig mobileClient={mobileClient}></MobileClientConfig>
                     </Col>
                 </Row>
                 <Row>
