@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListViewItem, Row, Col } from 'patternfly-react';
+import { ListViewItem, Row, Col,DropdownKebab,MenuItem } from 'patternfly-react';
 import '../ServiceSDKInfo.css';
 import './ServiceRow.css';
 
@@ -31,49 +31,44 @@ class BoundServiceRow extends Component {
     }
 
     renderServiceDetails() {
+        let documentationFragment;
+        let propertyFragment;
+
+        if (this.service.documentationUrl) {
+            documentationFragment = <Row>
+            <Col md={2} className="detailsKey">
+                    Documentation : 
+                </Col>
+                <Col md={4}  className="detailsValue">
+                    <a href="{this.service.documentationUrl}">SDK Setup
+                    <i class="fa fa-external-link" aria-hidden="true"></i>
+                    </a>
+                </Col>
+            </Row>;
+        }
+
+        
+        if (this.service.configuration) {
+            propertyFragment= this.service.configuration.map(configuration => 
+                <Row>
+                    <Col md={2} className="detailsKey">
+                        {configuration.key} : 
+                    </Col>
+                    <Col md={4}  className="detailsValue">
+                        {configuration.value}
+                    </Col>
+                </Row>
+            );
+        } else {
+            propertyFragment =  (
+                <div>No configuration data to show for this service.</div>
+            );
+        }
+
         return (
             <div>
-                <Row>
-                <Col md={2} className="detailsKey">
-                        Key : 
-                    </Col>
-                    <Col md={4}  className="detailsValue">
-                        Value
-                    </Col>
-                </Row>
-                <Row>
-                <Col md={2} className="detailsKey">
-                        Key : 
-                    </Col>
-                    <Col md={4}  className="detailsValue">
-                        Value
-                    </Col>
-                </Row>
-                <Row>
-                <Col md={2} className="detailsKey">
-                        Key : 
-                    </Col>
-                    <Col md={4}  className="detailsValue">
-                        Value
-                    </Col>
-                </Row>
-                <Row>
-                <Col md={2} className="detailsKey">
-                        Key : 
-                    </Col>
-                    <Col md={4}  className="detailsValue">
-                        Value
-                    </Col>
-                </Row>
-                <Row>
-                <Col md={2} className="detailsKey">
-                        Key : 
-                    </Col>
-                    <Col md={4}  className="detailsValue">
-                        Value
-                    </Col>
-                </Row>
-                
+                {documentationFragment}
+                {propertyFragment}
             </div>
         );
     }
@@ -83,6 +78,15 @@ class BoundServiceRow extends Component {
       return (
         <ListViewItem 
             additionalInfo={this.renderServiceBadge()}
+            class="boundService"
+            actions={
+                <div>
+                  <DropdownKebab id={"delete-" + this.service.serviceId} pullRight>
+                    <MenuItem>Delete</MenuItem>
+                  </DropdownKebab>
+                </div>
+              }
+              hideCloseIcon="true"
         >
             {this.renderServiceDetails()}
         </ListViewItem>
