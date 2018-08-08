@@ -33,7 +33,6 @@ const getIcon = phase => {
 class BuildStatus extends Component {
     render = () => {
         const {phase} = this.props.build.status;
-
         return (
             <React.Fragment>
                 {getIcon(phase)}

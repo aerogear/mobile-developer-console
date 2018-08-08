@@ -1,5 +1,13 @@
 .build-download-component {
+  padding: 4px;
+  
   p {
     font-weight: 700;
+    margin: 0 !important;
   }
 }
+
+.build-download-component .float-right {
+  float: right;
+}
+
