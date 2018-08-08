@@ -1,0 +1,43 @@
+.latest-mobile-build{
+    display: flex;
+}
+
+.build-information {
+    border: 1px solid #dbdbdb;
+    padding : 4px ;
+    display:  inline-block;
+    margin-bottom: 10px;
+    width: 100%;
+ }
+
+ .build-pipeline {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: row;
+}
+
+ .latest-build-pipeline {
+     padding: 0px;
+ }
+
+ .build-information .col-md-1 {
+    padding-right: 0 !important;
+ }
+
+ .pipeline-container {
+    flex: 1 1 auto;
+    overflow: hidden;
+ }
+
+ .pipeline {
+     display: flex;
+     flex-wrap: wrap;
+     height: 100%;
+     padding: 0 5px;
+ }
+
+ .latest-download-trigger {
+     align-items: center;
+     display: flex;
+     justify-content: flex-end;
+ }

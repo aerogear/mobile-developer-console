@@ -6,7 +6,7 @@ import MobileClientBuildListItem from './MobileClientBuildListItem';
 class MobileClientBuildOverviewList extends Component {
     render = () => {
         const {mobileClientBuilds} = this.props;
-
+        console.log(mobileClientBuilds);
         return (
             <div>
                 <ListView>

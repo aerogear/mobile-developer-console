@@ -4,8 +4,8 @@ import BuildStatus from '../common/BuildStatus';
 import MobileListViewItem from '../common/MobileListViewItem';
 import BuildConfigDetails from './BuildConfigDetails';
 import ComponentSectionLabel from '../common/ComponentSectionLabel';
-import BuildDownloadLinks from './BuildDownloadLinks';
 import MobileClientBuildHistoryList from './MobileClientBuildHistoryList';
+import BuildInformation from './BuildInformation';
 
 const mobileClientBuilds = [
     {
@@ -101,10 +101,6 @@ const buildConfig = {
   "repoUrl": "https://github.com/myusername/my-mobile-application"
 }
 
-const downloadInfo = {
-  "downloadUrl": "https://github.com/somedownloadlink"
-}
-
 const heading = mobileClientBuild => (
     <div className="pull-left text-left">
         <a className="name">
@@ -168,6 +164,7 @@ class MobileClientBuildListItem extends Component {
               <ComponentSectionLabel>
                 Builds
               </ComponentSectionLabel>
+              <BuildInformation build={mobileClientBuild}/>
               <Row>
                   <Col md={12}>
                       <div className="mobile-chevron">
@@ -189,7 +186,6 @@ class MobileClientBuildListItem extends Component {
                       }
                   </Col>
               </Row>
-              <BuildDownloadLinks downloadInfo={downloadInfo}/>
             </Col>
           </Row>
           </MobileListViewItem>
