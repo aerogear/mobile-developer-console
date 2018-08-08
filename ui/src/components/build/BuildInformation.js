@@ -6,10 +6,6 @@ import BuildSummary from './BuildSummary';
 
 import "./BuildInformation.css";
 
-const downloadInfo = {
-    "downloadUrl": "https://redhat.invisionapp.com/share/GRJJGUHNSET#/screens/295058246"
-  }
-
 class BuildInformation extends Component {
     constructor(props){
         super(props)
@@ -25,7 +21,6 @@ class BuildInformation extends Component {
         }));
     }
 
-    //TODO: Add a handler function to toggle download on complete pipeline
     renderDownloadButton(){
         if (this.props.build.status.phase === "Complete"){
             return <Button bsStyle="primary" onClick={this.handleDownload.bind(this)}>
@@ -37,7 +32,7 @@ class BuildInformation extends Component {
 
     renderDownloadDialog(){
         if (this.state.toggleLinks){
-            return <BuildDownloadLinks downloadInfo={downloadInfo}/>
+            return <BuildDownloadLinks downloadURL={this.props.build.metadata.annotations["aerogear.org/download-mobile-artifact-url"]}/>
         }
         return null;
     }
