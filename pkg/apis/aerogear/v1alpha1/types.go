@@ -40,9 +40,9 @@ type MobileClientStatus struct {
 }
 
 type MobileClientService struct {
-	Id     string            `json:"id"`
-	Name   string            `json:name`
-	Type   string            `json:type`
-	Url    string            `json:url`
-	Config map[string]string `json:"config"`
+	Id     string `json:"id"`
+	Name   string `json:name`
+	Type   string `json:type`
+	Url    string `json:url`
+	Config string `json:"config"`
 }

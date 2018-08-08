@@ -2,115 +2,114 @@ package stub
 
 import (
 	"context"
-	"fmt"
-
-	"github.com/operator-framework/operator-sdk/pkg/sdk"
-	"k8s.io/api/core/v1"
 	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
+	"github.com/aerogear/mobile-client-service/pkg/mobile"
+	"github.com/operator-framework/operator-sdk/pkg/sdk"
+	log "github.com/sirupsen/logrus"
+	"k8s.io/api/core/v1"
 )
 
-func NewHandler() sdk.Handler {
-	return &Handler{}
+func NewHandler(mobileAppRepo mobile.MobileClientRepo) sdk.Handler {
+	return &Handler{
+		mobileClientRepo: mobileAppRepo,
+	}
 }
 
 type Handler struct {
 	// Fill me
+	mobileClientRepo mobile.MobileClientRepo
 }
 
 func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 	switch o := event.Object.(type) {
 	case *v1.Secret:
 		secret := o
-		labels := secret.GetLabels()
-		if event.Deleted {
-			mobile, present := labels["mobile"]
-			if present && mobile == "enabled" {
-				fmt.Println("DELETED")
-				clientName := secret.StringData["clientName"]
-				clientId := secret.StringData["clientId"]
-				clientType := secret.StringData["type"]
-				url := secret.StringData["uri"]
-				config := secret.StringData["config"]
-				mcs := v1alpha1.MobileClientService{ Id: clientId, Name: clientName, Type: clientType, Url: url, Config: config}
-				// where mobileclientstatus.clientId = clientId
-				// mobileclientstatus.services.remove(mcs)
-			}
-		} else {
-			labels := secret.GetObjectMeta().GetLabels()
-			mobile, present := labels["mobile"]
-			if present && mobile == "enabled" {
-				fmt.Println("CREATED/UPDATED")
-				clientName := secret.StringData["clientName"]
-				clientId := secret.StringData["clientId"]
-				clientType := secret.StringData["type"]
-				url := secret.StringData["uri"]
-				config := secret.StringData["config"]
-				mcs := v1alpha1.MobileClientService{ Id: clientId, Name: clientName, Type: clientType, Url: url, Config: config}
-				// where mobileclientstatus.clientId = clientId
-				// mobileclientstatus.services.add(mcs)
-			}
-		}
-	}
-	//TODO: Implement Me!
-	//The handler here will watch the changes of the Secrets in the namespace, and update the MobileClientStatus of a mobile client to populate the Services field
-	//A Secret should be created/deleted when a mobile client is bound/unbound to a service. The secret data itself should contain information of the name of the mobile client, and the correspondibg service name
-	//Based on this information, the handler here should:
-	//1. retrieve the info of the client app from the secret
-	//2. retrieve the service name from the secret
-	//3. retrieve all the relavent info of the service (like url, configurations etc. They should be part of the secret data)
-	//4. find the instance of the mobileclient use the name of the app
-	//5. append/remove the service to the `Services` field and update the MobileClientStatus
 
-	//switch o := event.Object.(type) {
-	//case *v1alpha1.MobileClient:
-	//	err := sdk.Create(newbusyBoxPod(o))
-	//	if err != nil && !errors.IsAlreadyExists(err) {
-	//		logrus.Errorf("Failed to create busybox pod : %v", err)
-	//		return err
-	//	}
-	//}
+		if !isValidSecret(secret) {
+			log.Infof("invalid secret %v", secret.GetName())
+			return nil
+		}
+
+		labels := secret.GetLabels()
+		clientId := labels["clientId"]
+
+		app, err := h.mobileClientRepo.ReadByName(clientId)
+		if err != nil {
+			log.Errorf("failed to read mobile client by name %v", clientId)
+			return err
+		}
+
+		serviceId := string(secret.Data["id"])
+		services := app.Status.Services
+		existing, i := findService(services, serviceId)
+
+		if event.Deleted && existing != nil {
+			log.Infof("remove service %v from app %v", serviceId, clientId)
+			//we should remove the existing from the services
+			services = removeService(services, i)
+			app.Status.Services = services
+			err := h.mobileClientRepo.Update(app)
+			if err != nil {
+				log.Errorf("failed to update mobile client %v", err)
+				return err
+			}
+			return nil
+		}
+
+		if existing != nil {
+			log.Infof("ignore service %v as it already exists in the app's status", serviceId)
+			return nil
+		}
+
+		//existing is nil, so this should be a create action and we can now create the service and append it
+		log.Infof("add service %v to app %v", serviceId, clientId)
+		service, err := newMobileServiceFromSecret(secret)
+		if err != nil {
+			log.Errorf("failed to create service from secret due to error: %v", err)
+			return err
+		}
+
+		services = append(services, *service)
+		app.Status.Services = services
+		err = h.mobileClientRepo.Update(app)
+		if err != nil {
+			log.Errorf("failed to update mobile client %v", err)
+			return err
+		}
+		return nil
+	}
+	log.Warnf("Unexpected data type received: %v", event.Object.GetObjectKind())
 	return nil
 }
 
-//
-//func (h *Handler) handleServiceCreateUpdate(service *v1alpha1.MobileClientService) error {
-//	service.
-//}
-//
-//func (h *Handler) handleServiceDelete(service *v1alpha1.MobileClientService) error {
-//	fmt.Printf("handling service delete\n")
-//	return nil
-//}
-// newbusyBoxPod demonstrates how to create a busybox pod
-//func newbusyBoxPod(cr *v1alpha1.MobileClient) *corev1.Pod {
-//	labels := map[string]string{
-//		"app": "busy-box",
-//	}
-//	return &corev1.Pod{
-//		TypeMeta: metav1.TypeMeta{
-//			Kind:       "Pod",
-//			APIVersion: "v1",
-//		},
-//		ObjectMeta: metav1.ObjectMeta{
-//			Name:      "busy-box",
-//			Namespace: cr.Namespace,
-//			OwnerReferences: []metav1.OwnerReference{
-//				*metav1.NewControllerRef(cr, schema.GroupVersionKind{
-//					Group:   v1alpha1.SchemeGroupVersion.Group,
-//					Version: v1alpha1.SchemeGroupVersion.Version,
-//					Kind:    "MobileApp",
-//				}),
-//			},
-//			Labels: labels,
-//		},
-//		Spec: corev1.PodSpec{
-//			Containers: []corev1.Container{
-//				{
-//					Name:    "busybox",
-//					Image:   "busybox",
-//					Command: []string{"sleep", "3600"},
-//				},
-//			},
-//		},
-//	}
-//}
+func isValidSecret(secret *v1.Secret) bool {
+	labels := secret.GetLabels()
+	if labels["mobile"] != "" && labels["clientId"] != "" && secret.Data["id"] != nil {
+		return true
+	}
+	return false
+}
+
+func findService(services []v1alpha1.MobileClientService, serviceId string) (*v1alpha1.MobileClientService, int) {
+	for i, service := range services {
+		if service.Id == serviceId {
+			return &service, i
+		}
+	}
+	return nil, -1
+}
+
+func removeService(services []v1alpha1.MobileClientService, index int) []v1alpha1.MobileClientService {
+	s := append(services[:index], services[index+1:]...)
+	return s
+}
+
+func newMobileServiceFromSecret(secret *v1.Secret) (*v1alpha1.MobileClientService, error) {
+	return &v1alpha1.MobileClientService{
+		Id:     string(secret.Data["id"]),
+		Name:   string(secret.Data["name"]),
+		Type:   string(secret.Data["type"]),
+		Url:    string(secret.Data["uri"]),
+		Config: string(secret.Data["config"]),
+	}, nil
+}
