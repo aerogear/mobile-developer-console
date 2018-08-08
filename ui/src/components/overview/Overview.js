@@ -81,7 +81,6 @@ class Overview extends Component {
             mobileClients={mobileClients}
             mobileServiceInstances={mobileServiceInstances}
             mobileClientBuilds={mobileClientBuilds}></MobileClientOverviewList>
-        <MobileClientOverviewList mobileClients={this.state.mobileClients}></MobileClientOverviewList>
         <CreateClient clientCreated={this.clientCreated}/>
       </Grid>
     );
