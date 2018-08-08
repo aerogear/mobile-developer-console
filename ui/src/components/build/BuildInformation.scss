@@ -24,11 +24,6 @@
     padding-right: 0 !important;
  }
 
- .build-information .btn {
-    margin-top: 15px;
-    position: absolute;
- }
-
  .pipeline-container {
     flex: 1 1 auto;
     overflow: hidden;
@@ -39,4 +34,10 @@
      flex-wrap: wrap;
      height: 100%;
      padding: 0 5px;
+ }
+
+ .latest-download-trigger {
+     align-items: center;
+     display: flex;
+     justify-content: flex-end;
  }

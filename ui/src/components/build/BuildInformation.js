@@ -27,12 +27,10 @@ class BuildInformation extends Component {
 
     //TODO: Add a handler function to toggle download on complete pipeline
     renderDownloadButton(){
-        if (this.state.buildSuccessfull){
-            return <div className="build-download">
-            <Button bsStyle="primary" onClick={this.handleDownload.bind(this)}>
+        if (this.props.build.status.phase === "Complete"){
+            return <Button bsStyle="primary" onClick={this.handleDownload.bind(this)}>
                 Download
             </Button>
-        </div>
         }
         return null;
     }
@@ -58,7 +56,11 @@ class BuildInformation extends Component {
                             </div>
                         </div>
                     </Col>
+                    <Col className="latest-download-trigger" md={2}>
+                        {this.renderDownloadButton()}
+                    </Col>
                 </div>
+                {this.renderDownloadDialog()}
             </div>
         )
     }
