@@ -110,6 +110,6 @@ func newMobileServiceFromSecret(secret *v1.Secret) (*v1alpha1.MobileClientServic
 		Name:   string(secret.Data["name"]),
 		Type:   string(secret.Data["type"]),
 		Url:    string(secret.Data["uri"]),
-		Config: string(secret.Data["config"]),
+		Config: secret.Data["config"],
 	}, nil
 }
