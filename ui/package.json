@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "classnames": "^2.2.6",
+    "lodash-es": "^4.17.10",
     "moment": "^2.22.2",
     "moment-precise-range-plugin": "^1.3.0",
     "node-sass-chokidar": "~1.3.3",
@@ -28,5 +29,6 @@
     "build-css": "node-sass-chokidar --include-path ./node_modules/patternfly/dist/sass --include-path ./node_modules/patternfly/node_modules/bootstrap-sass/assets/stylesheets --include-path ./node_modules/patternfly/node_modules/font-awesome-sass/assets/stylesheets src/ -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar --include-path ./node_modules/patternfly/dist/sass --include-path ./node_modules/patternfly/node_modules/bootstrap-sass/assets/stylesheets --include-path ./node_modules/patternfly/node_modules/font-awesome-sass/assets/stylesheets src/ -o src/ --watch --recursive"
   },
-  "homepage": "/"
+  "homepage": "/",
+  "devDependencies": {}
 }

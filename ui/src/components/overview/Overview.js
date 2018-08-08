@@ -3,6 +3,7 @@ import { Grid } from 'patternfly-react';
 
 import MobileClientOverviewList from './MobileClientOverviewList';
 import DataService from '../../DataService';
+import CreateClient from '../create_client/CreateClient'
 
 class Overview extends Component {
 
@@ -16,10 +17,15 @@ class Overview extends Component {
     };
   }
 
-  componentDidMount = () => {
+
+  fetchData = () => {
     this.getMobileClients();
     this.getMobileServiceInstances();
     this.getMobileClientBuilds();
+  }
+
+  componentDidMount = () => {
+    this.fetchData()
   }
 
   getMobileClients = () => {
@@ -58,6 +64,14 @@ class Overview extends Component {
       });
   }
 
+  componentDidMount = () => {
+    this.fetchData();
+  }
+
+  clientCreated= (result) => {
+    this.fetchData();
+  }
+
   render() {
     const {mobileClients, mobileServiceInstances, mobileClientBuilds} = this.state;
 
@@ -67,6 +81,7 @@ class Overview extends Component {
             mobileClients={mobileClients}
             mobileServiceInstances={mobileServiceInstances}
             mobileClientBuilds={mobileClientBuilds}></MobileClientOverviewList>
+        <CreateClient clientCreated={this.clientCreated}/>
       </Grid>
     );
   }
