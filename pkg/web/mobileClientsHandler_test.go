@@ -79,6 +79,19 @@ func setupMobileClientsServer(repo mobile.MobileClientRepo, apiPrefix string) *h
 	return server
 }
 
+func validateMobileClientData(body []byte) bool {
+	data := make(map[string]interface{})
+	err := json.Unmarshal(body, &data)
+	if err != nil {
+		return false
+	}
+	if data["metadata"] == nil || data["spec"] == nil || data["status"] == nil {
+		return false
+	}
+
+	return true
+}
+
 func TestMobileClientEndpoints(t *testing.T) {
 	cases := []struct {
 		Name             string
@@ -86,6 +99,7 @@ func TestMobileClientEndpoints(t *testing.T) {
 		ExpectError      bool
 		ExpectStatusCode int
 		ExpectListSize   int
+		ValidateResponse func(t *testing.T, responseBody []byte) error
 	}{
 		{
 			Name: "test list mobile clients",
@@ -118,6 +132,12 @@ func TestMobileClientEndpoints(t *testing.T) {
 			ExpectError:      false,
 			ExpectStatusCode: 200,
 			ExpectListSize:   0,
+			ValidateResponse: func(t *testing.T, responseBody []byte) error {
+				if !validateMobileClientData(responseBody) {
+					t.Fatalf("invalid response data")
+				}
+				return nil
+			},
 		},
 		{
 			Name: "test read a mobile client",
@@ -128,6 +148,12 @@ func TestMobileClientEndpoints(t *testing.T) {
 			ExpectError:      false,
 			ExpectStatusCode: 200,
 			ExpectListSize:   0,
+			ValidateResponse: func(t *testing.T, responseBody []byte) error {
+				if !validateMobileClientData(responseBody) {
+					t.Fatalf("invalid response data")
+				}
+				return nil
+			},
 		},
 		{
 			Name: "test read a non-exist mobile client",
@@ -149,6 +175,12 @@ func TestMobileClientEndpoints(t *testing.T) {
 			ExpectError:      false,
 			ExpectStatusCode: 200,
 			ExpectListSize:   0,
+			ValidateResponse: func(t *testing.T, responseBody []byte) error {
+				if !validateMobileClientData(responseBody) {
+					t.Fatalf("invalid response data")
+				}
+				return nil
+			},
 		},
 		{
 			Name: "test list mobile clients again",
@@ -198,12 +230,20 @@ func TestMobileClientEndpoints(t *testing.T) {
 				t.Fatalf("expect http status code %v, but got %v", tc.ExpectStatusCode, res.StatusCode)
 			}
 
-			if tc.ExpectListSize > 0 {
-				var list v1alpha1.MobileClientList
-				data, err := ioutil.ReadAll(res.Body)
+			data, err := ioutil.ReadAll(res.Body)
+			if err != nil {
+				t.Fatalf("can not read http response: %v", err)
+			}
+
+			if tc.ValidateResponse != nil {
+				err = tc.ValidateResponse(t, data)
 				if err != nil {
-					t.Fatalf("can not read http response: %v", err)
+					t.Fatalf("failed to validate response: %v", err)
 				}
+			}
+
+			if tc.ExpectListSize > 0 {
+				var list MobileClientDataList
 				jerr := json.Unmarshal(data, &list)
 				if jerr != nil {
 					t.Fatalf("can not parse json data: %v", jerr)

@@ -76,12 +76,18 @@ func newMoileClientDataFromObject(app *v1alpha1.MobileClient) (*MobileClientData
 		}
 		services = append(services, *s)
 	}
-	return &MobileClientData{
+	status := &MobileClientStatusData{
 		Version:     1,
 		ClusterName: app.GetClusterName(),
 		Namespace:   app.GetNamespace(),
 		ClientId:    app.Spec.Name,
 		Services:    services,
+	}
+	return &MobileClientData{
+		TypeMeta:   app.TypeMeta,
+		ObjectMeta: app.ObjectMeta,
+		Spec:       app.Spec,
+		Status:     *status,
 	}, nil
 }
 

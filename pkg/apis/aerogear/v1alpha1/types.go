@@ -37,9 +37,10 @@ type MobileClientStatus struct {
 }
 
 type MobileClientService struct {
-	Id     string          `json:"id"`
-	Name   string          `json:name`
-	Type   string          `json:type`
-	Url    string          `json:url`
+	Id   string `json:"id"`
+	Name string `json:name`
+	Type string `json:type`
+	Url  string `json:url`
+	//ideally we would like to use map[string]interface{} type here, but we can't as the generated code will complain that the interface{} is not `DeepCopy`-able.
 	Config json.RawMessage `json:"config"`
 }

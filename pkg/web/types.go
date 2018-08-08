@@ -1,6 +1,7 @@
 package web
 
 import (
+	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -27,8 +28,16 @@ type MobileClientServiceData struct {
 	Config map[string]interface{} `json:"config"`
 }
 
-//MobileClientServiceData represents the content in the `mobile-services.json` file
+//MobileClientData represents the API data for the MobileClient
 type MobileClientData struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata"`
+	Spec              v1alpha1.MobileClientSpec `json:"spec"`
+	Status            MobileClientStatusData    `json:"status"`
+}
+
+//MobileClientStatusData represents the content in the `mobile-services.json` file
+type MobileClientStatusData struct {
 	Version     int                       `json:"version"`
 	ClusterName string                    `json:"clusterName"`
 	Namespace   string                    `json:"namespace"`
