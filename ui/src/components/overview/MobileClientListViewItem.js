@@ -123,7 +123,7 @@ class MobileClientOverviewList extends Component {
                 stacked={false}
                 hideCloseIcon={true}
             >
-                {mobileServiceInstances.length ? this.getClientOverview() : this.getEmptyState()}
+                { mobileServiceInstances.length ? this.getClientOverview() : this.getEmptyState()}
             </MobileListViewItem>
         );
     }

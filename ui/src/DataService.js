@@ -3,7 +3,7 @@ const baseUrl = `/api`;
 const fetchItems = url => {
     return fetch(url, {credentials: "same-origin"})
     .then(response => response.json())
-    .then(result => result.items);
+    .then(result => result.items || []);
 };
 
 const dataService = {
