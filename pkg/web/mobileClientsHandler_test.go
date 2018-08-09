@@ -26,6 +26,19 @@ func NewMockMobileClientRepo() *mockMobileClientRepo {
 
 func (r *mockMobileClientRepo) Create(app *v1alpha1.MobileClient) error {
 	name := app.Name
+	service := &v1alpha1.MobileClientService{
+		Id:     "test-service",
+		Name:   "test-serivce",
+		Url:    "http://test-service.com",
+		Type:   "test",
+		Config: []byte("{}"),
+	}
+	services := make([]v1alpha1.MobileClientService, 0)
+	services = append(services, *service)
+	status := v1alpha1.MobileClientStatus{
+		Services: services,
+	}
+	app.Status = status
 	r.mockStore[name] = app
 	return nil
 }
@@ -80,12 +93,17 @@ func setupMobileClientsServer(repo mobile.MobileClientRepo, apiPrefix string) *h
 }
 
 func validateMobileClientData(body []byte) bool {
-	data := make(map[string]interface{})
+	data := &MobileClientData{}
 	err := json.Unmarshal(body, &data)
 	if err != nil {
 		return false
 	}
-	if data["metadata"] == nil || data["spec"] == nil || data["status"] == nil {
+	if &(data.Spec) == nil || &(data.Status) == nil || &(data.ObjectMeta) == nil {
+		return false
+	}
+
+	//there should be at least 1 service
+	if len(data.Status.Services) == 0 {
 		return false
 	}
 
