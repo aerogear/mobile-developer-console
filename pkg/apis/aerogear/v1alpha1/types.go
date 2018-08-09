@@ -1,6 +1,7 @@
 package v1alpha1
 
 import (
+	"encoding/json"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -32,17 +33,15 @@ type MobileClientSpec struct {
 
 //for mobile-services.json
 type MobileClientStatus struct {
-	Version     int                   `json:"version"`
-	ClusterName string                `json:"clusterName"`
-	Namespace   string                `json:"namespace"`
-	ClientId    string                `json:"clientId"`
-	Services    []MobileClientService `json:"services"`
+	Services []MobileClientService `json:"services"`
 }
 
 type MobileClientService struct {
-	Id     string            `json:"id"`
-	Name   string            `json:name`
-	Type   string            `json:type`
-	Url    string            `json:url`
-	Config map[string]string `json:"config"`
+	Id   string `json:"id"`
+	Name string `json:name`
+	Type string `json:type`
+	Url  string `json:url`
+	//ideally we would like to use map[string]interface{} type here, but we can't as the generated code will complain that the interface{} is not `DeepCopy`-able.
+	Config  json.RawMessage `json:"config"`
+	Version string          `json:"version"`
 }

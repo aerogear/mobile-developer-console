@@ -5,6 +5,8 @@
 package v1alpha1
 
 import (
+	json "encoding/json"
+
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -74,10 +76,8 @@ func (in *MobileClientService) DeepCopyInto(out *MobileClientService) {
 	*out = *in
 	if in.Config != nil {
 		in, out := &in.Config, &out.Config
-		*out = make(map[string]string, len(*in))
-		for key, val := range *in {
-			(*out)[key] = val
-		}
+		*out = make(json.RawMessage, len(*in))
+		copy(*out, *in)
 	}
 	return
 }

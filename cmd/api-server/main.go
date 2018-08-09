@@ -82,8 +82,9 @@ func main() {
 		web.SetupMobileBuildConfigsRoute(apiGroup, mobileBuildConfigsHandler)
 	}
 
+	mobileClientsRepo := mobile.NewMobileClientRepo(namespace)
+
 	{
-		mobileClientsRepo := mobile.NewMobileClientRepo(namespace)
 		mobileClientsHandler := web.NewMobileClientsHandler(mobileClientsRepo, namespace)
 		web.SetupMoileClientsRoute(apiGroup, mobileClientsHandler)
 	}
@@ -94,7 +95,7 @@ func main() {
 
 	go func() {
 		sdk.Watch(resource, kind, namespace, resyncPeriod)
-		sdk.Handle(stub.NewHandler())
+		sdk.Handle(stub.NewHandler(mobileClientsRepo))
 		sdk.Run(context.Background())
 	}()
 

@@ -18,3 +18,4 @@ dist
 gin-bin
 cmd/api-server/debug
 main
+.idea/

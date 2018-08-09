@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/json"
 	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
 	"github.com/aerogear/mobile-client-service/pkg/mobile"
 	"github.com/gorilla/websocket"
@@ -30,18 +31,6 @@ func NewMobileClientsHandler(mobileClientRepo mobile.MobileClientRepo, namespace
 	}
 }
 
-type MobileAppCreateRequest struct {
-	//has to be unique per namespace, can not be changed later
-	Name          string `json:"name" validate:"required"`
-	ClientType    string `json:"clientType" validate:"required,oneof=android iOS cordova xamarin"`
-	AppIdentifier string `json:"appIdentifier"" validate:"required"`
-	DmzUrl        string `json:"dmzUrl"`
-}
-
-type MobileAppUpdateRequest struct {
-	AppIdentifier string `json:"appIdentifier" validate:"required"`
-}
-
 func newMobileClientObject(data MobileAppCreateRequest, namespace string) *v1alpha1.MobileClient {
 	return &v1alpha1.MobileClient{
 		TypeMeta: metav1.TypeMeta{
@@ -60,6 +49,62 @@ func newMobileClientObject(data MobileAppCreateRequest, namespace string) *v1alp
 			DmzUrl:        data.DmzUrl,
 		},
 	}
+}
+
+func newMobileClientServiceFromObject(service *v1alpha1.MobileClientService) (*MobileClientServiceData, error) {
+	c := make(map[string]interface{})
+	err := json.Unmarshal(service.Config, &c)
+	if err != nil {
+		return nil, err
+	}
+	s := &MobileClientServiceData{
+		Id:     service.Id,
+		Name:   service.Name,
+		Type:   service.Type,
+		Url:    service.Url,
+		Config: c,
+	}
+	return s, nil
+}
+
+func newMoileClientDataFromObject(app *v1alpha1.MobileClient) (*MobileClientData, error) {
+	services := make([]MobileClientServiceData, 0)
+	for _, service := range app.Status.Services {
+		s, err := newMobileClientServiceFromObject(&service)
+		if err != nil {
+			return nil, err
+		}
+		services = append(services, *s)
+	}
+	status := &MobileClientStatusData{
+		Version:     1,
+		ClusterName: app.GetClusterName(),
+		Namespace:   app.GetNamespace(),
+		ClientId:    app.Spec.Name,
+		Services:    services,
+	}
+	return &MobileClientData{
+		TypeMeta:   app.TypeMeta,
+		ObjectMeta: app.ObjectMeta,
+		Spec:       app.Spec,
+		Status:     *status,
+	}, nil
+}
+
+func newMobileClientDataListFromObjects(list *v1alpha1.MobileClientList) (*MobileClientDataList, error) {
+	items := make([]MobileClientData, 0)
+	for _, app := range list.Items {
+		data, err := newMoileClientDataFromObject(&app)
+		if err != nil {
+			return nil, err
+		}
+		items = append(items, *data)
+	}
+	return &MobileClientDataList{
+		TypeMeta: list.TypeMeta,
+		ListMeta: list.ListMeta,
+		Items:    items,
+	}, nil
 }
 
 func isNotFoundError(e error) bool {
@@ -87,7 +132,11 @@ func (h *MobileClientsHandler) Create(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return c.JSON(http.StatusOK, app)
+	data, err := newMoileClientDataFromObject(app)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, data)
 }
 
 func (h *MobileClientsHandler) Read(c echo.Context) error {
@@ -99,7 +148,11 @@ func (h *MobileClientsHandler) Read(c echo.Context) error {
 		}
 		return err
 	}
-	return c.JSON(http.StatusOK, app)
+	data, err := newMoileClientDataFromObject(app)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, data)
 }
 
 func (h *MobileClientsHandler) List(c echo.Context) error {
@@ -107,7 +160,11 @@ func (h *MobileClientsHandler) List(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return c.JSON(http.StatusOK, apps)
+	data, err := newMobileClientDataListFromObjects(apps)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, data)
 }
 
 func (h *MobileClientsHandler) Update(c echo.Context) error {
@@ -133,7 +190,11 @@ func (h *MobileClientsHandler) Update(c echo.Context) error {
 	if uerr != nil {
 		return uerr
 	}
-	return c.JSON(http.StatusOK, app)
+	data, err := newMoileClientDataFromObject(app)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, data)
 }
 
 func (h *MobileClientsHandler) Delete(c echo.Context) error {
