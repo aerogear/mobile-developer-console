@@ -15,6 +15,9 @@ const dataService = {
     },
     builds: () => {
         return fetchItems(`${baseUrl}/builds`);
+    },
+    buildConfigs: () => {
+        return fetchItems(`${baseUrl}/buildconfigs`);
     }
 };
 
