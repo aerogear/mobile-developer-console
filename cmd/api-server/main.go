@@ -91,7 +91,7 @@ func main() {
 
 	resource := "v1"
 	kind := "Secret"
-	resyncPeriod := 5
+	resyncPeriod := config.OperatorResyncPeriod
 
 	go func() {
 		sdk.Watch(resource, kind, namespace, resyncPeriod)
