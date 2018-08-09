@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { Nav, NavItem, TabContent, TabPane, Tabs } from 'patternfly-react';
 import ConfigurationView from './configuration/ConfigurationView';
 import MobileClientBuildsList from './build/MobileClientBuildsList';
-
-const listBuildsUrl = `/api/builds`;
-const listBuildConfigsUrl = '/api/buildconfigs';
+import DataService from '../DataService';
 
 class Client extends Component {
 
@@ -18,13 +16,11 @@ class Client extends Component {
 
   componentDidMount = async () => {
     try {
-      let configs = await fetch(listBuildConfigsUrl, { credentials: 'same-origin' });
-      configs = await configs.json();
-      configs = configs.items.filter(config => config.metadata.labels['mobile-client-id'] === this.props.match.params.id);
+      let configs = await DataService.buildConfigs();
+      configs = configs.filter(config => config.metadata.labels['mobile-client-id'] === this.props.match.params.id);
       
-      let builds = await fetch(listBuildsUrl, { credentials: 'same-origin' });
-      builds = await builds.json();
-      builds.items.forEach(build => {
+      let builds = await DataService.builds();
+      builds.forEach(build => {
         const matchingConfig = configs.find(config => config.metadata.name === build.metadata.labels.buildconfig);
         if (matchingConfig) {
           matchingConfig.builds = matchingConfig.builds || [];
