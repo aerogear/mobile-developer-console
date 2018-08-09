@@ -94,3 +94,44 @@ Make sure you have the [operator-sdk](https://github.com/operator-framework/oper
 ```
  operator-sdk generate k8s
 ```
+
+## Running it on local OpenShift
+
+In order to run this service on local OpenShift, please follow the steps below:
+
+1. Provison a local OpenShift cluster using the [provision-mobile-client-service branch of mobile core](https://github.com/aerogear/mobile-core/tree/provision-mobile-client-service). The only difference between this branch and the master is that this branch uses the stock web console image.
+2. Once the local OpenShift cluster is up and running, update the config of the ansible-service-broker to load APBs from an extra source by running the following commands:
+    
+    ```
+    oc edit configmap broker-config -n ansible-service-broker
+    ```
+
+    Find the `registry` section and add the following content to the list:
+
+    ```
+    - type: "dockerhub"
+      name: "aerogear"
+      url: "https://registry.hub.docker.com"
+      org: "aerogear"
+      tag: "latest"
+      white_list:
+        - ".*-apb$"
+    ```
+
+    Also please change the `tag` field of the existing `aerogearcatalog` registry to `1.0.0`.
+
+    Save the file, and then refresh the ansible service broker by running the following commands:
+
+    ```
+    oc rollout latest asb -n ansible-service-broker
+    # wait for a new pod to be deployed, then run
+    oc get clusterservicebroker ansible-service-broker -o=json > /tmp/broker.json
+    oc delete clusterservicebroker ansible-service-broker
+    oc create -f /tmp/broker.json
+    ```
+
+    At last, refresh the catalog and you should see there is a new `Mobile Client Service` available.
+3. Provision a new service from the catalog and go from there.
+
+
+
