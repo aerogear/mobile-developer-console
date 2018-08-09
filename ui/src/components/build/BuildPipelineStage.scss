@@ -1,0 +1,25 @@
+.pipeline-stage {
+    width: 25%;
+    align-items: center;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+}
+
+.pipeline {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    padding: 0 (10px / 2);
+    .pipeline-stage {
+        flex: 0 0 auto;
+        min-height: 96px;
+        padding: (10px + 5) 10px (10px * 3) 10px;
+        position: relative;
+        width: 100%;
+    }
+}
+
+.pipeline-stage-icon {
+    font-size: 20px !important;
+}
