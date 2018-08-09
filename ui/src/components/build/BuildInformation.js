@@ -34,7 +34,7 @@ class BuildInformation extends Component {
 
     renderDownloadDialog(){
         if (this.state.toggleLinks){
-            return <BuildDownloadLinks downloadURL={this.props.build.metadata.annotations["aerogear.org/download-mobile-artifact-url"]}/>
+            return <BuildDownloadLinks downloadURL={this.props.build.metadata.annotations["aerogear.org/download-mobile-artifact-url"] || ""}/>
         }
         return null;
     }
