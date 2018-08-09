@@ -21,7 +21,7 @@ const headings = mobileClient => (
         <div className="detail">
             <span className="text-uppercase">{mobileClient.spec.clientType}</span>
         </div>
-        <a href={"/mobileclient/" + mobileClient.spec.name} className="name">
+        <a href={"/mobileclient/" + mobileClient.metadata.name} className="name">
             <span>{mobileClient.spec.name}</span>
         </a>
         <div className="detail">{mobileClient.spec.appIdentifier}</div>
