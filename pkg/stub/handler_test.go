@@ -130,6 +130,36 @@ func TestHandler(t *testing.T) {
 			},
 			ExpectError: false,
 		},
+		{
+			Name:        "test invalid secret",
+			ExpectedSize: 1,
+			ClientId: "test-app",
+			Id: "test-service-updated",
+			Mobile: "",
+			Event: func(secret v12.Secret) sdk.Event {
+				e := sdk.Event{
+					Object: secret.DeepCopyObject(),
+					Deleted: false,
+				}
+				return e
+			},
+			ExpectError: false,
+		},
+		{
+			Name:        "test delete invalid service",
+			ExpectedSize: 1,
+			ClientId: "test-app",
+			Id: "non-existent-service",
+			Mobile: "",
+			Event: func(secret v12.Secret) sdk.Event {
+				e := sdk.Event{
+					Object: secret.DeepCopyObject(),
+					Deleted: true,
+				}
+				return e
+			},
+			ExpectError: false,
+		},
 	}
 
 	client := &v1alpha1.MobileClient{
