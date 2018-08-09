@@ -1,15 +1,17 @@
 package stub
 
 import (
-"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
-errors2 "k8s.io/apimachinery/pkg/api/errors"
-"k8s.io/apimachinery/pkg/apis/meta/v1"
-	"testing"
+	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
 	v12 "k8s.io/api/core/v1"
+	errors2 "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"testing"
 
-	"github.com/operator-framework/operator-sdk/pkg/sdk"
 	"context"
+	"encoding/json"
+	"errors"
+	"github.com/operator-framework/operator-sdk/pkg/sdk"
 )
 
 type mockMobileClientRepo struct {
@@ -64,11 +66,12 @@ func (r *mockMobileClientRepo) DeleteByName(name string) error {
 	return nil
 }
 
-func createSecret(labels map[string]string, data map[string][]byte) v12.Secret {
+func createSecret(labels map[string]string, data map[string][]byte, version string) v12.Secret {
 	secret := v12.Secret{
 		TypeMeta: metav1.TypeMeta{},
 		ObjectMeta: metav1.ObjectMeta{
-			Labels: labels,
+			Labels:          labels,
+			ResourceVersion: version,
 		},
 		Data: data,
 	}
@@ -77,23 +80,123 @@ func createSecret(labels map[string]string, data map[string][]byte) v12.Secret {
 
 func TestHandler(t *testing.T) {
 	cases := []struct {
-		Name            string
-		Mobile			string
-		ClientId 		string
-		Id 				string
-		Event			func(secret v12.Secret) sdk.Event
-		ExpectedSize 	int
-		ExpectError		bool
+		Name           string
+		Mobile         string
+		ClientId       string
+		Id             string
+		Version        string
+		SecretConfig   string
+		Event          func(secret v12.Secret) sdk.Event
+		ExpectedSize   int
+		ExpectError    bool
+		ValidateClient func(mobileClient *v1alpha1.MobileClient) error
 	}{
 		{
-			Name:        "test add service",
+			Name:         "test add service",
 			ExpectedSize: 1,
-			ClientId: "test-app",
-			Id: "test-service",
-			Mobile: "enabled",
+			ClientId:     "test-app",
+			Id:           "test-service",
+			Mobile:       "enabled",
+			Version:      "1",
 			Event: func(secret v12.Secret) sdk.Event {
 				e := sdk.Event{
-					Object: secret.DeepCopyObject(),
+					Object:  secret.DeepCopyObject(),
+					Deleted: false,
+				}
+				return e
+			},
+			ExpectError:  false,
+			SecretConfig: "{\"test\":\"test\"}",
+			ValidateClient: func(mobileClient *v1alpha1.MobileClient) error {
+				service := &mobileClient.Status.Services[0]
+				if service == nil {
+					return errors.New("service is not defined")
+				}
+				config := service.Config
+				data := make(map[string]string)
+				if err := json.Unmarshal(config, &data); err != nil {
+					return err
+				}
+				if data["test"] != "test" {
+					return errors.New("config data is not valid")
+				}
+				return nil
+			},
+		},
+		{
+			Name:         "test update",
+			ExpectedSize: 1,
+			ClientId:     "test-app",
+			Id:           "test-service",
+			Mobile:       "enabled",
+			Version:      "2",
+			Event: func(secret v12.Secret) sdk.Event {
+				e := sdk.Event{
+					Object:  secret.DeepCopyObject(),
+					Deleted: false,
+				}
+				return e
+			},
+			ExpectError:  false,
+			SecretConfig: "{\"test\":\"test-updated\"}",
+			ValidateClient: func(mobileClient *v1alpha1.MobileClient) error {
+				service := &mobileClient.Status.Services[0]
+				if service == nil {
+					return errors.New("service is not defined")
+				}
+				config := service.Config
+				data := make(map[string]string)
+				if err := json.Unmarshal(config, &data); err != nil {
+					return err
+				}
+				if data["test"] != "test-updated" {
+					return errors.New("config data is not valid")
+				}
+				return nil
+			},
+		},
+		{
+			Name:         "test update ignored",
+			ExpectedSize: 1,
+			ClientId:     "test-app",
+			Id:           "test-service",
+			Mobile:       "enabled",
+			Version:      "2",
+			Event: func(secret v12.Secret) sdk.Event {
+				e := sdk.Event{
+					Object:  secret.DeepCopyObject(),
+					Deleted: false,
+				}
+				return e
+			},
+			ExpectError:  false,
+			SecretConfig: "{\"test\":\"test-updated\"}",
+			ValidateClient: func(mobileClient *v1alpha1.MobileClient) error {
+				service := &mobileClient.Status.Services[0]
+				if service == nil {
+					return errors.New("service is not defined")
+				}
+				config := service.Config
+				data := make(map[string]string)
+				if err := json.Unmarshal(config, &data); err != nil {
+					return err
+				}
+				if data["test"] != "test-updated" {
+					return errors.New("config data is not valid")
+				}
+				return nil
+			},
+		},
+		{
+			Name:         "test invalid secret",
+			ExpectedSize: 1,
+			ClientId:     "test-app",
+			Id:           "test-service",
+			Mobile:       "",
+			Version:      "2",
+			Event: func(secret v12.Secret) sdk.Event {
+				e := sdk.Event{
+					Object:  secret.DeepCopyObject(),
 					Deleted: false,
 				}
 				return e
@@ -101,14 +204,15 @@ func TestHandler(t *testing.T) {
 			ExpectError: false,
 		},
 		{
-			Name:        "test remove service",
-			ExpectedSize: 0,
-			ClientId: "test-app",
-			Id: "test-service",
-			Mobile: "enabled",
+			Name:         "test delete invalid service",
+			ExpectedSize: 1,
+			ClientId:     "test-app",
+			Id:           "non-existent-service",
+			Mobile:       "",
+			Version:      "2",
 			Event: func(secret v12.Secret) sdk.Event {
 				e := sdk.Event{
-					Object: secret.DeepCopyObject(),
+					Object:  secret.DeepCopyObject(),
 					Deleted: true,
 				}
 				return e
@@ -116,44 +220,15 @@ func TestHandler(t *testing.T) {
 			ExpectError: false,
 		},
 		{
-			Name:        "test update",
-			ExpectedSize: 1,
-			ClientId: "test-app",
-			Id: "test-service-updated",
-			Mobile: "enabled",
+			Name:         "test remove service",
+			ExpectedSize: 0,
+			ClientId:     "test-app",
+			Id:           "test-service",
+			Mobile:       "enabled",
+			Version:      "2",
 			Event: func(secret v12.Secret) sdk.Event {
 				e := sdk.Event{
-					Object: secret.DeepCopyObject(),
-					Deleted: false,
-				}
-				return e
-			},
-			ExpectError: false,
-		},
-		{
-			Name:        "test invalid secret",
-			ExpectedSize: 1,
-			ClientId: "test-app",
-			Id: "test-service-updated",
-			Mobile: "",
-			Event: func(secret v12.Secret) sdk.Event {
-				e := sdk.Event{
-					Object: secret.DeepCopyObject(),
-					Deleted: false,
-				}
-				return e
-			},
-			ExpectError: false,
-		},
-		{
-			Name:        "test delete invalid service",
-			ExpectedSize: 1,
-			ClientId: "test-app",
-			Id: "non-existent-service",
-			Mobile: "",
-			Event: func(secret v12.Secret) sdk.Event {
-				e := sdk.Event{
-					Object: secret.DeepCopyObject(),
+					Object:  secret.DeepCopyObject(),
 					Deleted: true,
 				}
 				return e
@@ -179,7 +254,10 @@ func TestHandler(t *testing.T) {
 		labels["clientId"] = tc.ClientId
 		data := make(map[string][]byte)
 		data["id"] = []byte(tc.Id)
-		secret := createSecret(labels, data)
+		if tc.SecretConfig != "" {
+			data["config"] = []byte(tc.SecretConfig)
+		}
+		secret := createSecret(labels, data, tc.Version)
 		e := tc.Event(secret)
 		t.Run(tc.Name, func(t *testing.T) {
 			app, err := mockAppRepo.ReadByName("test-app")
@@ -194,7 +272,13 @@ func TestHandler(t *testing.T) {
 			if len(app.Status.Services) != tc.ExpectedSize {
 				t.Fatal("Service was not add/removed")
 			}
+			if tc.ValidateClient != nil {
+				a, _ := mockAppRepo.ReadByName("test-app")
+				err := tc.ValidateClient(a)
+				if err != nil {
+					t.Fatalf("mobile client validation failed")
+				}
+			}
 		})
 	}
 }
-

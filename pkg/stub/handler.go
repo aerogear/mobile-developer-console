@@ -56,17 +56,21 @@ func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 			return nil
 		}
 
-		if existing != nil {
-			log.Infof("ignore service %v as it already exists in the app's status", serviceId)
-			return nil
-		}
-
-		//existing is nil, so this should be a create action and we can now create the service and append it
-		log.Infof("add service %v to app %v", serviceId, clientId)
+		log.Infof("add/update service %v to app %v", serviceId, clientId)
 		service, err := newMobileServiceFromSecret(secret)
 		if err != nil {
 			log.Errorf("failed to create service from secret due to error: %v", err)
 			return err
+		}
+
+		if existing != nil && existing.Version == service.Version {
+			log.Infof("ignore service %v as it is not changed", serviceId)
+			return nil
+		}
+
+		if existing != nil {
+			log.Infof("update an existing service %v, remove it first", serviceId)
+			services = removeService(services, i)
 		}
 
 		services = append(services, *service)
@@ -106,10 +110,11 @@ func removeService(services []v1alpha1.MobileClientService, index int) []v1alpha
 
 func newMobileServiceFromSecret(secret *v1.Secret) (*v1alpha1.MobileClientService, error) {
 	return &v1alpha1.MobileClientService{
-		Id:     string(secret.Data["id"]),
-		Name:   string(secret.Data["name"]),
-		Type:   string(secret.Data["type"]),
-		Url:    string(secret.Data["uri"]),
-		Config: secret.Data["config"],
+		Id:      string(secret.Data["id"]),
+		Name:    string(secret.Data["name"]),
+		Type:    string(secret.Data["type"]),
+		Url:     string(secret.Data["uri"]),
+		Config:  secret.Data["config"],
+		Version: secret.ResourceVersion,
 	}, nil
 }
