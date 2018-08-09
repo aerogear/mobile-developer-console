@@ -6,106 +6,51 @@ import BuildConfigDetails from './BuildConfigDetails';
 import ComponentSectionLabel from '../common/ComponentSectionLabel';
 import MobileClientBuildHistoryList from './MobileClientBuildHistoryList';
 import BuildInformation from './BuildInformation';
+import NoBuild from './NoBuild';
 
-const mobileClientBuilds = [
-    {
-        "metadata": {
-            "name": "android-debug-2",
-            "selfLink": "/apis/build.openshift.io/v1/namespaces/myproject/builds/android-debug-2",
-            "annotations": {
-                "openshift.io/build.number": "2"
-            },
-            "uid": "5ea6f7ee-90c6-11e8-bd24-f6a35857c6e5"
-        },
-        "status": {
-            "phase": "Failed",
-            "startTimestamp": "2018-07-23T15:18:04Z",
-            "completionTimestamp": "2018-07-24T15:19:35Z",
-            "config": {
-                "kind": "BuildConfig",
-                "namespace": "myproject",
-                "name": "android-debug"
-            },
-            "output": {}
-        },
-        "kind": "Build",
-        "apiVersion": "build.openshift.io/v1",
-        "downloadURL": "https://mcp-standalone-main.192.168.37.1.nip.io/build/my-job-1/download?token=26c2afda-d370-431e-85e2-b99a19cd4c20"
-    },
-    {
-        "metadata": {
-            "name": "ios-debug-1",
-            "selfLink": "/apis/build.openshift.io/v1/namespaces/myproject/builds/ios-debug-1",
-            "annotations": {
-                "openshift.io/build.number": "1"
-            },
-            "uid": "5ea6f7ee-98c6-11e8-bd24-f6a35857c6e5"
-        },
-        "status": {
-            "phase": "Complete",
-            "startTimestamp": "2018-07-25T15:18:04Z",
-            "completionTimestamp": "2018-07-24T15:19:35Z",
-            "config": {
-                "kind": "BuildConfig",
-                "namespace": "myproject",
-                "name": "ios-debug"
-            },
-            "output": {}
-        },
-        "kind": "Build",
-        "apiVersion": "build.openshift.io/v1",
-        "downloadURL": "https://mcp-standalone-main.192.168.37.1.nip.io/build/my-job-1/download?token=26c2afda-d370-431e-85e2-b99a19cd4c20"
-    },
-    {
-        "metadata": {
-            "name": "cordova-release-2",
-            "selfLink": "/apis/build.openshift.io/v1/namespaces/myproject/builds/ios-debug-1",
-            "annotations": {
-                "openshift.io/build.number": "3"
-            },
-            "uid": "5ea6f7ee-90c6-11e8-bd24-f6a35857c6e4"
-        },
-        "status": {
-            "phase": "Running",
-            "startTimestamp": "2018-07-25T15:18:04Z",
-            "completionTimestamp": "2018-07-24T15:19:35Z",
-            "config": {
-                "kind": "BuildConfig",
-                "namespace": "myproject",
-                "name": "cordova-release"
-            },
-            "output": {}
-        },
-        "kind": "Build",
-        "apiVersion": "build.openshift.io/v1",
-        "downloadURL": "https://mcp-standalone-main.192.168.37.1.nip.io/build/my-job-1/download?token=26c2afda-d370-431e-85e2-b99a19cd4c20"
-    }
-];
-
-const actions = () => (
+const actions = id => (
   <React.Fragment>
     <Button>
       Start Build
     </Button>
-    <DropdownKebab>
+    <DropdownKebab id={'build-actions-' + id} pullRight>
       <MenuItem>Edit</MenuItem>
       <MenuItem>Delete</MenuItem>
     </DropdownKebab>
   </React.Fragment>
 );
 
-const buildConfig = {
-  "jenkinsfilePath": "jenkinsfile",
-  "jobName": "ios-debug",
-  "branch": "ios-debug",
-  "repoUrl": "https://github.com/myusername/my-mobile-application"
-}
+const buildConfig = buildConfiguration => ({
+    jenkinsfilePath: buildConfiguration.spec.strategy.jenkinsPipelineStrategy.jenkinsfilePath,
+    jobName: buildConfiguration.metadata.name,
+    // TODO: consider other sources other than git as well
+    branch: buildConfiguration.spec.source.git.ref || 'master',
+    repoUrl: buildConfiguration.spec.source.git.uri
+});
 
-const heading = mobileClientBuild => (
+const buildNumber = build => build && build.metadata.annotations['openshift.io/build.number'];
+
+const lastBuild = builds => builds.reduce((acc, curr) =>
+    buildNumber(curr) > buildNumber(acc) ? curr : acc, null
+);
+
+const buildHistory = builds => {
+    const lastBuildNumber = buildNumber(lastBuild(builds));
+    return builds.filter(build => buildNumber(build) !== lastBuildNumber)
+};
+
+const heading = (name, lastBuild) => (
     <div className="pull-left text-left">
         <a className="name">
-            <span><BuildStatus build={mobileClientBuild}></BuildStatus></span>
-            <span>{mobileClientBuild.metadata.name}</span>
+          {
+            lastBuild ?
+              <span>
+                  <BuildStatus build={lastBuild} />
+              </span>
+            :
+              <React.Fragment />
+          }
+          <span>{name}</span>
         </a>
     </div>
 );
@@ -142,15 +87,18 @@ class MobileClientBuildListItem extends Component {
   }
 
   render = () => {
-      const {mobileClientBuild} = this.props;
+      const { buildConfiguration } = this.props;
+      const buildConfigName = buildConfiguration.metadata.name;
+      const builds = buildConfiguration.builds || [];
+      const lastClientBuild = lastBuild(builds);
+      const clientBuildHistory = buildHistory(builds);
 
       return (
           <MobileListViewItem
               className="build-item"
-              key={mobileClientBuild.metadata.uid}
-              actions={actions()}
+              actions={actions(buildConfigName)}
               checkboxInput={false}
-              heading={heading(mobileClientBuild)}
+              heading={heading(buildConfigName, lastClientBuild)}
               hideCloseIcon={true}
           >
           <Row>
@@ -158,34 +106,46 @@ class MobileClientBuildListItem extends Component {
               <ComponentSectionLabel>
                 Build Config
               </ComponentSectionLabel>
-              <BuildConfigDetails buildConfig={buildConfig}/>
+              <BuildConfigDetails buildConfig={buildConfig(buildConfiguration)}/>
             </Col>
             <Col md={12}>
               <ComponentSectionLabel>
                 Builds
               </ComponentSectionLabel>
-              <BuildInformation build={mobileClientBuild}/>
-              <Row>
-                  <Col md={12}>
-                      <div className="mobile-chevron">
-                          <a
-                              href=""
-                              onClick={e => {
-                                  e.preventDefault();
-                                  this.setState({ buildHistoryOpen: !this.state.buildHistoryOpen })
-                              }}
-                          >
-                              <span className={ this.state.buildHistoryOpen ? "fa fa-angle-down" : "fa fa-angle-right" } />&nbsp;
-                              { this.state.buildHistoryOpen ? 'Hide' : 'Show' } build history
-                          </a>
-                      </div>
-                      { this.state.buildHistoryOpen ?
-                          <MobileClientBuildHistoryList className="collapse in" id="demo" mobileClientBuilds={mobileClientBuilds}/>
-                          :
+              {
+                builds.length === 0 ?
+                  <NoBuild />
+                :
+                  <React.Fragment>
+                    <BuildInformation build={lastClientBuild} />
+                    {
+                        clientBuildHistory.length > 0 ?
+                          <Row>
+                              <Col md={12}>
+                                  <div className="mobile-chevron">
+                                      <a
+                                          href=""
+                                          onClick={e => {
+                                              e.preventDefault();
+                                              this.setState({ buildHistoryOpen: !this.state.buildHistoryOpen })
+                                          }}
+                                      >
+                                          <span className={ this.state.buildHistoryOpen ? "fa fa-angle-down" : "fa fa-angle-right" } />&nbsp;
+                                          { this.state.buildHistoryOpen ? 'Hide' : 'Show' } build history
+                                      </a>
+                                  </div>
+                                  { this.state.buildHistoryOpen ?
+                                      <MobileClientBuildHistoryList className="collapse in" id="demo" mobileClientBuilds={clientBuildHistory}/>
+                                      :
+                                      <React.Fragment />
+                                  }
+                              </Col>
+                          </Row>
+                      :
                           <React.Fragment />
-                      }
-                  </Col>
-              </Row>
+                    }
+                  </React.Fragment>
+              }
             </Col>
           </Row>
           </MobileListViewItem>

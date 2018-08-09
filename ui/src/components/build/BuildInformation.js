@@ -3,8 +3,10 @@ import { Button, Col } from 'patternfly-react';
 
 import BuildDownloadLinks from './BuildDownloadLinks';
 import BuildSummary from './BuildSummary';
+import BuildPipeLineStage from './BuildPipelineStage';
 
 import "./BuildInformation.css";
+
 
 class BuildInformation extends Component {
     constructor(props){
@@ -32,7 +34,7 @@ class BuildInformation extends Component {
 
     renderDownloadDialog(){
         if (this.state.toggleLinks){
-            return <BuildDownloadLinks downloadURL={this.props.build.metadata.annotations["aerogear.org/download-mobile-artifact-url"]}/>
+            return <BuildDownloadLinks downloadURL={this.props.build.metadata.annotations["aerogear.org/download-mobile-artifact-url"] || ""}/>
         }
         return null;
     }
@@ -46,7 +48,7 @@ class BuildInformation extends Component {
                             <BuildSummary build={this.props.build}/>
                             <div className="pipeline-container">
                                 <div className="pipeline">
-                                
+                                    <BuildPipeLineStage build={this.props.build}/>
                                 </div>
                             </div>
                         </div>
