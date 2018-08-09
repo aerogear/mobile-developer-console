@@ -118,6 +118,8 @@ In order to run this service on local OpenShift, please follow the steps below:
         - ".*-apb$"
     ```
 
+    Also please change the `tag` field of the existing `aerogearcatalog` registry to `1.0.0`.
+
     Save the file, and then refresh the ansible service broker by running the following commands:
 
     ```
