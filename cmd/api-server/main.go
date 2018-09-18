@@ -12,10 +12,12 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"context"
+
 	"github.com/aerogear/mobile-client-service/pkg/stub"
 	sc "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset"
 	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
+	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -49,10 +51,10 @@ func main() {
 		log.Fatalf("Error loading config: %v", err)
 	}
 
-	// k8sClient, err := kubernetes.NewForConfig(cfg)
-	// if err != nil {
-	// 	log.Fatalf("Error init k8s client: %s", err.Error())
-	// }
+	k8sClient, err := kubernetes.NewForConfig(cfg)
+	if err != nil {
+		log.Fatalf("Error init k8s client: %s", err.Error())
+	}
 
 	scClient, err := sc.NewForConfig(cfg)
 	if err != nil {
@@ -71,14 +73,16 @@ func main() {
 	}
 
 	{
-		buildLister := mobile.NewBuildLister(buildClient)
-		mobileBuildsHandler := web.NewMobileBuildsHandler(buildLister, namespace)
+		buildCRUDL := mobile.NewBuildCRUDL(buildClient)
+		mobileBuildsHandler := web.NewMobileBuildsHandler(buildCRUDL, namespace)
 		web.SetupMobileBuildsRoute(apiGroup, mobileBuildsHandler)
 	}
 
+	secretsCRUDL := mobile.NewSecretsCRUDL(k8sClient.CoreV1())
+
 	{
-		buildConfigLister := mobile.NewBuildConfigLister(buildClient)
-		mobileBuildConfigsHandler := web.NewMobileBuildConfigsHandler(buildConfigLister, namespace)
+		buildConfigCRUDL := mobile.NewBuildConfigCRUDL(buildClient)
+		mobileBuildConfigsHandler := web.NewMobileBuildConfigsHandler(buildConfigCRUDL, secretsCRUDL, namespace)
 		web.SetupMobileBuildConfigsRoute(apiGroup, mobileBuildConfigsHandler)
 	}
 

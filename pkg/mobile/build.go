@@ -5,17 +5,17 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type BuildListerImpl struct {
+type BuildCRUDLImpl struct {
 	buildClient buildv1.BuildV1Interface
 }
 
-func NewBuildLister(client buildv1.BuildV1Interface) *BuildListerImpl {
-	return &BuildListerImpl{
+func NewBuildCRUDL(client buildv1.BuildV1Interface) *BuildCRUDLImpl {
+	return &BuildCRUDLImpl{
 		buildClient: client,
 	}
 }
 
-func (lister *BuildListerImpl) List(namespace string) (*BuildList, error) {
+func (crudl *BuildCRUDLImpl) List(namespace string) (*BuildList, error) {
 	listOpts := metav1.ListOptions{}
-	return lister.buildClient.Builds(namespace).List(listOpts)
+	return crudl.buildClient.Builds(namespace).List(listOpts)
 }
