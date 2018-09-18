@@ -44,6 +44,8 @@ func SetupMobileBuildsRoute(r *echo.Group, handler *MobileBuildsHandler) {
 
 func SetupMobileBuildConfigsRoute(r *echo.Group, handler *MobileBuildConfigsHandler) {
 	r.GET("/buildconfigs", handler.List)
+	r.POST("/buildconfigs", handler.Create)
+	r.POST("/buildconfigs/:name/instantiate", handler.Instantiate)
 }
 
 // SetMobileClientRoutes sets routes for mobile clients
