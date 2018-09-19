@@ -25,6 +25,11 @@ func (crudl *BuildConfigCRUDLImpl) Create(config *BuildConfig) (*BuildConfig, er
 	return crudl.buildClient.BuildConfigs(namespace).Create(config)
 }
 
+func (crudl *BuildConfigCRUDLImpl) DeleteByName(namespace string, name string) error {
+	deleteOpts := &metav1.DeleteOptions{}
+	return crudl.buildClient.BuildConfigs(namespace).Delete(name, deleteOpts)
+}
+
 func (crudl *BuildConfigCRUDLImpl) List(namespace string) (*BuildConfigList, error) {
 	listOpts := metav1.ListOptions{}
 	return crudl.buildClient.BuildConfigs(namespace).List(listOpts)

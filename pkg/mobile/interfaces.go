@@ -16,6 +16,7 @@ type BuildCRUDL interface {
 
 type BuildConfigCRUDL interface {
 	Create(config *BuildConfig) (*BuildConfig, error)
+	DeleteByName(namespace string, name string) error
 	List(namespace string) (*BuildConfigList, error)
 	Instantiate(namespace string, name string) (*Build, error)
 }

@@ -220,6 +220,15 @@ func (mbch *MobileBuildConfigsHandler) Create(c echo.Context) error {
 	return c.JSON(http.StatusOK, config)
 }
 
+func (mbch *MobileBuildConfigsHandler) Delete(c echo.Context) error {
+	name := c.Param("name")
+	err := mbch.buildConfigsCRUDL.DeleteByName(mbch.namespace, name)
+	if err != nil {
+		return err
+	}
+	return c.NoContent(http.StatusOK)
+}
+
 func (mbch *MobileBuildConfigsHandler) List(c echo.Context) error {
 	buildConfigs, err := mbch.buildConfigsCRUDL.List(mbch.namespace)
 	if err != nil {
