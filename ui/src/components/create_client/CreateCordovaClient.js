@@ -6,15 +6,15 @@ import BaseCreateMobileClient from './BaseCreateMobileClient';
  */
 class CreateCordovaClient extends BaseCreateMobileClient {
        
-    render() {
-        const formFields = this.getFormFields().map(value=>{
-            if (value.controlId==='appIdentifier') {
-               value.content="Enter package name (like <em>org.aerogear.cordova.myapp</em>)"     
-            }
-            return value;
-        })
-        return renderForm("Configure Cordova app",formFields);
-    }
+  render() {
+    const formFields = this.getFormFields().map(value=>{
+      if (value.controlId==='appIdentifier') {
+        value.content="Enter package name (like <em>org.aerogear.cordova.myapp</em>)"     
+      }
+      return value;
+    })
+    return renderForm("Configure Cordova app",formFields);
+  }
 
 }
 

@@ -1,17 +1,16 @@
-import React, { Component } from 'react'
-import { Grid } from 'patternfly-react'
-import { connect } from 'react-redux'
+import React, { Component } from 'react';
+import { Grid } from 'patternfly-react';
+import { connect } from 'react-redux';
 
-import MobileClientOverviewList from '../components/overview/MobileClientOverviewList'
-import CreateClient from './CreateClient'
-import { fetchApps } from '../actions/apps'
-import { fetchServices } from '../actions/services'
+import MobileClientOverviewList from '../components/overview/MobileClientOverviewList';
+import CreateClient from './CreateClient';
+import { fetchApps } from '../actions/apps';
+import { fetchServices } from '../actions/services';
 
 class Overview extends Component {
-
   componentDidMount() {
-    this.props.dispatch(fetchApps())
-    this.props.dispatch(fetchServices())
+    this.props.dispatch(fetchApps());
+    this.props.dispatch(fetchServices());
   }
 
   render() {
@@ -26,15 +25,15 @@ class Overview extends Component {
         />
         <CreateClient />
       </Grid>
-    )
+    );
   }
 }
 
 function mapStateToProps(state) {
   return {
     apps: state.apps,
-    services: state.services
-  }
+    services: state.services,
+  };
 }
 
-export default connect(mapStateToProps)(Overview)
+export default connect(mapStateToProps)(Overview);

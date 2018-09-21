@@ -6,9 +6,9 @@ import BaseCreateMobileClient from './BaseCreateMobileClient';
  */
 class CreateAndroidClient extends BaseCreateMobileClient {
 
-    render() {
-        return renderForm("Configure Android App", this.getFormFields());
-    }
+  render() {
+    return renderForm("Configure Android App", this.getFormFields());
+  }
 }
 
 export default CreateAndroidClient

@@ -3,31 +3,31 @@ const defaultState = {
   items: [],
   fetchError: false,
   isCreating: false,
-  createError: false
-}
+  createError: false,
+};
 
-const resourceReducer = (actions) => (state = defaultState, action) => {
+const resourceReducer = actions => (state = defaultState, action) => {
   if (actions.listRequest) {
     switch (action.type) {
       case actions.listRequest:
         return {
           ...state,
           isFetching: true,
-          fetchError: false
-        }
+          fetchError: false,
+        };
       case actions.listSuccess:
         return {
           ...state,
           isFetching: false,
           items: action.result,
-          fetchError: false
-        }
+          fetchError: false,
+        };
       case actions.listFailure:
         return {
           ...state,
           isFetching: false,
-          fetchError: action.error
-        }
+          fetchError: action.error,
+        };
       default:
     }
   }
@@ -37,25 +37,25 @@ const resourceReducer = (actions) => (state = defaultState, action) => {
         return {
           ...state,
           isCreating: true,
-          createError: false
-        }
+          createError: false,
+        };
       case actions.createSuccess:
         return {
           ...state,
           isCreating: false,
           createError: false,
-          items: [...state.items, action.result]
-        }
+          items: [...state.items, action.result],
+        };
       case actions.createFailure:
         return {
           ...state,
           isCreating: false,
-          createError: action.error
-        }
+          createError: action.error,
+        };
       default:
     }
   }
-  return state
-}
+  return state;
+};
 
-export default resourceReducer
+export default resourceReducer;

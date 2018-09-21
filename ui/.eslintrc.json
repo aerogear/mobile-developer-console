@@ -1,0 +1,10 @@
+{
+    "extends": "airbnb",
+    "parser": "babel-eslint",
+    "rules": {
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "react/destructuring-assignment": [0],
+        "react/prop-types": [0],
+        "react/no-did-update-set-state": [0]
+    }
+}

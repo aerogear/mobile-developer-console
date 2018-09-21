@@ -116,13 +116,13 @@ const sourceSection = component => (
     {
       component.state.authType === 1 ?
         basicAuthentication
-      :
+        :
         <React.Fragment />
     }
     {
       component.state.authType === 2 ?
         sshAuthentication
-      :
+        :
         <React.Fragment />
     }
   </div>

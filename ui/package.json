@@ -31,8 +31,16 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "build-css": "node-sass-chokidar --include-path ./node_modules/patternfly/dist/sass --include-path ./node_modules/patternfly/node_modules/bootstrap-sass/assets/stylesheets --include-path ./node_modules/patternfly/node_modules/font-awesome-sass/assets/stylesheets src/ -o src/",
-    "watch-css": "npm run build-css && node-sass-chokidar --include-path ./node_modules/patternfly/dist/sass --include-path ./node_modules/patternfly/node_modules/bootstrap-sass/assets/stylesheets --include-path ./node_modules/patternfly/node_modules/font-awesome-sass/assets/stylesheets src/ -o src/ --watch --recursive"
+    "watch-css": "npm run build-css && node-sass-chokidar --include-path ./node_modules/patternfly/dist/sass --include-path ./node_modules/patternfly/node_modules/bootstrap-sass/assets/stylesheets --include-path ./node_modules/patternfly/node_modules/font-awesome-sass/assets/stylesheets src/ -o src/ --watch --recursive",
+    "lint": "eslint src/**/*.js",
+    "lint-indent": "eslint --parser babel-eslint --no-eslintrc --rule 'indent: [1,2,{SwitchCase: 1}]' --fix src/**/*.js"
   },
   "homepage": "/",
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^5.6.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.11.1"
+  }
 }
