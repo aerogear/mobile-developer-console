@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Nav, NavItem, TabContent, TabPane, Tabs } from 'patternfly-react';
-import ConfigurationView from './configuration/ConfigurationView';
-import MobileClientBuildsList from './build/MobileClientBuildsList';
-import DataService from '../DataService';
-import MobileServiceView from './mobileservices/MobileServiceView';
+import { connect } from 'react-redux'
+import ConfigurationView from '../components/configuration/ConfigurationView';
+import MobileClientBuildsList from '../components/build/MobileClientBuildsList';
+import MobileServiceView from '../components/mobileservices/MobileServiceView';
+import { fetchBuildConfigs } from '../actions/buildConfigs'
+import { fetchBuilds } from '../actions/builds'
 
 
 class Client extends Component {
@@ -16,13 +18,16 @@ class Client extends Component {
     };
   }
 
-  componentDidMount = async () => {
-    try {
-      let configs = await DataService.buildConfigs();
-      configs = configs.filter(config => config.metadata.labels['mobile-client-id'] === this.props.match.params.id);
-      
-      let builds = await DataService.builds();
-      builds.forEach(build => {
+  componentDidMount = () => {
+    this.props.dispatch(fetchBuildConfigs())
+    this.props.dispatch(fetchBuilds())
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.buildConfigs !== prevProps.buildConfigs || this.props.builds !== prevProps.builds) {
+      const configs = this.props.buildConfigs.items.filter(config => config.metadata.labels['mobile-client-id'] === this.props.match.params.id);
+    
+      this.props.builds.items.forEach(build => {
         const matchingConfig = configs.find(config => config.metadata.name === build.metadata.labels.buildconfig);
         if (matchingConfig) {
           matchingConfig.builds = matchingConfig.builds || [];
@@ -31,8 +36,6 @@ class Client extends Component {
       });
 
       this.setState({ buildConfigs: configs });
-    } catch (err) {
-      console.error('Fetch error: ', err)
     }
   }
 
@@ -66,4 +69,11 @@ class Client extends Component {
   }
 }
 
-export default Client;
+function mapStateToProps(state) {
+  return {
+    buildConfigs: state.buildConfigs,
+    builds: state.builds
+  }
+}
+
+export default connect(mapStateToProps)(Client);

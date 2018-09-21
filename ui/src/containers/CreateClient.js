@@ -1,14 +1,28 @@
 import React, { Component } from 'react';
 import { Grid, Wizard, Button } from 'patternfly-react';
-import PlatformItem from './PlatformItem'
-import CreateAndroidClient from './CreateAndroidClient'
-import CreateCordovaClient from './CreateCordovaClient'
-import CreateIOSClient from './CreateIOSClient'
-import CreateXamarinClient from './CreateXamarinClient'
-import { ResultsLine } from './ResultsLine';
-import { PLATFORM_ANDROID, PLATFORM_IOS, PLATFORM_CORDOVA, PLATFORM_XAMARIN, CREATE_CLIENT_TYPE, CLIENT_CONFIGURATION, CREATE_CLIENT_APP_ID, CREATE_CLIENT_NAME, WIZARD_SELECT_PLATFORM, WIZARD_CREATION_RESULT, WIZARD_CONFIGURE_CLIENT, CREATE_CLIENT_API_PATH } from './Constants';
+import { connect } from 'react-redux'
+import PlatformItem from '../components/create_client/PlatformItem'
+import CreateAndroidClient from '../components/create_client/CreateAndroidClient'
+import CreateCordovaClient from '../components/create_client/CreateCordovaClient'
+import CreateIOSClient from '../components/create_client/CreateIOSClient'
+import CreateXamarinClient from '../components/create_client/CreateXamarinClient'
+import { ResultsLine } from '../components/create_client/ResultsLine'
+import {
+  PLATFORM_ANDROID,
+  PLATFORM_IOS,
+  PLATFORM_CORDOVA,
+  PLATFORM_XAMARIN,
+  CREATE_CLIENT_TYPE,
+  CLIENT_CONFIGURATION,
+  CREATE_CLIENT_APP_ID,
+  CREATE_CLIENT_NAME,
+  WIZARD_SELECT_PLATFORM,
+  WIZARD_CREATION_RESULT,
+  WIZARD_CONFIGURE_CLIENT
+} from '../components/create_client//Constants'
 import { get as _get } from 'lodash-es'
-import './create_client.css'
+import { createApp } from '../actions/apps'
+import '../components/create_client/create_client.css'
 
 /**
  *  Component for the mobile client creation.
@@ -17,9 +31,29 @@ class CreateClient extends Component {
 
     constructor(props) {
         super(props)
-        this.baseState = this.state;
+        this.baseState = this.state
     }
 
+    componentDidUpdate() {
+      if (this.state.loading && !this.props.apps.isCreating) {
+        if (this.props.apps.createError) {
+          this.setState({
+            resultIcon: "pficon-error-circle-o",
+            resultText: `Failed when creating mobile client.`,
+            resultDetails: this.props.apps.createError.message,
+            loading: false,
+            resetOnStart: true
+          });
+        } else {
+          this.setState({
+            resultIcon: "pficon-ok",
+            resultText: `Mobile client successfully created.`,
+            loading: false,
+            resetOnStart: true
+          });
+        }
+      }
+    }
 
     steps = () => [
         {
@@ -140,30 +174,7 @@ class CreateClient extends Component {
     }
 
     callClientCreation = () => {
-        fetch(CREATE_CLIENT_API_PATH, {
-            method: "POST",
-            cache: "no-cache",
-            credentials: "same-origin",
-            headers: {
-                "Content-Type": "application/json; charset=utf-8"
-            },
-            body: JSON.stringify(this.state.clientConfiguration)
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json()
-                } else
-                    throw new Error("Failed to connect the API")
-            })
-            .then(result => {
-                if (result.metadata) {
-                    this.setState({ resultIcon: "pficon-ok", resultText: `Mobile client successfully created.`, loading: false, resetOnStart: true });
-                    this.props.clientCreated(result);
-                } else throw new Error("No metadata about client creation.")
-            })
-            .catch(err => {
-                this.setState({ resultIcon: "pficon-error-circle-o", resultText: `Failed when creating mobile client.`, resultDetails: err.message, loading: false, resetOnStart: true });
-            });
+        this.props.dispatch(createApp(this.state.clientConfiguration))
     }
 
 
@@ -195,6 +206,12 @@ class CreateClient extends Component {
     }
 }
 
-export default CreateClient;
+function mapStateToProps(state) {
+  return {
+    apps: state.apps
+  }
+}
+
+export default connect(mapStateToProps)(CreateClient);
 
 
