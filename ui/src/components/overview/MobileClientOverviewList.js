@@ -4,19 +4,19 @@ import MobileClientListViewItem from './MobileClientListViewItem';
 
 
 class MobileClientOverviewList extends Component {
-
     render = () => {
-      const {mobileClients, mobileServiceInstances, mobileClientBuilds} = this.props;
+      const { mobileClients, mobileServiceInstances, mobileClientBuilds } = this.props;
 
       return (
         <div>
           <ListView>
-            {mobileClients.map(mobileClient => 
+            {mobileClients.map(mobileClient => (
               <MobileClientListViewItem
                 mobileClient={mobileClient}
                 mobileServiceInstances={mobileServiceInstances}
-                mobileClientBuilds={mobileClientBuilds}>
-              </MobileClientListViewItem>)
+                mobileClientBuilds={mobileClientBuilds}
+              />
+            ))
             }
           </ListView>
         </div>

@@ -17,11 +17,11 @@ class BuildDownloadLinks extends Component {
             <p className="float-right">or Scan QR Code:</p>
           </Col>
           <Col md={4}>
-            <QRCode value={this.props.downloadURL} size={200}/>
+            <QRCode value={this.props.downloadURL} size={200} />
           </Col>
         </Row>
       </div>
-    )
+    );
   }
 }
 

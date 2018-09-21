@@ -8,7 +8,7 @@ import {
   ControlLabel,
   FormControl,
   HelpBlock,
-  Button
+  Button,
 } from 'patternfly-react';
 import FormDropdown from '../common/FormDropdown';
 import KeyValueEditor from '../common/KeyValueEditor';
@@ -100,7 +100,9 @@ const sourceSection = component => (
         Git URL of the source code to build.
       </HelpBlock>
       <HelpBlock>
-        View the <a>advanced options</a>
+        View the
+        {' '}
+        <a>advanced options</a>
       </HelpBlock>
     </FormGroup>
     <FormGroup>
@@ -114,16 +116,14 @@ const sourceSection = component => (
       />
     </FormGroup>
     {
-      component.state.authType === 1 ?
-        basicAuthentication
-        :
-        <React.Fragment />
+      component.state.authType === 1
+        ? basicAuthentication
+        : <React.Fragment />
     }
     {
-      component.state.authType === 2 ?
-        sshAuthentication
-        :
-        <React.Fragment />
+      component.state.authType === 2
+        ? sshAuthentication
+        : <React.Fragment />
     }
   </div>
 );
@@ -165,29 +165,27 @@ class CreateClientBuild extends Component {
     this.state = { authType: 0 };
   }
 
-  render = () => {
-    return (
-      <Grid fluid className="surface-shaded">
-        <Row>
-          <Col md={10}>
-            <h1>Create Client Build</h1>
-            <div className="help-block">
+  render = () => (
+    <Grid fluid className="surface-shaded">
+      <Row>
+        <Col md={10}>
+          <h1>Create Client Build</h1>
+          <div className="help-block">
               Client Build allows you to create a mobile client binary from a git source repository.
+          </div>
+          <Form>
+            { nameSection }
+            { sourceSection(this) }
+            { buildSection }
+            <div className="gutter-top-bottom">
+              <Button bsStyle="primary">Create</Button>
+              <Button>Cancel</Button>
             </div>
-            <Form>
-              { nameSection }
-              { sourceSection(this) }
-              { buildSection }
-              <div className="gutter-top-bottom">
-                <Button bsStyle="primary">Create</Button>
-                <Button>Cancel</Button>
-              </div>
-            </Form>
-          </Col>
-        </Row>
-      </Grid>
-    );
-  }
+          </Form>
+        </Col>
+      </Row>
+    </Grid>
+  )
 }
 
 export default CreateClientBuild;

@@ -8,23 +8,25 @@ import BuildStatus from '../common/BuildStatus';
 import './MobileClientBuildHistoryList.css';
 
 class MobileClientBuildHistoryList extends Component {
-
     render = () => {
       const mobileClientBuilds = Object.values(this.props.mobileClientBuilds || {});
       return (
         <React.Fragment>
-          {mobileClientBuilds.map(mobileClientBuild => {
+          {mobileClientBuilds.map((mobileClientBuild) => {
             const phase = mobileClientBuild.status.phase;
             const buildNumber = mobileClientBuild.metadata.annotations['openshift.io/build.number'];
             const durationString = moment.preciseDiff(mobileClientBuild.status.startTimestamp, mobileClientBuild.status.completionTimestamp);
-                    
+
             return (
               <Col xs={12} className="mobile-client-build-history-item" key={mobileClientBuild.metadata.uid}>
                 <Col xs={9} sm={10} md={10} className="status-panel">
                   <div className="build-summary">
                     <div>
                       <BuildStatus build={mobileClientBuild} />&nbsp;
-                      <a>Build #{buildNumber}</a>
+                      <a>
+Build #
+                        {buildNumber}
+                      </a>
                     </div>
                   </div>
                   <Col md={12} className="state">
@@ -50,12 +52,12 @@ class MobileClientBuildHistoryList extends Component {
                   </Col>
                 </Col>
                 <Col xs={3} sm={2} md={2} className="download">
-                  <Button  bsSize="xsmall">
+                  <Button bsSize="xsmall">
                                     Download
                   </Button>
                 </Col>
               </Col>
-            )
+            );
           })}
         </React.Fragment>
       );

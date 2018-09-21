@@ -1,36 +1,26 @@
-const baseUrl = `/api`
+const baseUrl = '/api';
 
-const fetchItems = url => {
-  return fetch(url, {credentials: "same-origin"})
-    .then(response => response.json())
-    .then(result => result.items || [])
-}
+const fetchItems = url => fetch(url, { credentials: 'same-origin' })
+  .then(response => response.json())
+  .then(result => result.items || []);
 
 const dataService = {
-  mobileClients: () => {
-    return fetchItems(`${baseUrl}/mobileclients`)
-  },
-  serviceInstances: () => {
-    return fetchItems(`${baseUrl}/serviceinstances`)
-  },
-  builds: () => {
-    return fetchItems(`${baseUrl}/builds`)
-  },
-  buildConfigs: () => {
-    return fetchItems(`${baseUrl}/buildconfigs`)
-  },
-  createApp: async app => {
+  mobileClients: () => fetchItems(`${baseUrl}/mobileclients`),
+  serviceInstances: () => fetchItems(`${baseUrl}/serviceinstances`),
+  builds: () => fetchItems(`${baseUrl}/builds`),
+  buildConfigs: () => fetchItems(`${baseUrl}/buildconfigs`),
+  createApp: async (app) => {
     const response = await fetch(`${baseUrl}/mobileclients`, {
-      method: "POST",
-      cache: "no-cache",
-      credentials: "same-origin",
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
       headers: {
-        "Content-Type": "application/json; charset=utf-8"
+        'Content-Type': 'application/json; charset=utf-8',
       },
-      body: JSON.stringify(app)
-    })
-    return await response.json()
-  }
+      body: JSON.stringify(app),
+    });
+    return response.json();
+  },
 };
 
-export default dataService
+export default dataService;

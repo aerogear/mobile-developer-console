@@ -6,15 +6,14 @@ import BaseCreateMobileClient from './BaseCreateMobileClient';
  */
 class CreateXamarinClient extends BaseCreateMobileClient {
   render() {
-    const formFields = this.getFormFields().map(value=>{
-      if (value.controlId==='appIdentifier') {
-        value.content="Enter package name (like <em>AeroGear.Xamarin.MyApp</em>)"     
+    const formFields = this.getFormFields().map((value) => {
+      if (value.controlId === 'appIdentifier') {
+        value.content = 'Enter package name (like <em>AeroGear.Xamarin.MyApp</em>)';
       }
       return value;
-    })
-    return renderForm("Configure Xamarin app",formFields);
+    });
+    return renderForm('Configure Xamarin app', formFields);
   }
-
 }
 
-export default CreateXamarinClient
+export default CreateXamarinClient;

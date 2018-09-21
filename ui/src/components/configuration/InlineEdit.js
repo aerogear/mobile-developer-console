@@ -10,7 +10,7 @@ class InlineEdit extends React.Component {
 
     this.currentValue = '';
     this.state = {
-      editing: false
+      editing: false,
     };
   }
 
@@ -28,21 +28,21 @@ class InlineEdit extends React.Component {
 
   cancelEdit = () => {
     this.textInput.value = this.currentValue;
-    this.setState({editing: false});
+    this.setState({ editing: false });
   }
 
   setEditable = () => {
-    this.setState({editing: true});
+    this.setState({ editing: true });
   }
 
-  setRef = ref => {
+  setRef = (ref) => {
     this.textInput = ref;
   }
 
   save = () => {
     const value = this.textInput.value;
     this.currentValue = value;
-    this.setState({editing: false});
+    this.setState({ editing: false });
     this.props.save && this.props.save(value);
   }
 
@@ -51,22 +51,23 @@ class InlineEdit extends React.Component {
   }
 
   render() {
-    return( 
-      <div className={"form-control-pf-editable " + (this.state.editing ? "form-control-pf-edit" : "")}>
+    return (
+      <div className={`form-control-pf-editable ${this.state.editing ? 'form-control-pf-edit' : ''}`}>
         <button className={classNames('form-control-pf-value', { 'no-horizontal-padding': this.props.noHorizontalPadding })} onClick={this.setEditable}>
-          <span className={"pull-left " + (this.currentValue ? "current-value" : "placeholder")}>{this.currentValue || this.props.placeholder}</span>
-          <i className="glyphicon glyphicon-pencil"></i>
+          <span className={`pull-left ${this.currentValue ? 'current-value' : 'placeholder'}`}>{this.currentValue || this.props.placeholder}</span>
+          <i className="glyphicon glyphicon-pencil" />
         </button>
         <div className="form-control-pf-textbox">
-          <FormControl 
+          <FormControl
             type="text"
-            inputRef={this.setRef}/>
+            inputRef={this.setRef}
+          />
           <button className="form-control-pf-empty" onClick={this.clearInput}>
-            <span className="fa fa-times-circle fa-lg"></span>
+            <span className="fa fa-times-circle fa-lg" />
           </button>
         </div>
-        <Button className="form-control-pf-save" bsStyle="primary" onClick={this.save}><i className="glyphicon glyphicon-ok"></i></Button>
-        <Button className="form-control-pf-cancel" onClick={this.cancelEdit}><i className="glyphicon glyphicon-remove"></i></Button>
+        <Button className="form-control-pf-save" bsStyle="primary" onClick={this.save}><i className="glyphicon glyphicon-ok" /></Button>
+        <Button className="form-control-pf-cancel" onClick={this.cancelEdit}><i className="glyphicon glyphicon-remove" /></Button>
       </div>
     );
   }

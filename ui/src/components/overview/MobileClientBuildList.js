@@ -11,10 +11,10 @@ class MobileClientBuildList extends Component {
         <div>
           <ListGroup className="build-view-list-group">
             {mobileClientBuilds.map(
-              ( mobileClientBuild ) => {
-                let kind = mobileClientBuild.kind;
-                let buildNumber = mobileClientBuild.metadata.annotations['openshift.io/build.number'];
-                let name = mobileClientBuild.metadata.name;
+              (mobileClientBuild) => {
+                const kind = mobileClientBuild.kind;
+                const buildNumber = mobileClientBuild.metadata.annotations['openshift.io/build.number'];
+                const name = mobileClientBuild.metadata.name;
                 return (
                   <ListGroupItem key={mobileClientBuild.metadata.uid}>
                     <Col xs={6} sm={6} md={6} className="build-name">
@@ -23,14 +23,23 @@ class MobileClientBuildList extends Component {
                       </h3>
                     </Col>
                     <Col xs={6} sm={6} md={6} className="build-details">
-                      <BuildStatus build={mobileClientBuild}></BuildStatus>
-                      <a href="">{kind} #{buildNumber}</a>
+                      <BuildStatus build={mobileClientBuild} />
+                      <a href="">
+                        {kind}
+                        {' '}
+#
+                        {buildNumber}
+                      </a>
                       <span className="build-info timestamp">
-                                            created <Moment fromNow>{mobileClientBuild.status.startTimestamp}</Moment>
+                                            created
+                        {' '}
+                        <Moment fromNow>{mobileClientBuild.status.startTimestamp}</Moment>
                       </span>
                     </Col>
                   </ListGroupItem>
-                )})}
+                );
+              },
+            )}
           </ListGroup>
         </div>
       );

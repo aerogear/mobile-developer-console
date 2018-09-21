@@ -5,50 +5,52 @@ import BuildDownloadLinks from './BuildDownloadLinks';
 import BuildSummary from './BuildSummary';
 import BuildPipeLineStage from './BuildPipelineStage';
 
-import "./BuildInformation.css";
+import './BuildInformation.css';
 
 
 class BuildInformation extends Component {
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
-      toggleLinks : false,
-      buildSuccessfull : true
-    }
+      toggleLinks: false,
+      buildSuccessfull: true,
+    };
   }
 
-  handleDownload(){
+  handleDownload() {
     this.setState(prevState => ({
-      toggleLinks: !prevState.toggleLinks
+      toggleLinks: !prevState.toggleLinks,
     }));
   }
 
-  renderDownloadButton(){
-    if (this.props.build.status.phase === "Complete"){
-      return <Button bsStyle="primary" onClick={this.handleDownload.bind(this)}>
+  renderDownloadButton() {
+    if (this.props.build.status.phase === 'Complete') {
+      return (
+        <Button bsStyle="primary" onClick={this.handleDownload.bind(this)}>
                 Download
-      </Button>
+        </Button>
+      );
     }
     return null;
   }
 
-  renderDownloadDialog(){
-    if (this.state.toggleLinks){
-      return <BuildDownloadLinks downloadURL={this.props.build.metadata.annotations["aerogear.org/download-mobile-artifact-url"] || ""}/>
+  renderDownloadDialog() {
+    if (this.state.toggleLinks) {
+      return <BuildDownloadLinks downloadURL={this.props.build.metadata.annotations['aerogear.org/download-mobile-artifact-url'] || ''} />;
     }
     return null;
   }
 
-  render () {
+  render() {
     return (
       <div className="build-information">
         <div className="latest-mobile-build">
           <Col className="latest-build-pipeline" md={10}>
             <div className="build-pipeline">
-              <BuildSummary build={this.props.build}/>
+              <BuildSummary build={this.props.build} />
               <div className="pipeline-container">
                 <div className="pipeline">
-                  <BuildPipeLineStage build={this.props.build}/>
+                  <BuildPipeLineStage build={this.props.build} />
                 </div>
               </div>
             </div>
@@ -59,7 +61,7 @@ class BuildInformation extends Component {
         </div>
         {this.renderDownloadDialog()}
       </div>
-    )
+    );
   }
 }
 

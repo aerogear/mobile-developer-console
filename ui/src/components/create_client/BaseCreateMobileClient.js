@@ -1,23 +1,22 @@
 import React, { Component } from 'react';
 import { Form } from 'patternfly-react';
+import { get as _get } from 'lodash-es';
 import { validateId, validateAppName, formChanged } from './CreateClientFormUtils';
-import { CREATE_CLIENT_APP_ID, CREATE_CLIENT_NAME } from './Constants'
-import { get as _get } from 'lodash-es'
+import { CREATE_CLIENT_APP_ID, CREATE_CLIENT_NAME } from './Constants';
 
 
 /**
  * Component for the common shared create mobile client form.
  */
 class BaseCreateMobileClient extends Component {
-
     state = {}
 
     constructor(props) {
       super(props);
-      this.state = props;        
+      this.state = props;
     }
 
-    getFormFields= ()=> [
+    getFormFields= () => [
       {
         controlId: CREATE_CLIENT_NAME,
         label: '* Application Name',
@@ -28,7 +27,7 @@ class BaseCreateMobileClient extends Component {
           <Form.FormControl type="text" {...props} />
         ),
         validationState: _get(this.state.validation, CREATE_CLIENT_NAME),
-        onChange: (e) => formChanged(this, CREATE_CLIENT_NAME, e.target.value, (value) => validateAppName(value))
+        onChange: e => formChanged(this, CREATE_CLIENT_NAME, e.target.value, value => validateAppName(value)),
       },
       {
         controlId: CREATE_CLIENT_APP_ID,
@@ -40,13 +39,13 @@ class BaseCreateMobileClient extends Component {
           <Form.FormControl type="text" {...props} />
         ),
         validationState: _get(this.state.validation, CREATE_CLIENT_APP_ID),
-        onChange: (e) => formChanged(this, CREATE_CLIENT_APP_ID, e.target.value, (value) => validateId(value))
+        onChange: e => formChanged(this, CREATE_CLIENT_APP_ID, e.target.value, value => validateId(value)),
       },
     ]
 
     render() {
-      return "";
+      return '';
     }
 }
 
-export default BaseCreateMobileClient
+export default BaseCreateMobileClient;
