@@ -18,7 +18,7 @@ class MobileClientBuildOverviewList extends Component {
                   {buildConfigs.map(
                     buildConfig => (
                       <MobileClientBuildListItem
-                        key={buildConfig.metadata.labels.buildconfig}
+                        key={buildConfig.metadata.name}
                         buildConfiguration={buildConfig}
                       />
                     ),
