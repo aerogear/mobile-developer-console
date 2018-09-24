@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Col, FormControl, Icon, FormGroup } from 'patternfly-react';
+import {
+  Row, Col, FormControl, Icon, FormGroup,
+} from 'patternfly-react';
 
 import './KeyValueEditor.css';
 
@@ -12,35 +14,34 @@ class KeyValueEditor extends Component {
 
   addRow = () => {
     this.setState({
-      rows: [...this.state.rows, { key: '', value: '' }]
+      rows: [...this.state.rows, { key: '', value: '' }],
     });
   }
 
   handleChange = (rowIndex, type, value) => {
     const rows = [...this.state.rows];
     rows[rowIndex] = { ...rows[rowIndex], [type]: value };
-    this.setState({ rows })
+    this.setState({ rows });
   }
 
-  handleDelete = rowIndex => {
+  handleDelete = (rowIndex) => {
     if (this.state.rows.length === 1) {
       this.setState({ rows: [{ key: '', value: '' }] });
     } else {
       this.setState({
-        rows: [...this.state.rows.slice(0, rowIndex), ...this.state.rows.slice(rowIndex + 1)]
+        rows: [...this.state.rows.slice(0, rowIndex), ...this.state.rows.slice(rowIndex + 1)],
       });
     }
   }
 
-  render = () => {
-    return (
-      <div className="key-value-editor">
-        <Row className="form-row-has-controls">
-          <Col xs={6}><label>Key</label></Col>
-          <Col xs={6}><label>Value</label></Col>
-        </Row>
-        {
-          this.state.rows.map((row, i) =>
+  render = () => (
+    <div className="key-value-editor">
+      <Row className="form-row-has-controls">
+        <Col xs={6}><label>Key</label></Col>
+        <Col xs={6}><label>Value</label></Col>
+      </Row>
+      {
+          this.state.rows.map((row, i) => (
             <Row className="form-row-has-controls" key={i}>
               <Col xs={6} className="form-group">
                 <FormControl
@@ -59,22 +60,24 @@ class KeyValueEditor extends Component {
                 />
               </Col>
               <div className="form-row-controls">
-                <button className="btn-remove close" onClick={e => {
-                  e.preventDefault();
-                  this.handleDelete(i);
-                }}>
+                <button
+                  className="btn-remove close"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    this.handleDelete(i);
+                  }}
+                >
                   <Icon type="pf" name="close" />
                 </button>
               </div>
             </Row>
-          )
+          ))
         }
-        <FormGroup>
-          <a role="button" onClick={this.addRow}>Add Environment Variable</a>
-        </FormGroup>
-      </div>
-    );
-  }
+      <FormGroup>
+        <a role="button" onClick={this.addRow}>Add Environment Variable</a>
+      </FormGroup>
+    </div>
+  )
 }
 
 export default KeyValueEditor;

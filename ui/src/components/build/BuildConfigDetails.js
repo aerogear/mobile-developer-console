@@ -5,7 +5,9 @@ import './BuildConfigDetails.css';
 
 class BuildConfigDetails extends Component {
   render() {
-    const {repoUrl, branch, jobName, jenkinsfilePath} = this.props.buildConfig;
+    const {
+      repoUrl, branch, jobName, jenkinsfilePath,
+    } = this.props.buildConfig;
 
     return (
       <div className="build-config">

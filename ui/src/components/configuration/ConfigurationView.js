@@ -21,14 +21,14 @@ const serviceSDKInfo = [
     serviceName: 'Identity Management',
     serviceId: 'dh-keycloak-apb-h7k9j',
     serviceDescription: 'Identity Management - Identity and Access Management',
-    setupText: 'Identity Management SDK setup'
+    setupText: 'Identity Management SDK setup',
   }, {
     serviceLogoUrl: 'https://avatars1.githubusercontent.com/u/3380462?s=200&v=4',
     serviceName: 'Mobile Metrics',
     serviceId: 'dh-metrics-apb-wqm5c',
     serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
-    setupText: 'Mobile Metrics SDK setups'
-  }
+    setupText: 'Mobile Metrics SDK setups',
+  },
 ];
 
 class ConfigurationView extends Component {
@@ -64,7 +64,7 @@ class ConfigurationView extends Component {
           <Col md={12} className="service-configuration">
             <Header className="service-configuration-header">Service Configuration</Header>
             {
-              serviceSDKInfo.map((info, index) =>
+              serviceSDKInfo.map((info, index) => (
                 <ServiceSDKInfo
                   serviceLogoUrl={info.serviceLogoUrl}
                   serviceName={info.serviceName}
@@ -73,7 +73,7 @@ class ConfigurationView extends Component {
                   setupText={info.setupText}
                   key={index}
                 />
-              )
+              ))
             }
           </Col>
         </Row>
