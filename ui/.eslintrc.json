@@ -9,5 +9,7 @@
     },
     "env": {
         "browser": true
-    }
+    },
+    "plugins": ["plugin:patternfly-react/recommended"]
+    
 }
