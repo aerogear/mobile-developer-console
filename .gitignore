@@ -19,3 +19,6 @@ gin-bin
 cmd/api-server/debug
 main
 .idea/
+.r.errors.log
+.r.outputs.log
+.r.logs.log
