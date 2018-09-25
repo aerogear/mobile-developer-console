@@ -1,4 +1,8 @@
-const baseUrl = '/api';
+let baseUrl = '/api';
+
+if (process.env.NODE_ENV !== 'production') {
+  baseUrl = 'http://localhost:8080/http://localhost:4000/api';
+}
 
 const fetchItems = url => fetch(url, { credentials: 'same-origin' })
   .then(response => response.json())

@@ -79,6 +79,17 @@ For more information on parameters, run:
 oc process -f mobile-client-service.template.yaml --parameters
 ```
 
+## Local development
+
+Follow the [steps above](#run-locally)
+
+From root folder of this repository, run `./scripts/development.sh`. This will start [CORS Anywhere proxy server](https://www.npmjs.com/package/cors-anywhere) (on port 8080), Go backend server (port 4000) and Node development server (port 3000).
+
+When changes are made to `.go` files, current instance of Go server is killed, source files are rebuilt and new instance of Go server is run.
+These changes are handled by [realize task runner](https://github.com/oxequa/realize).
+
+Changes to `.js` files are handled by Node server([react-scripts](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-start)).
+
 ## Test
 
 ```bash
