@@ -7,5 +7,5 @@ export const BUILD_CONFIGS_FAILURE = 'BUILD_CONFIGS_FAILURE';
 
 export const fetchBuildConfigs = fetchAction(
   [BUILD_CONFIGS_REQUEST, BUILD_CONFIGS_SUCCESS, BUILD_CONFIGS_FAILURE],
-  DataService.buildConfigs,
+  DataService.buildConfigs
 );

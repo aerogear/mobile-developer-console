@@ -12,11 +12,9 @@ class FormDropdown extends Component {
 
   render = () => (
     <Dropdown className="form-dropdown" id={this.props.id}>
-      <Dropdown.Toggle className="form-dropdown form-control">
-        {this.props.items[this.state.active]}
-      </Dropdown.Toggle>
+      <Dropdown.Toggle className="form-dropdown form-control">{this.props.items[this.state.active]}</Dropdown.Toggle>
       <Dropdown.Menu>
-        { this.props.items.map((item, i) => (
+        {this.props.items.map((item, i) => (
           <MenuItem
             key={i}
             active={i === this.state.active}
@@ -30,7 +28,7 @@ class FormDropdown extends Component {
         ))}
       </Dropdown.Menu>
     </Dropdown>
-  )
+  );
 }
 
 export default FormDropdown;

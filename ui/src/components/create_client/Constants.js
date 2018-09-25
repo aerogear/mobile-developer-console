@@ -1,4 +1,3 @@
-
 /* keys for mobile client create request */
 export const CREATE_CLIENT_NAME = 'name';
 export const CREATE_CLIENT_TYPE = 'clientType';
@@ -11,7 +10,6 @@ export const PLATFORM_CORDOVA = 'cordova';
 export const PLATFORM_XAMARIN = 'xamarin';
 
 export const CLIENT_CONFIGURATION = 'clientConfiguration';
-
 
 /* WIZARD STEPS */
 export const WIZARD_SELECT_PLATFORM = 0;

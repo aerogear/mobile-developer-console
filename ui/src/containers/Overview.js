@@ -32,7 +32,7 @@ class Overview extends Component {
 function mapStateToProps(state) {
   return {
     apps: state.apps,
-    services: state.services,
+    services: state.services
   };
 }
 

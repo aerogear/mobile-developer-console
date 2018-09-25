@@ -8,12 +8,8 @@ import './CopyToClipboardMultiline.css';
 class CopyToClipboardMultiline extends Component {
   render() {
     return (
-      <div
-        className={classNames('input-group', 'copy-to-clipboard-multiline', this.props.className)}
-      >
-        <pre>
-          {this.props.children}
-        </pre>
+      <div className={classNames('input-group', 'copy-to-clipboard-multiline', this.props.className)}>
+        <pre>{this.props.children}</pre>
         <span>
           <CopyToClipboard text={this.props.children}>
             <OverlayTrigger
@@ -22,9 +18,7 @@ class CopyToClipboardMultiline extends Component {
               trigger={['click']}
               rootClose
             >
-              <a className="btn btn-default copy-btn">
-                Copy
-              </a>
+              <a className="btn btn-default copy-btn">Copy</a>
             </OverlayTrigger>
           </CopyToClipboard>
         </span>

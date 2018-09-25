@@ -9,9 +9,5 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export default function configureStore(preloadedState) {
-  return createStore(
-    rootReducer,
-    preloadedState,
-    applyMiddleware(...middleware),
-  );
+  return createStore(rootReducer, preloadedState, applyMiddleware(...middleware));
 }

@@ -3,7 +3,6 @@ import { Col, Row } from 'patternfly-react';
 import './BuildDownloadLinks.css';
 import QRCode from 'qrcode.react';
 
-
 class BuildDownloadLinks extends Component {
   render() {
     return (

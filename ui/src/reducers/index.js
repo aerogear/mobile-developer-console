@@ -8,5 +8,5 @@ export default combineReducers({
   apps,
   services,
   buildConfigs,
-  builds,
+  builds
 });

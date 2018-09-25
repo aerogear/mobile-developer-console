@@ -32,7 +32,7 @@
     "eject": "react-scripts eject",
     "build-css": "node-sass-chokidar --include-path ./node_modules/patternfly/dist/sass --include-path ./node_modules/patternfly/node_modules/bootstrap-sass/assets/stylesheets --include-path ./node_modules/patternfly/node_modules/font-awesome-sass/assets/stylesheets src/ -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar --include-path ./node_modules/patternfly/dist/sass --include-path ./node_modules/patternfly/node_modules/bootstrap-sass/assets/stylesheets --include-path ./node_modules/patternfly/node_modules/font-awesome-sass/assets/stylesheets src/ -o src/ --watch --recursive",
-    "lint": "eslint src/**/*.js"
+    "lint": "eslint 'src/**/*.js'"
   },
   "homepage": "/",
   "devDependencies": {
