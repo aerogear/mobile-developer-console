@@ -15,12 +15,13 @@ import (
 	"github.com/aerogear/mobile-client-service/pkg/mobile"
 
 	"fmt"
-	"github.com/openshift/client-go/build/clientset/versioned/fake"
 	"io/ioutil"
+
+	"github.com/openshift/client-go/build/clientset/versioned/fake"
 )
 
-func setupBuildsServer(lister mobile.BuildLister, apiPrefix string) *httptest.Server {
-	h := NewMobileBuildsHandler(lister, "test")
+func setupBuildsServer(crudl mobile.BuildCRUDL, apiPrefix string) *httptest.Server {
+	h := NewMobileBuildsHandler(crudl, "test")
 
 	r := NewRouter("", apiPrefix)
 	apiRoute := r.Group(apiPrefix)
@@ -33,31 +34,31 @@ func setupBuildsServer(lister mobile.BuildLister, apiPrefix string) *httptest.Se
 func TestListBuildsEndpoint(t *testing.T) {
 	cases := []struct {
 		Name                 string
-		BuildLister          func() mobile.BuildLister
+		BuildCRUDL           func() mobile.BuildCRUDL
 		ExpectItemsListSize  int
 		ExpectHTTPStatusCode int
 	}{
 		{
 			Name: "test list builds endpoint success",
-			BuildLister: func() mobile.BuildLister {
+			BuildCRUDL: func() mobile.BuildCRUDL {
 				client := fake.NewSimpleClientset(&mobile.Build{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "build1",
 						Namespace: "test",
 					},
 				})
-				return mobile.NewBuildLister(client.BuildV1())
+				return mobile.NewBuildCRUDL(client.BuildV1())
 			},
 			ExpectItemsListSize:  1,
 			ExpectHTTPStatusCode: http.StatusOK,
 		}, {
 			Name: "testing list builds endpoint failure",
-			BuildLister: func() mobile.BuildLister {
+			BuildCRUDL: func() mobile.BuildCRUDL {
 				client := fake.NewSimpleClientset()
 				client.PrependReactor("list", "builds", func(action ktesting.Action) (handled bool, ret runtime.Object, err error) {
 					return true, nil, errors.New("injected error")
 				})
-				return mobile.NewBuildLister(client.BuildV1())
+				return mobile.NewBuildCRUDL(client.BuildV1())
 			},
 			ExpectHTTPStatusCode: http.StatusInternalServerError,
 		},
@@ -67,7 +68,7 @@ func TestListBuildsEndpoint(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			listImpl := tc.BuildLister()
+			listImpl := tc.BuildCRUDL()
 			server := setupBuildsServer(listImpl, apiPrefix)
 			defer server.Close()
 

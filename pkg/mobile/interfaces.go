@@ -2,6 +2,7 @@ package mobile
 
 import (
 	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
+	k8v1 "k8s.io/api/core/v1"
 )
 
 //ServiceInstanceLister can list service instances from a name space
@@ -9,12 +10,15 @@ type ServiceInstanceLister interface {
 	List(namespace string) (*ServiceInstanceList, error)
 }
 
-type BuildLister interface {
+type BuildCRUDL interface {
 	List(namespace string) (*BuildList, error)
 }
 
-type BuildConfigLister interface {
+type BuildConfigCRUDL interface {
+	Create(config *BuildConfig) (*BuildConfig, error)
+	DeleteByName(namespace string, name string) error
 	List(namespace string) (*BuildConfigList, error)
+	Instantiate(namespace string, name string) (*Build, error)
 }
 
 type MobileClientRepo interface {
@@ -23,4 +27,8 @@ type MobileClientRepo interface {
 	Update(app *v1alpha1.MobileClient) error
 	List(namespace string) (*v1alpha1.MobileClientList, error)
 	DeleteByName(name string) error
+}
+
+type SecretsCRUDL interface {
+	Create(namespace string, secret *k8v1.Secret) (*k8v1.Secret, error)
 }

@@ -2,6 +2,7 @@ package web
 
 import (
 	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -50,4 +51,54 @@ type MobileClientDataList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata"`
 	Items           []MobileClientData `json:"items"`
+}
+
+type BasicAuthConfig struct {
+	Name     string `json:"name" validate:"required"`
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
+type SSHAuthConfig struct {
+	Name       string `json:"name" validate:"required"`
+	PrivateKey string `json:"privateKey" validate:"required"`
+}
+
+type SourceConfig struct {
+	GitURL          string           `json:"gitUrl" validate:"required"`
+	GitRef          string           `json:"gitRef" validate:"required"`
+	JenkinsFilePath string           `json:"jenkinsFilePath" validate:"required"`
+	AuthType        string           `json:"authType" validate:"required,oneof=public basic ssh"`
+	BasicAuth       *BasicAuthConfig `json:"basicAuth"`
+	SSHAuth         *SSHAuthConfig   `json:"sshAuth"`
+}
+
+type AndroidCredentialsConfig struct {
+	Name             string `json:"name" validate:"required"`
+	Keystore         string `json:"keystore" validate:"required"`
+	KeystorePassword string `json:"keystorePassword" validate:"required"`
+	KeystoreAlias    string `json:"keystoreAlias" validate:"required"`
+}
+
+type IOSCredentialsConfig struct {
+	Name             string `json:"name" validate:"required"`
+	DeveloperProfile string `json:"developerProfile" validate:"required"`
+	ProfilePassword  string `json:"profilePassword" validate:"required"`
+}
+
+type BuildConfig struct {
+	Platform           string                    `json:"platform" validate:"required,oneof=android iOS"`
+	BuildType          string                    `json:"buildType" validate:"required,oneof=debug release"`
+	AndroidCredentials *AndroidCredentialsConfig `json:"androidCredentials"`
+	IOSCredentials     *IOSCredentialsConfig     `json:"iosCredentials"`
+}
+
+//BuildConfigCreateRequest is the data type for the create request
+type BuildConfigCreateRequest struct {
+	Name                 string          `json:"name" validate:"required"`
+	ClientID             string          `json:"clientId" validate:"required"`
+	ClientType           string          `json:"clientType" validate:"required,oneof=android iOS cordova xamarin"`
+	Source               SourceConfig    `json:"source" validate:"required"`
+	Build                BuildConfig     `json:"build" validate:"required"`
+	EnvironmentVariables []corev1.EnvVar `json:"envVars"`
 }
