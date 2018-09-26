@@ -4,31 +4,27 @@ import MobileClientBuildListItem from './MobileClientBuildListItem';
 import NoBuildConfig from './NoBuildConfig';
 
 class MobileClientBuildOverviewList extends Component {
-    render = () => {
-      const { buildConfigs } = this.props;
+  render = () => {
+    const { buildConfigs } = this.props;
 
-      return (
-        <div>
-          {
-            // TODO: Mobile builds are not avaialble for Xamarin.
-            buildConfigs.length === 0
-              ? <NoBuildConfig />
-              : (
-                <ListView>
-                  {buildConfigs.map(
-                    buildConfig => (
-                      <MobileClientBuildListItem
-                        key={buildConfig.metadata.labels.buildconfig}
-                        buildConfiguration={buildConfig}
-                      />
-                    ),
-                  )}
-                </ListView>
-              )
-          }
-        </div>
-      );
-    }
+    return (
+      <div>
+        {// TODO: Mobile builds are not avaialble for Xamarin.
+        buildConfigs.length === 0 ? (
+          <NoBuildConfig />
+        ) : (
+          <ListView>
+            {buildConfigs.map(buildConfig => (
+              <MobileClientBuildListItem
+                key={buildConfig.metadata.labels.buildconfig}
+                buildConfiguration={buildConfig}
+              />
+            ))}
+          </ListView>
+        )}
+      </div>
+    );
+  };
 }
 
 export default MobileClientBuildOverviewList;

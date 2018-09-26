@@ -1,18 +1,18 @@
 const requestAction = type => ({
-  type,
+  type
 });
 
 const successAction = (type, result) => ({
   type,
-  result,
+  result
 });
 
 const failureAction = (type, error) => ({
   type,
-  error,
+  error
 });
 
-const fetchAction = ([request, success, failure], doFetch) => () => async (dispatch) => {
+const fetchAction = ([request, success, failure], doFetch) => () => async dispatch => {
   dispatch(requestAction(request));
   try {
     const result = await doFetch();

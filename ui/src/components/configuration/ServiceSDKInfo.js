@@ -12,14 +12,18 @@ class ServiceSDKInfo extends Component {
           <div className="service-name">
             <h4>
               <div>{this.props.serviceName}</div>
-              <div><small>{this.props.serviceId}</small></div>
+              <div>
+                <small>{this.props.serviceId}</small>
+              </div>
             </h4>
           </div>
         </Col>
         <Col md={12}>
           <div className="service-details">
             <h5>{this.props.serviceDescription}</h5>
-            <h5><a>{this.props.setupText}</a></h5>
+            <h5>
+              <a>{this.props.setupText}</a>
+            </h5>
           </div>
         </Col>
       </Col>

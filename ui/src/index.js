@@ -9,8 +9,9 @@ import configureStore from './configureStore';
 
 const store = configureStore();
 
-ReactDOM.render((
+ReactDOM.render(
   <Provider store={store}>
     <App />
-  </Provider>
-), document.getElementById('root'));
+  </Provider>,
+  document.getElementById('root')
+);

@@ -34,7 +34,7 @@ export const HorizontalFormField = ({
     const htmlContent = (
       <div
         dangerouslySetInnerHTML={{
-          __html: content,
+          __html: content
         }}
       />
     );
@@ -71,14 +71,13 @@ export const HorizontalFormField = ({
  */
 export function renderForm(title, formFields) {
   const generatedFields = formFields.map(formField => HorizontalFormField({ ...formField }));
-  return (<div>
-    <h2>{title}</h2>
-    <Grid bsClass="create-client-form">
-      <Form horizontal>
-        {generatedFields}
-      </Form>
-    </Grid>
-  </div>
+  return (
+    <div>
+      <h2>{title}</h2>
+      <Grid bsClass="create-client-form">
+        <Form horizontal>{generatedFields}</Form>
+      </Grid>
+    </div>
   );
 }
 
@@ -108,7 +107,10 @@ export function validateId(appId) {
  * @param {Function} validationFunc validation function, retuns validation state upon change
  */
 export function formChanged(obj, id, change, validationFunc) {
-  const state = { clientConfiguration: { ...obj.state.clientConfiguration, [id]: change }, validation: { ...obj.state.validation, [id]: validationFunc(change) } };
+  const state = {
+    clientConfiguration: { ...obj.state.clientConfiguration, [id]: change },
+    validation: { ...obj.state.validation, [id]: validationFunc(change) }
+  };
   obj.setState(state, () => {
     obj.props.configureClient && obj.props.configureClient(state);
   });

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './BuildStatus.css';
 
-const getIcon = (phase) => {
+const getIcon = phase => {
   switch (phase) {
     case 'Complete':
       return <span className="fa fa-check-circle fa-fw" aria-hidden="true" />;
@@ -31,14 +31,10 @@ const getIcon = (phase) => {
 };
 
 class BuildStatus extends Component {
-    render = () => {
-      const { phase } = this.props.build.status;
-      return (
-        <React.Fragment>
-          {getIcon(phase)}
-        </React.Fragment>
-      );
-    }
+  render = () => {
+    const { phase } = this.props.build.status;
+    return <React.Fragment>{getIcon(phase)}</React.Fragment>;
+  };
 }
 
 export default BuildStatus;

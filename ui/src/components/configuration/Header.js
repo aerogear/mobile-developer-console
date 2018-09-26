@@ -5,11 +5,7 @@ import './Header.css';
 
 class Header extends Component {
   render() {
-    return (
-      <h3 className={classNames('header', this.props.className)}>
-        {this.props.children}
-      </h3>
-    );
+    return <h3 className={classNames('header', this.props.className)}>{this.props.children}</h3>;
   }
 }
 

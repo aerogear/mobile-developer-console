@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import {
-  ListViewItem, Row, Col, DropdownKebab, MenuItem,
-} from 'patternfly-react';
+import { ListViewItem, Row, Col, DropdownKebab, MenuItem } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 
@@ -23,7 +21,9 @@ class BoundServiceRow extends Component {
           <div className="service-name">
             <h4>
               <div>{this.service.serviceName}</div>
-              <div><small>{this.service.serviceId}</small></div>
+              <div>
+                <small>{this.service.serviceId}</small>
+              </div>
             </h4>
           </div>
         </Col>
@@ -39,11 +39,11 @@ class BoundServiceRow extends Component {
       documentationFragment = (
         <Row>
           <Col md={2} className="detailsKey">
-                    Documentation :
+            Documentation :
           </Col>
           <Col md={4} className="detailsValue">
             <a href="{this.service.documentationUrl}">
-SDK Setup
+              SDK Setup
               <i className="fa fa-external-link" aria-hidden="true" />
             </a>
           </Col>
@@ -51,14 +51,11 @@ SDK Setup
       );
     }
 
-
     if (this.service.configuration) {
       propertyFragment = this.service.configuration.map(configuration => (
         <Row>
           <Col md={2} className="detailsKey">
-            {configuration.key}
-            {' '}
-:
+            {configuration.key} :
           </Col>
           <Col md={4} className="detailsValue">
             {configuration.value}
@@ -66,9 +63,7 @@ SDK Setup
         </Row>
       ));
     } else {
-      propertyFragment = (
-        <div>No configuration data to show for this service.</div>
-      );
+      propertyFragment = <div>No configuration data to show for this service.</div>;
     }
 
     return (
@@ -84,13 +79,13 @@ SDK Setup
       <ListViewItem
         additionalInfo={this.renderServiceBadge()}
         class="boundService"
-        actions={(
+        actions={
           <div>
             <DropdownKebab id={`delete-${this.service.serviceId}`} pullRight>
               <MenuItem>Delete</MenuItem>
             </DropdownKebab>
           </div>
-)}
+        }
         hideCloseIcon="true"
       >
         {this.renderServiceDetails()}

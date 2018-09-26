@@ -21,14 +21,15 @@ const serviceSDKInfo = [
     serviceName: 'Identity Management',
     serviceId: 'dh-keycloak-apb-h7k9j',
     serviceDescription: 'Identity Management - Identity and Access Management',
-    setupText: 'Identity Management SDK setup',
-  }, {
+    setupText: 'Identity Management SDK setup'
+  },
+  {
     serviceLogoUrl: 'https://avatars1.githubusercontent.com/u/3380462?s=200&v=4',
     serviceName: 'Mobile Metrics',
     serviceId: 'dh-metrics-apb-wqm5c',
     serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
-    setupText: 'Mobile Metrics SDK setups',
-  },
+    setupText: 'Mobile Metrics SDK setups'
+  }
 ];
 
 class ConfigurationView extends Component {
@@ -46,35 +47,35 @@ class ConfigurationView extends Component {
               <dt>Client API Key:</dt>
               <dd>b331aa8c-6c39-5f07-81f8-9eccf7fd6702</dd>
               <dt>DMZ Url:</dt>
-              <dd><InlineEdit placeholder="Set DMZ Url" noHorizontalPadding /></dd>
+              <dd>
+                <InlineEdit placeholder="Set DMZ Url" noHorizontalPadding />
+              </dd>
             </dl>
           </Col>
           <Col md={6}>
             <Header>Mobile Client Config</Header>
-            <CopyToClipboardMultiline className="mobile-client-config">
-              {config}
-            </CopyToClipboardMultiline>
+            <CopyToClipboardMultiline className="mobile-client-config">{config}</CopyToClipboardMultiline>
           </Col>
         </Row>
         <Row>
           <Col md={12}>
             <Header>SDK Configuration</Header>
-            <h4><a>Android SDK Setup</a></h4>
+            <h4>
+              <a>Android SDK Setup</a>
+            </h4>
           </Col>
           <Col md={12} className="service-configuration">
             <Header className="service-configuration-header">Service Configuration</Header>
-            {
-              serviceSDKInfo.map((info, index) => (
-                <ServiceSDKInfo
-                  serviceLogoUrl={info.serviceLogoUrl}
-                  serviceName={info.serviceName}
-                  serviceId={info.serviceId}
-                  serviceDescription={info.serviceDescription}
-                  setupText={info.setupText}
-                  key={index}
-                />
-              ))
-            }
+            {serviceSDKInfo.map((info, index) => (
+              <ServiceSDKInfo
+                serviceLogoUrl={info.serviceLogoUrl}
+                serviceName={info.serviceName}
+                serviceId={info.serviceId}
+                serviceDescription={info.serviceDescription}
+                setupText={info.setupText}
+                key={index}
+              />
+            ))}
           </Col>
         </Row>
       </Grid>

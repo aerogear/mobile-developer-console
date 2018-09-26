@@ -19,8 +19,12 @@ class UnboundServiceRow extends Component {
           <img src={this.service.serviceLogoUrl} alt="" />
           <div className="service-name">
             <h4>
-              <div><a href={`#${this.service.serviceId}`}>{this.service.serviceName}</a></div>
-              <div><small>{this.service.serviceId}</small></div>
+              <div>
+                <a href={`#${this.service.serviceId}`}>{this.service.serviceName}</a>
+              </div>
+              <div>
+                <small>{this.service.serviceId}</small>
+              </div>
             </h4>
           </div>
         </Col>
@@ -28,13 +32,8 @@ class UnboundServiceRow extends Component {
     );
   }
 
-
   render() {
-    return (
-      <ListViewItem
-        additionalInfo={this.renderServiceBadge()}
-      />
-    );
+    return <ListViewItem additionalInfo={this.renderServiceBadge()} />;
   }
 }
 
