@@ -42,16 +42,15 @@ const buildHistory = (builds) => {
 
 const heading = (name, lastBuild) => (
   <div className="pull-left text-left">
+    {
+      lastBuild && (
+        <span>
+          <BuildStatus build={lastBuild} />
+          {' '}
+        </span>
+      )
+    }
     <a className="name">
-      {
-        lastBuild
-          ? (
-            <span>
-              <BuildStatus build={lastBuild} />
-            </span>
-          )
-          : <React.Fragment />
-      }
       <span>{name}</span>
     </a>
   </div>
@@ -115,6 +114,8 @@ Hide Build History
             </ComponentSectionLabel>
             <BuildConfigDetails buildConfig={buildConfigDetails} />
           </Col>
+        </Row>
+        <Row>
           <Col md={12}>
             <ComponentSectionLabel>
                 Builds
