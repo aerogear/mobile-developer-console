@@ -4,9 +4,12 @@ const defaultState = {
   fetchError: false,
   isCreating: false,
   createError: false,
+  isDeleting: false,
+  deleteError: false,
 };
 
 const resourceReducer = actions => (state = defaultState, action) => {
+  let indexOfRemovedObject;
   switch (action.type) {
     case actions.listRequest:
       return {
@@ -45,6 +48,29 @@ const resourceReducer = actions => (state = defaultState, action) => {
         ...state,
         isCreating: false,
         createError: action.error,
+      };
+    case actions.deleteRequest:
+      return {
+        ...state,
+        isDeleting: true,
+        deleteError: false,
+      };
+    case actions.deleteSuccess:
+      indexOfRemovedObject = state.items.findIndex(item => item.metadata.name === action.result);
+      return {
+        ...state,
+        isDeleting: false,
+        deleteError: false,
+        items: [
+          ...state.items.slice(0, indexOfRemovedObject),
+          ...state.items.slice(indexOfRemovedObject + 1),
+        ],
+      };
+    case actions.deleteFailure:
+      return {
+        ...state,
+        isDeleting: false,
+        deleteError: action.error,
       };
     default:
       return state;
