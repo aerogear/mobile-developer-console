@@ -2,6 +2,7 @@ package stub
 
 import (
 	"context"
+
 	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
 	"github.com/aerogear/mobile-client-service/pkg/mobile"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
@@ -26,7 +27,6 @@ func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 		secret := o
 
 		if !isValidSecret(secret) {
-			log.Infof("invalid secret %v", secret.GetName())
 			return nil
 		}
 
