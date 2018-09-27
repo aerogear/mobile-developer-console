@@ -47,6 +47,20 @@ const dataService = {
     }
     return response.json();
   },
+  deleteBuildConfig: async (name) => {
+    const response = await fetch(`${baseUrl}/buildconfigs/${name}`, {
+      method: 'DELETE',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+    });
+    if (!response.ok) {
+      throw Error(response.statusText);
+    }
+    return name;
+  },
 };
 
 export default dataService;
