@@ -8,9 +8,9 @@ if [ -z "$1" ]; then
 fi
 
 if [ "$1" == "go-server" ]; then
-    ./mobile-client-service -kubeconfig ~/.kube/config
+    ./mobile-developer-console -kubeconfig ~/.kube/config
 fi
 
 if [ "$1" == "kill-go-server" ]; then
-    pkill mobile-client-service
+    pkill mobile-developer-console
 fi

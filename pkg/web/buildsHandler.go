@@ -3,7 +3,7 @@ package web
 import (
 	"net/http"
 
-	"github.com/aerogear/mobile-client-service/pkg/mobile"
+	"github.com/aerogear/mobile-developer-console/pkg/mobile"
 	"github.com/labstack/echo"
 )
 

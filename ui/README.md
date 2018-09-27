@@ -1,4 +1,4 @@
-# Mobile Client Service Frontend
+# Mobile Developer Console Frontend
 
 Run `yarn install` or `npm install` to install the dependencies
 Run `yarn start` or `npm run start` to start the web server

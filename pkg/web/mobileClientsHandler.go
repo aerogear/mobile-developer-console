@@ -2,8 +2,8 @@ package web
 
 import (
 	"encoding/json"
-	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
-	"github.com/aerogear/mobile-client-service/pkg/mobile"
+	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
+	"github.com/aerogear/mobile-developer-console/pkg/mobile"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo"
 	"github.com/satori/go.uuid"

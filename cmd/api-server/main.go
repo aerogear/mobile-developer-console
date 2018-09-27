@@ -5,15 +5,15 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/aerogear/mobile-client-service/pkg/mobile"
+	"github.com/aerogear/mobile-developer-console/pkg/mobile"
 
-	"github.com/aerogear/mobile-client-service/pkg/config"
-	"github.com/aerogear/mobile-client-service/pkg/web"
+	"github.com/aerogear/mobile-developer-console/pkg/config"
+	"github.com/aerogear/mobile-developer-console/pkg/web"
 	log "github.com/sirupsen/logrus"
 
 	"context"
 
-	"github.com/aerogear/mobile-client-service/pkg/stub"
+	"github.com/aerogear/mobile-developer-console/pkg/stub"
 	sc "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset"
 	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"

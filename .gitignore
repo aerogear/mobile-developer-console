@@ -13,7 +13,7 @@
 .vscode
 
 vendor
-mobile-client-service
+mobile-developer-console
 dist
 gin-bin
 cmd/api-server/debug

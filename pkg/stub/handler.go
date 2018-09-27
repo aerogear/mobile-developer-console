@@ -3,8 +3,8 @@ package stub
 import (
 	"context"
 
-	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
-	"github.com/aerogear/mobile-client-service/pkg/mobile"
+	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
+	"github.com/aerogear/mobile-developer-console/pkg/mobile"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/api/core/v1"

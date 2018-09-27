@@ -1,3 +1,3 @@
 apiVersion: aerogear.org/v1alpha1
 kind: MobileClient
-projectName: mobile-client-service
+projectName: mobile-developer-console

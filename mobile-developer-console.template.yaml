@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: mobile-client-service-template
+  name: mobile-developer-console-template
 objects:
 - apiVersion: apps/v1
   kind: Deployment
@@ -68,13 +68,13 @@ parameters:
   required: true
 - name: SERVER_IMAGE
   description: The image to create the server from.
-  value: aerogear/mobile-client-service:latest
+  value: aerogear/mobile-developer-console:latest
   required: true
 - name: SERVICE_NAME
   description: What to name the service/application in OpenShift. Selectors will be updated also.
-  value: mobile-client-service
+  value: mobile-developer-console
   required: true
 - name: SERVICE_ACCOUNT_NAME
   description: What to name the service account to run this service
-  value: mobile-client-service
+  value: mobile-developer-console
   required: true

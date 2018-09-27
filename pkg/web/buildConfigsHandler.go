@@ -6,7 +6,7 @@ import (
 
 	"encoding/base64"
 
-	"github.com/aerogear/mobile-client-service/pkg/mobile"
+	"github.com/aerogear/mobile-developer-console/pkg/mobile"
 	"github.com/labstack/echo"
 	buildV1 "github.com/openshift/api/build/v1"
 	"k8s.io/api/core/v1"

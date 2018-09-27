@@ -1,7 +1,7 @@
 package mobile
 
 import (
-	"github.com/aerogear/mobile-client-service/pkg/apis/aerogear/v1alpha1"
+	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	k8v1 "k8s.io/api/core/v1"
 )
 

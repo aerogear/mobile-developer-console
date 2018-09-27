@@ -16,14 +16,14 @@ settings:
     force: false
     interval: 0s
 schema:
-- name: mobile-client-service
+- name: mobile-developer-console
   path: .
   env:
   commands:
     build:
       status: true
       args:
-      - -o mobile-client-service
+      - -o mobile-developer-console
       - ./cmd/api-server/main.go
   watcher:
     extensions:

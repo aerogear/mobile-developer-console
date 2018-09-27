@@ -4,7 +4,7 @@
 version: 2
 jobs:
   build_server:
-    working_directory: /go/src/github.com/aerogear/mobile-client-service
+    working_directory: /go/src/github.com/aerogear/mobile-developer-console
 
     docker:
       - image: circleci/golang:1.10
@@ -18,7 +18,7 @@ jobs:
       - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
 
   build_ui:
-    working_directory: ~/mobile-client-service
+    working_directory: ~/mobile-developer-console
 
     docker:
       - image: circleci/node:8.11.3
@@ -33,7 +33,7 @@ jobs:
 
 
   docker_push_master:
-    working_directory: /go/src/github.com/aerogear/mobile-client-service
+    working_directory: /go/src/github.com/aerogear/mobile-developer-console
     docker:
       - image: circleci/golang:1.10
     steps:
@@ -48,7 +48,7 @@ jobs:
       - run: make docker_push_master
 
   docker_release:
-    working_directory: /go/src/github.com/aerogear/mobile-client-service
+    working_directory: /go/src/github.com/aerogear/mobile-developer-console
     docker:
       - image: circleci/golang:1.10
     steps:

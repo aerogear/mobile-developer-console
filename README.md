@@ -1,6 +1,6 @@
-[![CircleCI](https://circleci.com/gh/aerogear/mobile-client-service.svg?style=svg)](https://circleci.com/gh/aerogear/mobile-client-service) [![Coverage Status](https://coveralls.io/repos/github/aerogear/mobile-client-service/badge.svg?branch=master)](https://coveralls.io/github/aerogear/mobile-client-service?branch=master)
+[![CircleCI](https://circleci.com/gh/aerogear/mobile-developer-console.svg?style=svg)](https://circleci.com/gh/aerogear/mobile-developer-console) [![Coverage Status](https://coveralls.io/repos/github/aerogear/mobile-developer-console/badge.svg?branch=master)](https://coveralls.io/github/aerogear/mobile-developer-console?branch=master)
 
-# Mobile Client Service
+# Mobile Developer Console
 
 ## Prerequisites
 
@@ -15,7 +15,7 @@ Checkout to $GOPATH/src/github.com/aerogear
 
 ```bash
 mkdir -v $GOPATH/src/github.com/aerogear
-git clone https://github.com/aerogear/mobile-client-service $GOPATH/src/github.com/aerogear/mobile-client-service
+git clone https://github.com/aerogear/mobile-developer-console $GOPATH/src/github.com/aerogear/mobile-developer-console
 ```
 
 ```bash
@@ -44,7 +44,7 @@ Create the Mobile Client custom resource definition
 oc create -f deploy/crd.yaml
 ```
 
-There is an example custom resource template at [deploy/cr.yaml](https://github.com/aerogear/mobile-client-service/blob/master/deploy/cr.yaml) to create Mobile Client instances.
+There is an example custom resource template at [deploy/cr.yaml](https://github.com/aerogear/mobile-developer-console/blob/master/deploy/cr.yaml) to create Mobile Client instances.
 
 Create a new target project
 ```bash
@@ -70,13 +70,13 @@ make serve
 
 ```bash
 oc project <namespace>
-oc process -f mobile-client-service.template.yaml | oc create -f -
+oc process -f mobile-developer-console.template.yaml | oc create -f -
 ```
 
 For more information on parameters, run:
 
 ```bash
-oc process -f mobile-client-service.template.yaml --parameters
+oc process -f mobile-developer-console.template.yaml --parameters
 ```
 
 ## Local development
@@ -110,7 +110,7 @@ Make sure you have the [operator-sdk](https://github.com/operator-framework/oper
 
 In order to run this service on local OpenShift, please follow the steps below:
 
-1. Provison a local OpenShift cluster using the [provision-mobile-client-service branch of mobile core](https://github.com/aerogear/mobile-core/tree/provision-mobile-client-service). The only difference between this branch and the master is that this branch uses the stock web console image.
+1. Provison a local OpenShift cluster using the [provision-mobile-developer-console branch of mobile core](https://github.com/aerogear/mobile-core/tree/provision-mobile-developer-console). The only difference between this branch and the master is that this branch uses the stock web console image.
 2. Once the local OpenShift cluster is up and running, update the config of the ansible-service-broker to load APBs from an extra source by running the following commands:
     
     ```
@@ -141,7 +141,7 @@ In order to run this service on local OpenShift, please follow the steps below:
     oc create -f /tmp/broker.json
     ```
 
-    At last, refresh the catalog and you should see there is a new `Mobile Client Service` available.
+    At last, refresh the catalog and you should see there is a new `Mobile Developer Console` available.
 3. Provision a new service from the catalog and go from there.
 
 

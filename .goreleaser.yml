@@ -2,7 +2,7 @@
 # Build customization
 builds:
   # makefile currently relies on this name
-  - binary: mobile-client-service
+  - binary: mobile-developer-console
     main: ./cmd/api-server/main.go
     goos:
       - windows

@@ -1,12 +1,12 @@
-APP_NAME = mobile-client-service
+APP_NAME = mobile-developer-console
 PKG     = github.com/aerogear/$(APP_NAME)
 TOP_SRC_DIRS   = pkg
 PACKAGES     ?= $(shell sh -c "find $(TOP_SRC_DIRS) -name \\*_test.go \
                   -exec dirname {} \\; | sort | uniq")
-BINARY ?= mobile-client-service
+BINARY ?= mobile-developer-console
 
 # This follows the output format for goreleaser
-BINARY_LINUX_64 = ./dist/linux_amd64/mobile-client-service
+BINARY_LINUX_64 = ./dist/linux_amd64/mobile-developer-console
 
 RELEASE_TAG ?= $(CIRCLE_TAG)
 DOCKER_LATEST_TAG = aerogear/$(APP_NAME):latest
@@ -40,7 +40,7 @@ ui:
 
 .PHONY: serve
 serve: build ui
-	export STATIC_FILES_DIR=$(CURDIR)/ui/build; ./mobile-client-service -kubeconfig ~/.kube/config
+	export STATIC_FILES_DIR=$(CURDIR)/ui/build; ./mobile-developer-console -kubeconfig ~/.kube/config
 
 .PHONY: build_linux
 build_linux: setup
