@@ -114,6 +114,8 @@ Hide Build History
             </ComponentSectionLabel>
             <BuildConfigDetails buildConfig={buildConfigDetails} />
           </Col>
+        </Row>
+        <Row>
           <Col md={12}>
             <ComponentSectionLabel>
                 Builds

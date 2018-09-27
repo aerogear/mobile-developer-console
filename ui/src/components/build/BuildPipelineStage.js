@@ -22,11 +22,18 @@ const getIcon = (status) => {
 class BuildPipelineStage extends Component {
   // TODO: add webhook or poll end point to set pipeline stages
   render() {
-    const status = JSON.parse(this.props.build.metadata.annotations['openshift.io/jenkins-status-json']);
+    let stages;
+    try {
+      const status = JSON.parse(this.props.build.metadata.annotations['openshift.io/jenkins-status-json']);
+      stages = status.stages;
+    } catch (error) {
+      stages = [];
+    }
+    
     return (
       <React.Fragment>
         {
-          status.stages.map((stage, index) => (
+          stages.map((stage, index) => (
             <React.Fragment key={stage.id}>
               <div className="pipeline-stage">
                 <div className="pipeline-stage-column">
@@ -49,7 +56,7 @@ class BuildPipelineStage extends Component {
               </div>
               <div className="pipeline-arrow">
                 {
-                  index < status.stages.length - 1 && (
+                  index < stages.length - 1 && (
                     <span className="fa fa-arrow-right fa-fw" aria-hidden="true" />
                   )
                 }
