@@ -12,6 +12,7 @@ class MobileClientOverviewList extends Component {
           <ListView>
             {mobileClients.map(mobileClient => (
               <MobileClientListViewItem
+                key={mobileClient.metadata.name}
                 mobileClient={mobileClient}
                 mobileServiceInstances={mobileServiceInstances}
                 mobileClientBuilds={mobileClientBuilds}

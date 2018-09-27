@@ -9,8 +9,8 @@ import { fetchServices } from '../actions/services';
 
 class Overview extends Component {
   componentDidMount() {
-    this.props.dispatch(fetchApps());
-    this.props.dispatch(fetchServices());
+    this.props.fetchApps();
+    this.props.fetchServices();
   }
 
   render() {
@@ -36,4 +36,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Overview);
+const mapDispatchToProps = {
+  fetchApps,
+  fetchServices,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Overview);

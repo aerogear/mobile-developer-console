@@ -16,5 +16,5 @@ export const APP_CREATE_FAILURE = 'APP_CREATE_FAILURE';
 
 export const createApp = app => fetchAction(
   [APP_CREATE_REQUEST, APP_CREATE_SUCCESS, APP_CREATE_FAILURE],
-  () => DataService.createApp(app),
+  async () => DataService.createApp(app),
 )();

@@ -178,7 +178,7 @@ class CreateClient extends Component {
     }
 
     callClientCreation = () => {
-      this.props.dispatch(createApp(this.state.clientConfiguration));
+      this.props.createApp(this.state.clientConfiguration);
     }
 
 
@@ -216,4 +216,8 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(CreateClient);
+const mapDispatchToProps = {
+  createApp,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateClient);

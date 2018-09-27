@@ -9,12 +9,11 @@ import ComponentSectionLabel from '../common/ComponentSectionLabel';
 import MobileClientBuildHistoryList from './MobileClientBuildHistoryList';
 import BuildInformation from './BuildInformation';
 import NoBuild from './NoBuild';
+import StartBuildButton from '../../containers/StartBuildButton';
 
 const actions = id => (
   <React.Fragment>
-    <Button>
-      Start Build
-    </Button>
+    <StartBuildButton jobName={id} />
     <DropdownKebab id={`build-actions-${id}`} pullRight>
       <MenuItem>Edit</MenuItem>
       <MenuItem>Delete</MenuItem>
@@ -36,7 +35,9 @@ const lastBuild = builds => builds.reduce((acc, curr) => (buildNumber(curr) > bu
 
 const buildHistory = (builds) => {
   const lastBuildNumber = buildNumber(lastBuild(builds));
-  return builds.filter(build => buildNumber(build) !== lastBuildNumber);
+  return builds
+    .filter(build => buildNumber(build) !== lastBuildNumber)
+    .sort((a, b) => buildNumber(b) - buildNumber(a));
 };
 
 const heading = (name, lastBuild) => (
@@ -97,6 +98,7 @@ Hide Build History
     const builds = buildConfiguration.builds || [];
     const lastClientBuild = lastBuild(builds);
     const clientBuildHistory = buildHistory(builds);
+    const buildConfigDetails = buildConfig(buildConfiguration);
 
     return (
       <MobileListViewItem
@@ -111,7 +113,7 @@ Hide Build History
             <ComponentSectionLabel>
                 Build Config
             </ComponentSectionLabel>
-            <BuildConfigDetails buildConfig={buildConfig(buildConfiguration)} />
+            <BuildConfigDetails buildConfig={buildConfigDetails} />
           </Col>
           <Col md={12}>
             <ComponentSectionLabel>
@@ -119,7 +121,7 @@ Hide Build History
             </ComponentSectionLabel>
             {
               builds.length === 0
-                ? <NoBuild />
+                ? <NoBuild buildConfig={buildConfigDetails} />
                 : (
                   <React.Fragment>
                     <BuildInformation build={lastClientBuild} />

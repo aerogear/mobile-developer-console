@@ -9,3 +9,12 @@ export const fetchBuilds = fetchAction(
   [BUILDS_REQUEST, BUILDS_SUCCESS, BUILDS_FAILURE],
   DataService.builds,
 );
+
+export const BUILD_TRIGGER_REQUEST = 'BUILD_TRIGGER_REQUEST';
+export const BUILD_TRIGGER_SUCCESS = 'BUILD_TRIGGER_SUCCESS';
+export const BUILD_TRIGGER_FAILURE = 'BUILD_TRIGGER_FAILURE';
+
+export const triggerBuild = name => fetchAction(
+  [BUILD_TRIGGER_REQUEST, BUILD_TRIGGER_SUCCESS, BUILD_TRIGGER_FAILURE],
+  async () => DataService.triggerBuild(name),
+)();

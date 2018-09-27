@@ -20,8 +20,8 @@ class Client extends Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(fetchBuildConfigs());
-    this.props.dispatch(fetchBuilds());
+    this.props.fetchBuildConfigs();
+    this.props.fetchBuilds();
   }
 
   componentDidUpdate(prevProps) {
@@ -30,6 +30,8 @@ class Client extends Component {
       || this.props.builds !== prevProps.builds
     ) {
       const configs = this.props.buildConfigs.items.filter(config => config.metadata.labels['mobile-client-id'] === this.props.match.params.id);
+
+      configs.forEach(config => delete config.builds);
 
       this.props.builds.items.forEach((build) => {
         const matchingConfig = configs.find(
@@ -82,4 +84,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Client);
+const mapDispatchToProps = {
+  fetchBuildConfigs,
+  fetchBuilds,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Client);
