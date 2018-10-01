@@ -17,7 +17,7 @@ class BoundServiceRow extends Component {
 
   renderServiceBadge() {
     return (
-      <Col md={3} className="service-sdk-info">
+      <Col key={this.service.serviceId} md={3} className="service-sdk-info">
         <Col md={12}>
           <img src={this.service.serviceLogoUrl} alt="" />
           <div className="service-name">
@@ -54,7 +54,7 @@ SDK Setup
 
     if (this.service.configuration) {
       propertyFragment = this.service.configuration.map(configuration => (
-        <Row>
+        <Row key={configuration.key}>
           <Col md={2} className="detailsKey">
             {configuration.key}
             {' '}
@@ -82,8 +82,8 @@ SDK Setup
   render() {
     return (
       <ListViewItem
-        additionalInfo={this.renderServiceBadge()}
-        class="boundService"
+        additionalInfo={[this.renderServiceBadge()]}
+        className="boundService"
         actions={(
           <div>
             <DropdownKebab id={`delete-${this.service.serviceId}`} pullRight>
@@ -91,7 +91,7 @@ SDK Setup
             </DropdownKebab>
           </div>
 )}
-        hideCloseIcon="true"
+        hideCloseIcon
       >
         {this.renderServiceDetails()}
       </ListViewItem>
