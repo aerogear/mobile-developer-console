@@ -46,9 +46,9 @@ class MobileServiceView extends Component {
   boundServiceRows() {
     const rows = [];
     if (this.state.boundServices) {
-      rows.push(<h2>Bound Services</h2>);
+      rows.push(<h2 key="bound-services">Bound Services</h2>);
       this.state.boundServices.forEach((service) => {
-        rows.push(<BoundServiceRow service={service} />);
+        rows.push(<BoundServiceRow key={service.serviceId} service={service} />);
       });
     }
 
@@ -58,9 +58,9 @@ class MobileServiceView extends Component {
   unboundServiceRows() {
     const rows = [];
     if (this.state.unboundServices) {
-      rows.push(<h2>Unbound Services</h2>);
+      rows.push(<h2 key="unbound-services">Unbound Services</h2>);
       this.state.unboundServices.forEach((service) => {
-        rows.push(<UnboundServiceRow service={service} />);
+        rows.push(<UnboundServiceRow key={service.serviceId} service={service} />);
       });
     }
     return rows;

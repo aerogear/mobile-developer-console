@@ -14,7 +14,7 @@ class UnboundServiceRow extends Component {
 
   renderServiceBadge() {
     return (
-      <Col md={3} className="service-sdk-info">
+      <Col md={3} key={this.service.serviceId} className="service-sdk-info">
         <Col md={12}>
           <img src={this.service.serviceLogoUrl} alt="" />
           <div className="service-name">
@@ -32,7 +32,7 @@ class UnboundServiceRow extends Component {
   render() {
     return (
       <ListViewItem
-        additionalInfo={this.renderServiceBadge()}
+        additionalInfo={[this.renderServiceBadge()]}
       />
     );
   }
