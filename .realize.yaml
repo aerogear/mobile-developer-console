@@ -40,7 +40,7 @@ schema:
       command: ./scripts/development.sh kill-go-server
       global: false
     - type: after
-      command: Running server on port 4000
+      command: echo "Running server on port 4000"
       global: false
     - type: after
       command: ./scripts/development.sh go-server
