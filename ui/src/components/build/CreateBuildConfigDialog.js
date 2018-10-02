@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Grid, Row, Col, Form, FormGroup, ControlLabel, FormControl, HelpBlock, Button, Modal } from 'patternfly-react';
+import {
+  Grid, Row, Col, Form, FormGroup, ControlLabel, FormControl, HelpBlock, Button, Modal,
+} from 'patternfly-react';
 import PropTypes from 'prop-types';
 import FormDropdown from '../common/FormDropdown';
 import KeyValueEditor from '../common/KeyValueEditor';
-import './CreateClientBuildDialog.css';
+import './CreateBuildConfigDialog.css';
 import {
   BUILD_AUTH_TYPE_PUBLIC,
   BUILD_AUTH_TYPE_BASIC,
@@ -11,20 +13,30 @@ import {
   BUILD_PLATFORM_ANDROID,
   BUILD_TYPE_DEBUG,
   BUILD_PLATFORM_IOS,
-  BUILD_TYPE_RELEASE
+  BUILD_TYPE_RELEASE,
 } from './Constants';
 import { SubState } from '../common/SubState';
 
-class CreateClientBuildDialog extends Component {
+class CreateBuildConfigDialog extends Component {
+  propTypes = {
+    onCancel: PropTypes.func,
+    onSave: PropTypes.func,
+    title: PropTypes.string.isRequired,
+    show: PropTypes.bool.isRequired,
+    update: PropTypes.bool,
+    buildConfig: PropTypes.object,
+  };
+
   constructor(props) {
     super(props);
     const { buildConfig } = props;
     this.state = {
       config: {
-        source: { authType: BUILD_AUTH_TYPE_PUBLIC },
-        build: { platform: BUILD_PLATFORM_ANDROID, buildType: BUILD_TYPE_DEBUG }
+        source: { authType: BUILD_AUTH_TYPE_PUBLIC, gitRef: 'master', jenkinsFilePath: '/' },
+        build: { platform: BUILD_PLATFORM_ANDROID, buildType: BUILD_TYPE_DEBUG },
       },
-      ...buildConfig
+      advancedOptions: false,
+      ...buildConfig,
     };
     this.configState = new SubState(this, 'config');
     this.buildState = new SubState(this, 'config.build');
@@ -33,14 +45,6 @@ class CreateClientBuildDialog extends Component {
     this.sourceState = new SubState(this, 'config.source');
   }
 
-  propTypes = {
-    onCancel: PropTypes.func,
-    onSave: PropTypes.func,
-    title: PropTypes.string.isRequired,
-    show: PropTypes.bool.isRequired,
-    update: PropTypes.bool,
-    buildConfig: PropTypes.object
-  };
 
   onSaveBuildConfig = () => {
     const { config } = this.state;
@@ -48,13 +52,13 @@ class CreateClientBuildDialog extends Component {
     onSave && onSave({ update, config });
   };
 
-  onEnvVarsChange = rows => {
+  onEnvVarsChange = (rows) => {
     this.configState.set(
       'envVars',
       rows.map(({ key, value }) => ({
         name: key,
-        value
-      }))
+        value,
+      })),
     );
   };
 
@@ -104,18 +108,46 @@ class CreateClientBuildDialog extends Component {
   };
 
   renderSourceSection = () => {
-    const { gitUrl = '', authType = BUILD_AUTH_TYPE_PUBLIC } = this.sourceState.getOrEmpty();
+    const { advancedOptions } = this.state;
+    const {
+      gitUrl = '', gitRef = 'master', jenkinsFilePath = '/', authType = BUILD_AUTH_TYPE_PUBLIC,
+    } = this.sourceState.getOrEmpty();
     return (
       <div className="section">
         <h3 className="with-divider">Source Configuration</h3>
-        <FormGroup>
-          <ControlLabel className="required">Git Repository URL</ControlLabel>
-          <FormControl type="text" onChange={e => this.sourceState.set('gitUrl', e.target.value)} value={gitUrl} />
-          <HelpBlock>Git URL of the source code to build.</HelpBlock>
-          <HelpBlock>
-            View the <a>advanced options</a>
-          </HelpBlock>
-        </FormGroup>
+        <Grid fluid className="sourceSection">
+          <Row>
+            <Col lg={advancedOptions ? 8 : 12}>
+              <FormGroup>
+                <ControlLabel className="required">Git Repository URL</ControlLabel>
+                <FormControl type="text" onChange={e => this.sourceState.set('gitUrl', e.target.value)} value={gitUrl} />
+                <HelpBlock>Git URL of the source code to build.</HelpBlock>
+                <HelpBlock>
+            View the
+                  {' '}
+                  <a href="#" onClick={() => this.setState({ advancedOptions: true })}>advanced options</a>
+                </HelpBlock>
+              </FormGroup>
+            </Col>
+
+            {advancedOptions
+              ? (<Col lg={4}>
+                <FormGroup>
+                  <ControlLabel className="required">Git Reference</ControlLabel>
+                  <FormControl type="text" onChange={e => this.sourceState.set('gitRef', e.target.value)} value={gitRef} />
+                </FormGroup>
+              </Col>
+              ) : <React.Fragment />}
+          </Row>
+        </Grid>
+        {advancedOptions
+          ? (
+            <FormGroup>
+              <ControlLabel className="required">Jenkins file path</ControlLabel>
+              <FormControl type="text" defaultValue={jenkinsFilePath} onChange={e => this.sourceState.set('jenkinsFilePath', e.target.value)} value={jenkinsFilePath} />
+            </FormGroup>
+          )
+          : <React.Fragment />}
         <FormGroup>
           <ControlLabel>Authentication Type</ControlLabel>
           <FormDropdown
@@ -201,14 +233,16 @@ class CreateClientBuildDialog extends Component {
   };
 
   render() {
-    const { show, title, onCancel, update } = this.props;
+    const {
+      show, title, onCancel, update,
+    } = this.props;
     return (
-      <Modal show={show}>
+      <Modal show={show} container={this}>
         <Modal.Header>
           <Modal.CloseButton onClick={onCancel} />
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="modalBody">
           <Grid fluid>
             <Row>
               <Col md={10}>
@@ -223,11 +257,11 @@ class CreateClientBuildDialog extends Component {
               </Col>
             </Row>
           </Grid>
-          <Modal.Footer>{this.renderFormButtons(onCancel, update)}</Modal.Footer>
         </Modal.Body>
+        <Modal.Footer>{this.renderFormButtons(onCancel, update)}</Modal.Footer>
       </Modal>
     );
   }
 }
 
-export default CreateClientBuildDialog;
+export default CreateBuildConfigDialog;

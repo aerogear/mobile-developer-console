@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
 import { Button } from 'patternfly-react';
-
+import { connect } from 'react-redux';
+import { createBuildConfig } from '../../actions/buildConfigs';
 import './NoBuildConfig.css';
-import CreateClientBuildDialog from './CreateClientBuildDialog';
+import CreateClientBuildDialog from './CreateBuildConfigDialog';
 
-const createBuildConfig = 'Create build config';
+
+const createBuildConfigTitle = 'Create build config';
 class NoBuildConfig extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      createBuildDialogDisplayed: false
+      createBuildDialogDisplayed: false,
     };
   }
 
-  createBuild = config => {
-    this.setState({ createBuildDialogDisplayed: true });
-  };
-
-  buildUpdated = buildConfig => {
+  buildUpdated = (configUpdate) => {
     console.log('build updated');
-    console.log(buildConfig);
+    // TODO remove hardcoded values and use values from app config
+    const config = Object.assign({ clientId: 'org.aerogear.app', clientType: 'android' }, configUpdate.config);
+    this.props.createBuildConfig(config);
     this.close();
   };
 
@@ -33,12 +33,12 @@ class NoBuildConfig extends Component {
       <div className="note">
         <h2>No Build Config</h2>
         <p>Create a mobile build config to create a mobile client build.</p>
-        <Button bsStyle="primary" bsSize="large" onClick={this.createBuild}>
-          {createBuildConfig}
+        <Button bsStyle="primary" bsSize="large" onClick={() => this.setState({ createBuildDialogDisplayed: true })}>
+          {createBuildConfigTitle}
         </Button>
         <CreateClientBuildDialog
           show={createBuildDialogDisplayed}
-          title={createBuildConfig}
+          title={createBuildConfigTitle}
           onSave={this.buildUpdated}
           onCancel={this.close}
         />
@@ -47,4 +47,14 @@ class NoBuildConfig extends Component {
   };
 }
 
-export default NoBuildConfig;
+function mapStateToProps(state) {
+  return {
+    config: state,
+  };
+}
+
+const mapDispatchToProps = {
+  createBuildConfig,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NoBuildConfig);

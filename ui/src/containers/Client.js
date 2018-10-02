@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import {
-  Nav, NavItem, TabContent, TabPane, TabContainer, Grid, Breadcrumb, DropdownButton
+  Nav,
+  NavItem,
+  TabContent,
+  TabPane,
+  TabContainer,
+  Grid,
+  Breadcrumb,
+  DropdownButton,
+  Alert
 } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -21,7 +29,7 @@ class Client extends Component {
     super(props);
 
     this.state = {
-      buildConfigs: [],
+      buildConfigs: []
     };
   }
 
@@ -47,21 +55,19 @@ class Client extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (
-      this.props.buildConfigs !== prevProps.buildConfigs
-      || this.props.builds !== prevProps.builds
-    ) {
-      const configs = this.props.buildConfigs.items.filter(config => config.metadata.labels['mobile-client-id'] === this.props.match.params.id);
+    if (this.props.buildConfigs !== prevProps.buildConfigs || this.props.builds !== prevProps.builds) {
+      const configs = this.props.buildConfigs.items.filter(
+        config => config.metadata.labels['mobile-client-id'] === this.props.match.params.id
+      );
 
       configs.forEach(config => delete config.builds);
 
-      this.props.builds.items.forEach((build) => {
-        const matchingConfig = configs.find(
-          config => config.metadata.name === build.metadata.labels.buildconfig,
-        );
+      this.props.builds.items.forEach(build => {
+        const matchingConfig = configs.find(config => config.metadata.name === build.metadata.labels.buildconfig);
         if (matchingConfig) {
           matchingConfig.builds = matchingConfig.builds || [];
           matchingConfig.builds.push(build);
+          this.setState({ matchingConfig });
         }
       });
 
@@ -119,12 +125,12 @@ class Client extends Component {
                       <TabPane eventKey={2}>
                         <MobileServiceView appName={this.props.match.params.id} />
                       </TabPane>
-                      {this.props.buildTabEnabled? 
+                      {this.props.buildTabEnabled?
                         (<TabPane eventKey={3}>
                           <MobileClientBuildsList appName={this.props.match.params.id} buildConfigs={this.state.buildConfigs} />
                         </TabPane>) : null
                       }
-                      
+
                     </TabContent>
                   </div>
                 </TabContainer>
@@ -142,15 +148,18 @@ function mapStateToProps(state) {
   return {
     apps: state.apps,
     buildConfigs: state.buildConfigs,
-    builds: state.builds,
-    buildTabEnabled: state.config.buildTabEnabled
+    buildTabEnabled: state.config.buildTabEnabled,
+    builds: state.builds
   };
 }
 
 const mapDispatchToProps = {
   fetchApp,
   fetchBuildConfigs,
-  fetchBuilds,
+  fetchBuilds
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Client);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Client);
