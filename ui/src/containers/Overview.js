@@ -13,8 +13,13 @@ class Overview extends Component {
     this.props.fetchApps();
     this.props.fetchServices();
 
-    DataService.watchApps(this.props.fetchApps);
-    DataService.watchServices(this.props.fetchServices);
+    this.wsApps = DataService.watchApps(this.props.fetchApps);
+    this.wsServices = DataService.watchServices(this.props.fetchServices);
+  }
+
+  componentWillUnmount() {
+    this.wsApps.close();
+    this.wsServices.close();
   }
 
   render() {

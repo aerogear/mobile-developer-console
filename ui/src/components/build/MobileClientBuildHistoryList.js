@@ -2,8 +2,8 @@ import React from 'react';
 import { Col, Button } from 'patternfly-react';
 import Moment from 'react-moment';
 import moment from 'moment';
-import 'moment-precise-range-plugin';
 import BuildStatus from '../common/BuildStatus';
+import Duration from './Duration';
 
 import './MobileClientBuildHistoryList.css';
 
@@ -23,7 +23,8 @@ const MobileClientBuildHistoryList = (props) => {
           },
           buildUrl,
         } = mobileClientBuild;
-        const durationString = moment.preciseDiff(startTimestamp, completionTimestamp);
+        
+        const duration = moment(completionTimestamp).valueOf() - moment(startTimestamp).valueOf();
 
         return (
           <Col xs={12} className="mobile-client-build-history-item" key={uid}>
@@ -60,7 +61,7 @@ const MobileClientBuildHistoryList = (props) => {
                 </Col>
                 <Col sm={12} md={5}>
                   <span>Duration: </span>
-                  <span>{durationString}</span>
+                  <span><Duration duration={duration} inProgress={phase === 'Running'} /></span>
                 </Col>
               </Col>
             </Col>

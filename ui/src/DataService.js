@@ -39,6 +39,7 @@ const webSocket = (action, url) => {
       }, 1000);
     }
   };
+  return ws;
 };
 
 const dataService = {

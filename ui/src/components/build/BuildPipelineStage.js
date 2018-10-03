@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import moment from 'moment';
-import momentDurationFormatSetup from 'moment-duration-format';
+import Duration from './Duration';
 
 import './BuildPipelineStage.css';
-
-momentDurationFormatSetup(moment);
 
 const getIcon = (status) => {
   switch (status) {
@@ -20,7 +17,6 @@ const getIcon = (status) => {
 };
 
 class BuildPipelineStage extends Component {
-  // TODO: add webhook or poll end point to set pipeline stages
   render() {
     let stages;
     try {
@@ -29,7 +25,7 @@ class BuildPipelineStage extends Component {
     } catch (error) {
       stages = [];
     }
-    
+
     return (
       <React.Fragment>
         {
@@ -53,7 +49,7 @@ class BuildPipelineStage extends Component {
                     </div>
                     
                     <div className="pipeline-time">
-                      {moment.duration(stage.durationMillis).format('h[h] m[m] s[s]')}
+                      <Duration duration={stage.durationMillis} inProgress={stage.status === 'IN_PROGRESS'} />
                     </div>
                   </div>
                 </div>

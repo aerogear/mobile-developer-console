@@ -23,8 +23,13 @@ class Client extends Component {
     this.props.fetchBuildConfigs();
     this.props.fetchBuilds();
 
-    DataService.watchBuildConfigs(this.props.fetchBuildConfigs);
-    DataService.watchBuilds(this.props.fetchBuilds);
+    this.wsBuildConfigs = DataService.watchBuildConfigs(this.props.fetchBuildConfigs);
+    this.wsBuilds = DataService.watchBuilds(this.props.fetchBuilds);
+  }
+
+  componentWillUnmount() {
+    this.wsBuildConfigs.close();
+    this.wsBuilds.close();
   }
 
   componentDidUpdate(prevProps) {
