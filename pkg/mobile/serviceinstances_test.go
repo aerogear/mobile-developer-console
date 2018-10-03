@@ -72,8 +72,8 @@ func TestListMobileServiceInstaces(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			listImpl := NewServiceInstanceLister(tc.Client())
-			objList, err := listImpl.List("test")
+			listImpl := NewServiceInstanceLister(tc.Client(), "test")
+			objList, err := listImpl.List()
 			if tc.ExpectError && err == nil {
 				t.Fatalf("expected an error but got none")
 			}

@@ -49,8 +49,8 @@ func TestListMobileBuildConfigs(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			buildConfigCRUDLImpl := NewBuildConfigCRUDL(tc.Client())
-			buildConfigList, err := buildConfigCRUDLImpl.List("test")
+			buildConfigCRUDLImpl := NewBuildConfigCRUDL(tc.Client(), "test")
+			buildConfigList, err := buildConfigCRUDLImpl.List()
 			if tc.ExpectError && err == nil {
 				t.Fatalf("expected an error but got none")
 			}

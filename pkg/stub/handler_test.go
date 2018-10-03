@@ -1,16 +1,19 @@
 package stub
 
 import (
+	"testing"
+
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	v12 "k8s.io/api/core/v1"
 	errors2 "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"testing"
+	"k8s.io/apimachinery/pkg/watch"
 
 	"context"
 	"encoding/json"
 	"errors"
+
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
 )
 
@@ -51,7 +54,7 @@ func (r *mockMobileClientRepo) Update(app *v1alpha1.MobileClient) error {
 	}}
 }
 
-func (r *mockMobileClientRepo) List(namespace string) (*v1alpha1.MobileClientList, error) {
+func (r *mockMobileClientRepo) List() (*v1alpha1.MobileClientList, error) {
 	items := make([]v1alpha1.MobileClient, 0)
 	for _, app := range r.mockStore {
 		items = append(items, *app)
@@ -64,6 +67,10 @@ func (r *mockMobileClientRepo) List(namespace string) (*v1alpha1.MobileClientLis
 func (r *mockMobileClientRepo) DeleteByName(name string) error {
 	delete(r.mockStore, name)
 	return nil
+}
+
+func (r *mockMobileClientRepo) Watch() (watch.Interface, error) {
+	return nil, nil
 }
 
 func createSecret(labels map[string]string, data map[string][]byte, version string) v12.Secret {

@@ -62,7 +62,7 @@ func TestListServiceInstancesEndpoint(t *testing.T) {
 						},
 					},
 				})
-				return mobile.NewServiceInstanceLister(client.ServicecatalogV1beta1())
+				return mobile.NewServiceInstanceLister(client.ServicecatalogV1beta1(), "test")
 			},
 			ExpectItemsListSize:  1,
 			ExpectHTTPStatusCode: http.StatusOK,
@@ -73,7 +73,7 @@ func TestListServiceInstancesEndpoint(t *testing.T) {
 				client.PrependReactor("list", "serviceinstances", func(action ktesting.Action) (handled bool, ret runtime.Object, err error) {
 					return true, nil, errors.New("injected error")
 				})
-				return mobile.NewServiceInstanceLister(client.ServicecatalogV1beta1())
+				return mobile.NewServiceInstanceLister(client.ServicecatalogV1beta1(), "test")
 			},
 			ExpectHTTPStatusCode: http.StatusInternalServerError,
 		},
