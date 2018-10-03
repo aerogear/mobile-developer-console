@@ -21,6 +21,7 @@ const MobileClientBuildHistoryList = (props) => {
             },
             uid,
           },
+          buildUrl,
         } = mobileClientBuild;
         const durationString = moment.preciseDiff(startTimestamp, completionTimestamp);
 
@@ -30,7 +31,7 @@ const MobileClientBuildHistoryList = (props) => {
               <div className="build-summary">
                 <div>
                   <BuildStatus build={mobileClientBuild} />&nbsp;
-                  <a>
+                  <a href={buildUrl}>
                     Build #
                     {buildNumber}
                   </a>

@@ -8,6 +8,7 @@ const BuildSummary = (props) => {
   const {
     build,
     build: {
+      buildUrl,
       metadata: {
         annotations: {
           'openshift.io/jenkins-console-log-url': jenkinsConsoleLogUrl,
@@ -22,7 +23,7 @@ const BuildSummary = (props) => {
     <div className="build-summary-container">
       <div className="build-phase">
         <BuildStatus build={build} /> &nbsp;
-        <a>
+        <a href={buildUrl}>
           Build #
           {buildNumber}
         </a>
