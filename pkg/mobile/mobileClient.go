@@ -1,9 +1,16 @@
 package mobile
 
 import (
+	"context"
+
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
+)
+
+var (
+	handler *MobileHandler
 )
 
 type MobileClientRepoImpl struct {
@@ -39,7 +46,7 @@ func (r *MobileClientRepoImpl) Update(app *v1alpha1.MobileClient) error {
 	return sdk.Update(app)
 }
 
-func (r *MobileClientRepoImpl) List(namespace string) (*v1alpha1.MobileClientList, error) {
+func (r *MobileClientRepoImpl) List() (*v1alpha1.MobileClientList, error) {
 	listOpts := sdk.WithListOptions(&metav1.ListOptions{})
 	list := &v1alpha1.MobileClientList{
 		TypeMeta: metav1.TypeMeta{
@@ -65,4 +72,50 @@ func (r *MobileClientRepoImpl) DeleteByName(name string) error {
 
 func (r *MobileClientRepoImpl) Create(app *v1alpha1.MobileClient) error {
 	return sdk.Create(app)
+}
+
+type MobileWatcher struct {
+	events chan watch.Event
+}
+
+func (w MobileWatcher) Stop() {
+	close(w.events)
+	index := 0
+	for ; index < len(handler.watchers); index++ {
+		if handler.watchers[index] == w {
+			break
+		}
+	}
+	handler.watchers = append(handler.watchers[:index], handler.watchers[index+1:]...)
+}
+
+func (w MobileWatcher) ResultChan() <-chan watch.Event {
+	return w.events
+}
+
+type MobileHandler struct {
+	watchers []MobileWatcher
+}
+
+func (h MobileHandler) Handle(c context.Context, e sdk.Event) error {
+	for index := 0; index < len(h.watchers); index++ {
+		h.watchers[index].events <- watch.Event{
+			Type:   "MobileAppsEvent",
+			Object: nil,
+		}
+	}
+	return nil
+}
+
+func (r *MobileClientRepoImpl) Watch() (watch.Interface, error) {
+	if handler == nil {
+		sdk.Watch("mobile.k8s.io/v1alpha1", "MobileClient", r.namespace, 0)
+		handler = &MobileHandler{}
+		sdk.Handle(handler)
+	}
+	watcher := MobileWatcher{
+		events: make(chan watch.Event),
+	}
+	handler.watchers = append(handler.watchers, watcher)
+	return watcher, nil
 }

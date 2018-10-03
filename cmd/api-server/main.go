@@ -67,13 +67,13 @@ func main() {
 	}
 
 	{
-		siLister := mobile.NewServiceInstanceLister(scClient.ServicecatalogV1beta1())
+		siLister := mobile.NewServiceInstanceLister(scClient.ServicecatalogV1beta1(), namespace)
 		mobileServiceInstancesHandler := web.NewMobileServiceInstancesHandler(siLister, namespace)
 		web.SetupMobileServicesRoute(apiGroup, mobileServiceInstancesHandler)
 	}
 
 	{
-		buildCRUDL := mobile.NewBuildCRUDL(buildClient, cfg.Host)
+		buildCRUDL := mobile.NewBuildCRUDL(buildClient, namespace, cfh.Host)
 		mobileBuildsHandler := web.NewMobileBuildsHandler(buildCRUDL, namespace)
 		web.SetupMobileBuildsRoute(apiGroup, mobileBuildsHandler)
 	}
@@ -81,7 +81,7 @@ func main() {
 	secretsCRUDL := mobile.NewSecretsCRUDL(k8sClient.CoreV1())
 
 	{
-		buildConfigCRUDL := mobile.NewBuildConfigCRUDL(buildClient)
+		buildConfigCRUDL := mobile.NewBuildConfigCRUDL(buildClient, namespace)
 		mobileBuildConfigsHandler := web.NewMobileBuildConfigsHandler(buildConfigCRUDL, secretsCRUDL, namespace)
 		web.SetupMobileBuildConfigsRoute(apiGroup, mobileBuildConfigsHandler)
 	}

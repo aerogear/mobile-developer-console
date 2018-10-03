@@ -8,7 +8,7 @@ import MobileClientBuildsList from '../components/build/MobileClientBuildsList';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
 import { fetchBuildConfigs } from '../actions/buildConfigs';
 import { fetchBuilds } from '../actions/builds';
-
+import DataService from '../DataService';
 
 class Client extends Component {
   constructor(props) {
@@ -22,6 +22,9 @@ class Client extends Component {
   componentDidMount() {
     this.props.fetchBuildConfigs();
     this.props.fetchBuilds();
+
+    DataService.watchBuildConfigs(this.props.fetchBuildConfigs);
+    DataService.watchBuilds(this.props.fetchBuilds);
   }
 
   componentDidUpdate(prevProps) {
