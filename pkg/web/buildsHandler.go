@@ -8,14 +8,21 @@ import (
 )
 
 type MobileBuildsHandler struct {
-	namespace   string
-	buildsCRUDL mobile.BuildCRUDL
+	buildsCRUDL        mobile.BuildCRUDL
+	namespace          string
+	openshiftMasterURL string
 }
 
-func NewMobileBuildsHandler(buildsCRUDL mobile.BuildCRUDL, namespace string) *MobileBuildsHandler {
+type response struct {
+	mobile.BuildList
+	OpenshiftMasterURL string `json:"openshiftMasterUrl,inline"`
+}
+
+func NewMobileBuildsHandler(buildsCRUDL mobile.BuildCRUDL, namespace string, openshiftMasterURL string) *MobileBuildsHandler {
 	return &MobileBuildsHandler{
-		buildsCRUDL: buildsCRUDL,
-		namespace:   namespace,
+		buildsCRUDL:        buildsCRUDL,
+		namespace:          namespace,
+		openshiftMasterURL: openshiftMasterURL,
 	}
 }
 
@@ -25,6 +32,9 @@ func (mbh *MobileBuildsHandler) List(c echo.Context) error {
 		c.Logger().Errorf("error listing builds %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-
-	return c.JSON(http.StatusOK, builds)
+	response := &response{
+		BuildList:          *builds,
+		OpenshiftMasterURL: mbh.openshiftMasterURL,
+	}
+	return c.JSON(http.StatusOK, response)
 }

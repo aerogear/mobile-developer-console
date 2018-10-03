@@ -21,7 +21,7 @@ import (
 )
 
 func setupBuildsServer(crudl mobile.BuildCRUDL, apiPrefix string) *httptest.Server {
-	h := NewMobileBuildsHandler(crudl, "test")
+	h := NewMobileBuildsHandler(crudl, "test", "https://test-url:8443")
 
 	r := NewRouter("", apiPrefix)
 	apiRoute := r.Group(apiPrefix)
