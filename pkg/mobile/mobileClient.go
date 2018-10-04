@@ -2,6 +2,8 @@ package mobile
 
 import (
 	"context"
+	"sync"
+	"time"
 
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
@@ -11,6 +13,7 @@ import (
 
 var (
 	handler *MobileHandler
+	m       sync.Mutex
 )
 
 type MobileClientRepoImpl struct {
@@ -79,7 +82,22 @@ type MobileWatcher struct {
 }
 
 func (w MobileWatcher) Stop() {
+	done := make(chan struct{})
+	go func() {
+		drain := true
+		for drain {
+			select {
+			case <-done:
+				drain = false
+			case <-w.events:
+			case <-time.After(1 * time.Second):
+			}
+		}
+	}()
+	m.Lock()
 	handler.RemoveWatcher(w)
+	m.Unlock()
+	done <- struct{}{}
 }
 
 func (w MobileWatcher) ResultChan() <-chan watch.Event {
@@ -96,12 +114,14 @@ func (h MobileHandler) Handle(c context.Context, e sdk.Event) error {
 }
 
 func (h MobileHandler) NotifyWatchers() {
+	m.Lock()
 	for index := 0; index < len(h.watchers); index++ {
 		h.watchers[index].events <- watch.Event{
 			Type:   "MobileAppsEvent",
 			Object: nil,
 		}
 	}
+	m.Unlock()
 }
 
 func (h MobileHandler) RemoveWatcher(watcher MobileWatcher) {
