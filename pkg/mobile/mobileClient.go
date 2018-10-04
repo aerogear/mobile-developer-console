@@ -79,14 +79,7 @@ type MobileWatcher struct {
 }
 
 func (w MobileWatcher) Stop() {
-	close(w.events)
-	index := 0
-	for ; index < len(handler.watchers); index++ {
-		if handler.watchers[index] == w {
-			break
-		}
-	}
-	handler.watchers = append(handler.watchers[:index], handler.watchers[index+1:]...)
+	handler.RemoveWatcher(w)
 }
 
 func (w MobileWatcher) ResultChan() <-chan watch.Event {
@@ -98,13 +91,27 @@ type MobileHandler struct {
 }
 
 func (h MobileHandler) Handle(c context.Context, e sdk.Event) error {
+	h.NotifyWatchers()
+	return nil
+}
+
+func (h MobileHandler) NotifyWatchers() {
 	for index := 0; index < len(h.watchers); index++ {
 		h.watchers[index].events <- watch.Event{
 			Type:   "MobileAppsEvent",
 			Object: nil,
 		}
 	}
-	return nil
+}
+
+func (h MobileHandler) RemoveWatcher(watcher MobileWatcher) {
+	index := 0
+	for ; index < len(h.watchers); index++ {
+		if h.watchers[index] == watcher {
+			break
+		}
+	}
+	h.watchers = append(h.watchers[:index], h.watchers[index+1:]...)
 }
 
 func (r *MobileClientRepoImpl) Watch() (watch.Interface, error) {

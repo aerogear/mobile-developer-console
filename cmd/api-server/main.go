@@ -43,6 +43,8 @@ func main() {
 		log.Warnf("KUBERNETES_CONFIG is not set. It is required if you are running the application outside of a kubernetes cluster.")
 	}
 
+	web.SetupWS(config.WsWriteWait, config.WsPongWait)
+
 	router := web.NewRouter(staticFilesDir, apiRoutePrefix)
 	apiGroup := router.Group(apiRoutePrefix)
 

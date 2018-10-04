@@ -34,6 +34,5 @@ func (msih *MobileServiceInstancesHandler) Watch(c echo.Context) error {
 		return err
 	}
 
-	ServeWS(c, watchInterface)
-	return nil
+	return ServeWS(c, watchInterface)
 }
