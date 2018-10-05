@@ -15,6 +15,7 @@ type ServiceInstanceLister interface {
 type BuildCRUDL interface {
 	List() (*ExtendedBuildList, error)
 	Watch() func() (watch.Interface, error)
+	GenerateDownloadURL(name string) error
 }
 
 type BuildConfigCRUDL interface {

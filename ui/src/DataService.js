@@ -94,6 +94,19 @@ const dataService = {
   watchApps: action => webSocket(action, '/mobileclients/watch'),
   watchBuildConfigs: action => webSocket(action, '/buildconfigs/watch'),
   watchServices: action => webSocket(action, '/serviceinstances/watch'),
+  generateDownloadURL: async (name) => {
+    const response = await fetch(`${baseUrl}/builds/${name}/gendownloadurl`, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+    });
+    if (!response.ok) {
+      throw Error(response.statusText);
+    }
+  }
 };
 
 export default dataService;

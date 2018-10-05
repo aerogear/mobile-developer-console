@@ -71,3 +71,14 @@ func (crudl *BuildCRUDLImpl) Watch() func() (watch.Interface, error) {
 		return crudl.buildClient.Builds(crudl.namespace).Watch(watchOpts)
 	}
 }
+
+func (crudl *BuildCRUDLImpl) GenerateDownloadURL(name string) error {
+	getOpts := metav1.GetOptions{}
+	build, err := crudl.buildClient.Builds(crudl.namespace).Get(name, getOpts)
+	if err != nil {
+		return err
+	}
+	build.ObjectMeta.Annotations["aerogear.org/download-mobile-artifact"] = "true"
+	_, err = crudl.buildClient.Builds(crudl.namespace).Update(build)
+	return err
+}

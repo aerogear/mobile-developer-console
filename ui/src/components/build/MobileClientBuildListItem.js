@@ -7,7 +7,7 @@ import MobileListViewItem from '../common/MobileListViewItem';
 import BuildConfigDetails from './BuildConfigDetails';
 import ComponentSectionLabel from '../common/ComponentSectionLabel';
 import MobileClientBuildHistoryList from './MobileClientBuildHistoryList';
-import BuildInformation from './BuildInformation';
+import BuildInformation from '../../containers/BuildInformation';
 import NoBuild from './NoBuild';
 import StartBuildButton from '../../containers/StartBuildButton';
 import DeleteBuildButton from '../../containers/DeleteBuildButton';

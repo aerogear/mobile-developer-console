@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { Button, Col } from 'patternfly-react';
+import { connect } from 'react-redux';
 
-import BuildDownloadLinks from './BuildDownloadLinks';
-import BuildSummary from './BuildSummary';
-import BuildPipeLineStage from './BuildPipelineStage';
+import BuildDownloadLinks from '../components/build/BuildDownloadLinks';
+import BuildSummary from '../components/build/BuildSummary';
+import BuildPipeLineStage from '../components/build/BuildPipelineStage';
+import { generateDownloadURL } from '../actions/builds';
 
-import './BuildInformation.css';
+import '../components/build/BuildInformation.css';
 
 
 class BuildInformation extends Component {
@@ -18,6 +20,9 @@ class BuildInformation extends Component {
   }
 
   handleDownload() {
+    if (!this.props.build.metadata.annotations['aerogear.org/download-mobile-artifact']) {
+      this.props.generateDownloadURL(this.props.build.metadata.name);
+    }
     this.setState(prevState => ({
       toggleLinks: !prevState.toggleLinks,
     }));
@@ -65,4 +70,8 @@ class BuildInformation extends Component {
   }
 }
 
-export default BuildInformation;
+const mapDispatchToProps = {
+  generateDownloadURL
+};
+
+export default connect(null, mapDispatchToProps)(BuildInformation);

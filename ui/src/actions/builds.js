@@ -18,3 +18,12 @@ export const triggerBuild = name => fetchAction(
   [BUILD_TRIGGER_REQUEST, BUILD_TRIGGER_SUCCESS, BUILD_TRIGGER_FAILURE],
   async () => DataService.triggerBuild(name),
 )();
+
+export const BUILD_DOWNLOAD_REQUEST = 'BUILD_DOWNLOAD_REQUEST';
+export const BUILD_DOWNLOAD_SUCCESS = 'BUILD_DOWNLOAD_SUCCESS';
+export const BUILD_DOWNLOAD_FAILURE = 'BUILD_DOWNLOAD_FAILURE';
+
+export const generateDownloadURL = name => fetchAction(
+  [BUILD_DOWNLOAD_REQUEST, BUILD_DOWNLOAD_SUCCESS, BUILD_DOWNLOAD_FAILURE],
+  async () => DataService.generateDownloadURL(name),
+)();
