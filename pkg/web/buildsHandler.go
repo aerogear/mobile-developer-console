@@ -8,8 +8,8 @@ import (
 )
 
 type MobileBuildsHandler struct {
-	namespace   string
 	buildsCRUDL mobile.BuildCRUDL
+	namespace   string
 }
 
 func NewMobileBuildsHandler(buildsCRUDL mobile.BuildCRUDL, namespace string) *MobileBuildsHandler {
@@ -25,6 +25,5 @@ func (mbh *MobileBuildsHandler) List(c echo.Context) error {
 		c.Logger().Errorf("error listing builds %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
-
 	return c.JSON(http.StatusOK, builds)
 }
