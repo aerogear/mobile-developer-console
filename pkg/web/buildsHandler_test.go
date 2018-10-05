@@ -17,11 +17,13 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	buildV1 "github.com/openshift/api/build/v1"
 	"github.com/openshift/client-go/build/clientset/versioned/fake"
+	corev1 "k8s.io/api/core/v1"
 )
 
 func setupBuildsServer(crudl mobile.BuildCRUDL, apiPrefix string) *httptest.Server {
-	h := NewMobileBuildsHandler(crudl, "test", "https://test-url:8443")
+	h := NewMobileBuildsHandler(crudl, "test")
 
 	r := NewRouter("", apiPrefix)
 	apiRoute := r.Group(apiPrefix)
@@ -46,8 +48,13 @@ func TestListBuildsEndpoint(t *testing.T) {
 						Name:      "build1",
 						Namespace: "test",
 					},
+					Status: buildV1.BuildStatus{
+						Config: &corev1.ObjectReference{
+							Name: "build1",
+						},
+					},
 				})
-				return mobile.NewBuildCRUDL(client.BuildV1())
+				return mobile.NewBuildCRUDL(client.BuildV1(), "https://test-url:8443")
 			},
 			ExpectItemsListSize:  1,
 			ExpectHTTPStatusCode: http.StatusOK,
@@ -58,7 +65,7 @@ func TestListBuildsEndpoint(t *testing.T) {
 				client.PrependReactor("list", "builds", func(action ktesting.Action) (handled bool, ret runtime.Object, err error) {
 					return true, nil, errors.New("injected error")
 				})
-				return mobile.NewBuildCRUDL(client.BuildV1())
+				return mobile.NewBuildCRUDL(client.BuildV1(), "https://test-url:8443")
 			},
 			ExpectHTTPStatusCode: http.StatusInternalServerError,
 		},

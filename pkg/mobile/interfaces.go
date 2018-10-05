@@ -11,7 +11,7 @@ type ServiceInstanceLister interface {
 }
 
 type BuildCRUDL interface {
-	List(namespace string) (*BuildList, error)
+	List(namespace string) (*ExtendedBuildList, error)
 }
 
 type BuildConfigCRUDL interface {
