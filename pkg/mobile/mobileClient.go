@@ -94,9 +94,7 @@ func (w MobileWatcher) Stop() {
 			}
 		}
 	}()
-	m.Lock()
 	handler.RemoveWatcher(w)
-	m.Unlock()
 	done <- struct{}{}
 }
 
@@ -105,7 +103,12 @@ func (w MobileWatcher) ResultChan() <-chan watch.Event {
 }
 
 type MobileHandler struct {
-	watchers []MobileWatcher
+	watchers map[MobileWatcher]struct{}
+}
+
+func NewMobileHandler() *MobileHandler {
+	watchers := make(map[MobileWatcher]struct{})
+	return &MobileHandler{watchers}
 }
 
 func (h MobileHandler) Handle(c context.Context, e sdk.Event) error {
@@ -115,8 +118,8 @@ func (h MobileHandler) Handle(c context.Context, e sdk.Event) error {
 
 func (h *MobileHandler) NotifyWatchers() {
 	m.Lock()
-	for index := 0; index < len(h.watchers); index++ {
-		h.watchers[index].events <- watch.Event{
+	for watcher := range h.watchers {
+		watcher.events <- watch.Event{
 			Type:   "MobileAppsEvent",
 			Object: nil,
 		}
@@ -125,23 +128,19 @@ func (h *MobileHandler) NotifyWatchers() {
 }
 
 func (h *MobileHandler) AddWatcher(watcher MobileWatcher) {
-	h.watchers = append(h.watchers, watcher)
+	h.watchers[watcher] = struct{}{}
 }
 
 func (h *MobileHandler) RemoveWatcher(watcher MobileWatcher) {
-	index := 0
-	for ; index < len(h.watchers); index++ {
-		if h.watchers[index] == watcher {
-			break
-		}
-	}
-	h.watchers = append(h.watchers[:index], h.watchers[index+1:]...)
+	m.Lock()
+	delete(h.watchers, watcher)
+	m.Unlock()
 }
 
 func (r *MobileClientRepoImpl) Watch() (watch.Interface, error) {
 	if handler == nil {
 		sdk.Watch("mobile.k8s.io/v1alpha1", "MobileClient", r.namespace, 0)
-		handler = &MobileHandler{}
+		handler = NewMobileHandler()
 		sdk.Handle(handler)
 	}
 	watcher := MobileWatcher{

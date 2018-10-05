@@ -89,8 +89,8 @@ func TestBuildURL(t *testing.T) {
 
 	masterURL := "https://test-url:8443"
 	expectedURL := masterURL + "/console/project/test/browse/pipelines/build1/build-1"
-	buildCRUDLImpl := NewBuildCRUDL(Client(), masterURL)
-	buildList, err := buildCRUDLImpl.List("test")
+	buildCRUDLImpl := NewBuildCRUDL(Client(), "test", masterURL)
+	buildList, err := buildCRUDLImpl.List()
 	if err != nil {
 		t.Fatalf("error not expected when listing builds")
 	}

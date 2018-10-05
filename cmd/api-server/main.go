@@ -75,7 +75,7 @@ func main() {
 	}
 
 	{
-		buildCRUDL := mobile.NewBuildCRUDL(buildClient, namespace, cfh.Host)
+		buildCRUDL := mobile.NewBuildCRUDL(buildClient, namespace, cfg.Host)
 		mobileBuildsHandler := web.NewMobileBuildsHandler(buildCRUDL, namespace)
 		web.SetupMobileBuildsRoute(apiGroup, mobileBuildsHandler)
 	}
