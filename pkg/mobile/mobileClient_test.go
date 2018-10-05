@@ -14,8 +14,8 @@ func TestMobileHandler(t *testing.T) {
 		handler = &MobileHandler{}
 		watcher1 := MobileWatcher{events: make(chan watch.Event)}
 		watcher2 := MobileWatcher{events: make(chan watch.Event)}
-		handler.watchers = append(handler.watchers, watcher1)
-		handler.watchers = append(handler.watchers, watcher2)
+		handler.AddWatcher(watcher1)
+		handler.AddWatcher(watcher2)
 		go func() {
 			for index := 0; index < 2; index++ {
 				handler.Handle(nil, sdk.Event{Object: nil, Deleted: false})

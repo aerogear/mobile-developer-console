@@ -113,7 +113,7 @@ func (h MobileHandler) Handle(c context.Context, e sdk.Event) error {
 	return nil
 }
 
-func (h MobileHandler) NotifyWatchers() {
+func (h *MobileHandler) NotifyWatchers() {
 	m.Lock()
 	for index := 0; index < len(h.watchers); index++ {
 		h.watchers[index].events <- watch.Event{
@@ -124,7 +124,11 @@ func (h MobileHandler) NotifyWatchers() {
 	m.Unlock()
 }
 
-func (h MobileHandler) RemoveWatcher(watcher MobileWatcher) {
+func (h *MobileHandler) AddWatcher(watcher MobileWatcher) {
+	h.watchers = append(h.watchers, watcher)
+}
+
+func (h *MobileHandler) RemoveWatcher(watcher MobileWatcher) {
 	index := 0
 	for ; index < len(h.watchers); index++ {
 		if h.watchers[index] == watcher {
@@ -143,6 +147,6 @@ func (r *MobileClientRepoImpl) Watch() (watch.Interface, error) {
 	watcher := MobileWatcher{
 		events: make(chan watch.Event),
 	}
-	handler.watchers = append(handler.watchers, watcher)
+	handler.AddWatcher(watcher)
 	return watcher, nil
 }
