@@ -70,3 +70,31 @@ func TestListMobileBuilds(t *testing.T) {
 		})
 	}
 }
+
+func TestBuildURL(t *testing.T) {
+	Client := func() buildv1.BuildV1Interface {
+		client := fake.NewSimpleClientset(&Build{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "build-1",
+				Namespace: "test",
+			},
+			Status: buildV1.BuildStatus{
+				Config: &corev1.ObjectReference{
+					Name: "build1",
+				},
+			},
+		})
+		return client.BuildV1()
+	}
+
+	masterURL := "https://test-url:8443"
+	expectedURL := masterURL + "/console/project/test/browse/pipelines/build1/build-1"
+	buildCRUDLImpl := NewBuildCRUDL(Client(), masterURL)
+	buildList, err := buildCRUDLImpl.List("test")
+	if err != nil {
+		t.Fatalf("error not expected when listing builds")
+	}
+	if buildList.Items[0].BuildURL != expectedURL {
+		t.Fatalf("build URL %v does not equal to %v", buildList.Items[0].BuildURL, expectedURL)
+	}
+}
