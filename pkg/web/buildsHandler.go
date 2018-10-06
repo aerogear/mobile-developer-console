@@ -29,10 +29,7 @@ func (mbh *MobileBuildsHandler) List(c echo.Context) error {
 }
 
 func (mbh *MobileBuildsHandler) Watch(c echo.Context) error {
-	watchInterface, err := mbh.buildsCRUDL.Watch()
-	if err != nil {
-		return err
-	}
+	getWatchInterface := mbh.buildsCRUDL.Watch()
 
-	return ServeWS(c, watchInterface)
+	return ServeWS(c, getWatchInterface)
 }

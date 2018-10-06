@@ -248,10 +248,7 @@ func (mbch *MobileBuildConfigsHandler) Instantiate(c echo.Context) error {
 }
 
 func (mbch *MobileBuildConfigsHandler) Watch(c echo.Context) error {
-	watchInterface, err := mbch.buildConfigsCRUDL.Watch()
-	if err != nil {
-		return err
-	}
+	getWatchInterface := mbch.buildConfigsCRUDL.Watch()
 
-	return ServeWS(c, watchInterface)
+	return ServeWS(c, getWatchInterface)
 }

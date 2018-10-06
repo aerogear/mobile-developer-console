@@ -47,7 +47,9 @@ func (crudl *BuildConfigCRUDLImpl) Instantiate(name string) (*Build, error) {
 	return crudl.buildClient.BuildConfigs(crudl.namespace).Instantiate(name, request)
 }
 
-func (crudl *BuildConfigCRUDLImpl) Watch() (watch.Interface, error) {
-	watchOpts := metav1.ListOptions{}
-	return crudl.buildClient.BuildConfigs(crudl.namespace).Watch(watchOpts)
+func (crudl *BuildConfigCRUDLImpl) Watch() func() (watch.Interface, error) {
+	return func() (watch.Interface, error) {
+		watchOpts := metav1.ListOptions{}
+		return crudl.buildClient.BuildConfigs(crudl.namespace).Watch(watchOpts)
+	}
 }

@@ -9,12 +9,12 @@ import (
 //ServiceInstanceLister can list service instances from a name space
 type ServiceInstanceLister interface {
 	List() (*ServiceInstanceList, error)
-	Watch() (watch.Interface, error)
+	Watch() func() (watch.Interface, error)
 }
 
 type BuildCRUDL interface {
 	List() (*ExtendedBuildList, error)
-	Watch() (watch.Interface, error)
+	Watch() func() (watch.Interface, error)
 }
 
 type BuildConfigCRUDL interface {
@@ -22,7 +22,7 @@ type BuildConfigCRUDL interface {
 	DeleteByName(name string) error
 	List() (*BuildConfigList, error)
 	Instantiate(name string) (*Build, error)
-	Watch() (watch.Interface, error)
+	Watch() func() (watch.Interface, error)
 }
 
 type MobileClientRepo interface {
@@ -31,7 +31,7 @@ type MobileClientRepo interface {
 	Update(app *v1alpha1.MobileClient) error
 	List() (*v1alpha1.MobileClientList, error)
 	DeleteByName(name string) error
-	Watch() (watch.Interface, error)
+	Watch() func() (watch.Interface, error)
 }
 
 type SecretsCRUDL interface {

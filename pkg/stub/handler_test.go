@@ -69,8 +69,8 @@ func (r *mockMobileClientRepo) DeleteByName(name string) error {
 	return nil
 }
 
-func (r *mockMobileClientRepo) Watch() (watch.Interface, error) {
-	return nil, nil
+func (r *mockMobileClientRepo) Watch() func() (watch.Interface, error) {
+	return nil
 }
 
 func createSecret(labels map[string]string, data map[string][]byte, version string) v12.Secret {

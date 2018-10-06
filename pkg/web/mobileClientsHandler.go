@@ -200,10 +200,7 @@ func (h *MobileClientsHandler) Delete(c echo.Context) error {
 }
 
 func (h *MobileClientsHandler) Watch(c echo.Context) error {
-	watchInterface, err := h.mobileClientRepo.Watch()
-	if err != nil {
-		return err
-	}
+	getWatchInterface := h.mobileClientRepo.Watch()
 
-	return ServeWS(c, watchInterface)
+	return ServeWS(c, getWatchInterface)
 }

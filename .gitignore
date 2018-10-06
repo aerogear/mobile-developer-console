@@ -22,3 +22,4 @@ main
 .r.errors.log
 .r.outputs.log
 .r.logs.log
+server.log

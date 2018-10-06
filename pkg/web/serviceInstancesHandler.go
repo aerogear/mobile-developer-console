@@ -29,10 +29,7 @@ func (msih *MobileServiceInstancesHandler) List(c echo.Context) error {
 }
 
 func (msih *MobileServiceInstancesHandler) Watch(c echo.Context) error {
-	watchInterface, err := msih.serviceInstanceLister.Watch()
-	if err != nil {
-		return err
-	}
+	getWatchInterface := msih.serviceInstanceLister.Watch()
 
-	return ServeWS(c, watchInterface)
+	return ServeWS(c, getWatchInterface)
 }

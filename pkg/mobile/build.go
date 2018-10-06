@@ -65,7 +65,9 @@ func (crudl *BuildCRUDLImpl) List() (*ExtendedBuildList, error) {
 	return extendBuildList(buildList, crudl.openshiftMasterURL, crudl.namespace), nil
 }
 
-func (crudl *BuildCRUDLImpl) Watch() (watch.Interface, error) {
-	watchOpts := metav1.ListOptions{}
-	return crudl.buildClient.Builds(crudl.namespace).Watch(watchOpts)
+func (crudl *BuildCRUDLImpl) Watch() func() (watch.Interface, error) {
+	return func() (watch.Interface, error) {
+		watchOpts := metav1.ListOptions{}
+		return crudl.buildClient.Builds(crudl.namespace).Watch(watchOpts)
+	}
 }

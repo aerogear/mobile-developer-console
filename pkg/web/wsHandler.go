@@ -29,29 +29,46 @@ func SetupWS(newWriteWait int, newPongWait int) {
 	pingPeriod = (pongWait * 9) / 10
 }
 
-func ServeWS(context echo.Context, watchInterface watch.Interface) error {
+func ServeWS(context echo.Context, getWatchInterface func() (watch.Interface, error)) error {
 	ws, err := upgrader.Upgrade(context.Response(), context.Request(), nil)
 	if err != nil {
 		return err
 	}
 
-	go run(ws, watchInterface)
+	go run(ws, getWatchInterface)
 	return nil
 }
 
-func run(ws *websocket.Conn, watchInterface watch.Interface) {
+func run(ws *websocket.Conn, getWatchInterface func() (watch.Interface, error)) {
+	defer func() {
+		ws.Close()
+	}()
+	watchInterface, err := getWatchInterface()
+	if err != nil {
+		return
+	}
 	pingTicker := time.NewTicker(pingPeriod)
 	events := watchInterface.ResultChan()
 	defer func() {
-		watchInterface.Stop()
+		if watchInterface != nil {
+			watchInterface.Stop()
+		}
 		pingTicker.Stop()
-		ws.Close()
 	}()
 	for {
 		select {
-		case <-events:
+		case event, ok := <-events:
+			if !ok {
+				watchInterface.Stop()
+				watchInterface, err = getWatchInterface()
+				if err != nil {
+					return
+				}
+				events = watchInterface.ResultChan()
+				continue
+			}
 			ws.SetWriteDeadline(time.Now().Add(writeWait))
-			if err := ws.WriteMessage(websocket.TextMessage, []byte("event")); err != nil {
+			if err := ws.WriteMessage(websocket.TextMessage, []byte(event.Type)); err != nil {
 				log.Warnf("WebSocket error (sending event): %v", err)
 				return
 			}

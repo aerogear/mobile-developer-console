@@ -48,9 +48,11 @@ func (lister *ServiceInstanceListerImpl) List() (*ServiceInstanceList, error) {
 	return &serviceInstanceList, nil
 }
 
-func (lister *ServiceInstanceListerImpl) Watch() (watch.Interface, error) {
-	watchOpts := metav1.ListOptions{}
-	return lister.scClient.ServiceInstances(lister.namespace).Watch(watchOpts)
+func (lister *ServiceInstanceListerImpl) Watch() func() (watch.Interface, error) {
+	return func() (watch.Interface, error) {
+		watchOpts := metav1.ListOptions{}
+		return lister.scClient.ServiceInstances(lister.namespace).Watch(watchOpts)
+	}
 }
 
 func isMobileService(sc *v1beta1.ClusterServiceClass) bool {

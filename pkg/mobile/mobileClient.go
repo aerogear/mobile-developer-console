@@ -137,7 +137,7 @@ func (h *MobileHandler) RemoveWatcher(watcher MobileWatcher) {
 	m.Unlock()
 }
 
-func (r *MobileClientRepoImpl) Watch() (watch.Interface, error) {
+func (r *MobileClientRepoImpl) Watch() func() (watch.Interface, error) {
 	if handler == nil {
 		sdk.Watch("mobile.k8s.io/v1alpha1", "MobileClient", r.namespace, 0)
 		handler = NewMobileHandler()
@@ -147,5 +147,7 @@ func (r *MobileClientRepoImpl) Watch() (watch.Interface, error) {
 		events: make(chan watch.Event),
 	}
 	handler.AddWatcher(watcher)
-	return watcher, nil
+	return func() (watch.Interface, error) {
+		return watcher, nil
+	}
 }
