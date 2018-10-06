@@ -3,30 +3,35 @@ package mobile
 import (
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	k8v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/watch"
 )
 
 //ServiceInstanceLister can list service instances from a name space
 type ServiceInstanceLister interface {
-	List(namespace string) (*ServiceInstanceList, error)
+	List() (*ServiceInstanceList, error)
+	Watch() func() (watch.Interface, error)
 }
 
 type BuildCRUDL interface {
-	List(namespace string) (*ExtendedBuildList, error)
+	List() (*ExtendedBuildList, error)
+	Watch() func() (watch.Interface, error)
 }
 
 type BuildConfigCRUDL interface {
 	Create(config *BuildConfig) (*BuildConfig, error)
-	DeleteByName(namespace string, name string) error
-	List(namespace string) (*BuildConfigList, error)
-	Instantiate(namespace string, name string) (*Build, error)
+	DeleteByName(name string) error
+	List() (*BuildConfigList, error)
+	Instantiate(name string) (*Build, error)
+	Watch() func() (watch.Interface, error)
 }
 
 type MobileClientRepo interface {
 	Create(app *v1alpha1.MobileClient) error
 	ReadByName(name string) (*v1alpha1.MobileClient, error)
 	Update(app *v1alpha1.MobileClient) error
-	List(namespace string) (*v1alpha1.MobileClientList, error)
+	List() (*v1alpha1.MobileClientList, error)
 	DeleteByName(name string) error
+	Watch() func() (watch.Interface, error)
 }
 
 type SecretsCRUDL interface {

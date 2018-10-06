@@ -56,8 +56,8 @@ func TestListMobileBuilds(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
-			buildCRUDLImpl := NewBuildCRUDL(tc.Client(), "https://test-url:8443")
-			buildList, err := buildCRUDLImpl.List("test")
+			buildCRUDLImpl := NewBuildCRUDL(tc.Client(), "test", "https://test-url:8443")
+			buildList, err := buildCRUDLImpl.List()
 			if tc.ExpectError && err == nil {
 				t.Fatalf("expected an error but got none")
 			}
@@ -89,8 +89,8 @@ func TestBuildURL(t *testing.T) {
 
 	masterURL := "https://test-url:8443"
 	expectedURL := masterURL + "/console/project/test/browse/pipelines/build1/build-1"
-	buildCRUDLImpl := NewBuildCRUDL(Client(), masterURL)
-	buildList, err := buildCRUDLImpl.List("test")
+	buildCRUDLImpl := NewBuildCRUDL(Client(), "test", masterURL)
+	buildList, err := buildCRUDLImpl.List()
 	if err != nil {
 		t.Fatalf("error not expected when listing builds")
 	}

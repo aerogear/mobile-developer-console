@@ -30,7 +30,7 @@ const buildConfig = buildConfiguration => ({
   repoUrl: buildConfiguration.spec.source.git.uri,
 });
 
-const buildNumber = build => build && build.metadata.annotations['openshift.io/build.number'];
+const buildNumber = build => build && Number(build.metadata.annotations['openshift.io/build.number']);
 
 const lastBuild = builds => builds.reduce((acc, curr) => (buildNumber(curr) > buildNumber(acc) ? curr : acc), null);
 

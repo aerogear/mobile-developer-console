@@ -2,21 +2,14 @@ package web
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	"github.com/aerogear/mobile-developer-console/pkg/mobile"
-	"github.com/gorilla/websocket"
 	"github.com/labstack/echo"
 	"github.com/satori/go.uuid"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"net/http"
-)
-
-var (
-	upgrader = websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-	}
 )
 
 type MobileClientsHandler struct {
@@ -156,7 +149,7 @@ func (h *MobileClientsHandler) Read(c echo.Context) error {
 }
 
 func (h *MobileClientsHandler) List(c echo.Context) error {
-	apps, err := h.mobileClientRepo.List(h.namespace)
+	apps, err := h.mobileClientRepo.List()
 	if err != nil {
 		return err
 	}
@@ -206,21 +199,8 @@ func (h *MobileClientsHandler) Delete(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
-func (h *MobileClientsHandler) Watch(context echo.Context) error {
-	// TODO: Store open connections.
-	ws, err := upgrader.Upgrade(context.Response(), context.Request(), nil)
-	if err != nil {
-		return err
-	}
+func (h *MobileClientsHandler) Watch(c echo.Context) error {
+	getWatchInterface := h.mobileClientRepo.Watch()
 
-	// TODO: Manage closing connections.
-	defer ws.Close()
-
-	err = ws.WriteMessage(websocket.TextMessage, []byte(""))
-	if err != nil {
-		context.Logger().Error(err)
-		return err
-	}
-
-	return nil
+	return ServeWS(c, getWatchInterface)
 }

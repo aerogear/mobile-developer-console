@@ -4,14 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
-	"github.com/aerogear/mobile-developer-console/pkg/mobile"
 	"io/ioutil"
-	errors2 "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
+	"github.com/aerogear/mobile-developer-console/pkg/mobile"
+	errors2 "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
 )
 
 type mockMobileClientRepo struct {
@@ -64,7 +66,7 @@ func (r *mockMobileClientRepo) Update(app *v1alpha1.MobileClient) error {
 	}}
 }
 
-func (r *mockMobileClientRepo) List(namespace string) (*v1alpha1.MobileClientList, error) {
+func (r *mockMobileClientRepo) List() (*v1alpha1.MobileClientList, error) {
 	items := make([]v1alpha1.MobileClient, 0)
 	for _, app := range r.mockStore {
 		items = append(items, *app)
@@ -76,6 +78,10 @@ func (r *mockMobileClientRepo) List(namespace string) (*v1alpha1.MobileClientLis
 
 func (r *mockMobileClientRepo) DeleteByName(name string) error {
 	delete(r.mockStore, name)
+	return nil
+}
+
+func (r *mockMobileClientRepo) Watch() func() (watch.Interface, error) {
 	return nil
 }
 

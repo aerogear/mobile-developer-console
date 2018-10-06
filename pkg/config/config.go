@@ -14,6 +14,8 @@ type config struct {
 	StaticFilesDir       string
 	ApiRoutePrefix       string
 	OperatorResyncPeriod int
+	WsWriteWait          int
+	WsPongWait           int
 }
 
 func GetConfig() config {
@@ -25,6 +27,8 @@ func GetConfig() config {
 		StaticFilesDir:       getEnv("STATIC_FILES_DIR", ""),
 		ApiRoutePrefix:       "/api", //should start with a "/",
 		OperatorResyncPeriod: getEnvAsInt("RESYNC_PERIOD", 10),
+		WsWriteWait:          getEnvAsInt("WS_WRITE_WAIT", 10),
+		WsPongWait:           getEnvAsInt("WS_PONG_WAIT", 60),
 	}
 }
 

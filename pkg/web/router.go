@@ -36,10 +36,12 @@ func NewRouter(fileDir string, apiRoutePrefix string) *echo.Echo {
 
 func SetupMobileServicesRoute(r *echo.Group, handler *MobileServiceInstancesHandler) {
 	r.GET("/serviceinstances", handler.List)
+	r.GET("/serviceinstances/watch", handler.Watch)
 }
 
 func SetupMobileBuildsRoute(r *echo.Group, handler *MobileBuildsHandler) {
 	r.GET("/builds", handler.List)
+	r.GET("/builds/watch", handler.Watch)
 }
 
 func SetupMobileBuildConfigsRoute(r *echo.Group, handler *MobileBuildConfigsHandler) {
@@ -47,18 +49,15 @@ func SetupMobileBuildConfigsRoute(r *echo.Group, handler *MobileBuildConfigsHand
 	r.POST("/buildconfigs", handler.Create)
 	r.DELETE("/buildconfigs/:name", handler.Delete)
 	r.POST("/buildconfigs/:name/instantiate", handler.Instantiate)
+	r.GET("/buildconfigs/watch", handler.Watch)
 }
 
 // SetMobileClientRoutes sets routes for mobile clients
 func SetupMoileClientsRoute(r *echo.Group, handler *MobileClientsHandler) {
-	r.GET("/mobileclients", func(c echo.Context) error {
-		if c.QueryParam("watch") == "true" {
-			return handler.Watch(c)
-		}
-		return handler.List(c)
-	})
+	r.GET("/mobileclients", handler.List)
 	r.POST("/mobileclients", handler.Create)
 	r.POST("/mobileclients/:name", handler.Update)
 	r.GET("/mobileclients/:name", handler.Read)
 	r.DELETE("/mobileclients/:name", handler.Delete)
+	r.GET("/mobileclients/watch", handler.Watch)
 }

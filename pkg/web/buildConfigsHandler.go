@@ -222,7 +222,7 @@ func (mbch *MobileBuildConfigsHandler) Create(c echo.Context) error {
 
 func (mbch *MobileBuildConfigsHandler) Delete(c echo.Context) error {
 	name := c.Param("name")
-	err := mbch.buildConfigsCRUDL.DeleteByName(mbch.namespace, name)
+	err := mbch.buildConfigsCRUDL.DeleteByName(name)
 	if err != nil {
 		return err
 	}
@@ -230,7 +230,7 @@ func (mbch *MobileBuildConfigsHandler) Delete(c echo.Context) error {
 }
 
 func (mbch *MobileBuildConfigsHandler) List(c echo.Context) error {
-	buildConfigs, err := mbch.buildConfigsCRUDL.List(mbch.namespace)
+	buildConfigs, err := mbch.buildConfigsCRUDL.List()
 	if err != nil {
 		c.Logger().Errorf("error listing build configs %v", err)
 		return c.NoContent(http.StatusInternalServerError)
@@ -240,9 +240,15 @@ func (mbch *MobileBuildConfigsHandler) List(c echo.Context) error {
 
 func (mbch *MobileBuildConfigsHandler) Instantiate(c echo.Context) error {
 	name := c.Param("name")
-	build, err := mbch.buildConfigsCRUDL.Instantiate(mbch.namespace, name)
+	build, err := mbch.buildConfigsCRUDL.Instantiate(name)
 	if err != nil {
 		return err
 	}
 	return c.JSON(http.StatusOK, build)
+}
+
+func (mbch *MobileBuildConfigsHandler) Watch(c echo.Context) error {
+	getWatchInterface := mbch.buildConfigsCRUDL.Watch()
+
+	return ServeWS(c, getWatchInterface)
 }

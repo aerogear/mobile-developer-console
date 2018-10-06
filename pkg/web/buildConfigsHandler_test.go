@@ -49,7 +49,7 @@ func TestListBuildConfigsEndpoint(t *testing.T) {
 						Namespace: "test",
 					},
 				})
-				return mobile.NewBuildConfigCRUDL(client.BuildV1())
+				return mobile.NewBuildConfigCRUDL(client.BuildV1(), "test")
 			},
 			ExpectItemsListSize:  1,
 			ExpectHTTPStatusCode: http.StatusOK,
@@ -60,7 +60,7 @@ func TestListBuildConfigsEndpoint(t *testing.T) {
 				client.PrependReactor("list", "buildconfigs", func(action ktesting.Action) (handled bool, ret runtime.Object, err error) {
 					return true, nil, errors.New("injected error")
 				})
-				return mobile.NewBuildConfigCRUDL(client.BuildV1())
+				return mobile.NewBuildConfigCRUDL(client.BuildV1(), "test")
 			},
 			ExpectHTTPStatusCode: http.StatusInternalServerError,
 		},
@@ -227,7 +227,7 @@ func TestCreateBuildConfigEndpoint(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
 			simpleClient := fake.NewSimpleClientset()
-			crudlImpl := mobile.NewBuildConfigCRUDL(simpleClient.BuildV1())
+			crudlImpl := mobile.NewBuildConfigCRUDL(simpleClient.BuildV1(), "test")
 			sSimpleClient := k8sFake.NewSimpleClientset()
 			sCrudlImpl := mobile.NewSecretsCRUDL(sSimpleClient.CoreV1())
 			server := setupBuildConfigsServer(crudlImpl, sCrudlImpl, apiPrefix)

@@ -54,7 +54,7 @@ func TestListBuildsEndpoint(t *testing.T) {
 						},
 					},
 				})
-				return mobile.NewBuildCRUDL(client.BuildV1(), "https://test-url:8443")
+				return mobile.NewBuildCRUDL(client.BuildV1(), "test", "https://test-url:8443")
 			},
 			ExpectItemsListSize:  1,
 			ExpectHTTPStatusCode: http.StatusOK,
@@ -65,7 +65,7 @@ func TestListBuildsEndpoint(t *testing.T) {
 				client.PrependReactor("list", "builds", func(action ktesting.Action) (handled bool, ret runtime.Object, err error) {
 					return true, nil, errors.New("injected error")
 				})
-				return mobile.NewBuildCRUDL(client.BuildV1(), "https://test-url:8443")
+				return mobile.NewBuildCRUDL(client.BuildV1(), "test", "https://test-url:8443")
 			},
 			ExpectHTTPStatusCode: http.StatusInternalServerError,
 		},

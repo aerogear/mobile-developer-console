@@ -1,9 +1,19 @@
 package mobile
 
 import (
+	"context"
+	"sync"
+	"time"
+
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	"github.com/operator-framework/operator-sdk/pkg/sdk"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
+)
+
+var (
+	handler *MobileHandler
+	m       sync.Mutex
 )
 
 type MobileClientRepoImpl struct {
@@ -39,7 +49,7 @@ func (r *MobileClientRepoImpl) Update(app *v1alpha1.MobileClient) error {
 	return sdk.Update(app)
 }
 
-func (r *MobileClientRepoImpl) List(namespace string) (*v1alpha1.MobileClientList, error) {
+func (r *MobileClientRepoImpl) List() (*v1alpha1.MobileClientList, error) {
 	listOpts := sdk.WithListOptions(&metav1.ListOptions{})
 	list := &v1alpha1.MobileClientList{
 		TypeMeta: metav1.TypeMeta{
@@ -65,4 +75,79 @@ func (r *MobileClientRepoImpl) DeleteByName(name string) error {
 
 func (r *MobileClientRepoImpl) Create(app *v1alpha1.MobileClient) error {
 	return sdk.Create(app)
+}
+
+type MobileWatcher struct {
+	events chan watch.Event
+}
+
+func (w MobileWatcher) Stop() {
+	done := make(chan struct{})
+	go func() {
+		drain := true
+		for drain {
+			select {
+			case <-done:
+				drain = false
+			case <-w.events:
+			case <-time.After(1 * time.Second):
+			}
+		}
+	}()
+	handler.RemoveWatcher(w)
+	done <- struct{}{}
+}
+
+func (w MobileWatcher) ResultChan() <-chan watch.Event {
+	return w.events
+}
+
+type MobileHandler struct {
+	watchers map[MobileWatcher]struct{}
+}
+
+func NewMobileHandler() *MobileHandler {
+	watchers := make(map[MobileWatcher]struct{})
+	return &MobileHandler{watchers}
+}
+
+func (h MobileHandler) Handle(c context.Context, e sdk.Event) error {
+	h.NotifyWatchers()
+	return nil
+}
+
+func (h *MobileHandler) NotifyWatchers() {
+	m.Lock()
+	for watcher := range h.watchers {
+		watcher.events <- watch.Event{
+			Type:   "MobileAppsEvent",
+			Object: nil,
+		}
+	}
+	m.Unlock()
+}
+
+func (h *MobileHandler) AddWatcher(watcher MobileWatcher) {
+	h.watchers[watcher] = struct{}{}
+}
+
+func (h *MobileHandler) RemoveWatcher(watcher MobileWatcher) {
+	m.Lock()
+	delete(h.watchers, watcher)
+	m.Unlock()
+}
+
+func (r *MobileClientRepoImpl) Watch() func() (watch.Interface, error) {
+	if handler == nil {
+		sdk.Watch("mobile.k8s.io/v1alpha1", "MobileClient", r.namespace, 0)
+		handler = NewMobileHandler()
+		sdk.Handle(handler)
+	}
+	watcher := MobileWatcher{
+		events: make(chan watch.Event),
+	}
+	handler.AddWatcher(watcher)
+	return func() (watch.Interface, error) {
+		return watcher, nil
+	}
 }

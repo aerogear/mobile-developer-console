@@ -6,10 +6,12 @@ import (
 	buildV1 "github.com/openshift/api/build/v1"
 	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
 )
 
 type BuildCRUDLImpl struct {
 	buildClient        buildv1.BuildV1Interface
+	namespace          string
 	openshiftMasterURL string
 }
 
@@ -23,9 +25,10 @@ type ExtendedBuild struct {
 	BuildURL string `json:"buildUrl,inline"`
 }
 
-func NewBuildCRUDL(client buildv1.BuildV1Interface, openshiftMasterURL string) *BuildCRUDLImpl {
+func NewBuildCRUDL(client buildv1.BuildV1Interface, namespace string, openshiftMasterURL string) *BuildCRUDLImpl {
 	return &BuildCRUDLImpl{
 		buildClient:        client,
+		namespace:          namespace,
 		openshiftMasterURL: openshiftMasterURL,
 	}
 }
@@ -53,11 +56,18 @@ func extendBuildList(bl *buildV1.BuildList, openshiftMasterURL string, namespace
 	}
 }
 
-func (crudl *BuildCRUDLImpl) List(namespace string) (*ExtendedBuildList, error) {
+func (crudl *BuildCRUDLImpl) List() (*ExtendedBuildList, error) {
 	listOpts := metav1.ListOptions{}
-	buildList, err := crudl.buildClient.Builds(namespace).List(listOpts)
+	buildList, err := crudl.buildClient.Builds(crudl.namespace).List(listOpts)
 	if err != nil {
 		return nil, err
 	}
-	return extendBuildList(buildList, crudl.openshiftMasterURL, namespace), nil
+	return extendBuildList(buildList, crudl.openshiftMasterURL, crudl.namespace), nil
+}
+
+func (crudl *BuildCRUDLImpl) Watch() func() (watch.Interface, error) {
+	return func() (watch.Interface, error) {
+		watchOpts := metav1.ListOptions{}
+		return crudl.buildClient.Builds(crudl.namespace).Watch(watchOpts)
+	}
 }

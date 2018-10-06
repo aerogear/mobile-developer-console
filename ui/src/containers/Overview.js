@@ -6,11 +6,20 @@ import MobileClientOverviewList from '../components/overview/MobileClientOvervie
 import CreateClient from './CreateClient';
 import { fetchApps } from '../actions/apps';
 import { fetchServices } from '../actions/services';
+import DataService from '../DataService';
 
 class Overview extends Component {
   componentDidMount() {
     this.props.fetchApps();
     this.props.fetchServices();
+
+    this.wsApps = DataService.watchApps(this.props.fetchApps);
+    this.wsServices = DataService.watchServices(this.props.fetchServices);
+  }
+
+  componentWillUnmount() {
+    this.wsApps.close();
+    this.wsServices.close();
   }
 
   render() {
