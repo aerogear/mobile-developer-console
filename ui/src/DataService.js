@@ -73,7 +73,8 @@ const dataService = {
       body: JSON.stringify(app),
     });
     if (!response.ok) {
-      throw Error(response.statusText);
+      const msg = await response.text();
+      throw Error(`${response.statusText}: ${msg}`);
     }
     return response.json();
   },
