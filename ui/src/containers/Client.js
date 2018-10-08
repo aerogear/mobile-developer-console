@@ -71,7 +71,7 @@ class Client extends Component {
                   <ConfigurationView />
                 </TabPane>
                 <TabPane eventKey={2}>
-                  <MobileClientBuildsList buildConfigs={this.state.buildConfigs} />
+                  <MobileClientBuildsList appName={this.props.match.params.id} buildConfigs={this.state.buildConfigs} />
                 </TabPane>
                 <TabPane eventKey={3}>
                   <MobileServiceView />

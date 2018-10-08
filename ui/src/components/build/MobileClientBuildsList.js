@@ -5,7 +5,7 @@ import NoBuildConfig from './NoBuildConfig';
 
 class MobileClientBuildOverviewList extends Component {
     render = () => {
-      const { buildConfigs } = this.props;
+      const { buildConfigs, appName } = this.props;
 
       return (
         <div>
@@ -18,6 +18,7 @@ class MobileClientBuildOverviewList extends Component {
                   {buildConfigs.map(
                     buildConfig => (
                       <MobileClientBuildListItem
+                        appName={appName}
                         key={buildConfig.metadata.name}
                         buildConfiguration={buildConfig}
                       />
