@@ -2,6 +2,7 @@ package web
 
 import (
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -17,13 +18,15 @@ var (
 	upgrader   = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
-		CheckOrigin: func(r *http.Request) bool {
-			return true
-		},
 	}
 )
 
 func SetupWS(newWriteWait int, newPongWait int) {
+	if os.Getenv("DEBUG") == "true" {
+		upgrader.CheckOrigin = func(r *http.Request) bool {
+			return true
+		}
+	}
 	writeWait = time.Duration(newWriteWait) * time.Second
 	pongWait = time.Duration(newPongWait) * time.Second
 	pingPeriod = (pongWait * 9) / 10
