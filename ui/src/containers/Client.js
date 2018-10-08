@@ -13,7 +13,6 @@ import {
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ConfigurationView from '../components/configuration/ConfigurationView';
-import MobileClientBuildsList from '../components/build/MobileClientBuildsList';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
 import { fetchApp } from '../actions/apps';
 import { fetchBuildConfigs } from '../actions/buildConfigs';
@@ -22,7 +21,8 @@ import DataService from '../DataService';
 import PlatformIcon from '../components/common/PlatformIcon';
 import DeleteItemButton from './DeleteItemButton';
 
-import './Client.css';
+import '../components/common/Client.css';
+import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
 
 class Client extends Component {
   constructor(props) {
@@ -148,8 +148,8 @@ function mapStateToProps(state) {
   return {
     apps: state.apps,
     buildConfigs: state.buildConfigs,
-    buildTabEnabled: state.config.buildTabEnabled,
-    builds: state.builds
+    builds: state.builds,
+    buildTabEnabled: state.config.buildTabEnabled
   };
 }
 
