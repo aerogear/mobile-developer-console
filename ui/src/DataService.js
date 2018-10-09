@@ -62,6 +62,20 @@ const dataService = {
     }
     return response.json();
   },
+  deleteApp: async (name) => {
+    const response = await fetch(`${baseUrl}/mobileclients/${name}`, {
+      method: 'DELETE',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+    });
+    if (!response.ok) {
+      throw Error(response.statusText);
+    }
+    return name;
+  },
   triggerBuild: async (name) => {
     const response = await fetch(`${baseUrl}/buildconfigs/${name}/instantiate`, {
       method: 'POST',
@@ -106,7 +120,7 @@ const dataService = {
     if (!response.ok) {
       throw Error(response.statusText);
     }
-  }
+  },
 };
 
 export default dataService;
