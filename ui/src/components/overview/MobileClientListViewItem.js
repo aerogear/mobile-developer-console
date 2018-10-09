@@ -8,14 +8,14 @@ import ComponentSectionLabel from '../common/ComponentSectionLabel';
 import MobileClientConfig from '../common/MobileClientConfig';
 import MobileClientBuildList from './MobileClientBuildList';
 import MobileListViewItem from '../common/MobileListViewItem';
-import DeleteAppButton from '../../containers/DeleteAppButton';
+import DeleteItemButton from '../../containers/DeleteItemButton';
 
 import './OverviewListItem.css';
 
 const actions = mobileClientName => (
   <DropdownKebab id="mobile-client-actions" pullRight>
     <MenuItem>Edit</MenuItem>
-    <DeleteAppButton name={mobileClientName} />
+    <DeleteItemButton itemName={mobileClientName} itemType="app" />
   </DropdownKebab>
 );
 

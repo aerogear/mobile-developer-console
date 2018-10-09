@@ -27,6 +27,21 @@ const fetchItems = async (url) => {
   return result.items || [];
 };
 
+const deleteItem = async (url, name) => {
+  const response = await fetch(url, {
+    method: 'DELETE',
+    cache: 'no-cache',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+    },
+  });
+  if (!response.ok) {
+    throw Error(response.statusText);
+  }
+  return name;
+};
+
 const webSocket = (action, url) => {
   const ws = new WebSocket(wsUrl + url);
   let active = false;
@@ -62,20 +77,7 @@ const dataService = {
     }
     return response.json();
   },
-  deleteApp: async (name) => {
-    const response = await fetch(`${baseUrl}/mobileclients/${name}`, {
-      method: 'DELETE',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-    });
-    if (!response.ok) {
-      throw Error(response.statusText);
-    }
-    return name;
-  },
+  deleteApp: name => deleteItem(`${baseUrl}/mobileclients/${name}`, name),
   triggerBuild: async (name) => {
     const response = await fetch(`${baseUrl}/buildconfigs/${name}/instantiate`, {
       method: 'POST',
@@ -90,20 +92,7 @@ const dataService = {
     }
     return response.json();
   },
-  deleteBuildConfig: async (name) => {
-    const response = await fetch(`${baseUrl}/buildconfigs/${name}`, {
-      method: 'DELETE',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-    });
-    if (!response.ok) {
-      throw Error(response.statusText);
-    }
-    return name;
-  },
+  deleteBuildConfig: name => deleteItem(`${baseUrl}/buildconfigs/${name}`, name),
   watchBuilds: action => webSocket(action, '/builds/watch'),
   watchApps: action => webSocket(action, '/mobileclients/watch'),
   watchBuildConfigs: action => webSocket(action, '/buildconfigs/watch'),
