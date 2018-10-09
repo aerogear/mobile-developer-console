@@ -1,9 +1,10 @@
 import React from 'react';
-import { Col, Button } from 'patternfly-react';
+import { Col } from 'patternfly-react';
 import Moment from 'react-moment';
 import moment from 'moment';
 import BuildStatus from '../common/BuildStatus';
 import Duration from './Duration';
+import BuildDownload from '../../containers/BuildDownload';
 
 import './MobileClientBuildHistoryList.css';
 
@@ -28,7 +29,7 @@ const MobileClientBuildHistoryList = (props) => {
 
         return (
           <Col xs={12} className="mobile-client-build-history-item" key={uid}>
-            <Col xs={9} sm={10} md={10} className="status-panel">
+            <Col xs={8} sm={9} md={9} className="status-panel">
               <div className="build-summary">
                 <div>
                   <BuildStatus build={mobileClientBuild} />&nbsp;
@@ -65,10 +66,12 @@ const MobileClientBuildHistoryList = (props) => {
                 </Col>
               </Col>
             </Col>
-            <Col xs={3} sm={2} md={2} className="download">
-              <Button bsSize="xsmall">
-                                Download
-              </Button>
+            <Col xs={4} sm={3} md={3} className="download">
+              <BuildDownload
+                history
+                build={mobileClientBuild}
+                appName={props.appName}
+              />
             </Col>
           </Col>
         );

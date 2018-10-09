@@ -6,6 +6,8 @@ const defaultState = {
   createError: false,
   isDeleting: false,
   deleteError: false,
+  isActioning: false,
+  actionError: false,
 };
 
 const resourceReducer = actions => (state = defaultState, action) => {
@@ -71,6 +73,24 @@ const resourceReducer = actions => (state = defaultState, action) => {
         ...state,
         isDeleting: false,
         deleteError: action.error,
+      };
+    case actions.actionRequest:
+      return {
+        ...state,
+        isActioning: true,
+        actionError: false,
+      };
+    case actions.actionSuccess:
+      return {
+        ...state,
+        isActioning: false,
+        actionError: false,
+      };
+    case actions.actionFailure:
+      return {
+        ...state,
+        isActioning: false,
+        actionError: action.error,
       };
     default:
       return state;

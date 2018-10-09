@@ -93,7 +93,7 @@ Hide Build History
   }
 
   render = () => {
-    const { buildConfiguration } = this.props;
+    const { buildConfiguration, appName } = this.props;
     const buildConfigName = buildConfiguration.metadata.name;
     const builds = buildConfiguration.builds || [];
     const lastClientBuild = lastBuild(builds);
@@ -126,7 +126,7 @@ Hide Build History
                 ? <NoBuild buildConfig={buildConfigDetails} />
                 : (
                   <React.Fragment>
-                    <BuildInformation build={lastClientBuild} />
+                    <BuildInformation appName={appName} build={lastClientBuild} />
                     {
                     clientBuildHistory.length > 0
                       ? (
@@ -147,7 +147,7 @@ build history
                               </a>
                             </div>
                             { this.state.buildHistoryOpen
-                              ? <MobileClientBuildHistoryList className="collapse in" id="demo" mobileClientBuilds={clientBuildHistory} />
+                              ? <MobileClientBuildHistoryList appName={appName} className="collapse in" id="demo" mobileClientBuilds={clientBuildHistory} />
                               : <React.Fragment />
                           }
                           </Col>
