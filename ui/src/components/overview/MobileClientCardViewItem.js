@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Card, CardHeading, CardTitle, CardBody, CardFooter, DropdownKebab, MenuItem, Icon} from 'patternfly-react';
+import DeleteItemButton from '../../containers/DeleteItemButton';
 
 const getIcon = (appType) => {
   var icon;
@@ -50,7 +51,12 @@ const getBuildCounts = (builds) => {
 
 class MobileClientCardViewItem extends Component {
   render() {
-    const {app, services, builds} = this.props;
+    const {
+      app,
+      app: { metadata: { name: appName } },
+      services,
+      builds
+    } = this.props;
     const result = getBuildCounts(builds);
     return (
       <Card matchHeight accented className="mobile-client-card">
@@ -62,7 +68,7 @@ class MobileClientCardViewItem extends Component {
             </CardTitle>
           )}
           <DropdownKebab id={app.metadata.name} className="card-dropdown-kebab">
-            <MenuItem> Delete </MenuItem>
+            <DeleteItemButton itemType="app" itemName={appName} />
           </DropdownKebab>
         </CardHeading>
         <a href={`/mobileclient/${app.metadata.name}`}>
