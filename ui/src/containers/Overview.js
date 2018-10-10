@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Grid } from 'patternfly-react';
 import { connect } from 'react-redux';
 
 import MobileClientCardView from '../components/overview/MobileClientCardView';
@@ -26,12 +25,13 @@ class Overview extends Component {
     const { apps, services } = this.props;
 
     return (
-        <MobileClientCardView
-          mobileClients={apps.items}
-          mobileServiceInstances={services.items}
-          mobileClientBuilds={[]}>
-          <CreateClient />
-          </MobileClientCardView>
+      <MobileClientCardView
+        mobileClients={apps.items}
+        mobileServiceInstances={services.items}
+        mobileClientBuilds={[]}
+      >
+        <CreateClient />
+      </MobileClientCardView>
     );
   }
 }

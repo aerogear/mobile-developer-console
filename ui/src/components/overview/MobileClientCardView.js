@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Toolbar, Filter, FormControl, EmptyState, EmptyStateTitle, EmptyStateAction, CardGrid } from 'patternfly-react';
-import { times, filter } from 'lodash-es';
 import './MobileClientCardView.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
 
@@ -28,7 +27,7 @@ class MobileClientCardView extends Component {
   }
 
   onValueKeyPress(keyEvent) {
-    const {currentValue} = this.state;
+    const { currentValue } = this.state;
     if (keyEvent.key === 'Enter' && currentValue && currentValue.length > 0) {
       this.setState({ currentValue: '' });
       this.setFilter(currentValue);
@@ -55,7 +54,7 @@ class MobileClientCardView extends Component {
   }
 
   renderAppCards() {
-    const {mobileClients, mobileServiceInstances, mobileClientBuilds} = this.props;
+    const {mobileClients} = this.props;
     return (
       <CardGrid matchHeight fluid>
         <CardGrid.Row key={1}>
