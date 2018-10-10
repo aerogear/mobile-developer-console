@@ -190,7 +190,7 @@ class CreateClient extends Component {
       return (
         <div>
           <Button bsStyle="primary" bsSize="large" onClick={this.open}>
-                    New mobile client
+                    Create Mobile App
           </Button>
           <Wizard.Pattern
             show={this.state.showModal}

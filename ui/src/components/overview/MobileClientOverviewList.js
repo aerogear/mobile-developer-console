@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListView } from 'patternfly-react';
+import { Toolbar, Filter, FormControl } from 'patternfly-react';
 import MobileClientListViewItem from './MobileClientListViewItem';
 
 const MobileClientOverviewList = ({
@@ -7,21 +7,11 @@ const MobileClientOverviewList = ({
   mobileServiceInstances,
   mobileClientBuilds,
 }) => (
-  <div>
-    <ListView>
-      {mobileClients.map((mobileClient) => {
-        const { uid } = mobileClient.metadata;
-        return (
-          <MobileClientListViewItem
-            key={uid}
-            mobileClient={mobileClient}
-            mobileServiceInstances={mobileServiceInstances}
-            mobileClientBuilds={mobileClientBuilds}
-          />
-        );
-      })}
-    </ListView>
-  </div>
+  <Toolbar>
+    <Filter>
+    <FormControl type="text" placeholder="Filter by name"></FormControl>
+    </Filter>
+  </Toolbar>
 );
 
 export default MobileClientOverviewList;

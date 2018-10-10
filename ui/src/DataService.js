@@ -111,6 +111,18 @@ const dataService = {
       throw Error(response.statusText);
     }
   },
+  fetchUser: async () => {
+    //TODO: implement me!
+    return await new Promise((resolve) => {
+      setTimeout(() => resolve({name: "John Doe"}), 1);
+    });
+  },
+  logout: async () => {
+    //TODO: implement me!
+    return await new Promise((resolve) => {
+      setTimeout(() => resolve({status: "ok"}), 1);
+    });
+  }
 };
 
 export default dataService;
