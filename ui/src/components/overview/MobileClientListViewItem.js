@@ -8,13 +8,14 @@ import ComponentSectionLabel from '../common/ComponentSectionLabel';
 import MobileClientConfig from '../common/MobileClientConfig';
 import MobileClientBuildList from './MobileClientBuildList';
 import MobileListViewItem from '../common/MobileListViewItem';
+import DeleteItemButton from '../../containers/DeleteItemButton';
 
 import './OverviewListItem.css';
 
-const actions = () => (
+const actions = mobileClientName => (
   <DropdownKebab id="mobile-client-actions" pullRight>
     <MenuItem>Edit</MenuItem>
-    <MenuItem>Delete</MenuItem>
+    <DeleteItemButton itemName={mobileClientName} itemType="app" />
   </DropdownKebab>
 );
 
@@ -117,12 +118,16 @@ mobile services are not bound to this client.
     )
 
     render = () => {
-      const { mobileClient, mobileServiceInstances } = this.props;
+      const {
+        mobileClient,
+        mobileClient: { metadata: { name: mobileClientName } },
+        mobileServiceInstances,
+      } = this.props;
       return (
         <MobileListViewItem
           className="overview-list-view-item"
           key={mobileClient.metadata.uid}
-          actions={actions()}
+          actions={actions(mobileClientName)}
           checkboxInput={false}
           heading={headings(mobileClient)}
           stacked={false}

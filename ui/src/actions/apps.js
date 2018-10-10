@@ -18,3 +18,12 @@ export const createApp = app => fetchAction(
   [APP_CREATE_REQUEST, APP_CREATE_SUCCESS, APP_CREATE_FAILURE],
   async () => DataService.createApp(app),
 )();
+
+export const APP_DELETE_REQUEST = 'APP_DELETE_REQUEST';
+export const APP_DELETE_SUCCESS = 'APP_DELETE_SUCCESS';
+export const APP_DELETE_FAILURE = 'APP_DELETE_FAILURE';
+
+export const deleteApp = name => fetchAction(
+  [APP_DELETE_REQUEST, APP_DELETE_SUCCESS, APP_DELETE_FAILURE],
+  async () => DataService.deleteApp(name),
+)();

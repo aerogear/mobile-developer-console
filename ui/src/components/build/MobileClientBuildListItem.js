@@ -10,14 +10,14 @@ import MobileClientBuildHistoryList from './MobileClientBuildHistoryList';
 import BuildInformation from './BuildInformation';
 import NoBuild from './NoBuild';
 import StartBuildButton from '../../containers/StartBuildButton';
-import DeleteBuildButton from '../../containers/DeleteBuildButton';
+import DeleteItemButton from '../../containers/DeleteItemButton';
 
 const actions = id => (
   <React.Fragment>
     <StartBuildButton jobName={id} />
     <DropdownKebab id={`build-actions-${id}`} pullRight>
       <MenuItem>Edit</MenuItem>
-      <DeleteBuildButton jobName={id} />
+      <DeleteItemButton itemName={id} itemType="buildconfig" />
     </DropdownKebab>
   </React.Fragment>
 );
