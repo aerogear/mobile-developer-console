@@ -20,6 +20,10 @@ class MobileClientCardView extends Component {
   constructor(props) {
     super(props);
     this.state = { filter: '', currentValue: '' };
+    this.emptyStateMessage = {
+      noAppsCreated: 'You have no mobile apps right now. Create one to get started.',
+      noAppsAfterFiltering: 'No mobile apps match the entered filter.'
+    };
   }
 
   onValueKeyPress(keyEvent) {
@@ -35,7 +39,7 @@ class MobileClientCardView extends Component {
   getEmptyState() {
     return (
       <EmptyState>
-        <EmptyStateTitle>You have no mobile apps right now. Create one to get started.</EmptyStateTitle>
+        <EmptyStateTitle>{this.emptyStateMessage.noAppsCreated}</EmptyStateTitle>
         <EmptyStateAction>
           <CreateClient createButtonSize="large" />
         </EmptyStateAction>
@@ -55,22 +59,31 @@ class MobileClientCardView extends Component {
     this.setState({ currentValue: event.target.value });
   }
 
+  filterClients(mobileClients) {
+    return mobileClients
+      .map(app => {
+        const {
+          metadata: { name: clientAppName }
+        } = app;
+        const { filter } = this.state;
+        return clientAppName.indexOf(filter) > -1 ? (
+          <MobileClientCardViewItem key={clientAppName} app={app} services={mockServices} builds={mockBuilds} />
+        ) : null;
+      })
+      .filter(app => app !== null);
+  }
+
   renderAppCards() {
     const { mobileClients } = this.props;
-    return (
+    const filteredClients = this.filterClients(mobileClients);
+    return filteredClients.length ? (
       <CardGrid matchHeight fluid>
-        <CardGrid.Row key={1}>
-          {mobileClients.map(app => {
-            const {
-              metadata: { name: clientAppName }
-            } = app;
-            const { filter } = this.state;
-            return clientAppName.indexOf(filter) > -1 ? (
-              <MobileClientCardViewItem key={clientAppName} app={app} services={mockServices} builds={mockBuilds} />
-            ) : null;
-          })}
-        </CardGrid.Row>
+        <CardGrid.Row key={1}>{filteredClients}</CardGrid.Row>
       </CardGrid>
+    ) : (
+      <EmptyState>
+        <EmptyStateTitle>{this.emptyStateMessage.noAppsAfterFiltering}</EmptyStateTitle>
+      </EmptyState>
     );
   }
 
