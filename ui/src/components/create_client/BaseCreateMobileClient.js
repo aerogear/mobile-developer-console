@@ -13,7 +13,13 @@ class BaseCreateMobileClient extends Component {
 
     constructor(props) {
       super(props);
-      this.state = props;
+      this.state = { ...props };
+    }
+
+    componentDidUpdate(prevProps) {
+      if (this.props !== prevProps) {
+        this.setState(this.props);
+      }
     }
 
     getFormFields= () => [

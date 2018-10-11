@@ -37,7 +37,8 @@ class CreateClient extends Component {
     showModal: false,
     loading: false,
     activeStepIndex: WIZARD_SELECT_PLATFORM,
-  }
+    resetOnStart: true
+  };
 
   componentDidUpdate() {
     if (this.state.loading && !this.props.apps.isCreating) {
@@ -129,9 +130,12 @@ class CreateClient extends Component {
 
     open = () => {
       if (this.state.resetOnStart) { // resets the state if it was already there
-        delete (this.state.clientConfiguration);
-        delete (this.state.resultDetails);
-        this.setState({ activeStepIndex: WIZARD_SELECT_PLATFORM });
+        this.setState({
+          clientConfiguration: null,
+          resultDetails: null,
+          activeStepIndex: WIZARD_SELECT_PLATFORM,
+          validated: false
+        });
       }
       this.setState({ showModal: true, loading: false });
     };
