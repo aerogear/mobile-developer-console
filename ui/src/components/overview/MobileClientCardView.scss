@@ -64,7 +64,11 @@
       padding: 0!important;
       position: relative;
       word-wrap: break-word;
-      color: #0088ce
+      color: #0088ce;
+      
+      h1 {
+        margin: 0;
+      }
     }
   }
 
