@@ -63,8 +63,10 @@ const webSocket = (action, url) => {
 };
 
 const dataService = {
+
   mobileClients: () => fetchItems('mobileclients'),
   serviceInstances: () => fetchItems('serviceinstances'),
+  bindableServices: () => fetchItems('bindableservices'),
   builds: () => fetchItems('builds'),
   buildConfigs: () => fetchItems('buildconfigs'),
   createApp: app => request('mobileclients', 'POST', app),

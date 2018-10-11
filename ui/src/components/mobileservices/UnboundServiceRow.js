@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListViewItem, Col } from 'patternfly-react';
+import { ListViewItem, Col, Button } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 
@@ -9,14 +9,23 @@ class UnboundServiceRow extends Component {
 
     this.service = props.service;
 
+    this.showBindingDialog = props.showBindingDialog;
+    
+    this.createBinding = this.createBinding.bind(this);
     this.renderServiceBadge = this.renderServiceBadge.bind(this);
   }
 
   renderServiceBadge() {
+    let icon = <div/>;
+    if (this.service.serviceIconClass != null && this.service.serviceIconClass.length > 0) {
+      icon = <span className={this.service.serviceIconClass + " logo"}/>
+    } else {
+      icon = <img src={this.service.serviceLogoUrl} alt="" />
+    }
     return (
       <Col md={3} key={this.service.serviceId} className="service-sdk-info">
         <Col md={12}>
-          <img src={this.service.serviceLogoUrl} alt="" />
+          {icon}
           <div className="service-name">
             <h4>
               <div><a href={`#${this.service.serviceId}`}>{this.service.serviceName}</a></div>
@@ -28,11 +37,20 @@ class UnboundServiceRow extends Component {
     );
   }
 
+  createBinding() {
+    this.showBindingDialog(this.service.serviceName, this.service.bindingSchema);
+  }
+
+  renderBindingButtons() {
+    return <div><Button onClick={this.createBinding}>Create Binding</Button></div> ;
+  }
 
   render() {
+    
     return (
       <ListViewItem
         additionalInfo={[this.renderServiceBadge()]}
+        actions={this.renderBindingButtons()}
       />
     );
   }

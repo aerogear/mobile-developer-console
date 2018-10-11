@@ -13,13 +13,20 @@ class BoundServiceRow extends Component {
 
     this.renderServiceBadge = this.renderServiceBadge.bind(this);
     this.renderServiceDetails = this.renderServiceDetails.bind(this);
+    this.configurationView = this.configurationView.bind(this);
   }
 
   renderServiceBadge() {
+    let icon = <div/>
+    if (this.service.serviceIconClass != null && this.service.serviceIconClass.length > 0) {
+      icon = <span className ={this.service.serviceIconClass + " logo"}/>
+    } else {
+      icon = <img src={this.service.serviceLogoUrl} alt="" />
+    }
     return (
       <Col key={this.service.serviceId} md={3} className="service-sdk-info">
         <Col md={12}>
-          <img src={this.service.serviceLogoUrl} alt="" />
+          {icon}
           <div className="service-name">
             <h4>
               <div>{this.service.serviceName}</div>
@@ -53,18 +60,20 @@ SDK Setup
 
 
     if (this.service.configuration) {
-      propertyFragment = this.service.configuration.map(configuration => (
-        <Row key={configuration.key}>
+      propertyFragment = this.service.configuration.foreach(configuration => {
+        configuration = JSON.parse(configuration)
+
+        return <Row key={configuration.label}>
           <Col md={2} className="detailsKey">
-            {configuration.key}
+            {configuration.label}
             {' '}
 :
           </Col>
           <Col md={4} className="detailsValue">
-            {configuration.value}
+            {this.configurationView(configuration)}
           </Col>
         </Row>
-      ));
+      });
     } else {
       propertyFragment = (
         <div>No configuration data to show for this service.</div>
@@ -97,6 +106,17 @@ SDK Setup
       </ListViewItem>
     );
   }
+
+  configurationView(configuration) {
+    if (configuration.type === "href") {
+      return <a href={configuration.value}>{configuration.value}</a>
+    }
+    else {
+      return configuration.valuel;
+    }
+  }
 }
+
+
 
 export default BoundServiceRow;

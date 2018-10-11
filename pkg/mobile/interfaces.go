@@ -12,6 +12,9 @@ type ServiceInstanceLister interface {
 	Watch() func() (watch.Interface, error)
 }
 
+type BindableMobileServiceLister interface {
+	List(namespace string) (*BindableMobileServiceList, error)
+}
 type BuildCRUDL interface {
 	List() (*ExtendedBuildList, error)
 	Watch() func() (watch.Interface, error)

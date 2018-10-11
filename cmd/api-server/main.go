@@ -63,6 +63,13 @@ func main() {
 		log.Fatalf("Error init service catalog client: %v", err)
 	}
 
+	mobileClientsRepo := mobile.NewMobileClientRepo(namespace)
+
+	{
+		sbLister := mobile.NewServiceBindingLister(scClient.ServicecatalogV1beta1(), mobileClientsRepo)
+		mobileServicebindingsHandler := web.NewMobileServiceBindingsHandler(sbLister, namespace)
+		web.SetupBindableMobileServiceRoute(apiGroup, mobileServicebindingsHandler)
+	}
 	{
 		siLister := mobile.NewServiceInstanceLister(scClient.ServicecatalogV1beta1(), namespace)
 		mobileServiceInstancesHandler := web.NewMobileServiceInstancesHandler(siLister, namespace)
@@ -87,14 +94,12 @@ func main() {
 		web.SetupMobileBuildConfigsRoute(apiGroup, mobileBuildConfigsHandler)
 	}
 
-	mobileClientsRepo := mobile.NewMobileClientRepo(namespace)
-
 	{
 		mobileClientsHandler := web.NewMobileClientsHandler(mobileClientsRepo, namespace)
 		web.SetupMoileClientsRoute(apiGroup, mobileClientsHandler)
 	}
 
-	userHandler := web.NewUserHandler();
+	userHandler := web.NewUserHandler()
 	web.SetupUserRouter(apiGroup, userHandler)
 
 	serverConfigHandler := web.NewServerConfigHandler(config)
