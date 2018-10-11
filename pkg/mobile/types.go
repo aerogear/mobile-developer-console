@@ -30,11 +30,11 @@ type BindableMobileService struct {
 	ImageURL        string                        `json:"imageUrl,omitempty"`
 	IconClass       string                        `json:"iconClass,omitempty"`
 	Configuration   []string                      `json:"configuration,omitempty"`
-	ServiceInstance scv1beta1.ServiceInstance     `json:"serviceInstance"`
-	ServiceBinding  scv1beta1.ServiceBinding      `json:"serviceBinding"`
-	ServiceClass    scv1beta1.ClusterServiceClass `json:"serviceClass"`
-	ServicePlan     ServicePlan                   `json:"servicePlan"`
-	MobileClient    mcv1alpha1.MobileClient       `json:"mobileClient"`
+	ServiceInstance scv1beta1.ServiceInstance     `json:"serviceInstance,omitempty"`
+	ServiceBinding  scv1beta1.ServiceBinding      `json:"serviceBinding,omitempty"`
+	ServiceClass    scv1beta1.ClusterServiceClass `json:"serviceClass,omitempty"`
+	ServicePlan     ServicePlan                   `json:"servicePlan,omitempty"`
+	MobileClient    mcv1alpha1.MobileClient       `json:"mobileClient,omitempty"`
 }
 
 //BindableMobileServiceList is a List of BindableMobileServices

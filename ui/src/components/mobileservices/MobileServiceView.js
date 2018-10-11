@@ -27,6 +27,7 @@ class MobileServiceView extends Component {
                     serviceId: serviceName,
                     serviceDescription: instance.serviceClass.spec.description,
                     documentationUrl: instance.serviceClass.spec.externalMetadata.documentationUrl20,
+                    configuration: instance.configuration,
                     setupText: 'Identity Management SDK setup',            
                   });
                 } else {

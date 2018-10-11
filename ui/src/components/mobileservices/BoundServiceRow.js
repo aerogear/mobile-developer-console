@@ -59,10 +59,12 @@ SDK Setup
     }
 
 
+    
     if (this.service.configuration) {
-      propertyFragment = this.service.configuration.foreach(configuration => {
+      propertyFragment = this.service.configuration.map(configuration => {
+        
         configuration = JSON.parse(configuration)
-
+        console.log(configuration)
         return <Row key={configuration.label}>
           <Col md={2} className="detailsKey">
             {configuration.label}

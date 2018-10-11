@@ -38,10 +38,6 @@ func (lister *BindableMobileServiceListerImpl) List(namespace string) (*Bindable
 		return nil, err
 	}
 
-	serviceInstances.Items = Filter(serviceInstances.Items, func(instance ServiceInstance) bool {
-		return true
-	})
-
 	for _, serviceInstance := range serviceInstances.Items {
 
 		bindableService := BindableMobileService{}
@@ -115,7 +111,9 @@ func (lister *BindableMobileServiceListerImpl) List(namespace string) (*Bindable
 		bindableService.ServiceInstance = serviceInstance
 		bindableService.ServicePlan = servicePlan
 
-		serviceBindingList.Items = append(serviceBindingList.Items, bindableService)
+		if contains(csc.Spec.Tags, "mobile-client-enabled") {
+			serviceBindingList.Items = append(serviceBindingList.Items, bindableService)
+		}
 	}
 
 	return &serviceBindingList, nil

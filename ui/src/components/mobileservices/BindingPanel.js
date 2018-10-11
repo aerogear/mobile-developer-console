@@ -51,8 +51,12 @@ onBackButtonClick() {
   show(serviceName, schema) {
     this.setState({
       serviceName:serviceName,
-      schema:schema
+      schema:schema,
+      loading:false,
+      showModal: false,
+      activeStepIndex: 0
     });
+    this.stepChanged(0);
     this.open();
   }
 
