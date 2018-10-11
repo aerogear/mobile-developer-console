@@ -29,8 +29,9 @@ class BaseCreateMobileClient extends Component {
         useFieldLevelHelp: true,
         value: this.state.clientConfiguration[CREATE_CLIENT_NAME],
         content: 'Enter application name (like <em>myapp</em>)',
+        tabIndex: -1,
         formControl: ({ validationState, ...props }) => (
-          <Form.FormControl type="text" {...props} />
+          <Form.FormControl type="text" {...props} tabIndex="1" autofocus="true"/>
         ),
         validationState: _get(this.state.validation, CREATE_CLIENT_NAME),
         onChange: e => formChanged(this, CREATE_CLIENT_NAME, e.target.value, value => validateAppName(value)),
@@ -41,8 +42,9 @@ class BaseCreateMobileClient extends Component {
         useFieldLevelHelp: true,
         value: this.state.clientConfiguration[CREATE_CLIENT_APP_ID],
         content: 'Enter package name (like <em>org.aerogear.android.myapp</em>)',
+        tabIndex: -1,
         formControl: ({ validationState, ...props }) => (
-          <Form.FormControl type="text" {...props} />
+          <Form.FormControl type="text" {...props} tabIndex="2"/>
         ),
         validationState: _get(this.state.validation, CREATE_CLIENT_APP_ID),
         onChange: e => formChanged(this, CREATE_CLIENT_APP_ID, e.target.value, value => validateId(value)),
