@@ -123,7 +123,7 @@ func (h *MobileClientsHandler) Create(c echo.Context) error {
 	app := newMobileClientObject(*reqData, h.namespace)
 	err := h.mobileClientRepo.Create(app)
 	if err != nil {
-		return err
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 	data, err := newMoileClientDataFromObject(app)
 	if err != nil {
