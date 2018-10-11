@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Grid } from 'patternfly-react';
 import { connect } from 'react-redux';
 
-import MobileClientOverviewList from '../components/overview/MobileClientOverviewList';
-import CreateClient from './CreateClient';
+import MobileClientCardView from '../components/overview/MobileClientCardView';
 import { fetchApps } from '../actions/apps';
 import { fetchServices } from '../actions/services';
 import DataService from '../DataService';
@@ -26,14 +24,11 @@ class Overview extends Component {
     const { apps, services } = this.props;
 
     return (
-      <Grid fluid>
-        <MobileClientOverviewList
-          mobileClients={apps.items}
-          mobileServiceInstances={services.items}
-          mobileClientBuilds={[]}
-        />
-        <CreateClient />
-      </Grid>
+      <MobileClientCardView
+        mobileClients={apps.items}
+        mobileServiceInstances={services.items}
+        mobileClientBuilds={[]}
+      />
     );
   }
 }

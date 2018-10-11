@@ -1,0 +1,102 @@
+.blank-slate-pf {
+  border-width: 0;
+}
+
+.mobile-client-card {
+  margin: 0 0 20px 0;
+
+  a {
+    color: #393f44;
+    text-decoration: none;
+
+    :hover {
+      text-decoration: none;
+    }
+  }
+
+  .card-pf-heading {
+    border-bottom: none;
+
+    .card-pf-title {
+      span {
+        margin-right: 5px;
+      }
+      span:not(.pficon) {
+        margin-right: 15px;
+      }
+    }
+  }
+
+  .card-dropdown-kebab {
+    float: right;
+  }
+  
+  .card-pf-body {
+    text-align: center;
+  
+    .card-body-icon {
+      align-items: center;
+      display: flex;
+      font-size: 20px;
+      height: 92px;
+      justify-content: center;
+      position: relative;
+    
+      span, img {
+        max-height: 60px;
+        max-width: 60px;
+      }
+      img {
+        width: 60px;
+      }
+      .fa {
+        font-size: 60px;
+      }
+    }
+  
+    .card-body-title {
+      flex: 1 1 0%;
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 1.4em;
+      max-height: 4.2em;
+      overflow: hidden;
+      padding: 0!important;
+      position: relative;
+      word-wrap: break-word;
+      color: #0088ce;
+      
+      h1 {
+        margin: 0;
+      }
+    }
+  }
+
+  .card-pf-footer {
+    background-color: #fff;
+    border-top: none;
+    border-bottom: 1px solid #d1d1d1;
+    padding: 10px 20px 20px 20px;
+
+    .service-icon {
+      width: 30px;
+      height: 30px;
+      margin-right: 15px;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+
+      .icon {
+        width: 30px;
+        height: 30px;
+      }
+
+      .fa {
+        font-size: 25px;
+        vertical-align: middle;
+      }
+    }
+
+    
+  }
+}
