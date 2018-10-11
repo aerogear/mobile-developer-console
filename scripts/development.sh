@@ -4,7 +4,7 @@ if [ -z "$1" ]; then
     go get github.com/oxequa/realize
     node ui/util/cors-server.js &
     cd ui && npm start &
-    touch server.log && tail -f server.log &
+    rm -f server.log && touch server.log && tail -f server.log &
     realize start
 fi
 

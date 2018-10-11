@@ -28,6 +28,8 @@ export const HorizontalFormField = ({
   if (bsSize) controlProps.bsSize = bsSize;
   if (validationState) controlProps.validationState = validationState;
 
+  controlProps.value = controlProps.value || '';
+
   const formGroupProps = { key: controlId, controlId, ...controlProps };
 
   if (useFieldLevelHelp) {
