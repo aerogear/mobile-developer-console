@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import { set as _set, get as _get } from 'lodash-es';
 import { VALIDATION_WARN, VALIDATION_OK } from './Validation';
 

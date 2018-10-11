@@ -17,6 +17,7 @@ import {
 } from '../Constants';
 import { Grid, Row, Col, FormGroup, ControlLabel, FormControl, HelpBlock } from 'patternfly-react';
 import FormDropdown from '../../common/FormDropdown';
+import UploadControl from '../../common/UploadControl';
 
 export function renderSourceSection(component, sourceState, basicAuthState, sshAuthState) {
   const { advancedOptions } = component.state;
@@ -40,9 +41,7 @@ export function renderSourceSection(component, sourceState, basicAuthState, sshA
               <HelpBlock>Git URL of the source code to build.</HelpBlock>
               <HelpBlock>
                 View the{' '}
-                <a href="#" onClick={() => component.setState({ [KEY_ADVANCED_OPTIONS]: !advancedOptions })}>
-                  advanced options
-                </a>
+                <a onClick={() => component.setState({ [KEY_ADVANCED_OPTIONS]: !advancedOptions })}>advanced options</a>
               </HelpBlock>
             </FormGroup>
           </Col>
@@ -137,7 +136,7 @@ export function renderSshAuthentication(sshAuthState) {
       </FormGroup>
       <FormGroup validationState={sshAuthState.getValidationState(KEY_CR_SSH_PRIVATE_KEY)}>
         <ControlLabel className="required">SSH Private Key</ControlLabel>
-        <FormControl type="file" />
+        <UploadControl onTextLoaded={text => sshAuthState.set(KEY_CR_SSH_PRIVATE_KEY, text)} />
         <HelpBlock>Upload your private SSH key file.</HelpBlock>
         <FormControl
           componentClass="textarea"
