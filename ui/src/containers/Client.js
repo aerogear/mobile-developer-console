@@ -57,7 +57,7 @@ class Client extends Component {
 
   render() {
     return (
-      <div>
+      <div className="client-details">
         <div>
           <Tabs id="basic-tabs-pf" defaultActiveKey={1}>
             <div>

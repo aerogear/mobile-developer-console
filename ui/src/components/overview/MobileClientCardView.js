@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Toolbar, Filter, FormControl, EmptyState, EmptyStateTitle, EmptyStateAction, CardGrid } from 'patternfly-react';
 import './MobileClientCardView.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
+import CreateClient from '../../containers/CreateClient';
 
 
 const mockServices = [
@@ -44,10 +45,10 @@ class MobileClientCardView extends Component {
     return (
       <EmptyState>
         <EmptyStateTitle>
-          You have no mobile apps right now. Create one to get started;
+          You have no mobile apps right now. Create one to get started.
         </EmptyStateTitle>
         <EmptyStateAction>
-          {this.props.children}
+          <CreateClient createButtonSize="large" />
         </EmptyStateAction>
       </EmptyState>
     )
@@ -58,11 +59,9 @@ class MobileClientCardView extends Component {
     return (
       <CardGrid matchHeight fluid>
         <CardGrid.Row key={1}>
-        { mobileClients.map((app, i) => {
-            return <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3" key={i}>
-              <MobileClientCardViewItem app={app} services={mockServices} builds={mockBuilds} />
-            </div>
-          }) }
+        { mobileClients.map((app, i) => (
+            <MobileClientCardViewItem key={i} app={app} services={mockServices} builds={mockBuilds} />
+          )) }
         </CardGrid.Row>
       </CardGrid>
     )
@@ -84,7 +83,7 @@ class MobileClientCardView extends Component {
           ></FormControl>
         </Filter>
         <div className="form-group">
-          {this.props.children}
+          <CreateClient />
         </div>
         {filter && filter.length > 0 && (
           <Toolbar.Results>
