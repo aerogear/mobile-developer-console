@@ -185,7 +185,7 @@ class CreateClient extends Component {
     render() {
       return (
         <div>
-          <Button bsStyle="primary" bsSize="large" onClick={this.open}>
+          <Button bsStyle="primary" bsSize={this.props.createButtonSize} onClick={this.open}>
                     Create Mobile App
           </Button>
           <Wizard.Pattern

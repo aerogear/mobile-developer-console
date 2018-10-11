@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardHeading, CardTitle, CardBody, CardFooter, DropdownKebab } from 'patternfly-react';
+import { Link } from 'react-router-dom';
 import DeleteItemButton from '../../containers/DeleteItemButton';
 
 const getIcon = (appType) => {
@@ -31,7 +32,7 @@ const getServiceIcons = (services) => {
     sync: <img alt="Sync" className="icon" src="/img/sync.svg" />,
   };
   return services
-    .map(service => <span className="service-icon">{icons[service.type]}</span>);
+    .map((service, i) => <span className="service-icon" key={i}>{icons[service.type]}</span>);
 };
 
 const getBuildCounts = (builds) => {
@@ -55,36 +56,39 @@ const MobileClientCardViewItem = (props) => {
   } = props;
   const result = getBuildCounts(builds);
   return (
-    <Card matchHeight accented className="mobile-client-card">
-      <CardHeading>
-        {builds && builds.length > 0 && (
-          <CardTitle>
-            <span className="pficon-ok" >{result.success}</span>
-            <span className="pficon-error-circle-o" >{result.failed}</span>
-          </CardTitle>
-        )}
-        <DropdownKebab id={app.metadata.name} className="card-dropdown-kebab">
-          <DeleteItemButton itemType="app" itemName={appName} />
-        </DropdownKebab>
-      </CardHeading>
-      <a href={`/mobileclient/${app.metadata.name}`}>
-        <CardBody>
-          <div className="card-body-icon">
-            {getIcon(app.spec.clientType)}
-          </div>
-          <div className="card-body-title">
-            {app.metadata.name}
-          </div>
-        </CardBody>
-        <CardFooter>
-          {services && services.length > 0 && (
-            <div className="card-footer-icons">
-              {getServiceIcons(services)}
-            </div>
+    <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <Card matchHeight /*accented*/ className="mobile-client-card">
+        <CardHeading>
+          <DropdownKebab id={app.metadata.name} pullRight className="card-dropdown-kebab">
+            <DeleteItemButton itemType="app" itemName={appName} />
+          </DropdownKebab>
+          {builds && builds.length > 0 && (
+            <CardTitle>
+              <span><span className="pficon pficon-ok" />{result.success}</span>
+              <span><span className="pficon pficon-error-circle-o" />{result.failed}</span>
+            </CardTitle>
           )}
-        </CardFooter>
-      </a>
-    </Card>
+        </CardHeading>
+        
+        <Link to={`/mobileclient/${app.metadata.name}`}>
+          <CardBody>
+            <div className="card-body-icon">
+              {getIcon(app.spec.clientType)}
+            </div>
+            <div className="card-body-title">
+              <h1>{app.metadata.name}</h1>
+            </div>
+          </CardBody>
+          <CardFooter>
+            {services && services.length > 0 && (
+              <div className="card-footer-icons">
+                {getServiceIcons(services)}
+              </div>
+            )}
+          </CardFooter>
+        </Link>
+      </Card>
+    </div>
   );
 };
 

@@ -1,17 +1,16 @@
-import React, { Component } from "react";
+import React from "react";
 import { Masthead, MenuItem, Icon } from "patternfly-react";
 
-class NavHeader extends Component {
-  render = () => (
-    <Masthead title={this.props.title} navToggle={false}>
+const NavHeader = ({ title, user, helpDropdownItems, userDropdownItems }) => (
+  <Masthead title={title} navToggle={false}>
     <Masthead.Collapse>
-        <Masthead.Dropdown
-          id="app-help-dropdown"
-          noCaret
-          title={<span title="Help" className="pficon pficon-help" />}
-        >
+      <Masthead.Dropdown
+        id="app-help-dropdown"
+        noCaret
+        title={<span title="Help" className="pficon pficon-help" />}
+      >
         {
-          this.props.helpDropdownItems.map((item, index) => (
+          helpDropdownItems.map((item, index) => (
             <MenuItem key={index} eventKey={index} onSelect={item.onSelect}>{item.text}</MenuItem>
           ))
         }
@@ -21,19 +20,18 @@ class NavHeader extends Component {
           title={[
             <Icon type="pf" name="user" key="user-icon" />,
             <span className="dropdown-title" key="dropdown-title">
-              {this.props.user.name}
+              {user && user.name}
             </span>
           ]}
         >
         {
-          this.props.userDropdownItems.map((item, index) => (
+          userDropdownItems.map((item, index) => (
             <MenuItem key={index} eventKey={index} onSelect={item.onSelect}> {item.text} </MenuItem>
           ))
         }
-        </Masthead.Dropdown>
-      </Masthead.Collapse>
-      </Masthead>
-  )
-}
+      </Masthead.Dropdown>
+    </Masthead.Collapse>
+  </Masthead>
+);
 
 export default NavHeader;

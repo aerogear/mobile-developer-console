@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import MobileClientCardView from '../components/overview/MobileClientCardView';
-import CreateClient from './CreateClient';
 import { fetchApps } from '../actions/apps';
 import { fetchServices } from '../actions/services';
 import DataService from '../DataService';
@@ -29,9 +28,7 @@ class Overview extends Component {
         mobileClients={apps.items}
         mobileServiceInstances={services.items}
         mobileClientBuilds={[]}
-      >
-        <CreateClient />
-      </MobileClientCardView>
+      />
     );
   }
 }
