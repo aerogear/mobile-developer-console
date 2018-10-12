@@ -89,7 +89,26 @@ const dataService = {
       throw Error(`${response.statusText}: ${msg}`);
     }
     return response.json();
-  },  
+
+  },
+
+  createBinding: async (app) => {
+    const response = await fetch(`${baseUrl}/mobileclients`, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      body: JSON.stringify(app),
+    });
+    if (!response.ok) {
+      const msg = await response.text();
+      throw Error(`${response.statusText}: ${msg}`);
+    }
+    return response.json();
+  },
+  
   watchBuilds: action => webSocket(action, '/builds/watch'),
   watchApps: action => webSocket(action, '/mobileclients/watch'),
   watchBuildConfigs: action => webSocket(action, '/buildconfigs/watch'),

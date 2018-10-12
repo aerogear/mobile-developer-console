@@ -8,10 +8,8 @@ class UnboundServiceRow extends Component {
     super(props);
 
     this.service = props.service;
-
     this.showBindingDialog = props.showBindingDialog;
     
-    this.createBinding = this.createBinding.bind(this);
     this.renderServiceBadge = this.renderServiceBadge.bind(this);
   }
 
@@ -37,13 +35,8 @@ class UnboundServiceRow extends Component {
     );
   }
 
-  createBinding() {
-    
-    this.showBindingDialog(this.service.serviceName, this.service.bindingSchema, this.service.form);
-  }
-
   renderBindingButtons() {
-    return <div><Button onClick={this.createBinding}>Create Binding</Button></div> ;
+    return <div><Button onClick={()=>this.showBindingDialog(this.service.serviceName, this.service.bindingSchema, this.service.form)}>Create Binding</Button></div> ;
   }
 
   render() {

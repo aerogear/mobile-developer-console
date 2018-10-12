@@ -6,6 +6,8 @@ import {
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import Form from "react-jsonschema-form";
+import debounce from 'lodash/debounce';
+
 
 class BindingPanel extends Component {
     
@@ -19,9 +21,11 @@ class BindingPanel extends Component {
 
     this.open = this.open.bind(this);
     this.show = this.show.bind(this);
+    this.saveForm = this.saveForm.bind(this);
     this.onNextButtonClick = this.onNextButtonClick.bind(this);
     this.onBackButtonClick = this.onBackButtonClick.bind(this);
     this.renderPropertiesSchema = this.renderPropertiesSchema.bind(this);
+    this.createBindingCallback = props.createBindingCallback;
   }
 
   open() {
@@ -70,14 +74,16 @@ onBackButtonClick() {
           return <Form schema={this.state.schema}
           uiSchema={{form:this.state.form}}
           ObjectFieldTemplate={OpenShiftObjectTemplate}
-          onChange={e => console.log("changed" + JSON.stringify(e))}
-          onSubmit={e => console.log("submitted")}
-          onError={e => console.log("errors")} >
+          onChange={debounce(e => this.saveForm(e.formData), 150)} >
           <div/>
           </Form>
 
     }
   
+    saveForm(formData) {
+      this.formData = formData
+    }
+
     renderWizardSteps() {
       return [{title:"Binding",render:()=>{
         return  <form className="ng-pristine ng-valid">
@@ -98,17 +104,13 @@ onBackButtonClick() {
          
       }
   
-
       stepChanged = (step) => {
         if (step === 2) {
           this.setState({ loading: true });
-          this.callClientCreation();
+          this.createBindingCallback(this.formData);
         }
       }
   
-      callClientCreation = () => {
-        console.log("Create Binding");
-      }
 
    render() {
 
@@ -136,8 +138,7 @@ onBackButtonClick() {
 //This renders the json fields using the rules from the form definition.
 function OpenShiftObjectTemplate({ TitleField, uiSchema,schema, properties, title, description }) {
   const form = uiSchema.form
-  console.log(JSON.stringify(uiSchema.form))
-  console.log(JSON.stringify(schema))
+
   return (
     <div>
     <TitleField title={title} />

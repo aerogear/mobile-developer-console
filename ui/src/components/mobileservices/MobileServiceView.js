@@ -7,7 +7,8 @@ import BindingPanel from "./BindingPanel"
 class MobileServiceView extends Component {
   constructor(props) {
     super(props);
-    
+    this.createBindingCallback = this.createBindingCallback.bind(this)    
+
     DataService.bindableServices().then(
       
       instances => {
@@ -89,12 +90,16 @@ class MobileServiceView extends Component {
     this.bindingDialog.show(serviceName, schema, form);
   }
 
+  createBindingCallback(formData) {
+    DataService.createBinding(formData);
+  }
+
   render() {
     return (
       <div>
         {this.boundServiceRows()}
         {this.unboundServiceRows()}
-        <BindingPanel onRef= {(dialog)=>{this.bindingDialog = dialog; }}/>
+        <BindingPanel onRef= {(dialog)=>{this.bindingDialog = dialog; }} createBindingCallback={this.createBindingCallback}/>
       </div>
     );
   }
