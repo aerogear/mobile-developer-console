@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 
 class PlatformItem extends Component {
-    state={ selected: this.props.selected };
+    state={ selected: false };
 
-    render=() => (
+    render() {
+      var styleclass = this.props.selection === this.props.id ? 'platform-item selected' : 'platform-item';
+
+      return (
       <div>
-        <a className={this.state.selected ? 'platform-item selected' : 'platform-item'} href="#nothing" onClick={this.handleClick}>
+        <a className={styleclass} href="#nothing" onClick={this.handleClick}>
           <div className="platform-item-icon-container">
             {this.platformItemIcon()}
           </div>
@@ -14,7 +17,8 @@ class PlatformItem extends Component {
           </div>
         </a>
       </div>
-    )
+      )
+    }
 
     handleClick=(e) => {
       const state = { selected: true, id: this.props.id };

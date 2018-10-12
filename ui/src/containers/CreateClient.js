@@ -1,32 +1,24 @@
 import React, { Component } from 'react';
-import { Grid, Wizard, Button } from 'patternfly-react';
-import { connect } from 'react-redux';
-import { get as _get } from 'lodash-es';
+import {
+  FormGroup,
+  ControlLabel,
+  Button, Modal
+} from 'patternfly-react';
 import PlatformItem from '../components/create_client/PlatformItem';
-import CreateAndroidClient from '../components/create_client/CreateAndroidClient';
-import CreateCordovaClient from '../components/create_client/CreateCordovaClient';
-import CreateIOSClient from '../components/create_client/CreateIOSClient';
-import CreateXamarinClient from '../components/create_client/CreateXamarinClient';
-import { ResultsLine } from '../components/create_client/ResultsLine';
+import PlatformItems from '../components/create_client/PlatformItems';
+import '../components/create_client/create_client.css';
 import {
   PLATFORM_ANDROID,
   PLATFORM_IOS,
   PLATFORM_CORDOVA,
   PLATFORM_XAMARIN,
   CREATE_CLIENT_TYPE,
-  CLIENT_CONFIGURATION,
-  CREATE_CLIENT_APP_ID,
-  CREATE_CLIENT_NAME,
-  WIZARD_SELECT_PLATFORM,
-  WIZARD_CREATION_RESULT,
-  WIZARD_CONFIGURE_CLIENT,
 } from '../components/create_client/Constants';
-import { createApp } from '../actions/apps';
-import '../components/create_client/create_client.css';
+import CreateAndroidClient from '../components/create_client/CreateAndroidClient';
+import CreateCordovaClient from '../components/create_client/CreateCordovaClient';
+import CreateXamarinClient from '../components/create_client/CreateXamarinClient';
+import CreateIOSClient from '../components/create_client/CreateIOSClient';
 
-/**
- *  Component for the mobile client creation.
- */
 class CreateClient extends Component {
   constructor(props) {
     super(props);
@@ -35,193 +27,106 @@ class CreateClient extends Component {
 
   state = {
     showModal: false,
-    loading: false,
-    activeStepIndex: WIZARD_SELECT_PLATFORM,
-    resetOnStart: true
+    loading: false
   };
 
-  componentDidUpdate() {
-    if (this.state.loading && !this.props.apps.isCreating) {
-      if (this.props.apps.createError) {
-        this.setState({
-          resultIcon: 'pficon-error-circle-o',
-          resultText: 'Failed when creating mobile client.',
-          resultDetails: this.props.apps.createError.message,
-          loading: false,
-          resetOnStart: true,
-        });
-      } else {
-        this.setState({
-          resultIcon: 'pficon-ok',
-          resultText: 'Mobile client successfully created.',
-          loading: false,
-          resetOnStart: true,
-        });
-      }
+  open = () => {
+    if (this.state.resetOnStart) { // resets the state if it was already there
+      this.setState({
+        clientConfiguration: null,
+        resultDetails: null,
+        validated: false
+      });
+    }
+    this.setState({ showModal: true, loading: false });
+  };
+
+  selectPlatform = (state) => {
+    switch (state.id) {
+      case 'platform_android': this.state.selectedPlatform = PLATFORM_ANDROID; break;
+      case 'platform_ios': this.state.selectedPlatform = PLATFORM_IOS; break;
+      case 'platform_cordova': this.state.selectedPlatform = PLATFORM_CORDOVA; break;
+      case 'platform_xamarin': this.state.selectedPlatform = PLATFORM_XAMARIN; break;
+      default: throw new Error(`unsupported platform ${state.id}`);
+    }
+
+    this.setState(this.state);
+  }
+
+  renderPlatformSelection() {
+    return (
+      <FormGroup>
+        <ControlLabel className="required">
+          Application Platform
+        </ControlLabel>
+        <PlatformItems itemSelected={this.selectPlatform} >
+          <PlatformItem title="Android" id="platform_android" inclass="fa fa-android" />
+          <PlatformItem title="Cordova" id="platform_cordova">
+            <span><img src="../../img/cordova.png" alt="Cordova" /></span>
+          </PlatformItem>
+          <PlatformItem title="iOS" id="platform_ios" inclass="fa fa-apple" />
+          <PlatformItem title="Xamarin" id="platform_xamarin" >
+            <span><img src="../../img/xamarin.svg" alt="Xamarin" /></span>
+          </PlatformItem>
+        </PlatformItems>
+      </FormGroup>
+    )
+  }
+
+  configureClient = (state) => {
+    // const newState = { clientConfiguration: state.clientConfiguration };
+    // newState.validated = state.validation && state.validation[CREATE_CLIENT_NAME] && state.validation[CREATE_CLIENT_APP_ID] && !Object.values(state.validation).find(v => v === 'error'); // check if everything was filled in and validated
+    // this.setState(newState);
+  }
+
+
+  renderPlatform() {
+    switch (this.state.selectedPlatform) {
+      case PLATFORM_ANDROID: return <CreateAndroidClient configureClient={this.configureClient} clientConfiguration={{ [CREATE_CLIENT_TYPE]: 'platform-android' }} />
+      case PLATFORM_IOS: return <CreateIOSClient configureClient={this.configureClient} clientConfiguration={{ [CREATE_CLIENT_TYPE]: 'platform-ios' }} />
+      case PLATFORM_CORDOVA: return <CreateCordovaClient configureClient={this.configureClient} clientConfiguration={{ [CREATE_CLIENT_TYPE]: 'platform-cordova' }} />
+      case PLATFORM_XAMARIN: return <CreateXamarinClient configureClient={this.configureClient} clientConfiguration={{ [CREATE_CLIENT_TYPE]: 'platform-xamarin' }} />
     }
   }
 
-    steps = () => [
-      {
-        title: 'Select mobile client platform',
-        render: () => {
-          const clientType = _get(this.state, `${CLIENT_CONFIGURATION}.${CREATE_CLIENT_TYPE}`);
-          return (
-            <div>
-              <h2>Select mobile client platform</h2>
-              <Grid bsClass="platform-items">
-                <Grid.Row>
-                  <Grid.Col sm={6} md={2}>
-                    <PlatformItem title="Android App" id="platform-android" inclass="fa fa-android" itemSelected={this.selectPlatform} selected={clientType === PLATFORM_ANDROID} />
-                  </Grid.Col>
-                  <Grid.Col sm={6} md={2}>
-                    <PlatformItem title="Cordova App" id="platform-cordova" itemSelected={this.selectPlatform} selected={clientType === PLATFORM_CORDOVA}>
-                      <span><img src="../../img/cordova.png" alt="Cordova" /></span>
-                    </PlatformItem>
-                  </Grid.Col>
-                  <Grid.Col sm={6} md={2}>
-                    <PlatformItem title="iOS App" id="platform-ios" inclass="fa fa-apple" itemSelected={this.selectPlatform} selected={clientType === PLATFORM_IOS} />
-                  </Grid.Col>
-                  <Grid.Col sm={6} md={2}>
-                    <PlatformItem title="Xamarin App" id="platform-xamarin" itemSelected={this.selectPlatform} selected={clientType === PLATFORM_XAMARIN}>
-                      <span><img src="../../img/xamarin.svg" alt="Xamarin" /></span>
-                    </PlatformItem>
-                  </Grid.Col>
-                </Grid.Row>
-              </Grid>
-            </div>
-          );
-        },
-      }, {
-        title: 'Mobile client parameters',
-        render: this.renderClientSpecificForm,
-      }, {
-        title: 'Result',
-        render: () => (
-          <div>
-            <ResultsLine
-              iconClass={this.state.resultIcon}
-              text={this.state.resultText}
-              resultDetails={this.state.resultDetails}
-            />
-          </div>
-        ),
-      },
+  createClient() {
+    console.log(this.props.createApp);
+  }
 
-    ]
-
-    selectPlatform = (state) => {
-      let selectedPlatform = '';
-      switch (state.id) {
-        case 'platform-android': selectedPlatform = PLATFORM_ANDROID; break;
-        case 'platform-ios': selectedPlatform = PLATFORM_IOS; break;
-        case 'platform-cordova': selectedPlatform = PLATFORM_CORDOVA; break;
-        case 'platform-xamarin': selectedPlatform = PLATFORM_XAMARIN; break;
-        default: throw new Error(`unsupported platform ${state.id}`);
-      }
-      this.setState({ activeStepIndex: WIZARD_CONFIGURE_CLIENT, clientConfiguration: { [CREATE_CLIENT_TYPE]: selectedPlatform } });
-    }
-
-    close = () => {
-      if (!this.state.loading) {
-        this.setState({ showModal: false, loading: false });
-      }
-    }
-
-    open = () => {
-      if (this.state.resetOnStart) { // resets the state if it was already there
-        this.setState({
-          clientConfiguration: null,
-          resultDetails: null,
-          activeStepIndex: WIZARD_SELECT_PLATFORM,
-          validated: false
-        });
-      }
-      this.setState({ showModal: true, loading: false });
-    };
-
-    configureClient = (state) => {
-      const newState = { clientConfiguration: state.clientConfiguration };
-      newState.validated = state.validation && state.validation[CREATE_CLIENT_NAME] && state.validation[CREATE_CLIENT_APP_ID] && !Object.values(state.validation).find(v => v === 'error'); // check if everything was filled in and validated
-      this.setState(newState);
-    }
-
-    renderClientSpecificForm = () => {
-      switch (this.state.clientConfiguration[CREATE_CLIENT_TYPE]) {
-        case PLATFORM_ANDROID:
-          return <CreateAndroidClient configureClient={this.configureClient} clientConfiguration={this.state.clientConfiguration} />;
-        case PLATFORM_CORDOVA:
-          return <CreateCordovaClient configureClient={this.configureClient} clientConfiguration={this.state.clientConfiguration} />;
-        case PLATFORM_IOS:
-          return <CreateIOSClient configureClient={this.configureClient} clientConfiguration={this.state.clientConfiguration} />;
-        case PLATFORM_XAMARIN:
-          return <CreateXamarinClient configureClient={this.configureClient} clientConfiguration={this.state.clientConfiguration} />;
-        default:
-          return null;
-      }
-    }
-
-
-    nextStep = () => {
-      if (this.state.activeStepIndex < this.steps().length - 1) this.setState({ activeStepIndex: this.state.activeStepIndex + 1 });
-    }
-
-    backStep = () => {
-      if (this.state.activeStepIndex > WIZARD_SELECT_PLATFORM && this.state.activeStepIndex < WIZARD_CREATION_RESULT) {
-        this.setState({ activeStepIndex: this.state.activeStepIndex - 1 });
-      }
-    }
-
-    nextStepDisabled = () => (this.state.activeStepIndex === WIZARD_SELECT_PLATFORM && this.state.platform === undefined) || (this.state.activeStepIndex === WIZARD_CONFIGURE_CLIENT && !this.state.validated)
-
-    stepChanged = (step) => {
-      if (step === WIZARD_CREATION_RESULT) {
-        this.setState({ loading: true });
-        this.callClientCreation();
-      }
-    }
-
-    callClientCreation = () => {
-      this.props.createApp(this.state.clientConfiguration);
-    }
-
-
-    render() {
-      return (
-        <div>
-          <Button bsStyle="primary" bsSize={this.props.createButtonSize} onClick={this.open}>
-                    Create Mobile App
+  render() {
+    return (
+      <div>
+        <Button bsStyle="primary" bsSize={this.props.createButtonSize} onClick={this.open}>
+          Create Mobile App
           </Button>
-          <Wizard.Pattern
-            show={this.state.showModal}
-            onHide={this.close}
-            onExited={this.close}
-            title="Create mobile client"
-            steps={this.steps()}
-            loadingTitle="Creating mobile client..."
-            loadingMessage="This may take a while."
-            loading={this.state.loading}
-            nextStepDisabled={this.nextStepDisabled()}
-            onStepChanged={this.stepChanged}
-            nextText={this.state.activeStepIndex === WIZARD_CONFIGURE_CLIENT ? 'Create' : 'Next'}
-            onNext={this.nextStep}
-            onBack={this.backStep}
-            activeStepIndex={this.state.activeStepIndex}
-          />
+        <Modal show={this.state.showModal}>
+          <Modal.Header>
+            <button
+              className="close"
+              aria-hidden="true"
+              aria-label="Close"
+            >
+            </button>
 
-        </div>
-      );
-    }
+            <Modal.Title>Create Mobile App</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <FormGroup key={this.state.selectedPlatform}>
+              {this.renderPlatform()}
+            </FormGroup>
+            {this.renderPlatformSelection()}
+
+          </Modal.Body>
+          <Modal.Footer>
+            <Button>Cancel</Button>
+            <Button bsStyle="primary" onClick={this.createClient}>Create</Button>
+          </Modal.Footer>
+        </Modal>
+
+
+      </div>
+    );
+  }
 }
 
-function mapStateToProps(state) {
-  return {
-    apps: state.apps,
-  };
-}
-
-const mapDispatchToProps = {
-  createApp,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(CreateClient);
+export default CreateClient;
