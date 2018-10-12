@@ -22,7 +22,14 @@ import {
   KEY_CR_BASIC_AUTH_PASSWORD,
   KEY_CR_BASIC_AUTH_USERNAME,
   KEY_CR_SSH_AUTH_NAME,
-  KEY_CR_SSH_PRIVATE_KEY
+  KEY_CR_SSH_PRIVATE_KEY,
+  KEY_CR_BUILD_ANDROID_CREDENTIALS_NAME,
+  KEY_CR_BUILD_ANDROID_CREDENTIALS_KEYSTORE,
+  KEY_CR_BUILD_ANDROID_CREDENTIALS_KEYSTORE_ALIAS,
+  KEY_CR_BUILD_ANDROID_CREDENTIALS_KEYSTORE_PASSWORD,
+  KEY_CR_BUILD_IOS_CREDENTIALS,
+  KEY_CR_BUILD_IOS_CREDENTIALS_DEVELOPER_PROFILE,
+  KEY_CR_BUILD_IOS_CREDENTIALS_NAME
 } from './Constants';
 import { SubState } from '../common/SubState';
 import { renderNameSection } from './create_build_config/NameSection';
@@ -31,7 +38,9 @@ import {
   buildValidation,
   sourceValidation,
   basicAuthValidation,
-  sshAuthValidation
+  sshAuthValidation,
+  androidCredentialsValidation,
+  iOSCredentialsValidation
 } from './create_build_config/Validations';
 import { renderSourceSection } from './create_build_config/SourceSection';
 import { renderBuildSection } from './create_build_config/BuildSection';
@@ -74,6 +83,17 @@ class CreateBuildConfigDialog extends Component {
       KEY_CR_SSH_PRIVATE_KEY
     ]);
     this.sourceState = new SubState(this, 'config.source', sourceValidation, [KEY_CR_SOURCE_GITURL]);
+    this.androidCredentialsState = new SubState(this, 'config.build.androidCredentials', androidCredentialsValidation, [
+      KEY_CR_BUILD_ANDROID_CREDENTIALS_NAME,
+      KEY_CR_BUILD_ANDROID_CREDENTIALS_KEYSTORE,
+      KEY_CR_BUILD_ANDROID_CREDENTIALS_KEYSTORE_ALIAS,
+      KEY_CR_BUILD_ANDROID_CREDENTIALS_KEYSTORE_PASSWORD
+    ]);
+    this.iOSCredentialsState = new SubState(this, 'config.build.iosCredentials', iOSCredentialsValidation, [
+      KEY_CR_BUILD_IOS_CREDENTIALS,
+      KEY_CR_BUILD_IOS_CREDENTIALS_DEVELOPER_PROFILE,
+      KEY_CR_BUILD_IOS_CREDENTIALS_NAME
+    ]);
   }
 
   componentDidUpdate(prevProps) {
@@ -129,8 +149,8 @@ class CreateBuildConfigDialog extends Component {
                 </div>
                 <Form>
                   {renderNameSection(this.configState)}
-                  {renderSourceSection(this, this.sourceState, this.basicAuthState, this.sshAuthState)}
-                  {renderBuildSection(this.configState, this.buildState)}
+                  {renderSourceSection(this)}
+                  {renderBuildSection(this)}
                 </Form>
               </Col>
             </Row>

@@ -19,7 +19,8 @@ import { Grid, Row, Col, FormGroup, ControlLabel, FormControl, HelpBlock } from 
 import FormDropdown from '../../common/FormDropdown';
 import UploadControl from '../../common/UploadControl';
 
-export function renderSourceSection(component, sourceState, basicAuthState, sshAuthState) {
+export function renderSourceSection(component) {
+  const { sourceState, basicAuthState, sshAuthState } = component;
   const { advancedOptions } = component.state;
   const { update } = component.props;
   const { gitUrl, gitRef, jenkinsFilePath, authType } = sourceState.getOrEmpty();

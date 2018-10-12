@@ -31,7 +31,7 @@ export const KEY_CR_BUILD_IOS_CREDENTIALS_DEVELOPER_PROFILE = 'developerProfile'
 export const KEY_CR_BUILD_IOS_CREDENTIALS_PROFILE_PASSWORD = 'profilePassword';
 
 export const KEY_CR_BUILD_ANDROID_CREDENTIALS_NAME = 'name';
-export const KEY_CR_BUILD_ANDROID_CREDENTIALS_KEYSTORE = 'developerProfile';
+export const KEY_CR_BUILD_ANDROID_CREDENTIALS_KEYSTORE = 'keystore';
 export const KEY_CR_BUILD_ANDROID_CREDENTIALS_KEYSTORE_PASSWORD = 'keystorePassword';
 export const KEY_CR_BUILD_ANDROID_CREDENTIALS_KEYSTORE_ALIAS = 'keystoreAlias';
 
