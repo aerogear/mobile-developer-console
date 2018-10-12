@@ -95,6 +95,9 @@ func main() {
 		web.SetupMoileClientsRoute(apiGroup, mobileClientsHandler)
 	}
 
+	userHandler := web.NewUserHandler();
+	web.SetupUserRouter(apiGroup, userHandler)
+
 	resource := "v1"
 	kind := "Secret"
 	resyncPeriod := config.OperatorResyncPeriod

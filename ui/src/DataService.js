@@ -112,10 +112,19 @@ const dataService = {
     }
   },
   fetchUser: async () => {
-    //TODO: implement me!
-    return await new Promise((resolve) => {
-      setTimeout(() => resolve({name: "John Doe"}), 1);
+    const response = await fetch(`${baseUrl}/user`, {
+      method: 'GET',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
     });
+    if (!response.ok) {
+      throw Error(response.statusText);
+    }
+    const user = await response.json();
+    return user;
   },
   logout: async () => {
     //TODO: implement me!
