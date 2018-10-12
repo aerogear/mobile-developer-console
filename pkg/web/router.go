@@ -62,3 +62,7 @@ func SetupMoileClientsRoute(r *echo.Group, handler *MobileClientsHandler) {
 	r.DELETE("/mobileclients/:name", handler.Delete)
 	r.GET("/mobileclients/watch", handler.Watch)
 }
+
+func SetupUserRouter(r *echo.Group, handler *UserHandler) {
+	r.GET("/user", handler.GetUserInfo)
+}

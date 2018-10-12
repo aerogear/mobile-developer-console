@@ -102,3 +102,8 @@ type BuildConfigCreateRequest struct {
 	Build                BuildConfig     `json:"build" validate:"required"`
 	EnvironmentVariables []corev1.EnvVar `json:"envVars"`
 }
+
+type User struct {
+	Name string `json:"name"`
+	Email string `json:"email"`
+}
