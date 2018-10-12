@@ -91,7 +91,7 @@ class MobileClientCardView extends Component {
     const { mobileClients } = this.props;
     const { filter, currentValue } = this.state;
     return (
-      <div>
+      <div className="overview">
         <Toolbar>
           <Filter>
             <FormControl
