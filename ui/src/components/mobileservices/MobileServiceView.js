@@ -14,6 +14,7 @@ class MobileServiceView extends Component {
             let unboundServices = [];
             let boundServices = [];
              instances.forEach ( instance => {
+               
                 let serviceName = instance.name;
                 let serviceIcon = instance.imageUrl;
                 let serviceIconClass = instance.iconClass;
@@ -37,6 +38,7 @@ class MobileServiceView extends Component {
                     serviceName: serviceName,
                     serviceId: serviceName,
                     bindingSchema : instance.servicePlan.spec.serviceBindingCreateParameterSchema,
+                    form : instance.servicePlan.spec.externalMetadata.schemas.service_binding.create.openshift_form_definition,
                     serviceDescription: instance.serviceClass.spec.description,
                     setupText: 'Mobile Metrics SDK setups',
                   });
@@ -83,8 +85,8 @@ class MobileServiceView extends Component {
     return rows;
   }
 
-  showBindingDialog(serviceName, schema) {
-    this.bindingDialog.show(serviceName, schema);
+  showBindingDialog(serviceName, schema, form) {
+    this.bindingDialog.show(serviceName, schema, form);
   }
 
   render() {

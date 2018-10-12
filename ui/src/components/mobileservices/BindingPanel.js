@@ -48,10 +48,11 @@ onBackButtonClick() {
 })
 }
 
-  show(serviceName, schema) {
+  show(serviceName, schema, form) {
     this.setState({
       serviceName:serviceName,
       schema:schema,
+      form:form,
       loading:false,
       showModal: false,
       activeStepIndex: 0
@@ -65,11 +66,13 @@ onBackButtonClick() {
 }
 
   renderPropertiesSchema() {
+    
           return <Form schema={this.state.schema}
-
-          onChange={console.log("changed")}
-          onSubmit={console.log("submitted")}
-          onError={console.log("errors")} >
+          uiSchema={{form:this.state.form}}
+          ObjectFieldTemplate={OpenShiftObjectTemplate}
+          onChange={e => console.log("changed" + JSON.stringify(e))}
+          onSubmit={e => console.log("submitted")}
+          onError={e => console.log("errors")} >
           <div/>
           </Form>
 
@@ -77,12 +80,12 @@ onBackButtonClick() {
   
     renderWizardSteps() {
       return [{title:"Binding",render:()=>{
-        return  <form class="ng-pristine ng-valid">
-                  <div class="form-group">
+        return  <form className="ng-pristine ng-valid">
+                  <div className="form-group">
                     <label>
-                      <h3>Create a binding for <strong class="ng-binding">{this.state.serviceName}</strong></h3>
+                      <h3>Create a binding for <strong className="ng-binding">{this.state.serviceName}</strong></h3>
                     </label>
-                    <span class="help-block">Bindings create a secret containing the necessary information for an application to use this service.</span>
+                    <span className="help-block">Bindings create a secret containing the necessary information for an application to use this service.</span>
                   </div>
                 </form>
       }},
@@ -129,4 +132,54 @@ onBackButtonClick() {
    }
 
 }
+
+//This renders the json fields using the rules from the form definition.
+function OpenShiftObjectTemplate({ TitleField, uiSchema,schema, properties, title, description }) {
+  const form = uiSchema.form
+  console.log(JSON.stringify(uiSchema.form))
+  console.log(JSON.stringify(schema))
+  return (
+    <div>
+    <TitleField title={title} />
+    <div className="row">
+      {form.map(key => (
+        getOpenShiftField(key, properties)
+      ))}
+    </div>
+    {description}
+  </div>
+  );
+}
+
+function getOpenShiftField(field, properties) {
+  if (!field.items) {
+    const property = properties.find(prop=>prop.name === field)
+    return <div
+              key={property.content.key}>
+              {property.content}
+            </div>
+  } else {
+    return getFieldSet(field, properties);
+  }
+}
+
+function getFieldSet(field, properties) {
+  const title = field.title;
+  const items = field.items;
+
+  const fieldSetItems = items.map(item => {
+    if (typeof item === "string") {
+      return properties.find(prop=>prop.name === item).content
+    } else {
+      return properties.find(prop=>prop.name === item.key).content
+    }
+  })
+
+  return <fieldset>
+    <h2>{title}</h2>
+  {
+    fieldSetItems
+  }</fieldset>;
+}
+
 export default BindingPanel;
