@@ -2,27 +2,7 @@ import React from 'react';
 import { Card, CardHeading, CardTitle, CardBody, CardFooter, DropdownKebab } from 'patternfly-react';
 import { Link } from 'react-router-dom';
 import DeleteItemButton from '../../containers/DeleteItemButton';
-
-const getIcon = (appType) => {
-  let icon;
-  switch (appType) {
-    case 'android':
-      icon = <span alt="Android" className="fa fa-android" />;
-      break;
-    case 'cordova':
-      icon = <img alt="Cordova" src="/img/cordova.png" />;
-      break;
-    case 'iOS':
-      icon = <span alt="iOS" className="fa fa-apple" />;
-      break;
-    case 'xamarin':
-      icon = <img alt="Xamarin" src="/img/xamarin.svg" />;
-      break;
-    default:
-      break;
-  }
-  return icon;
-};
+import PlatformIcon from '../common/PlatformIcon';
 
 const getServiceIcons = (services) => {
   const icons = {
@@ -73,7 +53,7 @@ const MobileClientCardViewItem = (props) => {
         <Link to={`/mobileclient/${app.metadata.name}`}>
           <CardBody>
             <div className="card-body-icon">
-              {getIcon(app.spec.clientType)}
+              <PlatformIcon platform={app.spec.clientType} />
             </div>
             <div className="card-body-title">
               <h1>{app.metadata.name}</h1>

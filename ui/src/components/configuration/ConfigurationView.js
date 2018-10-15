@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Row, Col } from 'patternfly-react';
+import { Row, Col } from 'patternfly-react';
 import Header from './Header';
 import ServiceSDKInfo from './ServiceSDKInfo';
 import InlineEdit from './InlineEdit';
@@ -34,7 +34,7 @@ const serviceSDKInfo = [
 class ConfigurationView extends Component {
   render() {
     return (
-      <Grid fluid>
+      <React.Fragment>
         <Row>
           <Col md={6}>
             <Header>Mobile Client Details</Header>
@@ -77,7 +77,7 @@ class ConfigurationView extends Component {
             }
           </Col>
         </Row>
-      </Grid>
+      </React.Fragment>
     );
   }
 }
