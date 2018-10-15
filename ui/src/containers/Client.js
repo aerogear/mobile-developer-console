@@ -69,7 +69,7 @@ class Client extends Component {
         <PlatformIcon small platform={app.spec.clientType} />
         <div>
           <span className="platform">{app.spec.clientType}</span>
-          <h1>{app.spec.AppIdentifier}</h1>
+          <h1>{this.props.match.params.id}</h1>
         </div>
       </div>
       <div className="app-actions-dropdown">
@@ -90,7 +90,7 @@ class Client extends Component {
             <Link to="/overview">Mobile Apps</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item active>
-            { mobileApp ? mobileApp.spec.AppIdentifier : '' }
+            { this.props.match.params.id }
           </Breadcrumb.Item>
         </Breadcrumb>
         { mobileApp ? this.header(mobileApp) : null }

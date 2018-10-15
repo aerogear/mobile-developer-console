@@ -15,18 +15,6 @@ const getServiceIcons = (services) => {
     .map((service, i) => <span className="service-icon" key={i}>{icons[service.type]}</span>);
 };
 
-const getBuildCounts = (builds) => {
-  const result = { success: 0, failed: 0 };
-  builds.forEach((b) => {
-    if (b.status === 'success') {
-      result.success += 1;
-    } else if (b.status === 'failed') {
-      result.failed += 1;
-    }
-  });
-  return result;
-};
-
 const MobileClientCardViewItem = (props) => {
   const {
     app,
@@ -34,7 +22,6 @@ const MobileClientCardViewItem = (props) => {
     services,
     builds,
   } = props;
-  const result = getBuildCounts(builds);
   return (
     <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3">
       <Card matchHeight /*accented*/ className="mobile-client-card">
@@ -42,12 +29,26 @@ const MobileClientCardViewItem = (props) => {
           <DropdownKebab id={app.metadata.name} pullRight className="card-dropdown-kebab">
             <DeleteItemButton itemType="app" itemName={appName} />
           </DropdownKebab>
-          {builds && builds.length > 0 && (
-            <CardTitle>
-              <span><span className="pficon pficon-ok" />{result.success}</span>
-              <span><span className="pficon pficon-error-circle-o" />{result.failed}</span>
-            </CardTitle>
-          )}
+          <CardTitle>
+            {
+              builds.numFailedBuilds > 0 ?
+                <span><span className="pficon pficon-error-circle-o" />{builds.numFailedBuilds}</span>
+              :
+                null
+            }
+            {
+              builds.numInProgressBuilds > 0 ?
+                <span><span className="pficon fa fa-refresh fa-spin fa-fw" />{builds.numInProgressBuilds}</span>
+              :
+                null
+            }
+            {
+              (builds.numFailedBuilds === 0 && builds.numInProgressBuilds === 0) ?
+                <span />
+              :
+                null
+            }
+          </CardTitle>
         </CardHeading>
         
         <Link to={`/mobileclient/${app.metadata.name}`}>
