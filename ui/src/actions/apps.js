@@ -10,6 +10,15 @@ export const fetchApps = fetchAction(
   DataService.mobileClients,
 );
 
+export const APP_REQUEST = 'APP_REQUEST';
+export const APP_SUCCESS = 'APP_SUCCESS';
+export const APP_FAILURE = 'APP_FAILURE';
+
+export const fetchApp = appName => fetchAction(
+  [APP_REQUEST, APP_SUCCESS, APP_FAILURE],
+  async () => DataService.mobileApp(appName),
+)();
+
 export const APP_CREATE_REQUEST = 'APP_CREATE_REQUEST';
 export const APP_CREATE_SUCCESS = 'APP_CREATE_SUCCESS';
 export const APP_CREATE_FAILURE = 'APP_CREATE_FAILURE';

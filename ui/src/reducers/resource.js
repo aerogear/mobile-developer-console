@@ -8,10 +8,12 @@ const defaultState = {
   deleteError: false,
   isActioning: false,
   actionError: false,
+  isReading: false,
+  readingError: false
 };
 
 const resourceReducer = actions => (state = defaultState, action) => {
-  let indexOfRemovedObject;
+  let index;
   switch (action.type) {
     case actions.listRequest:
       return {
@@ -31,6 +33,39 @@ const resourceReducer = actions => (state = defaultState, action) => {
         ...state,
         isFetching: false,
         fetchError: action.error,
+      };
+    case actions.readRequest:
+      return {
+        ...state,
+        isReading: true,
+        readingError: false,
+      };
+    case actions.readSuccess:
+      index = state.items.findIndex(item => item.metadata.name === action.result.metadata.name);
+      if (index >= 0) {
+        return {
+          ...state,
+          isReading: false,
+          items: [
+            ...state.items.slice(0, index),
+            action.result,
+            ...state.items.slice(index + 1),
+          ],
+          readingError: false,
+        };
+      } else {
+        return {
+          ...state,
+          isReading: false,
+          items: [...state.items, action.result],
+          readingError: false,
+        };
+      }
+    case actions.readFailure:
+      return {
+        ...state,
+        isReading: false,
+        readingError: action.error,
       };
     case actions.createRequest:
       return {
@@ -58,14 +93,14 @@ const resourceReducer = actions => (state = defaultState, action) => {
         deleteError: false,
       };
     case actions.deleteSuccess:
-      indexOfRemovedObject = state.items.findIndex(item => item.metadata.name === action.result);
+      index = state.items.findIndex(item => item.metadata.name === action.result);
       return {
         ...state,
         isDeleting: false,
         deleteError: false,
         items: [
-          ...state.items.slice(0, indexOfRemovedObject),
-          ...state.items.slice(indexOfRemovedObject + 1),
+          ...state.items.slice(0, index),
+          ...state.items.slice(index + 1),
         ],
       };
     case actions.deleteFailure:
