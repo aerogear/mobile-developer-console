@@ -14,8 +14,6 @@ import CreateClient from '../../containers/CreateClient';
 
 const mockServices = [{ type: 'metrics' }, { type: 'keycloak' }, { type: 'sync' }, { type: 'push' }];
 
-const mockBuilds = [{ status: 'success' }, { status: 'failed' }, { status: 'success' }, { status: 'failed' }];
-
 class MobileClientCardView extends Component {
   constructor(props) {
     super(props);
@@ -59,6 +57,34 @@ class MobileClientCardView extends Component {
     this.setState({ currentValue: event.target.value });
   }
 
+  getBuilds = app => {
+    const { mobileClientBuilds } = this.props;
+    const builds = mobileClientBuilds.filter(build => build.metadata.labels['mobile-client-id'] === app.metadata.name);
+    const lastBuilds = builds.reduce((prev, curr) => {
+      const bcName = curr.metadata.annotations['openshift.io/build-config.name'];
+      const buildNumber = curr.metadata.annotations['openshift.io/build.number'];
+      const buildStatus = curr.status.phase;
+      if (!prev[bcName] || prev[bcName].buildNumber < buildNumber) {
+        prev[bcName] = {
+          buildNumber,
+          buildStatus
+        };
+      }
+      return prev;
+    }, {});
+    let numFailedBuilds = 0;
+    for (const build in lastBuilds) {
+      if (lastBuilds[build].buildStatus === 'Failed') {
+        numFailedBuilds++;
+      }
+    }
+    const numInProgressBuilds = builds.filter(build => build.status.phase === 'Running').length;
+    return {
+      numFailedBuilds,
+      numInProgressBuilds
+    };
+  };
+
   filterClients(mobileClients) {
     return mobileClients
       .map(app => {
@@ -67,7 +93,12 @@ class MobileClientCardView extends Component {
         } = app;
         const { filter } = this.state;
         return clientAppName.indexOf(filter) > -1 ? (
-          <MobileClientCardViewItem key={clientAppName} app={app} services={mockServices} builds={mockBuilds} />
+          <MobileClientCardViewItem
+            key={clientAppName}
+            app={app}
+            services={mockServices}
+            builds={this.getBuilds(app)}
+          />
         ) : null;
       })
       .filter(app => app !== null);
