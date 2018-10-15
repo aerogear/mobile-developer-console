@@ -1,8 +1,15 @@
 import React from "react";
 import { Masthead, MenuItem, Icon } from "patternfly-react";
 
+import './NavHeader.css';
+
 const NavHeader = ({ title, user, helpDropdownItems, userDropdownItems }) => (
-  <Masthead title={title} navToggle={false}>
+  <nav className="navbar navbar-pf-vertical">
+    <div className="navbar-header">
+      <a role="button" className="navbar-brand">
+        {title}
+      </a>
+    </div>
     <Masthead.Collapse>
       <Masthead.Dropdown
         id="app-help-dropdown"
@@ -31,7 +38,7 @@ const NavHeader = ({ title, user, helpDropdownItems, userDropdownItems }) => (
         }
       </Masthead.Dropdown>
     </Masthead.Collapse>
-  </Masthead>
+  </nav>
 );
 
 export default NavHeader;
