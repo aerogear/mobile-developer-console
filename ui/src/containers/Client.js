@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Nav, NavItem, TabContent, TabPane, TabContainer, Grid, Breadcrumb, DropdownButton, MenuItem
+  Nav, NavItem, TabContent, TabPane, TabContainer, Grid, Breadcrumb, DropdownButton, Alert
 } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -12,6 +12,7 @@ import { fetchBuildConfigs } from '../actions/buildConfigs';
 import { fetchBuilds } from '../actions/builds';
 import DataService from '../DataService';
 import PlatformIcon from '../components/common/PlatformIcon';
+import DeleteItemButton from './DeleteItemButton';
 
 import '../components/common/Client.css';
 
@@ -74,7 +75,7 @@ class Client extends Component {
       </div>
       <div className="app-actions-dropdown">
         <DropdownButton id="app-actions-dropdown" title="Actions" pullRight onClick={() => {}}>
-          <MenuItem eventKey="1">Delete</MenuItem>
+          <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
         </DropdownButton>
       </div>
     </div>
@@ -93,27 +94,33 @@ class Client extends Component {
             { this.props.match.params.id }
           </Breadcrumb.Item>
         </Breadcrumb>
-        { mobileApp ? this.header(mobileApp) : null }
-        <TabContainer id="basic-tabs-pf" defaultActiveKey={1}>
-          <div>
-            <Nav bsClass="nav nav-tabs nav-tabs-pf nav-tabs-pf-secondary">
-              <NavItem eventKey={1}>Configuration</NavItem>
-              <NavItem eventKey={2}>Builds</NavItem>
-              <NavItem eventKey={3}>Mobile Services</NavItem>
-            </Nav>
-            <TabContent>
-              <TabPane eventKey={1}>
-                <ConfigurationView />
-              </TabPane>
-              <TabPane eventKey={2}>
-                <MobileClientBuildsList appName={this.props.match.params.id} buildConfigs={this.state.buildConfigs} />
-              </TabPane>
-              <TabPane eventKey={3}>
-                <MobileServiceView />
-              </TabPane>
-            </TabContent>
-          </div>
-        </TabContainer>
+        { mobileApp && this.header(mobileApp) }
+        {
+          this.props.apps.readingError ? (
+            <Alert>{this.props.apps.readingError.message}</Alert>
+          ) : (
+            <TabContainer id="basic-tabs-pf" defaultActiveKey={1}>
+              <div>
+                <Nav bsClass="nav nav-tabs nav-tabs-pf nav-tabs-pf-secondary">
+                  <NavItem eventKey={1}>Configuration</NavItem>
+                  <NavItem eventKey={2}>Builds</NavItem>
+                  <NavItem eventKey={3}>Mobile Services</NavItem>
+                </Nav>
+                <TabContent>
+                  <TabPane eventKey={1}>
+                    <ConfigurationView />
+                  </TabPane>
+                  <TabPane eventKey={2}>
+                    <MobileClientBuildsList appName={this.props.match.params.id} buildConfigs={this.state.buildConfigs} />
+                  </TabPane>
+                  <TabPane eventKey={3}>
+                    <MobileServiceView />
+                  </TabPane>
+                </TabContent>
+              </div>
+            </TabContainer>
+          )
+        }
       </Grid>
     );
   }

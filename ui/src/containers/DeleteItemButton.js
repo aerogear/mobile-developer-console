@@ -1,18 +1,26 @@
-import React from 'react';
-import { MenuItem } from 'patternfly-react';
+import React, { Component } from 'react';
+import { MenuItem, MessageDialog } from 'patternfly-react';
 import { connect } from 'react-redux';
+import { Route } from 'react-router-dom';
 import { deleteApp } from '../actions/apps';
 import { deleteBuildConfig } from '../actions/buildConfigs';
 
-const DeleteItemButton = (props) => {
-  const { itemName, itemType } = props;
-  function triggerDeletion() {
+class DeleteItemButton extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showModal: false
+    };
+  }
+
+  triggerDeletion = history => {
+    const { itemType, itemName, navigate } = this.props;
     switch (itemType) {
       case 'app':
-        props.deleteApp(itemName);
+        this.props.deleteApp(itemName);
         break;
       case 'buildconfig':
-        props.deleteBuildConfig(itemName);
+        this.props.deleteBuildConfig(itemName);
         break;
       default:
         break;
@@ -20,15 +28,58 @@ const DeleteItemButton = (props) => {
     // This ensure hiding the dropdown menu when deletion was not successful
     // See https://github.com/react-bootstrap/react-bootstrap/issues/541
     document.dispatchEvent(new MouseEvent('click'));
+    navigate && history.replace(navigate);
+  };
+
+  openDialog = () => {
+    this.setState({
+      showModal: true
+    });
+  };
+
+  handleDialogClose = () => {
+    this.setState({
+      showModal: false
+    });
+  };
+
+  render() {
+    const { itemType, itemName } = this.props;
+
+    return (
+      <Route
+        render={props => (
+          <React.Fragment>
+            <MenuItem onClick={this.openDialog}>Delete</MenuItem>
+            <MessageDialog
+              show={this.state.showModal}
+              onHide={this.handleDialogClose}
+              primaryAction={() => this.triggerDeletion(props.history)}
+              secondaryAction={this.handleDialogClose}
+              primaryActionButtonContent="Delete"
+              secondaryActionButtonContent="Cancel"
+              primaryActionButtonBsStyle="danger"
+              title="Confirm Delete"
+              secondaryContent={(
+                <React.Fragment>
+                  <p>Are you sure you want to delete the {itemType} '<b>{itemName}</b>'?</p>
+                  <p>
+                    {itemName} and its data will no longer be available.{' '}
+                    <b>It cannot be undone.</b> Make sure this is something you really want to do!
+                  </p>
+                </React.Fragment>
+              )}
+            />
+          </React.Fragment>
+        )}
+      />
+    );
   }
-  return (
-    <MenuItem onClick={triggerDeletion}>Delete</MenuItem>
-  );
-};
+}
 
 const mapDispatchToProps = {
   deleteApp,
-  deleteBuildConfig,
+  deleteBuildConfig
 };
 
 export default connect(null, mapDispatchToProps)(DeleteItemButton);
