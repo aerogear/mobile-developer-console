@@ -11,7 +11,7 @@ const NavHeader = ({ title, user, helpDropdownItems, userDropdownItems }) => (
       >
         {
           helpDropdownItems.map((item, index) => (
-            <MenuItem key={index} eventKey={index} onSelect={item.onSelect}>{item.text}</MenuItem>
+            <MenuItem key={index} eventKey={index} href={item.href}>{item.text}</MenuItem>
           ))
         }
         </Masthead.Dropdown>

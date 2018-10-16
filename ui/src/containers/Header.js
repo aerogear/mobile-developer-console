@@ -12,9 +12,8 @@ class Header extends Component {
     const {user} = this.props;
     const helpDropdowns = [{
       text: "Documentation",
-      onSelect: () => {
-        console.log("Implement me!!");
-      }
+      // TODO: once there is a documentation for MDC, this link should point straight to it
+      href: 'http://docs.aerogear.org/'
     }];
     const userDropdowns = [{
       text: "Logout",
