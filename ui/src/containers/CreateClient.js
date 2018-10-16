@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { createApp } from '../actions/apps';
+
 import {
   FormGroup,
   ControlLabel,
-  Button, Modal
+  Button, Modal, Alert, Icon
 } from 'patternfly-react';
 import PlatformItem from '../components/create_client/PlatformItem';
 import PlatformItems from '../components/create_client/PlatformItems';
@@ -23,22 +26,25 @@ class CreateClient extends Component {
   constructor(props) {
     super(props);
     this.baseState = this.state;
+    this.createClient = this.createClient.bind(this);
   }
 
   state = {
     showModal: false,
-    loading: false
+    loading: false, 
+    valid: false
   };
 
   open = () => {
-    if (this.state.resetOnStart) { // resets the state if it was already there
-      this.setState({
-        clientConfiguration: null,
-        resultDetails: null,
-        validated: false
-      });
-    }
-    this.setState({ showModal: true, loading: false });
+    this.setState({
+      error: undefined,
+      clientConfiguration: null,
+      resultDetails: null,
+      validated: false,
+      showModal: true, 
+      loading: false,
+      selectedPlatform: null
+    });
   };
 
   selectPlatform = (state) => {
@@ -74,9 +80,7 @@ class CreateClient extends Component {
   }
 
   configureClient = (state) => {
-    // const newState = { clientConfiguration: state.clientConfiguration };
-    // newState.validated = state.validation && state.validation[CREATE_CLIENT_NAME] && state.validation[CREATE_CLIENT_APP_ID] && !Object.values(state.validation).find(v => v === 'error'); // check if everything was filled in and validated
-    // this.setState(newState);
+    this.setState({...this.state, valid: state.valid, newApp: state.newApp});
   }
 
 
@@ -90,27 +94,56 @@ class CreateClient extends Component {
   }
 
   createClient() {
-    console.log(this.props.createApp);
+    this.setState({ loading: true });
+    this.props.createApp(this.state.newApp);
+  }
+
+  componentDidUpdate() {
+    if (this.state.loading && !this.props.apps.isCreating) {
+      if (this.props.apps.createError) {
+        this.setState({ error: this.props.apps.createError.message, loading: false });
+      } else {
+        this.setState({ showModal: false, loading: false });
+      }
+    }
+  }
+
+  close = () => {
+    if (!this.state.loading) {
+      this.setState({ showModal: false, loading: false });
+    }
+  }
+
+  renderError() {
+    if (this.state.error) {
+     return (<Alert key="123" type="error">{this.state.error}</Alert>)      
+    } 
+    return '';
   }
 
   render() {
+    const { valid } = this.state;
+  
     return (
       <div>
         <Button bsStyle="primary" bsSize={this.props.createButtonSize} onClick={this.open}>
           Create Mobile App
-          </Button>
+        </Button>
         <Modal show={this.state.showModal}>
           <Modal.Header>
-            <button
-              className="close"
-              aria-hidden="true"
-              aria-label="Close"
-            >
-            </button>
+          <button
+            className="close"
+            onClick={this.close}
+            aria-hidden="true"
+            aria-label="Close"
+          >
+            <Icon type="pf" name="close" />
+          </button>
 
             <Modal.Title>Create Mobile App</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            {this.renderError()}
             <FormGroup key={this.state.selectedPlatform}>
               {this.renderPlatform()}
             </FormGroup>
@@ -118,8 +151,8 @@ class CreateClient extends Component {
 
           </Modal.Body>
           <Modal.Footer>
-            <Button>Cancel</Button>
-            <Button bsStyle="primary" onClick={this.createClient}>Create</Button>
+            <Button onClick={this.close}>Cancel</Button>
+            <Button bsStyle="primary" onClick={this.createClient} disabled={!valid} >Create</Button>
           </Modal.Footer>
         </Modal>
 
@@ -129,4 +162,16 @@ class CreateClient extends Component {
   }
 }
 
-export default CreateClient;
+function mapStateToProps(state) {
+  return {
+    apps: state.apps,
+  };
+}
+
+const mapDispatchToProps = {
+  createApp,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateClient);
+
+//export default CreateClient;
