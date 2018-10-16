@@ -1,6 +1,8 @@
 import React from "react";
 import { Masthead, MenuItem, Icon } from "patternfly-react";
 
+import './NavHeader.css';
+
 const NavHeader = ({ title, user, helpDropdownItems, userDropdownItems }) => (
   <Masthead title={title} navToggle={false}>
     <Masthead.Collapse>
