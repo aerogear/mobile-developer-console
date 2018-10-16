@@ -12,9 +12,7 @@ class Header extends Component {
     const {user} = this.props;
     const helpDropdowns = [{
       text: "Documentation",
-      onSelect: () => {
-        console.log("Implement me!!");
-      }
+      href: 'http://docs.aerogear.org/'
     }];
     const userDropdowns = [{
       text: "Logout",
