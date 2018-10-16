@@ -32,6 +32,7 @@ objects:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -61,6 +62,12 @@ objects:
     to:
       kind: Service
       name: "${SERVICE_NAME}"
+
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: "${SERVICE_ACCOUNT_NAME}"
+
 parameters:
 - name: SERVER_PORT
   description: The port for the server to listen on.
