@@ -78,13 +78,9 @@ class KeyValueEditor extends Component {
         </Row>
       ))}
       <FormGroup>
-<<<<<<< HEAD
-        <a role="button" className="btn-add" onClick={this.addRow}>Add Environment Variable</a>
-=======
         <a role="button" onClick={this.addRow}>
           Add Environment Variable
         </a>
->>>>>>> UI for creating builds and gathering build config state
       </FormGroup>
     </div>
   );

@@ -3,19 +3,18 @@ import { Button } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { createBuildConfig } from '../../actions/buildConfigs';
 import './NoBuildConfig.css';
-import CreateClientBuildDialog from './CreateBuildConfigDialog';
-
+import CreateBuildConfigDialog from './CreateBuildConfigDialog';
 
 const createBuildConfigTitle = 'Create build config';
 class NoBuildConfig extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      createBuildDialogDisplayed: false,
+      createBuildDialogDisplayed: false
     };
   }
 
-  buildUpdated = (configUpdate) => {
+  buildUpdated = configUpdate => {
     console.log('build updated');
     // TODO remove hardcoded values and use values from app config
     const config = Object.assign({ clientId: 'org.aerogear.app', clientType: 'android' }, configUpdate.config);
@@ -29,6 +28,7 @@ class NoBuildConfig extends Component {
 
   render = () => {
     const { createBuildDialogDisplayed } = this.state;
+    const config = { clientId: this.props.clientId, clientType: this.props.clientType };
     return (
       <div className="note">
         <h2>No Build Config</h2>
@@ -36,7 +36,8 @@ class NoBuildConfig extends Component {
         <Button bsStyle="primary" bsSize="large" onClick={() => this.setState({ createBuildDialogDisplayed: true })}>
           {createBuildConfigTitle}
         </Button>
-        <CreateClientBuildDialog
+        <CreateBuildConfigDialog
+          config={config}
           show={createBuildDialogDisplayed}
           title={createBuildConfigTitle}
           onSave={this.buildUpdated}
@@ -49,12 +50,15 @@ class NoBuildConfig extends Component {
 
 function mapStateToProps(state) {
   return {
-    config: state,
+    config: state
   };
 }
 
 const mapDispatchToProps = {
-  createBuildConfig,
+  createBuildConfig
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NoBuildConfig);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NoBuildConfig);

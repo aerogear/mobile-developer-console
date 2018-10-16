@@ -6,6 +6,8 @@ import {
   BUILD_AUTH_TYPE_PUBLIC,
   BUILD_PLATFORM_ANDROID,
   BUILD_TYPE_DEBUG,
+  KEY_CR_CLIENT_ID,
+  KEY_CR_CLIENT_TYPE,
   KEY_ADVANCED_OPTIONS,
   KEY_CR_SOURCE,
   KEY_CR_SOURCE_AUTH_TYPE,
@@ -44,6 +46,7 @@ import {
 } from './create_build_config/Validations';
 import { renderSourceSection } from './create_build_config/SourceSection';
 import { renderBuildSection } from './create_build_config/BuildSection';
+import { isEqual } from 'lodash-es';
 
 class CreateBuildConfigDialog extends Component {
   propTypes = {
@@ -52,12 +55,11 @@ class CreateBuildConfigDialog extends Component {
     title: PropTypes.string.isRequired,
     show: PropTypes.bool.isRequired,
     update: PropTypes.bool,
-    buildConfig: PropTypes.object
+    config: PropTypes.object
   };
 
   constructor(props) {
     super(props);
-    const { buildConfig } = props;
     this.state = {
       valid: false,
       config: {
@@ -66,11 +68,12 @@ class CreateBuildConfigDialog extends Component {
           [KEY_CR_SOURCE_GITREF]: 'master',
           [KEY_CR_SOURCE_JENKINS_FILE_PATH]: './'
         },
-        [KEY_CR_BUILD]: { [KEY_CR_BUILD_PLATFORM]: BUILD_PLATFORM_ANDROID, [KEY_CR_BUILD_TYPE]: BUILD_TYPE_DEBUG }
+        [KEY_CR_BUILD]: { [KEY_CR_BUILD_PLATFORM]: BUILD_PLATFORM_ANDROID, [KEY_CR_BUILD_TYPE]: BUILD_TYPE_DEBUG },
+        ...this.props.config
       },
-      [KEY_ADVANCED_OPTIONS]: false,
-      ...buildConfig
+      [KEY_ADVANCED_OPTIONS]: false
     };
+
     this.configState = new SubState(this, 'config', configValidation, [KEY_CR_NAME]);
     this.buildState = new SubState(this, 'config.build', buildValidation);
     this.basicAuthState = new SubState(this, 'config.source.basicAuth', basicAuthValidation, [
@@ -98,6 +101,12 @@ class CreateBuildConfigDialog extends Component {
 
   componentDidUpdate(prevProps) {
     this.validate();
+    const { config: prevConfig = {} } = prevProps;
+    const { config = {} } = this.props;
+    if (!isEqual(prevConfig, config)) {
+      this.configState.set(KEY_CR_CLIENT_ID, config[KEY_CR_CLIENT_ID]);
+      this.configState.set(KEY_CR_CLIENT_TYPE, config[KEY_CR_CLIENT_TYPE]);
+    }
   }
 
   validate() {
