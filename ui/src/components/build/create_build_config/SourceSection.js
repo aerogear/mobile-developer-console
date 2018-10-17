@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { FormGroup, ControlLabel, FormControl, HelpBlock, ExpandCollapse } from 'patternfly-react';
 import {
   BUILD_AUTH_TYPE_PUBLIC,
   KEY_CR_SOURCE_GITURL,
@@ -12,16 +12,13 @@ import {
   KEY_CR_BASIC_AUTH_USERNAME,
   KEY_CR_BASIC_AUTH_PASSWORD,
   KEY_CR_SSH_AUTH_NAME,
-  KEY_CR_SSH_PRIVATE_KEY,
-  KEY_ADVANCED_OPTIONS
+  KEY_CR_SSH_PRIVATE_KEY
 } from '../Constants';
-import { Grid, Row, Col, FormGroup, ControlLabel, FormControl, HelpBlock } from 'patternfly-react';
 import FormDropdown from '../../common/FormDropdown';
 import UploadControl from '../../common/UploadControl';
 
 export function renderSourceSection(component) {
   const { sourceState, basicAuthState, sshAuthState } = component;
-  const { advancedOptions } = component.state;
   const { update } = component.props;
   const { gitUrl, gitRef, jenkinsFilePath, authType } = sourceState.getOrEmpty();
   const gitRefValue = { [update ? 'value' : 'defaultValue']: gitRef };
@@ -29,52 +26,31 @@ export function renderSourceSection(component) {
   return (
     <div className="section">
       <h3 className="with-divider">Source Configuration</h3>
-      <Grid fluid className="sourceSection">
-        <Row>
-          <Col lg={advancedOptions ? 8 : 12}>
-            <FormGroup validationState={sourceState.getValidationState(KEY_CR_SOURCE_GITURL)}>
-              <ControlLabel className="required">Git Repository URL</ControlLabel>
-              <FormControl
-                type="text"
-                onChange={e => sourceState.set(KEY_CR_SOURCE_GITURL, e.target.value)}
-                value={gitUrl}
-              />
-              <HelpBlock>Git URL of the source code to build.</HelpBlock>
-              <HelpBlock>
-                View the{' '}
-                <a onClick={() => component.setState({ [KEY_ADVANCED_OPTIONS]: !advancedOptions })}>advanced options</a>
-              </HelpBlock>
-            </FormGroup>
-          </Col>
-
-          {advancedOptions ? (
-            <Col lg={4}>
-              <FormGroup validationState={sourceState.getValidationState(KEY_CR_SOURCE_GITREF)}>
-                <ControlLabel className="required">Git Reference</ControlLabel>
-                <FormControl
-                  type="text"
-                  onChange={e => sourceState.set(KEY_CR_SOURCE_GITREF, e.target.value)}
-                  {...gitRefValue}
-                />
-              </FormGroup>
-            </Col>
-          ) : (
-            <React.Fragment />
-          )}
-        </Row>
-      </Grid>
-      {advancedOptions ? (
-        <FormGroup validationState={sourceState.getValidationState(KEY_CR_SOURCE_JENKINS_FILE_PATH)}>
-          <ControlLabel className="required">Jenkins file path</ControlLabel>
-          <FormControl
-            type="text"
-            onChange={e => sourceState.set(KEY_CR_SOURCE_JENKINS_FILE_PATH, e.target.value)}
-            {...jenkinsFilePathValue}
-          />
-        </FormGroup>
-      ) : (
-        <React.Fragment />
-      )}
+      <FormGroup validationState={sourceState.getValidationState(KEY_CR_SOURCE_GITURL)}>
+        <ControlLabel className="required">Git Repository URL</ControlLabel>
+        <FormControl type="text" onChange={e => sourceState.set(KEY_CR_SOURCE_GITURL, e.target.value)} value={gitUrl} />
+        <HelpBlock>Git URL of the source code to build.</HelpBlock>
+      </FormGroup>
+      <ExpandCollapse bordered textExpanded=" Hide advanced options" textCollapsed=" Show advanced options">
+        <div className="advancedOptions">
+          <FormGroup validationState={sourceState.getValidationState(KEY_CR_SOURCE_GITREF)}>
+            <ControlLabel className="required">Git Reference</ControlLabel>
+            <FormControl
+              type="text"
+              onChange={e => sourceState.set(KEY_CR_SOURCE_GITREF, e.target.value)}
+              {...gitRefValue}
+            />
+          </FormGroup>
+          <FormGroup validationState={sourceState.getValidationState(KEY_CR_SOURCE_JENKINS_FILE_PATH)}>
+            <ControlLabel className="required">Jenkins file path</ControlLabel>
+            <FormControl
+              type="text"
+              onChange={e => sourceState.set(KEY_CR_SOURCE_JENKINS_FILE_PATH, e.target.value)}
+              {...jenkinsFilePathValue}
+            />
+          </FormGroup>
+        </div>
+      </ExpandCollapse>
       <FormGroup>
         <ControlLabel>Authentication Type</ControlLabel>
         <FormDropdown

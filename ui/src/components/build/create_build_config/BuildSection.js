@@ -14,7 +14,8 @@ import {
   KEY_CR_BUILD_ANDROID_CREDENTIALS_KEYSTORE_ALIAS,
   KEY_CR_BUILD_IOS_CREDENTIALS_NAME,
   KEY_CR_BUILD_IOS_CREDENTIALS_DEVELOPER_PROFILE,
-  KEY_CR_BUILD_IOS_CREDENTIALS_PROFILE_PASSWORD
+  KEY_CR_BUILD_IOS_CREDENTIALS_PROFILE_PASSWORD,
+  KEY_HIDE_PLATDORM
 } from '../Constants';
 import FormDropdown from '../../common/FormDropdown';
 import KeyValueEditor from '../../common/KeyValueEditor';
@@ -33,21 +34,25 @@ function onEnvVarsChange(configState, rows) {
 
 export function renderBuildSection(component) {
   const { configState, buildState } = component;
-  const { externalCredentials } = component.state;
+  const { externalCredentials, [KEY_HIDE_PLATDORM]: hidePlatform } = component.state;
   const { platform = BUILD_PLATFORM_ANDROID, buildType = BUILD_TYPE_DEBUG } = buildState.getOrEmpty();
   return (
     <div className="section">
       <h3 className="with-divider">Build Configuration</h3>
-      <FormGroup>
-        <ControlLabel>Platform</ControlLabel>
-        <FormDropdown
-          id="platform"
-          items={[BUILD_PLATFORM_ANDROID, BUILD_PLATFORM_IOS]}
-          titles={['Android', 'iOS']}
-          onSelect={active => buildState.set(KEY_CR_BUILD_PLATFORM, active)}
-          selected={platform}
-        />
-      </FormGroup>
+      {hidePlatform ? (
+        <React.Fragment />
+      ) : (
+        <FormGroup>
+          <ControlLabel>Platform</ControlLabel>
+          <FormDropdown
+            id="platform"
+            items={[BUILD_PLATFORM_ANDROID, BUILD_PLATFORM_IOS]}
+            titles={['Android', 'iOS']}
+            onSelect={active => buildState.set(KEY_CR_BUILD_PLATFORM, active)}
+            selected={platform}
+          />
+        </FormGroup>
+      )}
       <FormGroup>
         <ControlLabel>Build Type</ControlLabel>
         <FormDropdown

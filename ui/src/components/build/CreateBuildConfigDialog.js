@@ -8,7 +8,6 @@ import {
   BUILD_TYPE_DEBUG,
   KEY_CR_CLIENT_ID,
   KEY_CR_CLIENT_TYPE,
-  KEY_ADVANCED_OPTIONS,
   KEY_CR_SOURCE,
   KEY_CR_SOURCE_AUTH_TYPE,
   KEY_CR_SOURCE_JENKINS_FILE_PATH,
@@ -31,7 +30,11 @@ import {
   KEY_CR_BUILD_ANDROID_CREDENTIALS_KEYSTORE_PASSWORD,
   KEY_CR_BUILD_IOS_CREDENTIALS,
   KEY_CR_BUILD_IOS_CREDENTIALS_DEVELOPER_PROFILE,
-  KEY_CR_BUILD_IOS_CREDENTIALS_NAME
+  KEY_CR_BUILD_IOS_CREDENTIALS_NAME,
+  CLIENT_TYPE_ANDROID,
+  CLIENT_TYPE_IOS,
+  KEY_HIDE_PLATDORM,
+  BUILD_PLATFORM_IOS
 } from './Constants';
 import { SubState } from '../common/SubState';
 import { renderNameSection } from './create_build_config/NameSection';
@@ -62,6 +65,7 @@ class CreateBuildConfigDialog extends Component {
     super(props);
     this.state = {
       valid: false,
+      [KEY_HIDE_PLATDORM]: false,
       config: {
         [KEY_CR_SOURCE]: {
           [KEY_CR_SOURCE_AUTH_TYPE]: BUILD_AUTH_TYPE_PUBLIC,
@@ -70,8 +74,7 @@ class CreateBuildConfigDialog extends Component {
         },
         [KEY_CR_BUILD]: { [KEY_CR_BUILD_PLATFORM]: BUILD_PLATFORM_ANDROID, [KEY_CR_BUILD_TYPE]: BUILD_TYPE_DEBUG },
         ...this.props.config
-      },
-      [KEY_ADVANCED_OPTIONS]: false
+      }
     };
 
     this.configState = new SubState(this, 'config', configValidation, [KEY_CR_NAME]);
@@ -106,6 +109,18 @@ class CreateBuildConfigDialog extends Component {
     if (!isEqual(prevConfig, config)) {
       this.configState.set(KEY_CR_CLIENT_ID, config[KEY_CR_CLIENT_ID]);
       this.configState.set(KEY_CR_CLIENT_TYPE, config[KEY_CR_CLIENT_TYPE]);
+      switch (config[KEY_CR_CLIENT_TYPE]) {
+        case CLIENT_TYPE_ANDROID:
+          this.buildState.set(KEY_CR_BUILD_PLATFORM, BUILD_PLATFORM_ANDROID);
+          this.setState({ [KEY_HIDE_PLATDORM]: true });
+          break;
+        case CLIENT_TYPE_IOS:
+          this.buildState.set(KEY_CR_BUILD_PLATFORM, BUILD_PLATFORM_IOS);
+          this.setState({ [KEY_HIDE_PLATDORM]: true });
+          break;
+        default:
+          this.setState({ [KEY_HIDE_PLATDORM]: false });
+      }
     }
   }
 
@@ -152,7 +167,7 @@ class CreateBuildConfigDialog extends Component {
         <Modal.Body className="modalBody">
           <Grid fluid>
             <Row>
-              <Col md={10}>
+              <Col md={12}>
                 <div className="help-block">
                   Client Build allows you to create a mobile client binary from a git source repository.
                 </div>

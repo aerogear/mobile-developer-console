@@ -3,6 +3,16 @@
   min-height: 100%;
 }
 
+.advancedOptions {
+  padding-top:16px;
+  padding-left:16px;
+  padding-bottom:16px;
+}
+
+.advancedOptions > .form-group > label::before {
+  padding-left:16px;
+}
+
 .sourceSection {
   padding: 0;
 }
