@@ -48,15 +48,18 @@ class CreateClient extends Component {
   };
 
   selectPlatform = (state) => {
+
+    var newState = {...this.state, valid: false};
+
     switch (state.id) {
-      case 'platform_android': this.state.selectedPlatform = PLATFORM_ANDROID; break;
-      case 'platform_ios': this.state.selectedPlatform = PLATFORM_IOS; break;
-      case 'platform_cordova': this.state.selectedPlatform = PLATFORM_CORDOVA; break;
-      case 'platform_xamarin': this.state.selectedPlatform = PLATFORM_XAMARIN; break;
+      case 'platform_android': newState.selectedPlatform = PLATFORM_ANDROID; break;
+      case 'platform_ios': newState.selectedPlatform = PLATFORM_IOS; break;
+      case 'platform_cordova': newState.selectedPlatform = PLATFORM_CORDOVA; break;
+      case 'platform_xamarin': newState.selectedPlatform = PLATFORM_XAMARIN; break;
       default: throw new Error(`unsupported platform ${state.id}`);
     }
 
-    this.setState(this.state);
+    this.setState(newState);
   }
 
   renderPlatformSelection() {
@@ -66,7 +69,7 @@ class CreateClient extends Component {
           Application Platform
         </ControlLabel>
         <PlatformItems itemSelected={this.selectPlatform} >
-          <PlatformItem title="Android" id="platform_android" inclass="fa fa-android" />
+          <PlatformItem title="Android" id="platform_android" inclass="fa fa-android"/>
           <PlatformItem title="Cordova" id="platform_cordova">
             <span><img src="../../img/cordova.png" alt="Cordova" /></span>
           </PlatformItem>
@@ -90,6 +93,7 @@ class CreateClient extends Component {
       case PLATFORM_IOS: return <CreateIOSClient configureClient={this.configureClient} clientConfiguration={{ [CREATE_CLIENT_TYPE]: 'platform-ios' }} />
       case PLATFORM_CORDOVA: return <CreateCordovaClient configureClient={this.configureClient} clientConfiguration={{ [CREATE_CLIENT_TYPE]: 'platform-cordova' }} />
       case PLATFORM_XAMARIN: return <CreateXamarinClient configureClient={this.configureClient} clientConfiguration={{ [CREATE_CLIENT_TYPE]: 'platform-xamarin' }} />
+      default: return null;
     }
   }
 
