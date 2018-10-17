@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
 
 class PlatformItem extends Component {
-    state={ selected: false };
+
+    constructor(props){
+      super(props);
+      this.state = { id: this.props.id, selected: props.selected }
+    }
+
+    componentDidUpdate() {
+      if (this.state.selected) {
+        this.setState({selected: true})
+        this.props.itemSelected({ ...this.state, selected: true});
+      } 
+    }
 
     render() {
       var styleclass = this.props.selection === this.props.id ? 'platform-item selected' : 'platform-item';

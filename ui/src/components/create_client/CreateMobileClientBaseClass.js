@@ -45,7 +45,7 @@ class CreateMobileClientBaseClass extends Component {
     var dataIsValid = true;
 
     for(var control in newState.validationState) {
-      if (newState.validationState[control] != 'success') {
+      if (newState.validationState[control] !== 'success') {
         dataIsValid = false;
         break;
       }

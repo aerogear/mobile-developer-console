@@ -7,27 +7,30 @@ class PlatformItems extends Component {
     super(props);
     this.rows = this.rows.bind(this)
     this.platformItems = {};
-    this.selection = { }
+    this.selection = {}
   }
 
   /* contains the list of selected platforms */
   state = { items: {} }
 
-  /* this is called by platform items when a platform item it is clicked */
+  /* this is called by platform items when a platform item is clicked */
   itemSelected = (clickedItem) => {
     var platformItems = this.platformItems;
 
     this.selection.id = clickedItem.id;
 
-  	for (var key in platformItems) {
+    for (var key in platformItems) {
       var itemIsSelected = key === clickedItem.id
-      this.state.items[key] = { selected: itemIsSelected };
-      this.setState(this.state)
+      this.setState({...this.state, items: {...this.state.items, [key]: { selected: itemIsSelected } }} )
 
       if (itemIsSelected) {
-        this.props.itemSelected({id: key});
+        this.props.itemSelected({ id: key });
       }
-  	}
+    }
+  }
+
+  isEmpty(obj) {
+    return Object.keys(obj).length === 0;
   }
 
   rows() {
@@ -36,16 +39,22 @@ class PlatformItems extends Component {
 
     React.Children.map(this.props.children, (child, i) => {
 
-        var configuredChildren = React.cloneElement(child, { itemSelected: this.itemSelected, selection: this.selection.id, key:this.selection.id });
+      var selectionStatus = false;
 
-        rows.push(
-          <Grid.Col sm={6} md={2}>
-              {configuredChildren}
-          </Grid.Col>
-          );
+      if (i === 0 && this.isEmpty(this.platformItems)) {
+        selectionStatus = true;
+      }
 
-        return this.platformItems[configuredChildren.props.id] = configuredChildren;
-      });
+      var configuredChildren = React.cloneElement(child, { itemSelected: this.itemSelected, selection: this.selection.id, key: this.selection.id, selected: selectionStatus });
+
+      rows.push(
+        <Grid.Col sm={6} md={2}>
+          {configuredChildren}
+        </Grid.Col>
+      );
+
+      return this.platformItems[configuredChildren.props.id] = configuredChildren;
+    });
 
 
     return rows;
@@ -53,11 +62,11 @@ class PlatformItems extends Component {
 
   render() {
 
-	return (
- 	  	<Grid bsClass="platform-items">
-          <Grid.Row>
+    return (
+      <Grid bsClass="platform-items">
+        <Grid.Row>
           {this.rows()}
-          </Grid.Row>
+        </Grid.Row>
       </Grid>
     )
   }
