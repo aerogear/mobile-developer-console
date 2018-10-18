@@ -12,8 +12,6 @@ import './MobileClientCardView.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
 import CreateClient from '../../containers/CreateClient';
 
-const mockServices = [{ type: 'metrics' }, { type: 'keycloak' }, { type: 'sync' }, { type: 'push' }];
-
 class MobileClientCardView extends Component {
   constructor(props) {
     super(props);
@@ -96,7 +94,7 @@ class MobileClientCardView extends Component {
           <MobileClientCardViewItem
             key={clientAppName}
             app={app}
-            services={mockServices}
+            services={app.status.services}
             builds={this.getBuilds(app)}
           />
         ) : null;

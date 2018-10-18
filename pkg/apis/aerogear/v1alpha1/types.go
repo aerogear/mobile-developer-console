@@ -26,9 +26,9 @@ type MobileClientSpec struct {
 	// Fill me
 	ClientType    string `json:"clientType,required"`
 	Name          string `json:"name,required"`
-	AppIdentifier string `json:appIdentifier,required`
-	ApiKey        string `json:apiKey` //TODO: not sure if this is still required.
-	DmzUrl        string `json:dmzUrl`
+	AppIdentifier string `json:"appIdentifier",required`
+	ApiKey        string `json:"apiKey"` //TODO: not sure if this is still required.
+	DmzUrl        string `json:"dmzUrl"`
 }
 
 //for mobile-services.json
@@ -38,9 +38,9 @@ type MobileClientStatus struct {
 
 type MobileClientService struct {
 	Id   string `json:"id"`
-	Name string `json:name`
-	Type string `json:type`
-	Url  string `json:url`
+	Name string `json:"name"`
+	Type string `json:"type"`
+	Url  string `json:"url"`
 	//ideally we would like to use map[string]interface{} type here, but we can't as the generated code will complain that the interface{} is not `DeepCopy`-able.
 	Config  json.RawMessage `json:"config"`
 	Version string          `json:"version"`
