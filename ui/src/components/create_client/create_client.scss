@@ -1,15 +1,18 @@
 .platform-items {
-    padding-top: 16px;
+    padding-top: 0px;
 }
 
 .platform-item-icon-container > .platform-item-icon {
-    font-size: 48px;
-    height: 64px;
-    min-height: 84px;
-    min-width: 84px;
+    font-size: 32px;
+    height: 48px;
+    min-height: 32px;
+    min-width: 48px;
     position: relative;
     border:2px solid transparent;
-    border-radius: 84px;
+    border-radius: 48px;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
 }
 
 
@@ -37,9 +40,13 @@
 }
 
 .platform-item-icon-container > .platform-item-icon img {
-    width:48px;
-    height:48px;
-    padding: 2px; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 32px;
+    height: 32px;
+    margin-top: -16px; /* Half the height */
+    margin-left: -16px;
 }
 
 
