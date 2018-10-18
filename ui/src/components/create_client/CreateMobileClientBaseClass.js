@@ -17,6 +17,9 @@ class CreateMobileClientBaseClass extends Component {
     }
   }
 
+  /**
+   * Object configuation. Subclasses should configure at least the platform field.
+   */
   config = {
     platform: 'unknown',
     appName: {
@@ -31,6 +34,12 @@ class CreateMobileClientBaseClass extends Component {
     }
   }
   
+  /**
+   * Subclasses should override this to provide custom validation or validation for custom fields.
+   * 
+   * @param {*} controlId id of the control being validated
+   * @param {*} value value to be validate
+   */
   validate(controlId, value) {
     switch(controlId) {
       case CREATE_CLIENT_NAME: return value !== undefined && value.length > 0 ? 'success' : 'error';
@@ -41,7 +50,6 @@ class CreateMobileClientBaseClass extends Component {
 
   _validate(controlId, value) {
     var newState = {...this.state, validationState: {...this.state.validationState, [controlId]: this.validate(controlId, value)}}
-
     var dataIsValid = true;
 
     for(var control in newState.validationState) {
@@ -60,9 +68,10 @@ class CreateMobileClientBaseClass extends Component {
     this.props.configureClient(newState);
   }
 
-
+  /**
+   * Subclasses should override this if they needs to provide custom fields.
+   */
   getFormFields() {
-    
     return [
       {
         controlId: CREATE_CLIENT_NAME,
@@ -107,8 +116,8 @@ class CreateMobileClientBaseClass extends Component {
     return fields;
   }
 
-  renderFormFields(formFields) {
-    const generatedFields = formFields.map(formField => VerticalFormField({ ...formField }));
+  render() {
+    const generatedFields = this._getFormFields().map(formField => VerticalFormField({ ...formField }));
     return (<div>
       <Grid bsClass="create-client-form">
         <Form vertical="true">
@@ -117,10 +126,6 @@ class CreateMobileClientBaseClass extends Component {
       </Grid>
     </div>
     )
-  }
-
-  render() {
-    return this.renderFormFields(this._getFormFields());
   }
 }
 
