@@ -58,7 +58,6 @@ class CreateClient extends Component {
       case 'platform_xamarin': newState.selectedPlatform = PLATFORM_XAMARIN; break;
       default: throw new Error(`unsupported platform ${state.id}`);
     }
-
     this.setState(newState);
   }
 
@@ -85,7 +84,6 @@ class CreateClient extends Component {
   configureClient = (state) => {
     this.setState({...this.state, valid: state.valid, newApp: state.newApp});
   }
-
 
   renderPlatform() {
     switch (this.state.selectedPlatform) {
@@ -139,11 +137,9 @@ class CreateClient extends Component {
             className="close"
             onClick={this.close}
             aria-hidden="true"
-            aria-label="Close"
-          >
+            aria-label="Close">
             <Icon type="pf" name="close" />
           </button>
-
             <Modal.Title>Create Mobile App</Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -152,15 +148,12 @@ class CreateClient extends Component {
               {this.renderPlatform()}
             </FormGroup>
             {this.renderPlatformSelection()}
-
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.close}>Cancel</Button>
             <Button bsStyle="primary" onClick={this.createClient} disabled={!valid} >Create</Button>
           </Modal.Footer>
         </Modal>
-
-
       </div>
     );
   }
@@ -177,5 +170,3 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateClient);
-
-//export default CreateClient;

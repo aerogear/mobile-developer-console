@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+/**
+ * This represent a single platform item to be choosen into the UI when creating clients
+ */
 class PlatformItem extends Component {
 
     constructor(props){
@@ -16,7 +19,6 @@ class PlatformItem extends Component {
 
     render() {
       var styleclass = this.props.selection === this.props.id ? 'platform-item selected' : 'platform-item';
-
       return (
       <div>
         <a className={styleclass} href="#nothing" onClick={this.handleClick}>
