@@ -1,18 +1,13 @@
 import {
   USER_INFO_REQUEST,
   USER_INFO_SUCCESS,
-  USER_INFO_FAILURE,
-  USER_LOGOUT_REQUEST,
-  USER_LOGOUT_SUCCESS,
-  USER_LOGOUT_FAILURE  
+  USER_INFO_FAILURE
 } from '../actions/users';
 
 const defaultState = {
   currentUser: {name: "Unknown"},
   loading: false,
-  loadError: false,
-  loggingOut: false,
-  logoutError: false
+  loadError: false
 };
 
 const user = (state = defaultState, action) => {
@@ -36,25 +31,6 @@ const user = (state = defaultState, action) => {
         loading: false,
         loadError: action.error,
         currentUser: null
-      };
-    case USER_LOGOUT_REQUEST:
-      return {
-        ...state,
-        loggingOut: true,
-        logoutError: false
-      };
-    case USER_LOGOUT_SUCCESS:
-      return {
-        ...state,
-        loggingOut: false,
-        logoutError: false,
-        currentUser: null
-      };
-    case USER_LOGOUT_FAILURE:
-      return {
-        ...state,
-        loggingOut: false,
-        logoutError: action.error
       };
     default:
       return state;

@@ -140,12 +140,6 @@ const dataService = {
     }
     const user = await response.json();
     return user;
-  },
-  logout: async () => {
-    //TODO: implement me!
-    return await new Promise((resolve) => {
-      setTimeout(() => resolve({status: "ok"}), 1);
-    });
   }
 };
 

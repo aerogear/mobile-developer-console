@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import NavHeader from '../components/common/NavHeader';
 import { connect } from 'react-redux';
-import { fetchUserInfo, logout } from '../actions/users';
+import { fetchUserInfo } from '../actions/users';
 
 class Header extends Component {
   componentWillMount() {
@@ -17,7 +17,8 @@ class Header extends Component {
     }];
     const userDropdowns = [{
       text: "Logout",
-      onSelect: this.props.logout
+      //the sign in endpoint will perform the sign out action, and return the login page
+      href: "/oauth/sign_in"
     }];
     return (
       <NavHeader title="Mobile Developer Console"
@@ -36,8 +37,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  fetchUserInfo,
-  logout
+  fetchUserInfo
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
