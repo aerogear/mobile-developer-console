@@ -44,7 +44,7 @@ class PlatformItems extends Component {
           {configuredChildren}
         </Grid.Col>
       );
-      return this.platformItems[configuredChildren.props.id] = configuredChildren;
+      return this.platformItems[configuredChildren.props.type] = configuredChildren;
     });
     return rows;
   }

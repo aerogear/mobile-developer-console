@@ -48,17 +48,7 @@ class CreateClient extends Component {
   };
 
   selectPlatform = (state) => {
-
-    var newState = {...this.state, valid: false};
-
-    switch (state.id) {
-      case 'platform_android': newState.selectedPlatform = PLATFORM_ANDROID; break;
-      case 'platform_ios': newState.selectedPlatform = PLATFORM_IOS; break;
-      case 'platform_cordova': newState.selectedPlatform = PLATFORM_CORDOVA; break;
-      case 'platform_xamarin': newState.selectedPlatform = PLATFORM_XAMARIN; break;
-      default: throw new Error(`unsupported platform ${state.id}`);
-    }
-    this.setState(newState);
+    this.setState({...this.state, valid: false, selectedPlatform: state.id});
   }
 
   renderPlatformSelection() {
@@ -68,10 +58,10 @@ class CreateClient extends Component {
           Application Platform
         </ControlLabel>
         <PlatformItems itemSelected={this.selectPlatform} >
-          <PlatformItem title="Android" id="platform_android" inclass="fa fa-android"/>
-          <PlatformItem title="Cordova" id="platform_cordova" img="../../img/cordova.png" alt="Cordova"/>
-          <PlatformItem title="iOS" id="platform_ios" inclass="fa fa-apple" />
-          <PlatformItem title="Xamarin" id="platform_xamarin" img="../../img/xamarin.svg" alt="Xamarin" />
+          <PlatformItem type={PLATFORM_ANDROID}/>
+          <PlatformItem type={PLATFORM_CORDOVA}/>
+          <PlatformItem type={PLATFORM_IOS}/>
+          <PlatformItem type={PLATFORM_XAMARIN}/>
         </PlatformItems>
       </FormGroup>
     )
@@ -83,10 +73,10 @@ class CreateClient extends Component {
 
   renderPlatform() {
     switch (this.state.selectedPlatform) {
-      case PLATFORM_ANDROID: return <CreateAndroidClient configureClient={this.configureClient} clientConfiguration={{ [CREATE_CLIENT_TYPE]: 'platform-android' }} />
-      case PLATFORM_IOS: return <CreateIOSClient configureClient={this.configureClient} clientConfiguration={{ [CREATE_CLIENT_TYPE]: 'platform-ios' }} />
-      case PLATFORM_CORDOVA: return <CreateCordovaClient configureClient={this.configureClient} clientConfiguration={{ [CREATE_CLIENT_TYPE]: 'platform-cordova' }} />
-      case PLATFORM_XAMARIN: return <CreateXamarinClient configureClient={this.configureClient} clientConfiguration={{ [CREATE_CLIENT_TYPE]: 'platform-xamarin' }} />
+      case PLATFORM_ANDROID: return <CreateAndroidClient configureClient={this.configureClient} />
+      case PLATFORM_IOS: return <CreateIOSClient configureClient={this.configureClient} />
+      case PLATFORM_CORDOVA: return <CreateCordovaClient configureClient={this.configureClient} />
+      case PLATFORM_XAMARIN: return <CreateXamarinClient configureClient={this.configureClient} />
       default: return null;
     }
   }

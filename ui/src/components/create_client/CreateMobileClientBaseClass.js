@@ -14,7 +14,6 @@ class CreateMobileClientBaseClass extends Component {
       valid: false,
       validationState: {}
     }
-
     this.config = {
       platform: platformName,
       appName: {
@@ -24,8 +23,6 @@ class CreateMobileClientBaseClass extends Component {
       },
     }
   }
-
-
 
   /**
    * Subclasses should override this to provide custom validation or validation for custom fields.
