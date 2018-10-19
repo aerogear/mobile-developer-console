@@ -32,6 +32,10 @@
     text-decoration: none !important;
 }
 
+a:-webkit-any-link {
+    text-decoration: none !important; 
+}
+
 .platform-item-icon-container {
     width: 100%;
     display: flex;
