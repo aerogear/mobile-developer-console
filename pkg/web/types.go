@@ -23,9 +23,9 @@ type MobileAppUpdateRequest struct {
 //MobileClientServiceData represents the services in the `mobile-services.json` file
 type MobileClientServiceData struct {
 	Id     string                 `json:"id"`
-	Name   string                 `json:name`
-	Type   string                 `json:type`
-	Url    string                 `json:url`
+	Name   string                 `json:"name"`
+	Type   string                 `json:"type"`
+	Url    string                 `json:"url"`
 	Config map[string]interface{} `json:"config"`
 }
 
