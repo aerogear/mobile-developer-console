@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Grid, Form } from 'patternfly-react';
 import { CREATE_CLIENT_APP_ID, CREATE_CLIENT_NAME } from './Constants';
 import { VerticalFormField } from './VerticalFormField';
-import { get as _get } from 'lodash-es';
 
 /**
  * Component for the Android specific create mobile client form.
@@ -18,12 +17,24 @@ class CreateMobileClientBaseClass extends Component {
       platform: platformName,
       appName: {
         label: '* App Name',
-        example: 'myapp'
+        example: 'myapp',
+        help: 'App name must match ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$'
       },
       appIdentifier: {
         label: '* Package Name',
-        example: ''
+        example: 'org.aerogear.myapp',
+        help: 'Package name must match ^[\\w-]+$',
       }
+    }
+
+    // initializing validation state
+    var fields = this.getFormFields();
+
+    if (!this.state.initialized) {
+      for (var field in fields) {
+        this.state.validationState[fields[field].controlId] = null;
+      }
+      this.state.initialized = true;
     }
   }
 
@@ -35,8 +46,8 @@ class CreateMobileClientBaseClass extends Component {
    */
   validate(controlId, value) {
     switch (controlId) {
-      case CREATE_CLIENT_NAME: return value !== undefined && value.length > 0 ? 'success' : 'error';
-      case CREATE_CLIENT_APP_ID: return value !== undefined && value.length > 0 ? 'success' : 'error';
+      case CREATE_CLIENT_NAME: return value !== undefined && value.match('^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$') ? 'success' : 'error';
+      case CREATE_CLIENT_APP_ID: return value !== undefined && value.match('^[\\w-]+$') ? 'success' : 'error';
       default: return 'success';
     }
   }
@@ -70,49 +81,35 @@ class CreateMobileClientBaseClass extends Component {
         controlId: CREATE_CLIENT_NAME,
         label: this.config.appName.label,
         useFieldLevelHelp: false,
-        showHelp: this.config.appName.help, // show the help only if some help text is configured
+        showHelp: this.state.validationState[CREATE_CLIENT_NAME] === 'error', // show the help only if some help text is configured
         help: this.config.appName.help,
         content: this.config.appName.help,
         placeholder: this.config.appName.example,
         formControl: ({ validationState, ...props }) => (
           <Form.FormControl type="text" {...props} tabIndex="1" autoFocus={true} />
         ),
-        validationState: _get(this.state.validationState, CREATE_CLIENT_NAME),
+        validationState: this.state.validationState[CREATE_CLIENT_NAME],
         onChange: e => this._validate(CREATE_CLIENT_NAME, e.target.value),
       },
       {
         controlId: CREATE_CLIENT_APP_ID,
         label: this.config.appIdentifier.label,
         useFieldLevelHelp: false,
-        showHelp: this.config.appIdentifier.help, // show the help only if some help text is configured
+        showHelp: this.state.validationState[CREATE_CLIENT_APP_ID] === 'error', // show the help only if some help text is configured
         help: this.config.appIdentifier.help,
         placeholder: this.config.appIdentifier.example,
         content: this.config.appIdentifier.help,
         formControl: ({ validationState, ...props }) => (
           <Form.FormControl type="text" {...props} tabIndex="2" />
         ),
-        validationState: null,
+        validationState: this.state.validationState[CREATE_CLIENT_APP_ID],
         onChange: e => this._validate(CREATE_CLIENT_APP_ID, e.target.value),
       },
     ];
   }
 
-  _getFormFields() {
-    var fields = this.getFormFields();
-
-    if (!this.state.initialized) {
-      var newState = { ...this.state };
-      for (var field in fields) {
-        newState.validationState[fields[field].controlId] = null;
-      }
-      newState.initialized = true;
-      this.setState(newState);
-    }
-    return fields;
-  }
-
   render() {
-    const generatedFields = this._getFormFields().map(formField => VerticalFormField({ ...formField }));
+    const generatedFields = this.getFormFields().map(formField => VerticalFormField({ ...formField }));
     return (<div>
       <Grid bsClass="create-client-form">
         <Form vertical="true">

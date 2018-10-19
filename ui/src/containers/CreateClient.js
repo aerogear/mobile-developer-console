@@ -98,7 +98,7 @@ class CreateClient extends Component {
     var availablePlatforms = [];
     for (var key in this.props.platforms) {
       var platform = this.props.platforms[key]
-      availablePlatforms.push(<PlatformItem type={platform}/>);
+      availablePlatforms.push(<PlatformItem type={platform} key={platform}/>);
     }
 
     return (

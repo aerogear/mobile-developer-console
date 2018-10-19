@@ -52,7 +52,7 @@ class PlatformItems extends Component {
       }
       var configuredChildren = React.cloneElement(child, { itemSelected: this.itemSelected, selection: this.selection.id, key: this.selection.id, selected: selectionStatus });
       rows.push(
-        <Grid.Col sm={6} md={2}>
+        <Grid.Col sm={6} md={2} key={i}>
           {configuredChildren}
         </Grid.Col>
       );
