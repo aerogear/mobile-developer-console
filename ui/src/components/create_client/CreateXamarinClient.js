@@ -9,6 +9,7 @@ import {
 class CreateXamarinClient extends CreateMobileClientBaseClass {
   constructor() {
     super(PLATFORM_XAMARIN);
+    this.config.appIdentifier.help = 'Enter package name (like <em>AeroGear.Xamarin.MyApp</em>)';
   }
 }
 

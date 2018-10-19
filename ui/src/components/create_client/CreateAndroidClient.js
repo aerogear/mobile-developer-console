@@ -9,6 +9,7 @@ import {
 class CreateAndroidClient extends CreateMobileClientBaseClass {
   constructor() {
     super(PLATFORM_ANDROID);
+    this.config.appIdentifier.help = 'Enter package name (like <em>org.aerogear.android.myapp</em>)';
   }
 }
 

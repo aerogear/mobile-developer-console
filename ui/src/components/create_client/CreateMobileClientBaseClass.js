@@ -21,6 +21,11 @@ class CreateMobileClientBaseClass extends Component {
         help: 'Enter application name (like <em>myapp</em>)',
         example_content: ''
       },
+      appIdentifier: {
+        label: '* Package Name',
+        help: 'Enter package name (like <em>org.aerogear.myapp</em>)',
+        example_content: ''
+      }
     }
   }
 
@@ -74,6 +79,18 @@ class CreateMobileClientBaseClass extends Component {
         ),
         validationState: _get(this.state.validationState, CREATE_CLIENT_NAME),
         onChange: e => this._validate(CREATE_CLIENT_NAME, e.target.value),
+      },
+      {
+        controlId: CREATE_CLIENT_APP_ID,
+        label: this.config.appIdentifier.label,
+        useFieldLevelHelp: true,
+        defaultValue: this.config.appIdentifier.example_content,
+        content: this.config.appIdentifier.help,
+        formControl: ({ validationState, ...props }) => (
+          <Form.FormControl type="text" {...props} tabIndex="2" />
+        ),
+        validationState: null,
+        onChange: e => this._validate(CREATE_CLIENT_APP_ID, e.target.value),
       },
     ];
   }
