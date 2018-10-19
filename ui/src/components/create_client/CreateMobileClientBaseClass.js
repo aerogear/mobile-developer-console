@@ -18,13 +18,11 @@ class CreateMobileClientBaseClass extends Component {
       platform: platformName,
       appName: {
         label: '* App Name',
-        help: 'Enter application name (like <em>myapp</em>)',
-        example_content: ''
+        example: 'myapp'
       },
       appIdentifier: {
         label: '* Package Name',
-        help: 'Enter package name (like <em>org.aerogear.myapp</em>)',
-        example_content: ''
+        example: ''
       }
     }
   }
@@ -71,9 +69,11 @@ class CreateMobileClientBaseClass extends Component {
       {
         controlId: CREATE_CLIENT_NAME,
         label: this.config.appName.label,
-        useFieldLevelHelp: true,
-        defaultValue: this.config.appName.example_content,
+        useFieldLevelHelp: false,
+        showHelp: this.config.appName.help, // show the help only if some help text is configured
+        help: this.config.appName.help,
         content: this.config.appName.help,
+        placeholder: this.config.appName.example,
         formControl: ({ validationState, ...props }) => (
           <Form.FormControl type="text" {...props} tabIndex="1" autoFocus={true} />
         ),
@@ -83,8 +83,10 @@ class CreateMobileClientBaseClass extends Component {
       {
         controlId: CREATE_CLIENT_APP_ID,
         label: this.config.appIdentifier.label,
-        useFieldLevelHelp: true,
-        defaultValue: this.config.appIdentifier.example_content,
+        useFieldLevelHelp: false,
+        showHelp: this.config.appIdentifier.help, // show the help only if some help text is configured
+        help: this.config.appIdentifier.help,
+        placeholder: this.config.appIdentifier.example,
         content: this.config.appIdentifier.help,
         formControl: ({ validationState, ...props }) => (
           <Form.FormControl type="text" {...props} tabIndex="2" />

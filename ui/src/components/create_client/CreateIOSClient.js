@@ -10,7 +10,7 @@ class CreateIOSClient extends CreateMobileClientBaseClass {
   constructor() {
     super(PLATFORM_IOS);
     this.config.appIdentifier.label = '* Bundle ID';
-    this.config.appIdentifier.help = 'Enter bundle ID (like <em>org.aerogear.ios.myapp</em>)';
+    this.config.appIdentifier.example = 'org.aerogear.ios.myapp';
   }
 }
 
