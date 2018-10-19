@@ -11,6 +11,12 @@ import {
 import './MobileClientCardView.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
 import CreateClient from '../../containers/CreateClient';
+import {
+  PLATFORM_ANDROID,
+  PLATFORM_IOS,
+  PLATFORM_CORDOVA,
+  PLATFORM_XAMARIN,
+} from '../../components/create_client/Constants';
 
 class MobileClientCardView extends Component {
   constructor(props) {
@@ -37,7 +43,7 @@ class MobileClientCardView extends Component {
       <EmptyState>
         <EmptyStateTitle>{this.emptyStateMessage.noAppsCreated}</EmptyStateTitle>
         <EmptyStateAction>
-          <CreateClient createButtonSize="large" />
+          <CreateClient createButtonSize="large" platforms={[PLATFORM_ANDROID, PLATFORM_CORDOVA, PLATFORM_IOS, PLATFORM_XAMARIN]}/>
         </EmptyStateAction>
       </EmptyState>
     );
@@ -132,7 +138,7 @@ class MobileClientCardView extends Component {
             />
           </Filter>
           <div className="form-group">
-            <CreateClient />
+            <CreateClient platforms={[PLATFORM_ANDROID, PLATFORM_CORDOVA, PLATFORM_IOS, PLATFORM_XAMARIN]} />
           </div>
           {filter &&
             filter.length > 0 && (

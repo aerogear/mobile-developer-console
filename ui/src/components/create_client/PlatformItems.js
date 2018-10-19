@@ -21,13 +21,25 @@ class PlatformItems extends Component {
   itemSelected = (clickedItem) => {
     var platformItems = this.platformItems;
     this.selection.id = clickedItem.id;
+
+    var newState = {...this.state};
+    var needsStateUpdate = false;
+
     for (var key in platformItems) {
       var itemIsSelected = key === clickedItem.id
-      this.setState({...this.state, items: {...this.state.items, [key]: { selected: itemIsSelected } }} )
 
-      if (itemIsSelected) {
-        this.props.itemSelected({ id: key });
+      if (!newState.items || !newState.items[key] || newState.items[key].selected !== itemIsSelected) {
+        needsStateUpdate = true;
+        newState.items[key] = {selected: itemIsSelected};
+        //newState.items = {...newState.items, [key]: { selected: itemIsSelected }};
+        if (itemIsSelected) {
+          this.props.itemSelected({ id: key });
+        }
       }
+    }
+
+    if (needsStateUpdate) {
+      this.setState(newState);
     }
   }
 

@@ -19,15 +19,16 @@ class PlatformItem extends Component {
 
   componentDidUpdate() {
     if (this.state.selected) {
-      this.setState({ selected: true })
-      this.props.itemSelected({ ...this.state, selected: true });
+      this.props.itemSelected(this.state);
     }
   }
 
   handleClick = (e) => {
-    const state = { selected: true, id: this.props.type };
-    this.setState(state);
-    this.props.itemSelected(state);
+    if (!this.state.selected) {
+      const state = { selected: true, id: this.props.type };
+      this.setState(state);
+      this.props.itemSelected(state);  
+    }
     e.preventDefault();
   }
 

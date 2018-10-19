@@ -15,7 +15,6 @@ import {
   PLATFORM_IOS,
   PLATFORM_CORDOVA,
   PLATFORM_XAMARIN,
-  CREATE_CLIENT_TYPE,
 } from '../components/create_client/Constants';
 import CreateAndroidClient from '../components/create_client/CreateAndroidClient';
 import CreateCordovaClient from '../components/create_client/CreateCordovaClient';
@@ -48,23 +47,9 @@ class CreateClient extends Component {
   };
 
   selectPlatform = (state) => {
-    this.setState({...this.state, valid: false, selectedPlatform: state.id});
-  }
-
-  renderPlatformSelection() {
-    return (
-      <FormGroup>
-        <ControlLabel className="required">
-          Application Platform
-        </ControlLabel>
-        <PlatformItems itemSelected={this.selectPlatform} >
-          <PlatformItem type={PLATFORM_ANDROID}/>
-          <PlatformItem type={PLATFORM_CORDOVA}/>
-          <PlatformItem type={PLATFORM_IOS}/>
-          <PlatformItem type={PLATFORM_XAMARIN}/>
-        </PlatformItems>
-      </FormGroup>
-    )
+    if (this.state.selectedPlatform !== state.id) {
+      this.setState({...this.state, valid: false, selectedPlatform: state.id});
+    }
   }
 
   configureClient = (state) => {
@@ -107,6 +92,25 @@ class CreateClient extends Component {
      return (<Alert key="123" type="error">{this.state.error}</Alert>)      
     } 
     return '';
+  }
+
+  renderPlatformSelection() {
+    var availablePlatforms = [];
+    for (var key in this.props.platforms) {
+      var platform = this.props.platforms[key]
+      availablePlatforms.push(<PlatformItem type={platform}/>);
+    }
+
+    return (
+      <FormGroup>
+        <ControlLabel className="required">
+          Application Platform
+        </ControlLabel>
+        <PlatformItems itemSelected={this.selectPlatform} >
+          {availablePlatforms}
+        </PlatformItems>
+      </FormGroup>
+    )
   }
 
   render() {
