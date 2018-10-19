@@ -23,28 +23,24 @@ export const VerticalFormField = ({
 
   const formGroupProps = { key: controlId, controlId, ...controlProps };
 
-  if (useFieldLevelHelp) {
-    const htmlContent = (
-      <div
-        dangerouslySetInnerHTML={{
-          __html: content
-        }}
-      />
-    );
-    return (
-      <Form.FormGroup {...formGroupProps}>
-        {label && <Form.ControlLabel>{label}</Form.ControlLabel>}
-        <Form.ControlLabel>
-          <FieldLevelHelp content={htmlContent} close={close} />
-        </Form.ControlLabel>
-        {formControl(controlProps)}
-        {showHelp && help && <Form.HelpBlock>{help}</Form.HelpBlock>}
-      </Form.FormGroup>
-    );
-  }
+  const htmlContent = (
+    <div
+      dangerouslySetInnerHTML={{
+        __html: content
+      }}
+    />
+  );
+
+  const helpControl = (
+    <Form.ControlLabel>
+      <FieldLevelHelp content={htmlContent} close={close} />
+    </Form.ControlLabel>
+  );
+
   return (
     <Form.FormGroup {...formGroupProps}>
       {label && <Form.ControlLabel>{label}</Form.ControlLabel>}
+      {useFieldLevelHelp && helpControl}
       {formControl(controlProps)}
       {showHelp && help && <Form.HelpBlock>{help}</Form.HelpBlock>}
     </Form.FormGroup>

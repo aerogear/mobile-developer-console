@@ -22,12 +22,11 @@ class CreateMobileClientBaseClass extends Component {
         help: 'Enter application name (like <em>myapp</em>)',
         example_content: ''
       },
+    }
   }
 
-  }
 
-  
-  
+
   /**
    * Subclasses should override this to provide custom validation or validation for custom fields.
    * 
@@ -35,7 +34,7 @@ class CreateMobileClientBaseClass extends Component {
    * @param {*} value value to be validate
    */
   validate(controlId, value) {
-    switch(controlId) {
+    switch (controlId) {
       case CREATE_CLIENT_NAME: return value !== undefined && value.length > 0 ? 'success' : 'error';
       case CREATE_CLIENT_APP_ID: return value !== undefined && value.length > 0 ? 'success' : 'error';
       default: return 'success';
@@ -43,10 +42,10 @@ class CreateMobileClientBaseClass extends Component {
   }
 
   _validate(controlId, value) {
-    var newState = {...this.state, validationState: {...this.state.validationState, [controlId]: this.validate(controlId, value)}}
+    var newState = { ...this.state, validationState: { ...this.state.validationState, [controlId]: this.validate(controlId, value) } }
     var dataIsValid = true;
 
-    for(var control in newState.validationState) {
+    for (var control in newState.validationState) {
       if (newState.validationState[control] !== 'success') {
         dataIsValid = false;
         break;
@@ -86,12 +85,12 @@ class CreateMobileClientBaseClass extends Component {
     var fields = this.getFormFields();
 
     if (!this.state.initialized) {
-      var newState = {...this.state};
+      var newState = { ...this.state };
       for (var field in fields) {
         newState.validationState[fields[field].controlId] = null;
       }
       newState.initialized = true;
-      this.setState(newState);  
+      this.setState(newState);
     }
     return fields;
   }
