@@ -79,7 +79,6 @@ class CreateMobileClientBaseClass extends Component {
         useFieldLevelHelp: true,
         defaultValue: this.config.appName.example_content,
         content: this.config.appName.help,
-        tabIndex: -1,
         formControl: ({ validationState, ...props }) => (
           <Form.FormControl type="text" {...props} tabIndex="1" autoFocus={true} />
         ),
@@ -92,7 +91,6 @@ class CreateMobileClientBaseClass extends Component {
         useFieldLevelHelp: true,
         defaultValue: this.config.appIdentifier.example_content,
         content: this.config.appIdentifier.help,
-        tabIndex: -1,
         formControl: ({ validationState, ...props }) => (
           <Form.FormControl type="text" {...props} tabIndex="2" />
         ),
