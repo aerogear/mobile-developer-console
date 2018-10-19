@@ -69,13 +69,9 @@ class CreateClient extends Component {
         </ControlLabel>
         <PlatformItems itemSelected={this.selectPlatform} >
           <PlatformItem title="Android" id="platform_android" inclass="fa fa-android"/>
-          <PlatformItem title="Cordova" id="platform_cordova">
-            <span><img src="../../img/cordova.png" alt="Cordova" /></span>
-          </PlatformItem>
+          <PlatformItem title="Cordova" id="platform_cordova" img="../../img/cordova.png" alt="Cordova"/>
           <PlatformItem title="iOS" id="platform_ios" inclass="fa fa-apple" />
-          <PlatformItem title="Xamarin" id="platform_xamarin" >
-            <span><img src="../../img/xamarin.svg" alt="Xamarin" /></span>
-          </PlatformItem>
+          <PlatformItem title="Xamarin" id="platform_xamarin" img="../../img/xamarin.svg" alt="Xamarin" />
         </PlatformItems>
       </FormGroup>
     )
@@ -148,12 +144,15 @@ class CreateClient extends Component {
               {this.renderPlatform()}
             </FormGroup>
             {this.renderPlatformSelection()}
+
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.close}>Cancel</Button>
             <Button bsStyle="primary" onClick={this.createClient} disabled={!valid} >Create</Button>
           </Modal.Footer>
         </Modal>
+
+
       </div>
     );
   }

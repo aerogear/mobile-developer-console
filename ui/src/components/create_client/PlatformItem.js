@@ -41,10 +41,21 @@ class PlatformItem extends Component {
     }
 
     platformItemIcon() {
-      const inside = (this.props.inclass === undefined) ? this.props.children : <span className={this.props.inclass} />;
+      var icon;
+      if (this.props.inclass) {
+        // fa icon
+        icon = <span className={this.props.inclass} />;
+      } else if (this.props.img) {
+        // img icon
+        icon = <span><img src={this.props.img} alt={this.props.alt}/></span>;
+      } else {
+        // render children
+        icon = this.props.children;
+      }
+
       return (
         <div className="platform-item-icon">
-          {inside}
+          {icon}
         </div>
       );
     }
