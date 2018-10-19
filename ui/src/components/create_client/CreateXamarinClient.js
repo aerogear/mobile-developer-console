@@ -1,7 +1,5 @@
 import CreateMobileClientBaseClass from './CreateMobileClientBaseClass';
-import {
-  PLATFORM_XAMARIN,
-} from './Constants';
+import { PLATFORM_XAMARIN } from './Constants';
 
 /**
  * Component for the Xamarin specific create mobile client form.

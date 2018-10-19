@@ -1,7 +1,5 @@
 import CreateMobileClientBaseClass from './CreateMobileClientBaseClass';
-import {
-  PLATFORM_CORDOVA,
-} from './Constants';
+import { PLATFORM_CORDOVA } from './Constants';
 
 /**
  * Component for the Cordova specific create mobile client form.

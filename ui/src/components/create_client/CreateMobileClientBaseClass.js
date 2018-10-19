@@ -23,7 +23,7 @@ class CreateMobileClientBaseClass extends Component {
       appIdentifier: {
         label: '* Package Name',
         example: 'org.aerogear.myapp',
-        help: 'Package name must match ^[\\w-]+$',
+        help: 'Package name must match ^[a-zA-Z][\\w]*(\\.[a-zA-Z][\\w]*)+$',
       }
     }
 
@@ -47,7 +47,7 @@ class CreateMobileClientBaseClass extends Component {
   validate(controlId, value) {
     switch (controlId) {
       case CREATE_CLIENT_NAME: return value !== undefined && value.match('^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$') ? 'success' : 'error';
-      case CREATE_CLIENT_APP_ID: return value !== undefined && value.match('^[\\w-]+$') ? 'success' : 'error';
+      case CREATE_CLIENT_APP_ID: return value !== undefined && value.match('^[a-zA-Z][\\w]*(\\.[a-zA-Z][\\w]*)+$') ? 'success' : 'error';
       default: return 'success';
     }
   }

@@ -1,7 +1,5 @@
 import CreateMobileClientBaseClass from './CreateMobileClientBaseClass';
-import {
-  PLATFORM_ANDROID,
-} from './Constants';
+import { PLATFORM_ANDROID } from './Constants';
 
 /**
  * Component for the Android specific create mobile client form.
