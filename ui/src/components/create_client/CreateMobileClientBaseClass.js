@@ -8,31 +8,25 @@ import { get as _get } from 'lodash-es';
  * Component for the Android specific create mobile client form.
  */
 class CreateMobileClientBaseClass extends Component {
-
-  constructor() {
-    super();
+  constructor(platformName, props) {
+    super(props);
     this.state = {
       valid: false,
       validationState: {}
     }
+
+    this.config = {
+      platform: platformName,
+      appName: {
+        label: '* App Name',
+        help: 'Enter application name (like <em>myapp</em>)',
+        example_content: ''
+      },
   }
 
-  /**
-   * Object configuation. Subclasses should configure at least the platform field.
-   */
-  config = {
-    platform: 'unknown',
-    appName: {
-      label: '* App Name',
-      help: 'Enter application name (like <em>myapp</em>)',
-      example_content: ''
-    },
-    appIdentifier: {
-      label: '* Package Name',
-      help: 'Enter package name (like <em>org.aerogear.myapp</em>)',
-      example_content: ''
-    }
   }
+
+  
   
   /**
    * Subclasses should override this to provide custom validation or validation for custom fields.
@@ -84,18 +78,6 @@ class CreateMobileClientBaseClass extends Component {
         ),
         validationState: _get(this.state.validationState, CREATE_CLIENT_NAME),
         onChange: e => this._validate(CREATE_CLIENT_NAME, e.target.value),
-      },
-      {
-        controlId: CREATE_CLIENT_APP_ID,
-        label: this.config.appIdentifier.label,
-        useFieldLevelHelp: true,
-        defaultValue: this.config.appIdentifier.example_content,
-        content: this.config.appIdentifier.help,
-        formControl: ({ validationState, ...props }) => (
-          <Form.FormControl type="text" {...props} tabIndex="2" />
-        ),
-        validationState: null,
-        onChange: e => this._validate(CREATE_CLIENT_APP_ID, e.target.value),
       },
     ];
   }

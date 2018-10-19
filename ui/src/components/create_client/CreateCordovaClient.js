@@ -8,9 +8,7 @@ import {
  */
 class CreateCordovaClient extends CreateMobileClientBaseClass {
   constructor() {
-    super();
-    this.config.appIdentifier.help = 'Enter package name (like <em>org.aerogear.cordova.myapp</em>)';
-    this.config.platform = PLATFORM_CORDOVA;
+    super(PLATFORM_CORDOVA);
   }
 }
 
