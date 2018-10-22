@@ -27,3 +27,23 @@ func (msih *BindableMobileServiceHandler) List(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, si)
 }
+
+func (msih *BindableMobileServiceHandler) Create(c echo.Context) error {
+	reqData := new(ServiceBindingRequest)
+	// if err := c.Bind(reqData); err != nil {
+	// 	return err
+	// }
+	// if err := c.Validate(reqData); err != nil {
+	// 	return err
+	// }
+	// app := newMobileClientObject(*reqData, h.namespace)
+	// err := h.mobileClientRepo.Create(app)
+	// if err != nil {
+	// 	return c.String(http.StatusBadRequest, err.Error())
+	// }
+	// data, err := newMoileClientDataFromObject(app)
+	// if err != nil {
+	// 	return err
+	// }
+	// return c.JSON(http.StatusOK, data)
+}

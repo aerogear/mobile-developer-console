@@ -39,7 +39,8 @@ func SetupMobileServicesRoute(r *echo.Group, handler *MobileServiceInstancesHand
 }
 
 func SetupBindableMobileServiceRoute(r *echo.Group, handler *BindableMobileServiceHandler) {
-	r.GET("/bindableservices", handler.List)
+	r.GET("/bindableservices", handler.List),
+	r.POST("/bindableservices", handler.Create)
 }
 
 func SetupMobileBuildsRoute(r *echo.Group, handler *MobileBuildsHandler) {
