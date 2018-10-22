@@ -61,11 +61,14 @@ const MobileClientCardViewItem = (props) => {
             </div>
           </CardBody>
           <CardFooter>
-            {services && services.length > 0 && (
-              <div className="card-footer-icons">
-                {getServiceIcons(services)}
-              </div>
-            )}
+            <div className="card-footer-icons">
+            {
+              (services && services.length > 0) ?
+                getServiceIcons(services)
+              :
+                <div className="service-icon" />
+            }
+            </div>
           </CardFooter>
         </Link>
       </Card>
