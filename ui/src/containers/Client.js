@@ -53,14 +53,18 @@ class Client extends Component {
       this.props.fetchBuildConfigs();
       this.props.fetchBuilds();
 
-    this.wsBuildConfigs = DataService.watchBuildConfigs(this.props.fetchBuildConfigs);
-    this.wsBuilds = DataService.watchBuilds(this.props.fetchBuilds);
+      this.wsBuildConfigs = DataService.watchBuildConfigs(this.props.fetchBuildConfigs);
+      this.wsBuilds = DataService.watchBuilds(this.props.fetchBuilds);
+    }
   }
-
   componentWillUnmount() {
     this.wsApps && this.wsApps.close();
     this.wsBuildConfigs && this.wsBuildConfigs.close();
     this.wsBuilds && this.wsBuilds.close();
+  }
+
+  getMobileApp() {
+    return this.props.apps.items.find(app => app.metadata.name === this.props.match.params.id) || {};
   }
 
   componentDidUpdate(prevProps) {
@@ -129,8 +133,7 @@ class Client extends Component {
 
   render() {
     const mobileApp = this.getMobileApp();
-    const { metadata = {}, spec = {} } = mobileApp;
-    const { appName = '' } = metadata;
+    const { spec = {} } = mobileApp;
     const { clientType = '', AppIdentifier: clientId = '' } = spec;
     const config = { [KEY_CR_CLIENT_ID]: clientId, [KEY_CR_CLIENT_TYPE]: clientType };
     const { selectedTab } = this.state;
@@ -151,20 +154,22 @@ class Client extends Component {
             <div>
               <Nav bsClass="nav nav-tabs nav-tabs-pf nav-tabs-pf-secondary">
                 <NavItem eventKey={TAB_CONFIGURATION}>Configuration</NavItem>
-                {this.props.buildTabEnabled ? (<NavItem eventKey={TAB_BUILDS}>Builds</NavItem>) : null }
+                {this.props.buildTabEnabled ? <NavItem eventKey={TAB_BUILDS}>Builds</NavItem> : null}
                 <NavItem eventKey={TAB_MOBILE_SERVICES}>Mobile Services</NavItem>
               </Nav>
               <TabContent>
                 <TabPane eventKey={TAB_CONFIGURATION}>
                   <ConfigurationView app={mobileApp} />
                 </TabPane>
-                {this.props.buildTabEnabled? (<TabPane eventKey={TAB_BUILDS}>
-                  <MobileClientBuildOverviewList
-                    appName={appName}
-                    config={config}
-                    buildConfigs={this.state.buildConfigs}
-                  />
-                </TabPane>):null}
+                {this.props.buildTabEnabled ? (
+                  <TabPane eventKey={TAB_BUILDS}>
+                    <MobileClientBuildOverviewList
+                      appName={this.props.match.params.id}
+                      config={config}
+                      buildConfigs={this.state.buildConfigs}
+                    />
+                  </TabPane>
+                ) : null}
                 <TabPane eventKey={TAB_MOBILE_SERVICES}>
                   <MobileServiceView  appName={appName} />
                 </TabPane>

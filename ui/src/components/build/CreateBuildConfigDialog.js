@@ -52,13 +52,13 @@ import { renderBuildSection } from './create_build_config/BuildSection';
 import { isEqual } from 'lodash-es';
 
 class CreateBuildConfigDialog extends Component {
-  propTypes = {
+  static propTypes = {
     onCancel: PropTypes.func,
     onSave: PropTypes.func,
     title: PropTypes.string.isRequired,
     show: PropTypes.bool.isRequired,
     update: PropTypes.bool,
-    config: PropTypes.object
+    initialConfig: PropTypes.object
   };
 
   constructor(props) {
@@ -104,12 +104,12 @@ class CreateBuildConfigDialog extends Component {
 
   componentDidUpdate(prevProps) {
     this.validate();
-    const { config: prevConfig = {} } = prevProps;
-    const { config = {} } = this.props;
-    if (!isEqual(prevConfig, config)) {
-      this.configState.set(KEY_CR_CLIENT_ID, config[KEY_CR_CLIENT_ID]);
-      this.configState.set(KEY_CR_CLIENT_TYPE, config[KEY_CR_CLIENT_TYPE]);
-      switch (config[KEY_CR_CLIENT_TYPE]) {
+    const { initialConfig: prevConfig = {} } = prevProps;
+    const { initialConfig = {} } = this.props;
+    if (!isEqual(prevConfig, initialConfig)) {
+      this.configState.set(KEY_CR_CLIENT_ID, initialConfig[KEY_CR_CLIENT_ID]);
+      this.configState.set(KEY_CR_CLIENT_TYPE, initialConfig[KEY_CR_CLIENT_TYPE]);
+      switch (initialConfig[KEY_CR_CLIENT_TYPE]) {
         case CLIENT_TYPE_ANDROID:
           this.buildState.set(KEY_CR_BUILD_PLATFORM, BUILD_PLATFORM_ANDROID);
           this.setState({ [KEY_HIDE_PLATDORM]: true });
@@ -135,8 +135,8 @@ class CreateBuildConfigDialog extends Component {
 
   onSaveBuildConfig = () => {
     const { config } = this.state;
-    const { onSave, update = false } = this.props;
-    onSave && onSave({ update, config });
+    const { onSave, update = false, initialConfig } = this.props;
+    onSave && onSave({ update, config: { ...initialConfig, ...config } });
   };
 
   cancel = () => {

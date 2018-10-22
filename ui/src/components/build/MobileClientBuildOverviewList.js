@@ -3,11 +3,11 @@ import { ListView } from 'patternfly-react';
 import MobileClientBuildListItem from './MobileClientBuildListItem';
 import NoBuildConfig from './NoBuildConfig';
 
-export const MobileClientBuildOverviewList = ({ buildConfigs, appName, clientId, clientType }) => (
+export const MobileClientBuildOverviewList = ({ buildConfigs, appName, config }) => (
   <div>
     {// TODO: Mobile builds are not avaialble for Xamarin.
     buildConfigs.length === 0 ? (
-      <NoBuildConfig clientId={clientId} clientType={clientType} />
+      <NoBuildConfig config={config} />
     ) : (
       <ListView>
         {buildConfigs.map(buildConfig => (

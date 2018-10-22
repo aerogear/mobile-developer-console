@@ -1,64 +1,35 @@
 import React, { Component } from 'react';
 import { Button } from 'patternfly-react';
-import { connect } from 'react-redux';
-import { createBuildConfig } from '../../actions/buildConfigs';
 import './NoBuildConfig.css';
-import CreateBuildConfigDialog from './CreateBuildConfigDialog';
+import BuildConfigDialog from '../../containers/BuildConfigDialog';
 
-const createBuildConfigTitle = 'Create build config';
 class NoBuildConfig extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      createBuildDialogDisplayed: false
-    };
+    this.state = { show: false };
   }
 
-  buildUpdated = configUpdate => {
-    console.log('build updated');
-    // TODO remove hardcoded values and use values from app config
-    const config = Object.assign({ clientId: 'org.aerogear.app', clientType: 'android' }, configUpdate.config);
-    this.props.createBuildConfig(config);
-    this.close();
-  };
-
-  close = () => {
-    this.setState({ createBuildDialogDisplayed: false });
-  };
-
   render = () => {
-    const { createBuildDialogDisplayed } = this.state;
-    const config = { clientId: this.props.clientId, clientType: this.props.clientType };
+    const { config } = this.props;
+    const { show } = this.state;
     return (
       <div className="note">
         <h2>No Build Config</h2>
         <p>Create a mobile build config to create a mobile client build.</p>
-        <Button bsStyle="primary" bsSize="large" onClick={() => this.setState({ createBuildDialogDisplayed: true })}>
-          {createBuildConfigTitle}
+        <Button bsStyle="primary" bsSize="large" onClick={() => this.setState({ show: true })}>
+          Create build config
         </Button>
-        <CreateBuildConfigDialog
-          config={config}
-          show={createBuildDialogDisplayed}
-          title={createBuildConfigTitle}
-          onSave={this.buildUpdated}
-          onCancel={this.close}
-        />
+        {
+          <BuildConfigDialog
+            update={false}
+            initialConfig={config}
+            show={show}
+            onShowStateChanged={isShown => this.setState({ show: isShown })}
+          />
+        }
       </div>
     );
   };
 }
 
-function mapStateToProps(state) {
-  return {
-    config: state
-  };
-}
-
-const mapDispatchToProps = {
-  createBuildConfig
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NoBuildConfig);
+export default NoBuildConfig;
