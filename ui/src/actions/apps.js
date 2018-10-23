@@ -36,3 +36,23 @@ export const deleteApp = name => fetchAction(
   [APP_DELETE_REQUEST, APP_DELETE_SUCCESS, APP_DELETE_FAILURE],
   async () => DataService.deleteApp(name),
 )();
+
+export const registerPlatform = (platform) => ({
+  type: 'platform/REGISTER',
+  platform: { name: platform.name, selected: platform.selected } 
+})
+
+export const selectPlatform = (platform) => ({
+  type: 'platform/SELECT',
+  platform: { name: platform } 
+})
+
+export const setStatus = (newStatus) => ({
+  type: 'form/SETSTATUS',
+  payload: { status: newStatus}
+})
+
+export const setFieldValue = (fieldId, value) => ({
+  type: 'field/SETVALUE',
+  payload: { name: fieldId, value: value}
+})

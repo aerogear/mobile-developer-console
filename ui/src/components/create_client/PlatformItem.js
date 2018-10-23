@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { PLATFORM_ANDROID, PLATFORM_IOS, PLATFORM_CORDOVA, PLATFORM_XAMARIN } from './Constants'
-
+import { connect } from 'react-redux';
+import { selectPlatform } from '../../actions/apps';
 /**
  * This represent a single platform item to be choosen into the UI when creating clients
  */
@@ -17,18 +18,8 @@ class PlatformItem extends Component {
     [PLATFORM_XAMARIN]: { icon: <span><img src='../../img/xamarin.svg' alt='Xamarin' /></span>, name: 'Xamarin' }
   }
 
-  componentDidUpdate() {
-    if (this.state.selected) {
-      this.props.itemSelected(this.state);
-    }
-  }
-
   handleClick = (e) => {
-    if (!this.state.selected) {
-      const state = { selected: true, id: this.props.type };
-      this.setState(state);
-      this.props.itemSelected(state);  
-    }
+    this.props.selectPlatform(this.props.type);
     e.preventDefault();
   }
 
@@ -68,7 +59,7 @@ class PlatformItem extends Component {
   }
 
   render() {
-    var styleclass = this.props.selection === this.props.type ? 'platform-item selected' : 'platform-item';
+    var styleclass = this.props.ui.platforms[this.props.type].selected ? 'platform-item selected' : 'platform-item';
     return (
       <div>
         <a className={styleclass} href="#nothing" onClick={this.handleClick}>
@@ -84,4 +75,14 @@ class PlatformItem extends Component {
   }
 }
 
-export default PlatformItem;
+function mapStateToProps(state) {
+  return {
+    ui: state.apps.createClientAppDialog,
+  };
+}
+
+const mapDispatchToProps = {
+  selectPlatform,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PlatformItem);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormGroup, ControlLabel, Button, Modal, Alert, Icon } from 'patternfly-react';
-import { createApp } from '../actions/apps';
+import { createApp, registerPlatform, selectPlatform } from '../actions/apps';
 import PlatformItem from '../components/create_client/PlatformItem';
 import PlatformItems from '../components/create_client/PlatformItems';
 import CreateAndroidClient from '../components/create_client/CreateAndroidClient';
@@ -16,6 +16,10 @@ class CreateClient extends Component {
     super(props);
     this.baseState = this.state;
     this.createClient = this.createClient.bind(this);
+    for (var key in this.props.platforms) {
+      var platform = this.props.platforms[key]
+      this.props.platformReg( { name: platform, selected: false });
+    }
   }
 
   state = {
@@ -25,26 +29,14 @@ class CreateClient extends Component {
   };
 
   open = () => {
+    this.props.selectPlatform(this.props.platforms[0]);
+
     this.setState({
-      error: undefined,
-      clientConfiguration: null,
-      resultDetails: null,
-      validated: false,
+      error: null,
       showModal: true, 
       loading: false,
-      selectedPlatform: null
     });
   };
-
-  selectPlatform = (state) => {
-    if (this.state.selectedPlatform !== state.id) {
-      this.setState({...this.state, valid: false, selectedPlatform: state.id});
-    }
-  }
-
-  configureClient = (state) => {
-    this.setState({...this.state, valid: state.valid, newApp: state.newApp});
-  }
 
   createClient() {
     this.setState({ loading: true });
@@ -87,18 +79,21 @@ class CreateClient extends Component {
   }
 
   renderPlatform() {
-    switch (this.state.selectedPlatform) {
-      case PLATFORM_ANDROID: return <CreateAndroidClient configureClient={this.configureClient} />
-      case PLATFORM_IOS: return <CreateIOSClient configureClient={this.configureClient} />
-      case PLATFORM_CORDOVA: return <CreateCordovaClient configureClient={this.configureClient} />
-      case PLATFORM_XAMARIN: return <CreateXamarinClient configureClient={this.configureClient} />
-      default: return null;
+    if (this.props.apps.createClientAppDialog.platforms[PLATFORM_ANDROID].selected) {
+      return <CreateAndroidClient configureClient={this.configureClient} />
+    }
+    if (this.props.apps.createClientAppDialog.platforms[PLATFORM_IOS].selected) {
+      return <CreateIOSClient configureClient={this.configureClient} />
+    }
+    if (this.props.apps.createClientAppDialog.platforms[PLATFORM_CORDOVA].selected) {
+      return <CreateCordovaClient configureClient={this.configureClient} />
+    }
+    if (this.props.apps.createClientAppDialog.platforms[PLATFORM_XAMARIN].selected) {
+      return <CreateXamarinClient configureClient={this.configureClient} />
     }
   }
 
   render() {
-    const { valid } = this.state;
-  
     return (
       <div>
         <Button bsStyle="primary" bsSize={this.props.createButtonSize} onClick={this.open}>
@@ -124,7 +119,7 @@ class CreateClient extends Component {
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.close}>Cancel</Button>
-            <Button bsStyle="primary" onClick={this.createClient} disabled={!valid} >Create</Button>
+            <Button bsStyle="primary" onClick={this.createClient} disabled={!this.props.apps.createClientAppDialog.valid} >Create</Button>
           </Modal.Footer>
         </Modal>
       </div>
@@ -140,6 +135,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   createApp,
+  platformReg: registerPlatform,
+  selectPlatform,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateClient);

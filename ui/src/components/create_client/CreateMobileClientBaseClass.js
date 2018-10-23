@@ -53,6 +53,7 @@ class CreateMobileClientBaseClass extends Component {
   }
 
   _validate(controlId, value) {
+    this.props.setFieldValue(controlId, value);
     var newState = { ...this.state, validationState: { ...this.state.validationState, [controlId]: this.validate(controlId, value) } }
     var dataIsValid = true;
 
@@ -62,14 +63,8 @@ class CreateMobileClientBaseClass extends Component {
         break;
       }
     }
-    newState.valid = dataIsValid;
-    newState.newApp = {
-      ...newState.newApp,
-      clientType: this.config.platform,
-      [controlId]: value
-    }
     this.setState(newState);
-    this.props.configureClient(newState);
+    this.props.setStatus(dataIsValid);
   }
 
   /**
@@ -85,6 +80,7 @@ class CreateMobileClientBaseClass extends Component {
         help: this.config.appName.help,
         content: this.config.appName.help,
         placeholder: this.config.appName.example,
+        defaultValue: this.props.ui.fields && this.props.ui.fields[CREATE_CLIENT_NAME],
         formControl: ({ validationState, ...props }) => (
           <Form.FormControl type="text" {...props} tabIndex="1" autoFocus={true} />
         ),
@@ -99,6 +95,7 @@ class CreateMobileClientBaseClass extends Component {
         help: this.config.appIdentifier.help,
         placeholder: this.config.appIdentifier.example,
         content: this.config.appIdentifier.help,
+        defaultValue: this.props.ui.fields && this.props.ui.fields[CREATE_CLIENT_APP_ID],
         formControl: ({ validationState, ...props }) => (
           <Form.FormControl type="text" {...props} tabIndex="2" />
         ),

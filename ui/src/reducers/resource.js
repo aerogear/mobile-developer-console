@@ -9,7 +9,10 @@ const defaultState = {
   isActioning: false,
   actionError: false,
   isReading: false,
-  readingError: false
+  readingError: false,
+  createClientAppDialog: {
+    platforms: {}
+  }
 };
 
 const resourceReducer = actions => (state = defaultState, action) => {
@@ -128,8 +131,44 @@ const resourceReducer = actions => (state = defaultState, action) => {
         actionError: action.error,
       };
     default:
-      return state;
+      return createClientAppDialog(state, action);
   }
 };
+
+
+function createClientAppDialog(state, action) {
+  switch (action.type) {
+    case 'platform/REGISTER':
+      var newState = {...state};
+      newState.createClientAppDialog.platforms[action.platform.name] = { selected: false};
+      return newState;
+    case 'platform/SELECT':
+      var selectedPlatform = action.platform.name;
+      var newPlatformState = JSON.parse(JSON.stringify(state.createClientAppDialog.platforms));
+      for (var platform in newPlatformState) {
+        newPlatformState[platform] = { selected: platform === selectedPlatform };
+      }
+
+      return { ...state, 
+              createClientAppDialog: {...state.createClientAppDialog, platforms: newPlatformState }
+      }
+    case 'form/SETSTATUS':
+      return { ...state,
+        createClientAppDialog: {...state.createClientAppDialog, valid: action.payload.status }
+      }
+    case 'field/SETVALUE':
+      return { ...state,
+        createClientAppDialog: {...state.createClientAppDialog ,
+          fields: { ...state.createClientAppDialog.fields,
+            [action.payload.name]: action.payload.value
+          }
+        }
+      }
+    default:
+      return state;
+  }
+}
+
+
 
 export default resourceReducer;
