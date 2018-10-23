@@ -7,56 +7,15 @@ import './create_client.css';
  * When an item is choosen, the provided 'itemSelected' callback is invoked passing the id of the selected platform.
  */
 class PlatformItems extends Component {
-  constructor(props) {
-    super(props);
-    this.rows = this.rows.bind(this)
-    this.platformItems = {};
-    this.selection = {}
-  }
-
-  /* contains the list of selected platforms */
-  state = { items: {} }
-
-  /* this is called by platform items when a platform item is clicked */
-  itemSelected = (clickedItem) => {
-    var platformItems = this.platformItems;
-    this.selection.id = clickedItem.id;
-
-    var newState = {...this.state};
-    var needsStateUpdate = false;
-
-    for (var key in platformItems) {
-      var itemIsSelected = key === clickedItem.id
-
-      if (!newState.items || !newState.items[key] || newState.items[key].selected !== itemIsSelected) {
-        needsStateUpdate = true;
-        newState.items[key] = {selected: itemIsSelected};
-        //newState.items = {...newState.items, [key]: { selected: itemIsSelected }};
-        if (itemIsSelected) {
-          this.props.itemSelected({ id: key });
-        }
-      }
-    }
-
-    if (needsStateUpdate) {
-      this.setState(newState);
-    }
-  }
-
   rows() {
     let rows = [];
     React.Children.map(this.props.children, (child, i) => {
-      var selectionStatus = false;
-      if (i === 0 && Object.keys(this.platformItems).length === 0) {
-        selectionStatus = true;
-      }
-      var configuredChildren = React.cloneElement(child, { itemSelected: this.itemSelected, selection: this.selection.id, key: this.selection.id, selected: selectionStatus });
       rows.push(
         <Grid.Col sm={6} md={2} key={i}>
-          {configuredChildren}
+          {child}
         </Grid.Col>
       );
-      return this.platformItems[configuredChildren.props.type] = configuredChildren;
+      return child;
     });
     return rows;
   }

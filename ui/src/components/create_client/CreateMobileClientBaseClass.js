@@ -9,9 +9,6 @@ import { VerticalFormField } from './VerticalFormField';
 class CreateMobileClientBaseClass extends Component {
   constructor(platformName, props) {
     super(props);
-    this.state = {
-      validationState: {}
-    }
     this.config = {
       platform: platformName,
       appName: {
@@ -25,18 +22,12 @@ class CreateMobileClientBaseClass extends Component {
         help: 'Package name must match ^[a-zA-Z][\\w]*(\\.[a-zA-Z][\\w]*)+$',
       }
     }
-
     // initializing validation state
     var fields = this.getFormFields();
-
-    if (!this.state.initialized) {
-      for (var field in fields) {
-        this.state.validationState[fields[field].controlId] = null;
-        if (!this.props.ui.fields[fields[field].controlId]) {
-          this.props.setFieldValue(fields[field].controlId, '', undefined);
-        }
+    for (var field in fields) {
+      if (!this.props.ui.fields[fields[field].controlId]) {
+        this.props.setFieldValue(fields[field].controlId, '', undefined);
       }
-      this.state.initialized = true;
     }
   }
 
@@ -56,18 +47,6 @@ class CreateMobileClientBaseClass extends Component {
 
   _validate(controlId, value) {
     this.props.setFieldValue(controlId, value, this.validate(controlId, value) === 'success');
-    var newState = { ...this.state, validationState: { ...this.state.validationState, [controlId]: this.validate(controlId, value) } }
-    var dataIsValid = true;
-
-    // for (var control in newState.validationState) {
-    //   if (newState.validationState[control] !== 'success') {
-    //     dataIsValid = false;
-    //     break;
-    //   }
-    // }
-    this.setState(newState);
-    // this.props.setStatus(dataIsValid);
-    //this.validateForm();
   }
 
   validateForm() {

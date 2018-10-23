@@ -6,11 +6,6 @@ import { selectPlatform } from '../../actions/apps';
  * This represent a single platform item to be choosen into the UI when creating clients
  */
 class PlatformItem extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { id: this.props.type, selected: props.selected }
-  }
-
   platforms = {
     [PLATFORM_ANDROID]: { icon: <span className='fa fa-android' />, name: 'Android' },
     [PLATFORM_IOS]: { icon: <span className='fa fa-apple' />, name: 'iOS' },

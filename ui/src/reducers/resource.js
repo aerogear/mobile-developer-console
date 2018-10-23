@@ -161,7 +161,7 @@ function createClientAppDialog(state, action) {
               createClientAppDialog: {...state.createClientAppDialog, platforms: newPlatformState }
       }
     case 'form/SETSTATUS':
-      if (state.createClientAppDialog.valid == action.payload.status) {
+      if (state.createClientAppDialog.valid === action.payload.status) {
         return state;
       }
       return { ...state,
