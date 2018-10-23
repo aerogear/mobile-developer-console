@@ -63,27 +63,26 @@ func main() {
 		log.Fatalf("Error init service catalog client: %v", err)
 	}
 
-	buildClient, err := buildv1.NewForConfig(cfg)
-	if err != nil {
-		log.Fatalf("Error init build client: %v", err)
-	}
-
 	{
 		siLister := mobile.NewServiceInstanceLister(scClient.ServicecatalogV1beta1(), namespace)
 		mobileServiceInstancesHandler := web.NewMobileServiceInstancesHandler(siLister, namespace)
 		web.SetupMobileServicesRoute(apiGroup, mobileServiceInstancesHandler)
 	}
 
-	{
+	if config.BuildTabEnabled {
+		buildClient, err := buildv1.NewForConfig(cfg)
+		if err != nil {
+			log.Fatalf("Error init build client: %v", err)
+		}
+
 		buildCRUDL := mobile.NewBuildCRUDL(buildClient, namespace, cfg.Host)
+
 		mobileBuildsHandler := web.NewMobileBuildsHandler(buildCRUDL, namespace)
 		web.SetupMobileBuildsRoute(apiGroup, mobileBuildsHandler)
-	}
 
-	secretsCRUDL := mobile.NewSecretsCRUDL(k8sClient.CoreV1())
-
-	{
+		secretsCRUDL := mobile.NewSecretsCRUDL(k8sClient.CoreV1())
 		buildConfigCRUDL := mobile.NewBuildConfigCRUDL(buildClient, namespace)
+
 		mobileBuildConfigsHandler := web.NewMobileBuildConfigsHandler(buildConfigCRUDL, secretsCRUDL, namespace)
 		web.SetupMobileBuildConfigsRoute(apiGroup, mobileBuildConfigsHandler)
 	}
@@ -97,6 +96,9 @@ func main() {
 
 	userHandler := web.NewUserHandler();
 	web.SetupUserRouter(apiGroup, userHandler)
+
+	serverConfigHandler := web.NewServerConfigHandler(config)
+	web.SetupServerConfigRouter(apiGroup, serverConfigHandler)
 
 	resource := "v1"
 	kind := "Secret"

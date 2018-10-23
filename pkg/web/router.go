@@ -1,11 +1,10 @@
 package web
 
 import (
-	"strings"
-
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"gopkg.in/go-playground/validator.v9"
+	"strings"
 )
 
 type RequestValidator struct {
@@ -65,4 +64,8 @@ func SetupMoileClientsRoute(r *echo.Group, handler *MobileClientsHandler) {
 
 func SetupUserRouter(r *echo.Group, handler *UserHandler) {
 	r.GET("/user", handler.GetUserInfo)
+}
+
+func SetupServerConfigRouter(r *echo.Group, handler *ServerConfigHandler) {
+	r.GET("/server_config.js", handler.Handle)
 }
