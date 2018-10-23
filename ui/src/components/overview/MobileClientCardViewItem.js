@@ -21,6 +21,7 @@ const MobileClientCardViewItem = (props) => {
     app: { metadata: { name: appName } },
     services,
     builds,
+    buildTabEnabled
   } = props;
   return (
     <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3">
@@ -31,19 +32,19 @@ const MobileClientCardViewItem = (props) => {
           </DropdownKebab>
           <CardTitle>
             {
-              builds.numFailedBuilds > 0 ?
+              buildTabEnabled && builds.numFailedBuilds > 0 ?
                 <span><span className="pficon pficon-error-circle-o" />{builds.numFailedBuilds}</span>
               :
                 null
             }
             {
-              builds.numInProgressBuilds > 0 ?
+              buildTabEnabled && builds.numInProgressBuilds > 0 ?
                 <span><span className="pficon fa fa-refresh fa-spin fa-fw" />{builds.numInProgressBuilds}</span>
               :
                 null
             }
             {
-              (builds.numFailedBuilds === 0 && builds.numInProgressBuilds === 0) ?
+              (buildTabEnabled && builds.numFailedBuilds === 0 && builds.numInProgressBuilds === 0) ?
                 <span />
               :
                 null

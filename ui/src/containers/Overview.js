@@ -11,27 +11,33 @@ class Overview extends Component {
   componentDidMount() {
     this.props.fetchApps();
     this.props.fetchServices();
-    this.props.fetchBuilds();
 
     this.wsApps = DataService.watchApps(this.props.fetchApps);
     this.wsServices = DataService.watchServices(this.props.fetchServices);
-    this.wsBuilds = DataService.watchBuilds(this.props.fetchBuilds);
+
+    if (this.props.buildTabEnabled) {
+      this.props.fetchBuilds();
+      this.wsBuilds = DataService.watchBuilds(this.props.fetchBuilds);
+    }
   }
 
   componentWillUnmount() {
     this.wsApps.close();
     this.wsServices.close();
-    this.wsBuilds.close();
+    if (this.wsBuilds) {
+      this.wsBuilds.close();
+    }
   }
 
   render() {
-    const { apps, services, builds } = this.props;
+    const { apps, services, builds, buildTabEnabled } = this.props;
 
     return (
       <MobileClientCardView
         mobileClients={apps.items}
         mobileServiceInstances={services.items}
         mobileClientBuilds={builds.items}
+        buildTabEnabled={buildTabEnabled}
       />
     );
   }
@@ -41,7 +47,8 @@ function mapStateToProps(state) {
   return {
     apps: state.apps,
     services: state.services,
-    builds: state.builds
+    builds: state.builds,
+    buildTabEnabled: state.config.buildTabEnabled
   };
 }
 

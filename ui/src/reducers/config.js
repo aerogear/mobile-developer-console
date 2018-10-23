@@ -11,4 +11,13 @@ if (window && window.SERVER_DATA) {
   console.warn("no server data available");
 }
 
-export const BUILD_TAB_ENABLED = `${buildTabEnabled}`;
+const defaultState = {
+  buildTabEnabled: buildTabEnabled
+};
+
+const r = (state = defaultState) => {
+  //the config state is immutable
+  return state;
+}
+
+export default r;
