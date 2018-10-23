@@ -18,6 +18,8 @@ import {
   PLATFORM_XAMARIN,
 } from '../../components/create_client/Constants';
 
+const SUPPORTED_PLATFORMS = [PLATFORM_ANDROID, PLATFORM_CORDOVA, PLATFORM_IOS, PLATFORM_XAMARIN];
+
 class MobileClientCardView extends Component {
   constructor(props) {
     super(props);
@@ -43,7 +45,7 @@ class MobileClientCardView extends Component {
       <EmptyState>
         <EmptyStateTitle>{this.emptyStateMessage.noAppsCreated}</EmptyStateTitle>
         <EmptyStateAction>
-          <CreateClient createButtonSize="large" platforms={[PLATFORM_ANDROID, PLATFORM_CORDOVA, PLATFORM_IOS, PLATFORM_XAMARIN]}/>
+          <CreateClient createButtonSize="large" platforms={SUPPORTED_PLATFORMS}/>
         </EmptyStateAction>
       </EmptyState>
     );
@@ -138,7 +140,7 @@ class MobileClientCardView extends Component {
             />
           </Filter>
           <div className="form-group">
-            <CreateClient platforms={[PLATFORM_ANDROID, PLATFORM_CORDOVA, PLATFORM_IOS, PLATFORM_XAMARIN]} />
+            <CreateClient platforms={SUPPORTED_PLATFORMS} />
           </div>
           {filter &&
             filter.length > 0 && (

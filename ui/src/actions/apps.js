@@ -39,7 +39,7 @@ export const deleteApp = name => fetchAction(
 
 export const registerPlatform = (platform) => ({
   type: 'platform/REGISTER',
-  platform: { name: platform.name, selected: platform.selected } 
+  platform: { name: platform.name } 
 })
 
 export const selectPlatform = (platform) => ({

@@ -148,7 +148,9 @@ function createClientAppDialog(state, action) {
       return { ...state, createClientAppDialog: newCreateClientAppDialog};
     case 'platform/REGISTER':
       var newState = {...state};
-      newState.createClientAppDialog.platforms[action.platform.name] = { selected: false};
+      if (!newState.createClientAppDialog.platforms[action.platform.name]) {
+        newState.createClientAppDialog.platforms[action.platform.name] = { selected: false};
+      }
       return newState;
     case 'platform/SELECT':
       var selectedPlatform = action.platform.name;

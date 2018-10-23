@@ -11,7 +11,7 @@ class CreateIOSClient extends CreateMobileClientBaseClass {
     super(PLATFORM_IOS, props);
     this.config.appIdentifier.label = '* Bundle ID';
     this.config.appIdentifier.example = 'org.aerogear.ios.myapp';
-    this.config.appIdentifier.help = 'Bundle ID must match ^[a-zA-Z][\\w]*(\\.[a-zA-Z][\\w]*)+$';
+    this.config.appIdentifier.help = 'Bundle ID must have at least two segments, start with a letter and contain only letters, dots, numbers and _.';
   }
 }
 

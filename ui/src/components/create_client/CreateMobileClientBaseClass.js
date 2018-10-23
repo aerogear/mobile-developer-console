@@ -14,12 +14,12 @@ class CreateMobileClientBaseClass extends Component {
       appName: {
         label: '* App Name',
         example: 'myapp',
-        help: 'App name must match ^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$'
+        help: 'App name must only contain lowercase letters, numbers and dots.'
       },
       appIdentifier: {
         label: '* Package Name',
         example: 'org.aerogear.myapp',
-        help: 'Package name must match ^[a-zA-Z][\\w]*(\\.[a-zA-Z][\\w]*)+$',
+        help: 'Package name must have at least two segments, start with a letter and contain only letters, dots, numbers and _.',
       }
     }
     // initializing validation state
