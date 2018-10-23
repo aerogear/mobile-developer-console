@@ -64,9 +64,9 @@ func main() {
 	}
 
 	mobileClientsRepo := mobile.NewMobileClientRepo(namespace)
-
+	secretsCRUDL := mobile.NewSecretsCRUDL(k8sClient.CoreV1())
 	{
-		sbLister := mobile.NewServiceBindingLister(scClient.ServicecatalogV1beta1(), mobileClientsRepo)
+		sbLister := mobile.NewServiceBindingLister(scClient.ServicecatalogV1beta1(), mobileClientsRepo, secretsCRUDL)
 		mobileServicebindingsHandler := web.NewMobileServiceBindingsHandler(sbLister, namespace)
 		web.SetupBindableMobileServiceRoute(apiGroup, mobileServicebindingsHandler)
 	}
@@ -87,7 +87,15 @@ func main() {
 		mobileBuildsHandler := web.NewMobileBuildsHandler(buildCRUDL, namespace)
 		web.SetupMobileBuildsRoute(apiGroup, mobileBuildsHandler)
 
-		secretsCRUDL := mobile.NewSecretsCRUDL(k8sClient.CoreV1())
+	}
+
+	buildClient, err := buildv1.NewForConfig(cfg)
+	if err != nil {
+		log.Fatalf("Error init build client: %v", err)
+	}
+
+	{
+
 		buildConfigCRUDL := mobile.NewBuildConfigCRUDL(buildClient, namespace)
 
 		mobileBuildConfigsHandler := web.NewMobileBuildConfigsHandler(buildConfigCRUDL, secretsCRUDL, namespace)

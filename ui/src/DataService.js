@@ -1,3 +1,5 @@
+import {PARAMETERS_SECRET_KEY} from './components/bindingUtils'
+
 const getWSUrl = () => {
   const loc = window.location;
   let newUrl;
@@ -92,15 +94,24 @@ const dataService = {
 
   },
 
-  createBinding: async (app) => {
-    const response = await fetch(`${baseUrl}/mobileclients`, {
+  createBinding: async (mobileClientName, serviceInstanceName, credentialSecretName, parametersSecretName, formData) => {
+
+    var binding = {
+      mobileClientName: mobileClientName,
+      serviceInstanceName:serviceInstanceName,
+      bindingParametersName:parametersSecretName,
+      bindingSecretName:credentialSecretName,
+      formData:formData
+    }
+
+    const response = await fetch(`${baseUrl}/bindableservices`, {
       method: 'POST',
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
       },
-      body: JSON.stringify(app),
+      body: JSON.stringify(binding),
     });
     if (!response.ok) {
       const msg = await response.text();

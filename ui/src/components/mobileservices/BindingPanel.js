@@ -52,13 +52,19 @@ onBackButtonClick() {
 })
 }
 
-  show(serviceName, schema, form) {
+  show(service) {
+
+    const serviceName = service.serviceName
+    const schema = service.bindingSchema
+    const form = service.form
+
     this.setState({
       serviceName:serviceName,
       schema:schema,
       form:form,
       loading:false,
       showModal: false,
+      service:service,
       activeStepIndex: 0
     });
     this.stepChanged(0);
@@ -107,7 +113,7 @@ onBackButtonClick() {
       stepChanged = (step) => {
         if (step === 2) {
           this.setState({ loading: true });
-          this.createBindingCallback(this.formData);
+          this.createBindingCallback(this.state.service.serviceInstanceName, this.formData);
         }
       }
   

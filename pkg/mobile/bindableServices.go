@@ -5,22 +5,65 @@ import (
 	"strings"
 
 	scv1beta1 "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset/typed/servicecatalog/v1beta1"
+	k8v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type BindableMobileServiceListerImpl struct {
 	scClient         scv1beta1.ServicecatalogV1beta1Interface
 	mobileClientRepo MobileClientRepo
+	secretsCRUDL     SecretsCRUDL
 }
 
-func NewServiceBindingLister(scClient scv1beta1.ServicecatalogV1beta1Interface, mobileClientRepo MobileClientRepo) *BindableMobileServiceListerImpl {
+func NewServiceBindingLister(scClient scv1beta1.ServicecatalogV1beta1Interface, mobileClientRepo MobileClientRepo, secretsCRUDL SecretsCRUDL) *BindableMobileServiceListerImpl {
 	return &BindableMobileServiceListerImpl{
 		scClient:         scClient,
 		mobileClientRepo: mobileClientRepo,
+		secretsCRUDL:     secretsCRUDL,
 	}
 }
 
+func (lister *BindableMobileServiceListerImpl) Create(namespace string, binding *ServiceBinding, formData map[string]string) (*ServiceBinding, error) {
+
+	bindingsApi := lister.scClient.ServiceBindings(namespace)
+	binding2, err := bindingsApi.Create(binding)
+	if err != nil {
+		return nil, err
+	}
+
+	secret := &k8v1.Secret{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Secret",
+			APIVersion: "v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: binding2.Spec.SecretName,
+			OwnerReferences: []metav1.OwnerReference{{
+				APIVersion:         binding.TypeMeta.APIVersion,
+				Kind:               binding.TypeMeta.Kind,
+				Name:               binding2.ObjectMeta.Name,
+				UID:                binding2.ObjectMeta.UID,
+				Controller:         &[]bool{false}[0],
+				BlockOwnerDeletion: &[]bool{false}[0],
+			},
+			},
+		},
+		Type:       "Opaque",
+		StringData: formData,
+	}
+
+	_, err = lister.secretsCRUDL.Create(namespace, secret)
+	if err != nil {
+		return nil, err
+	}
+
+	return binding2, nil
+
+}
+
 func (lister *BindableMobileServiceListerImpl) List(namespace string) (*BindableMobileServiceList, error) {
+
 	listOpts := v1.ListOptions{}
 	getOpts := v1.GetOptions{}
 

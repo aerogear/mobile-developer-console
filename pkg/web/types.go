@@ -104,7 +104,14 @@ type BuildConfigCreateRequest struct {
 	EnvironmentVariables []corev1.EnvVar `json:"envVars"`
 }
 
+type ServiceBindingCreateRequest struct {
+	ServiceInstanceName  string            `json:"serviceInstanceName" validate:"required"`
+	BindingParametersKey string            `json:"bindingParametersName" validate:"required"`
+	BindingSecretKey     string            `json:"bindingSecretName" validate:"required"`
+	FormData             map[string]string `json:"formData" validate:"required"`
+}
+
 type User struct {
-	Name string `json:"name"`
+	Name  string `json:"name"`
 	Email string `json:"email"`
 }

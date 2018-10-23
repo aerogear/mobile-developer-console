@@ -4,7 +4,9 @@ import (
 	"net/http"
 
 	"github.com/aerogear/mobile-developer-console/pkg/mobile"
+	scv1beta1 "github.com/kubernetes-incubator/service-catalog/pkg/apis/servicecatalog/v1beta1"
 	"github.com/labstack/echo"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type BindableMobileServiceHandler struct {
@@ -29,15 +31,25 @@ func (msih *BindableMobileServiceHandler) List(c echo.Context) error {
 }
 
 func (msih *BindableMobileServiceHandler) Create(c echo.Context) error {
-	reqData := new(ServiceBindingRequest)
-	// if err := c.Bind(reqData); err != nil {
-	// 	return err
-	// }
-	// if err := c.Validate(reqData); err != nil {
-	// 	return err
-	// }
-	// app := newMobileClientObject(*reqData, h.namespace)
-	// err := h.mobileClientRepo.Create(app)
+	reqData := new(ServiceBindingCreateRequest)
+	if err := c.Bind(&reqData); err != nil {
+		return err
+	}
+
+	if err := c.Validate(reqData); err != nil {
+		return err
+	}
+
+	binding := newMobileBindingObject(*reqData)
+	binding, err := msih.bindableServiceLister.Create(msih.namespace, binding, reqData.FormData)
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(200, binding)
+
+	// err := msih.mobileClientRepo.Create(app)
 	// if err != nil {
 	// 	return c.String(http.StatusBadRequest, err.Error())
 	// }
@@ -45,5 +57,33 @@ func (msih *BindableMobileServiceHandler) Create(c echo.Context) error {
 	// if err != nil {
 	// 	return err
 	// }
-	// return c.JSON(http.StatusOK, data)
+	//return c.JSON(http.StatusOK, data)
+}
+
+func newMobileBindingObject(data ServiceBindingCreateRequest) *scv1beta1.ServiceBinding {
+
+	keyRef := scv1beta1.SecretKeyReference{
+		Key:  "parameters",
+		Name: data.BindingParametersKey,
+	}
+
+	return &scv1beta1.ServiceBinding{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "ServiceBinding",
+			APIVersion: "servicecatalog.k8s.io/v1beta1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			GenerateName: data.ServiceInstanceName + "-",
+		},
+		Spec: scv1beta1.ServiceBindingSpec{
+			ServiceInstanceRef: scv1beta1.LocalObjectReference{
+				Name: data.ServiceInstanceName,
+			},
+			SecretName: data.BindingSecretKey,
+			ParametersFrom: []scv1beta1.ParametersFromSource{{
+				SecretKeyRef: &keyRef,
+			},
+			},
+		},
+	}
 }

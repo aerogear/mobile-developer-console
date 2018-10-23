@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
 import DataService from '../../DataService';
-import BindingPanel from "./BindingPanel"
+import BindingPanel from "./BindingPanel";
+import { createSecretName }  from '../bindingUtils';
 
 class MobileServiceView extends Component {
   constructor(props) {
     super(props);
+    this.appName = props.appName
     this.createBindingCallback = this.createBindingCallback.bind(this)    
 
     DataService.bindableServices().then(
@@ -26,6 +28,7 @@ class MobileServiceView extends Component {
                     serviceLogoUrl: serviceIcon,
                     serviceIconClass: serviceIconClass,
                     serviceName: serviceName,
+                    serviceInstanceName: instance.serviceInstance.metadata.name,
                     serviceId: serviceName,
                     serviceDescription: instance.serviceClass.spec.description,
                     documentationUrl: instance.serviceClass.spec.externalMetadata.documentationUrl20,
@@ -37,6 +40,7 @@ class MobileServiceView extends Component {
                     serviceLogoUrl: serviceIcon,
                     serviceIconClass: serviceIconClass,
                     serviceName: serviceName,
+                    serviceInstanceName: instance.serviceInstance.metadata.name,
                     serviceId: serviceName,
                     bindingSchema : instance.servicePlan.spec.serviceBindingCreateParameterSchema,
                     form : instance.servicePlan.spec.externalMetadata.schemas.service_binding.create.openshift_form_definition,
@@ -86,12 +90,14 @@ class MobileServiceView extends Component {
     return rows;
   }
 
-  showBindingDialog(serviceName, schema, form) {
-    this.bindingDialog.show(serviceName, schema, form);
+  showBindingDialog(service) {
+    this.bindingDialog.show(service);
   }
 
-  createBindingCallback(formData) {
-    DataService.createBinding(formData);
+  createBindingCallback(serviceInstanceName, formData) {
+    var credentialSecretName = createSecretName(serviceInstanceName + '-credentials-');
+    var parametersSecretName = createSecretName(serviceInstanceName + '-bind-parameters-');
+    DataService.createBinding(serviceInstanceName, credentialSecretName, parametersSecretName, formData);
   }
 
   render() {

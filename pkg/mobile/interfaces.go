@@ -2,6 +2,7 @@ package mobile
 
 import (
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
+	scv1beta1 "github.com/kubernetes-incubator/service-catalog/pkg/apis/servicecatalog/v1beta1"
 	k8v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/watch"
 )
@@ -14,6 +15,7 @@ type ServiceInstanceLister interface {
 
 type BindableMobileServiceLister interface {
 	List(namespace string) (*BindableMobileServiceList, error)
+	Create(namespace string, binding *scv1beta1.ServiceBinding, formData map[string]string) (*scv1beta1.ServiceBinding, error)
 }
 type BuildCRUDL interface {
 	List() (*ExtendedBuildList, error)

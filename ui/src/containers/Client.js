@@ -116,7 +116,7 @@ class Client extends Component {
                     </TabPane>) : null
                   }
                   <TabPane eventKey={3}>
-                    <MobileServiceView />
+                    <MobileServiceView appName={this.props.match.params.id} />
                   </TabPane>
                 </TabContent>
               </div>

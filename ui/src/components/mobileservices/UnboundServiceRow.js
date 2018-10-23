@@ -36,7 +36,7 @@ class UnboundServiceRow extends Component {
   }
 
   renderBindingButtons() {
-    return <div><Button onClick={()=>this.showBindingDialog(this.service.serviceName, this.service.bindingSchema, this.service.form)}>Create Binding</Button></div> ;
+    return <div><Button onClick={()=>this.showBindingDialog(this.service)}>Create Binding</Button></div> ;
   }
 
   render() {

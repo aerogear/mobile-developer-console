@@ -64,7 +64,7 @@ SDK Setup
       propertyFragment = this.service.configuration.map(configuration => {
         
         configuration = JSON.parse(configuration)
-        console.log(configuration)
+        
         return <Row key={configuration.label}>
           <Col md={2} className="detailsKey">
             {configuration.label}
