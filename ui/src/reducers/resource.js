@@ -1,15 +1,10 @@
-import { 
-  APP_PLATFORM_REGISTER, 
-  APP_PLATFORM_SELECT, 
+import {
+  APP_PLATFORM_REGISTER,
+  APP_PLATFORM_SELECT,
   APP_FORM_SETSTATUS,
   APP_FORM_RESET,
-  APP_FIELD_SETVALUE } from "../actions/apps";
-
-// export const APP_PLATFORM_REGISTER = 'platform/REGISTER';
-// export const APP_PLATFORM_SELECT = 'platform/SELECT';
-// export const APP_FORM_SETSTATUS = 'form/SETSTATUS';
-// export const APP_FORM_RESET = 'form/RESET';
-// export const APP_FIELD_SETVALUE = 'field/SETVALUE';
+  APP_FIELD_SETVALUE
+} from "../actions/apps";
 
 const defaultState = {
   isFetching: false,
@@ -149,20 +144,25 @@ const resourceReducer = actions => (state = defaultState, action) => {
   }
 };
 
-
+/**
+ * Reducers for the create client app dialog.
+ * @param {string} state 
+ * @param {*} action 
+ */
 function createClientAppDialog(state, action) {
   switch (action.type) {
-    case APP_FORM_RESET: 
-      var newCreateClientAppDialog= {
-        platforms: state.createClientAppDialog.platforms,
-        fields: {}
-      }
-
-      return { ...state, createClientAppDialog: newCreateClientAppDialog};
+    case APP_FORM_RESET:
+      return {
+        ...state,
+        createClientAppDialog: {
+          platforms: state.createClientAppDialog.platforms,
+          fields: {}
+        }
+      };
     case APP_PLATFORM_REGISTER:
-      var newState = {...state};
+      var newState = { ...state };
       if (!newState.createClientAppDialog.platforms[action.platform.name]) {
-        newState.createClientAppDialog.platforms[action.platform.name] = { selected: false};
+        newState.createClientAppDialog.platforms[action.platform.name] = { selected: false };
       }
       return newState;
     case APP_PLATFORM_SELECT:
@@ -172,20 +172,25 @@ function createClientAppDialog(state, action) {
         newPlatformState[platform] = { selected: platform === selectedPlatform };
       }
 
-      return { ...state, 
-              createClientAppDialog: {...state.createClientAppDialog, platforms: newPlatformState }
+      return {
+        ...state,
+        createClientAppDialog: { ...state.createClientAppDialog, platforms: newPlatformState }
       }
     case APP_FORM_SETSTATUS:
       if (state.createClientAppDialog.valid === action.payload.status) {
         return state;
       }
-      return { ...state,
-        createClientAppDialog: {...state.createClientAppDialog, valid: action.payload.status }
+      return {
+        ...state,
+        createClientAppDialog: { ...state.createClientAppDialog, valid: action.payload.status }
       }
     case APP_FIELD_SETVALUE:
-      return { ...state,
-        createClientAppDialog: {...state.createClientAppDialog ,
-          fields: { ...state.createClientAppDialog.fields,
+      return {
+        ...state,
+        createClientAppDialog: {
+          ...state.createClientAppDialog,
+          fields: {
+            ...state.createClientAppDialog.fields,
             [action.payload.name]: { value: action.payload.value, valid: action.payload.valid }
           }
         }
