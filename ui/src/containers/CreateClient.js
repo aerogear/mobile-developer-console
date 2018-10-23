@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormGroup, ControlLabel, Button, Modal, Alert, Icon } from 'patternfly-react';
-import { createApp, registerPlatform, selectPlatform } from '../actions/apps';
+import { createApp, registerPlatform, selectPlatform, resetForm } from '../actions/apps';
 import PlatformItem from '../components/create_client/PlatformItem';
 import PlatformItems from '../components/create_client/PlatformItems';
 import CreateAndroidClient from '../components/create_client/CreateAndroidClient';
@@ -29,6 +29,7 @@ class CreateClient extends Component {
   };
 
   open = () => {
+    this.props.resetForm();
     this.props.selectPlatform(this.props.platforms[0]);
 
     this.setState({
@@ -38,9 +39,25 @@ class CreateClient extends Component {
     });
   };
 
+  getSelectedPlatform() {
+    var platforms = this.props.apps.createClientAppDialog.platforms;
+    for (var platform in platforms) {
+      if (platforms[platform].selected) {
+        return platform;
+      }
+    }
+  }
+
   createClient() {
     this.setState({ loading: true });
-    this.props.createApp(this.state.newApp);
+
+    var newApp = {
+      name: this.props.apps.createClientAppDialog.fields.name.value,
+      appIdentifier: this.props.apps.createClientAppDialog.fields.appIdentifier.value,
+      clientType: this.getSelectedPlatform()
+    }
+
+    this.props.createApp(newApp);
   }
 
   componentDidUpdate() {
@@ -137,6 +154,7 @@ const mapDispatchToProps = {
   createApp,
   platformReg: registerPlatform,
   selectPlatform,
+  resetForm,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateClient);

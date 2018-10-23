@@ -10,7 +10,6 @@ class CreateMobileClientBaseClass extends Component {
   constructor(platformName, props) {
     super(props);
     this.state = {
-      valid: false,
       validationState: {}
     }
     this.config = {
@@ -33,6 +32,9 @@ class CreateMobileClientBaseClass extends Component {
     if (!this.state.initialized) {
       for (var field in fields) {
         this.state.validationState[fields[field].controlId] = null;
+        if (!this.props.ui.fields[fields[field].controlId]) {
+          this.props.setFieldValue(fields[field].controlId, '', undefined);
+        }
       }
       this.state.initialized = true;
     }
@@ -53,17 +55,29 @@ class CreateMobileClientBaseClass extends Component {
   }
 
   _validate(controlId, value) {
-    this.props.setFieldValue(controlId, value);
+    this.props.setFieldValue(controlId, value, this.validate(controlId, value) === 'success');
     var newState = { ...this.state, validationState: { ...this.state.validationState, [controlId]: this.validate(controlId, value) } }
     var dataIsValid = true;
 
-    for (var control in newState.validationState) {
-      if (newState.validationState[control] !== 'success') {
+    // for (var control in newState.validationState) {
+    //   if (newState.validationState[control] !== 'success') {
+    //     dataIsValid = false;
+    //     break;
+    //   }
+    // }
+    this.setState(newState);
+    // this.props.setStatus(dataIsValid);
+    //this.validateForm();
+  }
+
+  validateForm() {
+    var dataIsValid = true;
+    for (var field in this.props.ui.fields) {
+      if (!this.props.ui.fields[field].valid) {
         dataIsValid = false;
-        break;
       }
     }
-    this.setState(newState);
+
     this.props.setStatus(dataIsValid);
   }
 
@@ -76,36 +90,37 @@ class CreateMobileClientBaseClass extends Component {
         controlId: CREATE_CLIENT_NAME,
         label: this.config.appName.label,
         useFieldLevelHelp: false,
-        showHelp: this.state.validationState[CREATE_CLIENT_NAME] === 'error', // show the help only if some help text is configured
+        showHelp: this.props.ui.fields[CREATE_CLIENT_NAME] && this.props.ui.fields[CREATE_CLIENT_NAME].valid === false, // show the help only if some help text is configured
         help: this.config.appName.help,
         content: this.config.appName.help,
         placeholder: this.config.appName.example,
-        defaultValue: this.props.ui.fields && this.props.ui.fields[CREATE_CLIENT_NAME],
+        defaultValue: this.props.ui.fields[CREATE_CLIENT_NAME] && this.props.ui.fields[CREATE_CLIENT_NAME].value,
         formControl: ({ validationState, ...props }) => (
           <Form.FormControl type="text" {...props} tabIndex="1" autoFocus={true} />
         ),
-        validationState: this.state.validationState[CREATE_CLIENT_NAME],
+        validationState: !this.props.ui.fields[CREATE_CLIENT_NAME] || this.props.ui.fields[CREATE_CLIENT_NAME].valid === false ? 'error' : 'success',
         onChange: e => this._validate(CREATE_CLIENT_NAME, e.target.value),
       },
       {
         controlId: CREATE_CLIENT_APP_ID,
         label: this.config.appIdentifier.label,
         useFieldLevelHelp: false,
-        showHelp: this.state.validationState[CREATE_CLIENT_APP_ID] === 'error', // show the help only if some help text is configured
+        showHelp: this.props.ui.fields[CREATE_CLIENT_APP_ID] && this.props.ui.fields[CREATE_CLIENT_APP_ID].valid === false, // show the help only if some help text is configured
         help: this.config.appIdentifier.help,
         placeholder: this.config.appIdentifier.example,
         content: this.config.appIdentifier.help,
-        defaultValue: this.props.ui.fields && this.props.ui.fields[CREATE_CLIENT_APP_ID],
+        defaultValue: this.props.ui.fields[CREATE_CLIENT_APP_ID] && this.props.ui.fields[CREATE_CLIENT_APP_ID].value,
         formControl: ({ validationState, ...props }) => (
           <Form.FormControl type="text" {...props} tabIndex="2" />
         ),
-        validationState: this.state.validationState[CREATE_CLIENT_APP_ID],
+        validationState: !this.props.ui.fields[CREATE_CLIENT_APP_ID] || this.props.ui.fields[CREATE_CLIENT_APP_ID].valid === false ? 'error' : 'success',
         onChange: e => this._validate(CREATE_CLIENT_APP_ID, e.target.value),
       },
     ];
   }
 
   render() {
+    this.validateForm();
     const generatedFields = this.getFormFields().map(formField => VerticalFormField({ ...formField }));
     return (<div>
       <Grid bsClass="create-client-form">

@@ -52,7 +52,11 @@ export const setStatus = (newStatus) => ({
   payload: { status: newStatus}
 })
 
-export const setFieldValue = (fieldId, value) => ({
+export const setFieldValue = (fieldId, value, isValid) => ({
   type: 'field/SETVALUE',
-  payload: { name: fieldId, value: value}
+  payload: { name: fieldId, value: value, valid: isValid}
+})
+
+export const resetForm = () => ({
+  type: 'form/RESET'
 })
