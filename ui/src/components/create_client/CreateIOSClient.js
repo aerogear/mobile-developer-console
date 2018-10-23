@@ -1,20 +1,29 @@
-import { renderForm } from './CreateClientFormUtils';
-import BaseCreateMobileClient from './BaseCreateMobileClient';
+import CreateMobileClientBaseClass from './CreateMobileClientBaseClass';
+import { PLATFORM_IOS } from './Constants';
+import { connect } from 'react-redux';
+import { setStatus, setFieldValue } from '../../actions/apps';
 
 /**
  * Component for the iOS specific create mobile client form.
  */
-class CreateIOSClient extends BaseCreateMobileClient {
-  render() {
-    const formFields = this.getFormFields().map((value) => {
-      if (value.controlId === 'appIdentifier') {
-        value.label = '* Bundle ID';
-        value.content = 'Enter bundle ID (like <em>org.aerogear.ios.myapp</em>)';
-      }
-      return value;
-    });
-    return renderForm('Configure iOS app', formFields);
+class CreateIOSClient extends CreateMobileClientBaseClass {
+  constructor(props) {
+    super(PLATFORM_IOS, props);
+    this.config.appIdentifier.label = '* Bundle ID';
+    this.config.appIdentifier.example = 'org.aerogear.ios.myapp';
+    this.config.appIdentifier.help = 'Bundle ID must have at least two segments, start with a letter and contain only letters, dots, numbers and _.';
   }
 }
 
-export default CreateIOSClient;
+function mapStateToProps(state) {
+  return {
+    ui: state.apps.createClientAppDialog,
+  };
+}
+
+const mapDispatchToProps = {
+  setStatus,
+  setFieldValue,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateIOSClient);

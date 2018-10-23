@@ -1,3 +1,11 @@
+import {
+  APP_PLATFORM_REGISTER,
+  APP_PLATFORM_SELECT,
+  APP_FORM_SETSTATUS,
+  APP_FORM_RESET,
+  APP_FIELD_SETVALUE
+} from "../actions/apps";
+
 const defaultState = {
   isFetching: false,
   items: [],
@@ -9,7 +17,11 @@ const defaultState = {
   isActioning: false,
   actionError: false,
   isReading: false,
-  readingError: false
+  readingError: false,
+  createClientAppDialog: {
+    platforms: {},
+    fields: {}
+  }
 };
 
 const resourceReducer = actions => (state = defaultState, action) => {
@@ -128,8 +140,66 @@ const resourceReducer = actions => (state = defaultState, action) => {
         actionError: action.error,
       };
     default:
-      return state;
+      return createClientAppDialog(state, action);
   }
 };
+
+/**
+ * Reducers for the create client app dialog.
+ * @param {string} state 
+ * @param {*} action 
+ */
+function createClientAppDialog(state, action) {
+  switch (action.type) {
+    case APP_FORM_RESET:
+      return {
+        ...state,
+        createClientAppDialog: {
+          platforms: state.createClientAppDialog.platforms,
+          fields: {}
+        }
+      };
+    case APP_PLATFORM_REGISTER:
+      var newState = { ...state };
+      if (!newState.createClientAppDialog.platforms[action.platform.name]) {
+        newState.createClientAppDialog.platforms[action.platform.name] = { selected: false };
+      }
+      return newState;
+    case APP_PLATFORM_SELECT:
+      var selectedPlatform = action.platform.name;
+      var newPlatformState = JSON.parse(JSON.stringify(state.createClientAppDialog.platforms));
+      for (var platform in newPlatformState) {
+        newPlatformState[platform] = { selected: platform === selectedPlatform };
+      }
+
+      return {
+        ...state,
+        createClientAppDialog: { ...state.createClientAppDialog, platforms: newPlatformState }
+      }
+    case APP_FORM_SETSTATUS:
+      if (state.createClientAppDialog.valid === action.payload.status) {
+        return state;
+      }
+      return {
+        ...state,
+        createClientAppDialog: { ...state.createClientAppDialog, valid: action.payload.status }
+      }
+    case APP_FIELD_SETVALUE:
+      return {
+        ...state,
+        createClientAppDialog: {
+          ...state.createClientAppDialog,
+          fields: {
+            ...state.createClientAppDialog.fields,
+            [action.payload.name]: { value: action.payload.value, valid: action.payload.valid }
+          }
+        }
+      }
+    default:
+      return state;
+  }
+}
+
+
 
 export default resourceReducer;
