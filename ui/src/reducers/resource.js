@@ -1,3 +1,16 @@
+import { 
+  APP_PLATFORM_REGISTER, 
+  APP_PLATFORM_SELECT, 
+  APP_FORM_SETSTATUS,
+  APP_FORM_RESET,
+  APP_FIELD_SETVALUE } from "../actions/apps";
+
+// export const APP_PLATFORM_REGISTER = 'platform/REGISTER';
+// export const APP_PLATFORM_SELECT = 'platform/SELECT';
+// export const APP_FORM_SETSTATUS = 'form/SETSTATUS';
+// export const APP_FORM_RESET = 'form/RESET';
+// export const APP_FIELD_SETVALUE = 'field/SETVALUE';
+
 const defaultState = {
   isFetching: false,
   items: [],
@@ -139,20 +152,20 @@ const resourceReducer = actions => (state = defaultState, action) => {
 
 function createClientAppDialog(state, action) {
   switch (action.type) {
-    case 'form/RESET': 
+    case APP_FORM_RESET: 
       var newCreateClientAppDialog= {
         platforms: state.createClientAppDialog.platforms,
         fields: {}
       }
 
       return { ...state, createClientAppDialog: newCreateClientAppDialog};
-    case 'platform/REGISTER':
+    case APP_PLATFORM_REGISTER:
       var newState = {...state};
       if (!newState.createClientAppDialog.platforms[action.platform.name]) {
         newState.createClientAppDialog.platforms[action.platform.name] = { selected: false};
       }
       return newState;
-    case 'platform/SELECT':
+    case APP_PLATFORM_SELECT:
       var selectedPlatform = action.platform.name;
       var newPlatformState = JSON.parse(JSON.stringify(state.createClientAppDialog.platforms));
       for (var platform in newPlatformState) {
@@ -162,14 +175,14 @@ function createClientAppDialog(state, action) {
       return { ...state, 
               createClientAppDialog: {...state.createClientAppDialog, platforms: newPlatformState }
       }
-    case 'form/SETSTATUS':
+    case APP_FORM_SETSTATUS:
       if (state.createClientAppDialog.valid === action.payload.status) {
         return state;
       }
       return { ...state,
         createClientAppDialog: {...state.createClientAppDialog, valid: action.payload.status }
       }
-    case 'field/SETVALUE':
+    case APP_FIELD_SETVALUE:
       return { ...state,
         createClientAppDialog: {...state.createClientAppDialog ,
           fields: { ...state.createClientAppDialog.fields,

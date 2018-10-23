@@ -37,26 +37,32 @@ export const deleteApp = name => fetchAction(
   async () => DataService.deleteApp(name),
 )();
 
+export const APP_PLATFORM_REGISTER = 'PLATFORM_REGISTER';
+export const APP_PLATFORM_SELECT = 'PLATFORM_SELECT';
+export const APP_FORM_SETSTATUS = 'FORM_SETSTATUS';
+export const APP_FORM_RESET = 'FORM_RESET';
+export const APP_FIELD_SETVALUE = 'FIELD_SETVALUE';
+
 export const registerPlatform = (platform) => ({
-  type: 'platform/REGISTER',
+  type: APP_PLATFORM_REGISTER,
   platform: { name: platform.name } 
 })
 
 export const selectPlatform = (platform) => ({
-  type: 'platform/SELECT',
+  type: APP_PLATFORM_SELECT,
   platform: { name: platform } 
 })
 
 export const setStatus = (newStatus) => ({
-  type: 'form/SETSTATUS',
+  type: APP_FORM_SETSTATUS,
   payload: { status: newStatus}
 })
 
 export const setFieldValue = (fieldId, value, isValid) => ({
-  type: 'field/SETVALUE',
+  type: APP_FIELD_SETVALUE,
   payload: { name: fieldId, value: value, valid: isValid}
 })
 
 export const resetForm = () => ({
-  type: 'form/RESET'
+  type: APP_FORM_RESET
 })
