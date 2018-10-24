@@ -29,16 +29,18 @@ class Client extends Component {
     const appName = this.props.match.params.id;
 
     this.props.fetchApp(appName);
-    this.props.fetchBuildConfigs();
-    this.props.fetchBuilds();
+    if (this.props.buildTabEnabled) {
+      this.props.fetchBuildConfigs();
+      this.props.fetchBuilds();
 
-    this.wsBuildConfigs = DataService.watchBuildConfigs(this.props.fetchBuildConfigs);
-    this.wsBuilds = DataService.watchBuilds(this.props.fetchBuilds);
+      this.wsBuildConfigs = DataService.watchBuildConfigs(this.props.fetchBuildConfigs);
+      this.wsBuilds = DataService.watchBuilds(this.props.fetchBuilds);
+    }
   }
 
   componentWillUnmount() {
-    this.wsBuildConfigs.close();
-    this.wsBuilds.close();
+    this.wsBuildConfigs && this.wsBuildConfigs.close();
+    this.wsBuilds && this.wsBuilds.close();
   }
 
   componentDidUpdate(prevProps) {
@@ -103,16 +105,18 @@ class Client extends Component {
               <div>
                 <Nav bsClass="nav nav-tabs nav-tabs-pf nav-tabs-pf-secondary">
                   <NavItem eventKey={1}>Configuration</NavItem>
-                  <NavItem eventKey={2}>Builds</NavItem>
+                  {this.props.buildTabEnabled ? (<NavItem eventKey={2}>Builds</NavItem>) : null }
                   <NavItem eventKey={3}>Mobile Services</NavItem>
                 </Nav>
                 <TabContent>
                   <TabPane eventKey={1}>
                     <ConfigurationView />
                   </TabPane>
-                  <TabPane eventKey={2}>
-                    <MobileClientBuildsList appName={this.props.match.params.id} buildConfigs={this.state.buildConfigs} />
-                  </TabPane>
+                  {this.props.buildTabEnabled? 
+                    (<TabPane eventKey={2}>
+                      <MobileClientBuildsList appName={this.props.match.params.id} buildConfigs={this.state.buildConfigs} />
+                    </TabPane>) : null
+                  }
                   <TabPane eventKey={3}>
                     <MobileServiceView />
                   </TabPane>
@@ -131,6 +135,7 @@ function mapStateToProps(state) {
     apps: state.apps,
     buildConfigs: state.buildConfigs,
     builds: state.builds,
+    buildTabEnabled: state.config.buildTabEnabled
   };
 }
 

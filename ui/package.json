@@ -42,5 +42,11 @@
     "eslint-plugin-patternfly-react": "^0.2.0",
     "eslint-plugin-prettier": "^2.7.0",
     "prettier": "^1.14.3"
+  },
+  "proxy": {
+    "/api": {
+      "target": "http://localhost:4000",
+      "ws": true
+    }
   }
 }

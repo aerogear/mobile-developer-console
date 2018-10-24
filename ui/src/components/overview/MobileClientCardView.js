@@ -104,6 +104,7 @@ class MobileClientCardView extends Component {
             app={app}
             services={app.status.services}
             builds={this.getBuilds(app)}
+            buildTabEnabled={this.props.buildTabEnabled}
           />
         ) : null;
       })

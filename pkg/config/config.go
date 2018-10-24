@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-type config struct {
+type Config struct {
 	ListenAddress        string //will look like ":4000"
 	LogLevel             string
 	LogFormat            string
@@ -16,11 +16,12 @@ type config struct {
 	OperatorResyncPeriod int
 	WsWriteWait          int
 	WsPongWait           int
+	BuildTabEnabled      bool
 }
 
-func GetConfig() config {
+func GetConfig() Config {
 
-	return config{
+	return Config{
 		ListenAddress:        fmt.Sprintf(":%v", getEnv("PORT", "4000")),
 		LogLevel:             strings.ToLower(getEnv("LOG_LEVEL", "info")),
 		LogFormat:            strings.ToLower(getEnv("LOG_FORMAT", "text")), //cann be text or json
@@ -29,6 +30,7 @@ func GetConfig() config {
 		OperatorResyncPeriod: getEnvAsInt("RESYNC_PERIOD", 10),
 		WsWriteWait:          getEnvAsInt("WS_WRITE_WAIT", 10),
 		WsPongWait:           getEnvAsInt("WS_PONG_WAIT", 60),
+		BuildTabEnabled:      getEnvAsBool("ENABLE_BUILD_TAB", false),
 	}
 }
 
@@ -48,4 +50,15 @@ func getEnvAsInt(key string, defaultVal int) int {
 		}
 	}
 	return i
+}
+
+func getEnvAsBool(key string, defaultVal bool) bool {
+	b := defaultVal
+	if s := getEnv(key, ""); s != "" {
+		v, err := strconv.ParseBool(s)
+		if err == nil {
+			b = v
+		}
+	}
+	return b
 }
