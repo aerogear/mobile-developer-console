@@ -61,6 +61,7 @@ onBackButtonClick() {
     this.setState({
       serviceName:serviceName,
       schema:schema,
+      serviceClassExternalName:service.serviceClassExternalName,
       form:form,
       loading:false,
       showModal: false,
@@ -113,7 +114,7 @@ onBackButtonClick() {
       stepChanged = (step) => {
         if (step === 2) {
           this.setState({ loading: true });
-          this.createBindingCallback(this.state.service.serviceInstanceName, this.formData);
+          this.createBindingCallback(this.state.service.serviceInstanceName, this.state.service.serviceClassExternalName, this.formData);
         }
       }
   

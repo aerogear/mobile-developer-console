@@ -32,32 +32,39 @@ func (lister *BindableMobileServiceListerImpl) Create(namespace string, binding 
 		return nil, err
 	}
 
-	secret := &k8v1.Secret{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "Secret",
-			APIVersion: "v1",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name: binding2.Spec.SecretName,
-			OwnerReferences: []metav1.OwnerReference{{
-				APIVersion:         binding.TypeMeta.APIVersion,
-				Kind:               binding.TypeMeta.Kind,
-				Name:               binding2.ObjectMeta.Name,
-				UID:                binding2.ObjectMeta.UID,
-				Controller:         &[]bool{false}[0],
-				BlockOwnerDeletion: &[]bool{false}[0],
-			},
-			},
-		},
-		Type:       "Opaque",
-		StringData: formData,
-	}
+	// secret := &k8v1.Secret{
+	// 	TypeMeta: metav1.TypeMeta{
+	// 		Kind:       "Secret",
+	// 		APIVersion: "v1",
+	// 	},
+	// 	ObjectMeta: metav1.ObjectMeta{
+	// 		Name: binding2.Spec.SecretName,
+	// 		OwnerReferences: []metav1.OwnerReference{{
+	// 			APIVersion:         binding.TypeMeta.APIVersion,
+	// 			Kind:               binding.TypeMeta.Kind,
+	// 			Name:               binding2.ObjectMeta.Name,
+	// 			UID:                binding2.ObjectMeta.UID,
+	// 			Controller:         &[]bool{false}[0],
+	// 			BlockOwnerDeletion: &[]bool{false}[0],
+	// 		},
+	// 		},
+	// 	},
+	// 	Type:       "Opaque",
+	// 	StringData: formData,
+	// }
 
-	_, err = lister.secretsCRUDL.Create(namespace, secret)
+	// _, err = lister.secretsCRUDL.Create(namespace, secret)
+
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	parametersSecret := makeParametersSecret(binding, binding2, formData)
+	_, err = lister.secretsCRUDL.Create(namespace, parametersSecret)
+
 	if err != nil {
 		return nil, err
 	}
-
 	return binding2, nil
 
 }
@@ -171,4 +178,59 @@ func Filter(vs []ServiceInstance, f func(ServiceInstance) bool) []ServiceInstanc
 		}
 	}
 	return vsf
+}
+
+func makeParametersSecret(binding *ServiceBinding, binding2 *ServiceBinding, formData map[string]string) *k8v1.Secret {
+	parametersSecretName := binding.Spec.ParametersFrom[0].SecretKeyRef.Name
+	jsonStringData, _ := json.Marshal(formData)
+	return &k8v1.Secret{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Secret",
+			APIVersion: "servicecatalog.k8s.io/v1beta1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: parametersSecretName,
+			OwnerReferences: []metav1.OwnerReference{
+				{
+					APIVersion: binding.APIVersion,
+					Kind:       binding.Kind,
+					Name:       binding2.ObjectMeta.Name,
+					UID:        binding2.ObjectMeta.UID,
+					Controller: &[]bool{false}[0],
+					// TODO: Change to true when garbage collection works with service
+					// catalog resources. Setting to true now results in a 403 Forbidden
+					// error creating the secret.
+					BlockOwnerDeletion: &[]bool{false}[0],
+				},
+			},
+		},
+		Type:       "Opaque",
+		StringData: map[string]string{"parameters": string(jsonStringData)},
+	}
+
+	/*
+
+			 var secret = {
+		        apiVersion: 'v1',
+		        kind: 'Secret',
+		        metadata: {
+		          name: secretName,
+		          ownerReferences: [{
+		            apiVersion: owner.apiVersion,
+		            kind: owner.kind,
+		            name: owner.metadata.name,
+		            uid: owner.metadata.uid,
+		            controller: false,
+		            // TODO: Change to true when garbage collection works with service
+		            // catalog resources. Setting to true now results in a 403 Forbidden
+		            // error creating the secret.
+		            blockOwnerDeletion: false
+		          }]
+		        },
+		        type: 'Opaque',
+		        stringData: {}
+		      };
+
+		      secret.stringData[PARAMETERS_SECRET_KEY] = JSON.stringify(parameters);
+	*/
 }

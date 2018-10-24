@@ -94,13 +94,14 @@ const dataService = {
 
   },
 
-  createBinding: async (mobileClientName, serviceInstanceName, credentialSecretName, parametersSecretName, formData) => {
+  createBinding: async (mobileClientName, serviceInstanceName, credentialSecretName, parametersSecretName, serviceClassExternalName, formData) => {
 
     var binding = {
       mobileClientName: mobileClientName,
       serviceInstanceName:serviceInstanceName,
       bindingParametersName:parametersSecretName,
       bindingSecretName:credentialSecretName,
+      serviceClassExternalName:serviceClassExternalName,
       formData:formData
     }
 

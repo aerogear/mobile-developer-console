@@ -45,6 +45,7 @@ class MobileServiceView extends Component {
                     bindingSchema : instance.servicePlan.spec.serviceBindingCreateParameterSchema,
                     form : instance.servicePlan.spec.externalMetadata.schemas.service_binding.create.openshift_form_definition,
                     serviceDescription: instance.serviceClass.spec.description,
+                    serviceClassExternalName: instance.serviceClass.spec.externalMetadata.serviceName,
                     setupText: 'Mobile Metrics SDK setups',
                   });
                 }
@@ -94,10 +95,11 @@ class MobileServiceView extends Component {
     this.bindingDialog.show(service);
   }
 
-  createBindingCallback(serviceInstanceName, formData) {
+  createBindingCallback(serviceInstanceName, serviceClassExternalName, formData) {
     var credentialSecretName = createSecretName(serviceInstanceName + '-credentials-');
     var parametersSecretName = createSecretName(serviceInstanceName + '-bind-parameters-');
-    DataService.createBinding(serviceInstanceName, credentialSecretName, parametersSecretName, formData);
+    
+    DataService.createBinding('test', serviceInstanceName, credentialSecretName, parametersSecretName, serviceClassExternalName, formData);
   }
 
   render() {

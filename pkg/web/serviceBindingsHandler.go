@@ -48,16 +48,6 @@ func (msih *BindableMobileServiceHandler) Create(c echo.Context) error {
 	}
 
 	return c.JSON(200, binding)
-
-	// err := msih.mobileClientRepo.Create(app)
-	// if err != nil {
-	// 	return c.String(http.StatusBadRequest, err.Error())
-	// }
-	// data, err := newMoileClientDataFromObject(app)
-	// if err != nil {
-	// 	return err
-	// }
-	//return c.JSON(http.StatusOK, data)
 }
 
 func newMobileBindingObject(data ServiceBindingCreateRequest) *scv1beta1.ServiceBinding {
@@ -67,13 +57,19 @@ func newMobileBindingObject(data ServiceBindingCreateRequest) *scv1beta1.Service
 		Name: data.BindingParametersKey,
 	}
 
+	consumerID := data.FormData["CLIENT_ID"]
+
 	return &scv1beta1.ServiceBinding{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ServiceBinding",
 			APIVersion: "servicecatalog.k8s.io/v1beta1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			GenerateName: data.ServiceInstanceName + "-",
+			GenerateName: consumerID + "-" + data.ServiceClassExternalName + "-",
+			Annotations: map[string]string{
+				"binding.aerogear.org/consumer": consumerID,
+				"binding.aerogear.org/provider": data.ServiceInstanceName,
+			},
 		},
 		Spec: scv1beta1.ServiceBindingSpec{
 			ServiceInstanceRef: scv1beta1.LocalObjectReference{
@@ -87,3 +83,16 @@ func newMobileBindingObject(data ServiceBindingCreateRequest) *scv1beta1.Service
 		},
 	}
 }
+
+/*
+var getMobileBindingMetadata = function(svcToBind, serviceClass) {
+      var consumerId = _.get(ctrl, 'parameterData.CLIENT_ID');
+      var annotations = {};
+      annotations[mobileBindingConsumerAnnotation] = consumerId;
+      annotations[mobileBindingProviderAnnotation] = _.get(svcToBind, 'metadata.name');
+      return {
+        generateName: consumerId.toLowerCase() + '-' + _.get(serviceClass, 'spec.externalMetadata.serviceName').toLowerCase() + '-',
+        annotations: annotations
+      };
+    };
+*/
