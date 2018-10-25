@@ -2,10 +2,31 @@
   width: 100%;
   padding-top: 10px;
   flex: 1;
+  flex-direction: column;
+  display: flex;
 
   .breadcrumb {
     margin-bottom: 10px;
   }
+
+  #basic-tabs-pf {
+    flex: 1 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #basic-tabs-content {
+    flex: 1 100%;
+  }
+
+  #basic-tabs-content > * {
+    height: 100%;
+  }
+  
+  h3.header {
+    border-bottom:none;
+  }
+  
 
   .app-header-wrapper {
     display: flex;

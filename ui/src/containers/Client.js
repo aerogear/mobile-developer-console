@@ -14,7 +14,7 @@ import DataService from '../DataService';
 import PlatformIcon from '../components/common/PlatformIcon';
 import DeleteItemButton from './DeleteItemButton';
 
-import '../components/common/Client.css';
+import './Client.css';
 
 class Client extends Component {
   constructor(props) {
@@ -108,7 +108,7 @@ class Client extends Component {
                   {this.props.buildTabEnabled ? (<NavItem eventKey={2}>Builds</NavItem>) : null }
                   <NavItem eventKey={3}>Mobile Services</NavItem>
                 </Nav>
-                <TabContent>
+                <TabContent id="basic-tabs-content">
                   <TabPane eventKey={1}>
                     <ConfigurationView />
                   </TabPane>
