@@ -57,7 +57,7 @@ func newMobileBindingObject(data ServiceBindingCreateRequest) *scv1beta1.Service
 		Name: data.BindingParametersKey,
 	}
 
-	consumerID := data.FormData["CLIENT_ID"]
+	consumerID := data.FormData["CLIENT_ID"].(string)
 
 	return &scv1beta1.ServiceBinding{
 		TypeMeta: metav1.TypeMeta{

@@ -105,11 +105,11 @@ type BuildConfigCreateRequest struct {
 }
 
 type ServiceBindingCreateRequest struct {
-	ServiceInstanceName      string            `json:"serviceInstanceName" validate:"required"`
-	ServiceClassExternalName string            `json:"serviceClassExternalName" validate:"required"`
-	BindingParametersKey     string            `json:"bindingParametersName" validate:"required"`
-	BindingSecretKey         string            `json:"bindingSecretName" validate:"required"`
-	FormData                 map[string]string `json:"formData" validate:"required"`
+	ServiceInstanceName      string                 `json:"serviceInstanceName" validate:"required"`
+	ServiceClassExternalName string                 `json:"serviceClassExternalName" validate:"required"`
+	BindingParametersKey     string                 `json:"bindingParametersName" validate:"required"`
+	BindingSecretKey         string                 `json:"bindingSecretName" validate:"required"`
+	FormData                 map[string]interface{} `json:"formData" validate:"required"`
 }
 
 type User struct {

@@ -24,7 +24,7 @@ func NewServiceBindingLister(scClient scv1beta1.ServicecatalogV1beta1Interface, 
 	}
 }
 
-func (lister *BindableMobileServiceListerImpl) Create(namespace string, binding *ServiceBinding, formData map[string]string) (*ServiceBinding, error) {
+func (lister *BindableMobileServiceListerImpl) Create(namespace string, binding *ServiceBinding, formData map[string]interface{}) (*ServiceBinding, error) {
 
 	bindingsApi := lister.scClient.ServiceBindings(namespace)
 	binding2, err := bindingsApi.Create(binding)
@@ -180,7 +180,7 @@ func Filter(vs []ServiceInstance, f func(ServiceInstance) bool) []ServiceInstanc
 	return vsf
 }
 
-func makeParametersSecret(binding *ServiceBinding, binding2 *ServiceBinding, formData map[string]string) *k8v1.Secret {
+func makeParametersSecret(binding *ServiceBinding, binding2 *ServiceBinding, formData map[string]interface{}) *k8v1.Secret {
 	parametersSecretName := binding.Spec.ParametersFrom[0].SecretKeyRef.Name
 	jsonStringData, _ := json.Marshal(formData)
 	return &k8v1.Secret{

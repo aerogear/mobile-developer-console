@@ -15,7 +15,7 @@ type ServiceInstanceLister interface {
 
 type BindableMobileServiceLister interface {
 	List(namespace string) (*BindableMobileServiceList, error)
-	Create(namespace string, binding *scv1beta1.ServiceBinding, formData map[string]string) (*scv1beta1.ServiceBinding, error)
+	Create(namespace string, binding *scv1beta1.ServiceBinding, formData map[string]interface{}) (*scv1beta1.ServiceBinding, error)
 }
 type BuildCRUDL interface {
 	List() (*ExtendedBuildList, error)
