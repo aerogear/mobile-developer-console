@@ -1,0 +1,8 @@
+registry:
+  - type: dockerhub
+    name: ag
+    url: https://registry.hub.docker.com
+    org: aerogearcatalog
+    tag: latest
+    white_list:
+      - '.*-apb$'

@@ -25,16 +25,55 @@ git clone https://github.com/aerogear/mobile-developer-console && cd mobile-deve
 4. Log in with user `developer` (developer/123)
 5. Follow the link to mobile-developer-console
 
-### Full experience (Use APB to deploy mobile-developer-console)
+### Full experience
+
+#### Spin up OpenShift cluster locally
+
+**(OpenShift 3.9) Use mobile-core installer**
 
 1. Use [Mobile Core installer](https://github.com/aerogear/mobile-core) to run `oc cluster up` with
 all required configuration to deploy the mobile-developer-console from APB.
 You can follow the docs [here](https://github.com/aerogear/mobile-core)
-2. After your local OpenShift cluster is running, you can navigate to your project in OpenShift console and search for `Mobile Developer Console` in the catalog.
-3. Follow the wizard to provision Mobile Developer Console APB to your project
-4. Repeat steps 2 & 3 for `Mobile CI/CD` APB 
-5. Once both APBs are provisioned (provisioning of `Mobile CI/CD` will take couple of minutes), navigate the link to mobile-developer-console and log in as `developer`
+2. Follow the [steps below](#Provision-Mobile-Services)
 
+**(OpenShift 3.11) Use `oc cluster up` or `minishift`**
+
+:penguin: Linux
+See [OpenShift documentation](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md) to learn how to spin up OpenShift 3.11 cluster locally using `oc cluster up` with following components enabled:
+* automation-service-broker
+* service-catalog
+* template-service-broker
+
+:apple: Mac
+Since `oc cluster up` is causing problems for users using Mac OS (since OpenShift version 3.10), it is advised to use Minishift as an alternative
+
+See [Minishift](https://docs.okd.io/latest/minishift/getting-started/index.html) documentation for more details
+
+#### Cluster configuration
+
+Once your local cluster is up & running, it's required to run a post-installation configuration script:
+1. `oc login` to your cluster as user with **cluster-admin** privileges
+2. Export the name of `ansible-service-broker` project in your OpenShift instance (usually it's called `ansible-service-broker`, `openshift-ansible-service-broker` or `openshift-automation-service-broker`), i.e 
+```
+export ASB_PROJECT_NAME='openshift-automation-service-broker'
+```
+3. Run the script
+```
+./scripts/post_install.sh
+```
+4. Wait couple of minutes until Ansible Service Broker is running again
+
+#### Provision Mobile Services
+1. Navigate to your project in OpenShift console and search for `Mobile Developer Console` in the catalog (if it's not available, try to refresh the page and check that Ansible Service Broker is running)
+2. Follow the wizard to provision Mobile Developer Console APB to your project
+3. Repeat steps 2 & 3 for `Mobile CI/CD` APB 
+4. Once both APBs are provisioned (provisioning of `Mobile CI/CD` will take couple of minutes), navigate the link to mobile-developer-console and log in as `developer`
+
+#### Target existing OpenShift instance
+
+> :information_source: Supported version is OpenShift 3.11
+
+Follow the [steps here](#Cluster-configuration) (steps for configuration are the same for local & remote OpenShift instances).
 
 ## Development
 
