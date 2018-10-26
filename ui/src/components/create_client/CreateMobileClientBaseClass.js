@@ -24,9 +24,13 @@ class CreateMobileClientBaseClass extends Component {
     }
     // initializing validation state
     var fields = this.getFormFields();
+
     for (var field in fields) {
-      if (!this.props.ui.fields[fields[field].controlId]) {
-        this.props.setFieldValue(fields[field].controlId, '', undefined);
+      var fieldName = fields[field].controlId;
+      if (this.props.app) {
+        this.props.setFieldValue(fieldName, this.props.app.spec[fieldName], true);
+      } else if (!this.props.ui.fields[fieldName]) {
+        this.props.setFieldValue(fieldName, '', undefined);
       }
     }
   }
@@ -60,6 +64,23 @@ class CreateMobileClientBaseClass extends Component {
     this.props.setStatus(dataIsValid);
   }
 
+  getReadOnlyValueForField(fieldId) {
+    if (this.props.app) {
+      // we are editing an existing app
+      return this.props.app.spec[fieldId];
+    }
+
+    return null;
+  }
+
+  getDefaultValueForField(fieldId) {
+    if (this.props.app) {
+      // we are editing an existing app
+      return this.props.app.spec[fieldId];
+    }
+    return this.props.ui.fields[fieldId] && this.props.ui.fields[fieldId].value
+  }
+
   /**
    * Subclasses should override this if they needs to provide custom fields.
    */
@@ -73,7 +94,7 @@ class CreateMobileClientBaseClass extends Component {
         help: this.config.appName.help,
         content: this.config.appName.help,
         placeholder: this.config.appName.example,
-        defaultValue: this.props.ui.fields[CREATE_CLIENT_NAME] && this.props.ui.fields[CREATE_CLIENT_NAME].value,
+        defaultValue: this.getDefaultValueForField(CREATE_CLIENT_NAME),
         formControl: ({ validationState, ...props }) => (
           <Form.FormControl type="text" {...props} tabIndex="1" autoFocus={true} />
         ),
@@ -88,7 +109,9 @@ class CreateMobileClientBaseClass extends Component {
         help: this.config.appIdentifier.help,
         placeholder: this.config.appIdentifier.example,
         content: this.config.appIdentifier.help,
-        defaultValue: this.props.ui.fields[CREATE_CLIENT_APP_ID] && this.props.ui.fields[CREATE_CLIENT_APP_ID].value,
+        defaultValue: this.getDefaultValueForField(CREATE_CLIENT_APP_ID),
+        value: this.getReadOnlyValueForField(CREATE_CLIENT_APP_ID),
+        readonly: this.props.app,
         formControl: ({ validationState, ...props }) => (
           <Form.FormControl type="text" {...props} tabIndex="2" />
         ),

@@ -2,7 +2,14 @@ import React from 'react';
 import { Card, CardHeading, CardTitle, CardBody, CardFooter, DropdownKebab } from 'patternfly-react';
 import { Link } from 'react-router-dom';
 import DeleteItemButton from '../../containers/DeleteItemButton';
+import EditItemButton from '../../containers/EditItemButton';
 import PlatformIcon from '../common/PlatformIcon';
+import {
+  PLATFORM_ANDROID,
+  PLATFORM_IOS,
+  PLATFORM_CORDOVA,
+  PLATFORM_XAMARIN,
+} from '../../components/create_client/Constants';
 
 const getServiceIcons = (services) => {
   const icons = {
@@ -29,6 +36,7 @@ const MobileClientCardViewItem = (props) => {
         <CardHeading>
           <DropdownKebab id={app.metadata.name} pullRight className="card-dropdown-kebab">
             <DeleteItemButton itemType="app" itemName={appName} />
+            <EditItemButton itemType="app" itemName={appName} />
           </DropdownKebab>
           <CardTitle>
             {
