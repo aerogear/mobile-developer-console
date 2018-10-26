@@ -38,6 +38,10 @@ build: setup
 ui:
 	cd ui && npm install && npm run build
 
+.PHONY: ui-test-cover
+ui-test-cover:
+	cd ui && npm install && npm run build-css && npm run coverage
+
 .PHONY: serve
 serve: build ui
 	export STATIC_FILES_DIR=$(CURDIR)/ui/build; ./mobile-developer-console -kubeconfig ~/.kube/config
