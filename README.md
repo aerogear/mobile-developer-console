@@ -39,19 +39,30 @@ You can follow the docs [here](https://github.com/aerogear/mobile-core)
 **(OpenShift 3.11) Use `oc cluster up` or `minishift`**
 
 :penguin: Linux
-See [OpenShift documentation](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md) to learn how to spin up OpenShift 3.11 cluster locally using `oc cluster up` with following components enabled:
-* automation-service-broker
-* service-catalog
-* template-service-broker
+
+Download [archive with oc client binary](https://github.com/openshift/origin/releases/tag/v3.11.0), extract it, add it to your `$PATH` and run:
+
+```
+oc cluster up --enable=*,service-catalog,automation-service-broker,template-service-broker
+```
+
+See [OpenShift documentation](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md) for more details.
 
 :apple: Mac
-Since `oc cluster up` is causing problems for users using Mac OS (since OpenShift version 3.10), it is advised to use Minishift as an alternative
+
+Since `oc cluster up` is causing problems for users using Mac OS (since OpenShift version 3.10), it is advised to use Minishift as an alternative.
+
+To spin up OpenShift 3.11 cluster locally, run:
+
+```
+MINISHIFT_ENABLE_EXPERIMENTAL=y minishift start --openshift-version v3.11.0 --extra-clusterup-flags "--enable=*,service-catalog,automation-service-broker,template-service-broker"
+```
 
 See [Minishift](https://docs.okd.io/latest/minishift/getting-started/index.html) documentation for more details
 
 #### Cluster configuration
 
-Once your local cluster is up & running, it's required to run a post-installation configuration script:
+Once your OpenShift cluster is up & running, it's required to run a post-installation configuration script:
 1. `oc login` to your cluster as user with **cluster-admin** privileges
 2. Export the name of `ansible-service-broker` project in your OpenShift instance (usually it's called `ansible-service-broker`, `openshift-ansible-service-broker` or `openshift-automation-service-broker`), i.e 
 ```

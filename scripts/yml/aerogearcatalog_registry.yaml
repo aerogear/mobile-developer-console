@@ -6,3 +6,5 @@ registry:
     tag: latest
     white_list:
       - '.*-apb$'
+    black_list:
+      - '.*-app-apb$'
