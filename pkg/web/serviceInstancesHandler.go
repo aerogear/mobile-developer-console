@@ -23,7 +23,7 @@ func (msih *MobileServiceInstancesHandler) List(c echo.Context) error {
 	si, err := msih.serviceInstanceLister.List()
 	if err != nil {
 		c.Logger().Errorf("error listing service instances %v", err)
-		return c.NoContent(http.StatusInternalServerError)
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, si)
 }
@@ -31,5 +31,9 @@ func (msih *MobileServiceInstancesHandler) List(c echo.Context) error {
 func (msih *MobileServiceInstancesHandler) Watch(c echo.Context) error {
 	getWatchInterface := msih.serviceInstanceLister.Watch()
 
-	return ServeWS(c, getWatchInterface)
+	err := ServeWS(c, getWatchInterface)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	return nil
 }
