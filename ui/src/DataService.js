@@ -10,30 +10,37 @@ const getWSUrl = () => {
   return newUrl;
 };
 
-let baseUrl = '/api';
-let wsUrl = `${getWSUrl()}/api`;
+const baseUrl = '/api';
+const wsUrl = `${getWSUrl()}/api`;
 
-const fetchItems = async (url) => {
-  const response = await fetch(url, { credentials: 'same-origin' });
+export const wsError = {};
+
+const requestConfig = (method, body) => ({
+  method,
+  cache: 'no-cache',
+  credentials: 'same-origin',
+  headers: {
+    'Content-Type': 'application/json; charset=utf-8'
+  },
+  body: body && JSON.stringify(body)
+});
+
+const request = async (url, method, body) => {
+  const response = await fetch(`${baseUrl}/${url}`, requestConfig(method, body));
   if (!response.ok) {
-    throw Error(response.statusText);
+    const msg = await response.text();
+    throw Error(msg);
   }
-  const result = await response.json();
+  return method === 'DELETE' || response.json();
+};
+
+const fetchItems = async url => {
+  const result = await request(url, 'GET');
   return result.items || [];
 };
 
 const deleteItem = async (url, name) => {
-  const response = await fetch(url, {
-    method: 'DELETE',
-    cache: 'no-cache',
-    credentials: 'same-origin',
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-    },
-  });
-  if (!response.ok) {
-    throw Error(response.statusText);
-  }
+  await request(url, 'DELETE');
   return name;
 };
 
@@ -49,93 +56,28 @@ const webSocket = (action, url) => {
       }, 1000);
     }
   };
+  ws.onerror = () => {
+    wsError.message = 'WebSocket error';
+  };
   return ws;
 };
 
 const dataService = {
-  mobileClients: () => fetchItems(`${baseUrl}/mobileclients`),
-  serviceInstances: () => fetchItems(`${baseUrl}/serviceinstances`),
-  builds: () => fetchItems(`${baseUrl}/builds`),
-  buildConfigs: () => fetchItems(`${baseUrl}/buildconfigs`),
-  createApp: async (app) => {
-    const response = await fetch(`${baseUrl}/mobileclients`, {
-      method: 'POST',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-      body: JSON.stringify(app),
-    });
-    if (!response.ok) {
-      const msg = await response.text();
-      throw Error(`${response.statusText}: ${msg}`);
-    }
-    return response.json();
-  },
-  mobileApp: async appName => {
-    const response = await fetch(`${baseUrl}/mobileclients/${appName}`, {
-      method: 'GET',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    });
-    if (!response.ok) {
-      const msg = await response.text();
-      throw Error(`${response.statusText}: ${msg}`);
-    }
-    return response.json();
-  },
-  deleteApp: name => deleteItem(`${baseUrl}/mobileclients/${name}`, name),
-  triggerBuild: async (name) => {
-    const response = await fetch(`${baseUrl}/buildconfigs/${name}/instantiate`, {
-      method: 'POST',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-    });
-    if (!response.ok) {
-      throw Error(response.statusText);
-    }
-    return response.json();
-  },
-  deleteBuildConfig: name => deleteItem(`${baseUrl}/buildconfigs/${name}`, name),
+  mobileClients: () => fetchItems('mobileclients'),
+  serviceInstances: () => fetchItems('serviceinstances'),
+  builds: () => fetchItems('builds'),
+  buildConfigs: () => fetchItems('buildconfigs'),
+  createApp: app => request('mobileclients', 'POST', app),
+  mobileApp: appName => request(`mobileclients/${appName}`, 'GET'),
+  deleteApp: name => deleteItem(`mobileclients/${name}`, name),
+  triggerBuild: name => request(`buildconfigs/${name}/instantiate`, 'POST'),
+  deleteBuildConfig: name => deleteItem(`buildconfigs/${name}`, name),
   watchBuilds: action => webSocket(action, '/builds/watch'),
   watchApps: action => webSocket(action, '/mobileclients/watch'),
   watchBuildConfigs: action => webSocket(action, '/buildconfigs/watch'),
   watchServices: action => webSocket(action, '/serviceinstances/watch'),
-  generateDownloadURL: async (name) => {
-    const response = await fetch(`${baseUrl}/builds/${name}/gendownloadurl`, {
-      method: 'POST',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-    });
-    if (!response.ok) {
-      throw Error(response.statusText);
-    }
-  },
-  fetchUser: async () => {
-    const response = await fetch(`${baseUrl}/user`, {
-      method: 'GET',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-    });
-    if (!response.ok) {
-      throw Error(response.statusText);
-    }
-    const user = await response.json();
-    return user;
-  }
+  generateDownloadURL: name => request(`builds/${name}/gendownloadurl`, 'POST'),
+  fetchUser: () => request('user', 'GET')
 };
 
 export default dataService;

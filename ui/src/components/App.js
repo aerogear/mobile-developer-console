@@ -5,12 +5,14 @@ import {
 import Header from '../containers/Header';
 import Overview from '../containers/Overview';
 import Client from '../containers/Client';
+import ErrorMessages from '../containers/ErrorMessages';
 
 import './App.css';
 
 const App = () => (
   <Router>
     <div className="App">
+      <ErrorMessages />
       <Header />
       <Switch>
         <Route exact path="/overview" component={Overview} />

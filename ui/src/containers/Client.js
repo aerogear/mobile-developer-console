@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Nav, NavItem, TabContent, TabPane, TabContainer, Grid, Breadcrumb, DropdownButton, Alert
+  Nav, NavItem, TabContent, TabPane, TabContainer, Grid, Breadcrumb, DropdownButton
 } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -98,9 +98,7 @@ class Client extends Component {
         </Breadcrumb>
         { mobileApp && this.header(mobileApp) }
         {
-          this.props.apps.readingError ? (
-            <Alert>{this.props.apps.readingError.message}</Alert>
-          ) : (
+          mobileApp && (
             <TabContainer id="basic-tabs-pf" defaultActiveKey={1}>
               <div>
                 <Nav bsClass="nav nav-tabs nav-tabs-pf nav-tabs-pf-secondary">
