@@ -65,7 +65,6 @@ const webSocket = (action, url) => {
 };
 
 const dataService = {
-
   mobileClients: () => fetchItems('mobileclients'),
   serviceInstances: () => fetchItems('serviceinstances'),
   bindableServices: () => fetchItems('bindableservices'),
@@ -78,6 +77,7 @@ const dataService = {
   deleteBuildConfig: name => deleteItem(`buildconfigs/${name}`, name),
   updateApp: async (id, app) => {
     const response = await fetch(`${baseUrl}/mobileclients/${id}`, {
+
       method: 'POST',
       cache: 'no-cache',
       credentials: 'same-origin',
@@ -120,7 +120,8 @@ const dataService = {
     }
     return response.json();
   },
-  
+
+  deleteBinding: name => deleteItem(`bindableservices/${name}`, name),
   watchBuilds: action => webSocket(action, '/builds/watch'),
   watchApps: action => webSocket(action, '/mobileclients/watch'),
   watchBuildConfigs: action => webSocket(action, '/buildconfigs/watch'),

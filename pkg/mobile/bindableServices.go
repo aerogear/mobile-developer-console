@@ -10,54 +10,27 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type BindableMobileServiceListerImpl struct {
+type BindableMobileServiceCRUDLImpl struct {
 	scClient         scv1beta1.ServicecatalogV1beta1Interface
 	mobileClientRepo MobileClientRepo
 	secretsCRUDL     SecretsCRUDL
 }
 
-func NewServiceBindingLister(scClient scv1beta1.ServicecatalogV1beta1Interface, mobileClientRepo MobileClientRepo, secretsCRUDL SecretsCRUDL) *BindableMobileServiceListerImpl {
-	return &BindableMobileServiceListerImpl{
+func NewServiceBindingLister(scClient scv1beta1.ServicecatalogV1beta1Interface, mobileClientRepo MobileClientRepo, secretsCRUDL SecretsCRUDL) *BindableMobileServiceCRUDLImpl {
+	return &BindableMobileServiceCRUDLImpl{
 		scClient:         scClient,
 		mobileClientRepo: mobileClientRepo,
 		secretsCRUDL:     secretsCRUDL,
 	}
 }
 
-func (lister *BindableMobileServiceListerImpl) Create(namespace string, binding *ServiceBinding, formData map[string]interface{}) (*ServiceBinding, error) {
+func (lister *BindableMobileServiceCRUDLImpl) Create(namespace string, binding *ServiceBinding, formData map[string]interface{}) (*ServiceBinding, error) {
 
 	bindingsApi := lister.scClient.ServiceBindings(namespace)
 	binding2, err := bindingsApi.Create(binding)
 	if err != nil {
 		return nil, err
 	}
-
-	// secret := &k8v1.Secret{
-	// 	TypeMeta: metav1.TypeMeta{
-	// 		Kind:       "Secret",
-	// 		APIVersion: "v1",
-	// 	},
-	// 	ObjectMeta: metav1.ObjectMeta{
-	// 		Name: binding2.Spec.SecretName,
-	// 		OwnerReferences: []metav1.OwnerReference{{
-	// 			APIVersion:         binding.TypeMeta.APIVersion,
-	// 			Kind:               binding.TypeMeta.Kind,
-	// 			Name:               binding2.ObjectMeta.Name,
-	// 			UID:                binding2.ObjectMeta.UID,
-	// 			Controller:         &[]bool{false}[0],
-	// 			BlockOwnerDeletion: &[]bool{false}[0],
-	// 		},
-	// 		},
-	// 	},
-	// 	Type:       "Opaque",
-	// 	StringData: formData,
-	// }
-
-	// _, err = lister.secretsCRUDL.Create(namespace, secret)
-
-	// if err != nil {
-	// 	return nil, err
-	// }
 
 	parametersSecret := makeParametersSecret(binding, binding2, formData)
 	_, err = lister.secretsCRUDL.Create(namespace, parametersSecret)
@@ -69,9 +42,14 @@ func (lister *BindableMobileServiceListerImpl) Create(namespace string, binding 
 
 }
 
-func (lister *BindableMobileServiceListerImpl) List(namespace string) (*BindableMobileServiceList, error) {
+func (lister *BindableMobileServiceCRUDLImpl) Delete(namespace string, bindingName string) error {
+	return lister.scClient.ServiceBindings(namespace).Delete(bindingName, &v1.DeleteOptions{})
+}
+
+func (lister *BindableMobileServiceCRUDLImpl) List(namespace string, mobileClientName string) (*BindableMobileServiceList, error) {
 
 	listOpts := v1.ListOptions{}
+
 	getOpts := v1.GetOptions{}
 
 	serviceBindingList := BindableMobileServiceList{}
@@ -135,10 +113,10 @@ func (lister *BindableMobileServiceListerImpl) List(namespace string) (*Bindable
 		var serviceBinding ServiceBinding
 
 		for _, sb := range serviceBindings.Items {
-			if sb.Spec.ServiceInstanceRef.Name == serviceInstance.ObjectMeta.Name {
+			if sb.Spec.ServiceInstanceRef.Name == serviceInstance.ObjectMeta.Name &&
+				sb.ObjectMeta.Annotations["binding.aerogear.org/consumer"] == mobileClientName {
 				serviceBinding = sb
 				bindableService.IsBound = true
-				var mobileClientName = sb.ObjectMeta.Annotations["binding.aerogear.org/consumer"]
 				client, err := lister.mobileClientRepo.ReadByName(mobileClientName)
 
 				if err != nil {
@@ -208,29 +186,4 @@ func makeParametersSecret(binding *ServiceBinding, binding2 *ServiceBinding, for
 		StringData: map[string]string{"parameters": string(jsonStringData)},
 	}
 
-	/*
-
-			 var secret = {
-		        apiVersion: 'v1',
-		        kind: 'Secret',
-		        metadata: {
-		          name: secretName,
-		          ownerReferences: [{
-		            apiVersion: owner.apiVersion,
-		            kind: owner.kind,
-		            name: owner.metadata.name,
-		            uid: owner.metadata.uid,
-		            controller: false,
-		            // TODO: Change to true when garbage collection works with service
-		            // catalog resources. Setting to true now results in a 403 Forbidden
-		            // error creating the secret.
-		            blockOwnerDeletion: false
-		          }]
-		        },
-		        type: 'Opaque',
-		        stringData: {}
-		      };
-
-		      secret.stringData[PARAMETERS_SECRET_KEY] = JSON.stringify(parameters);
-	*/
 }

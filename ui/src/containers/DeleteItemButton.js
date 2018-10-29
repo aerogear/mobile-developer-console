@@ -3,6 +3,7 @@ import { MenuItem, MessageDialog } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { deleteApp } from '../actions/apps';
+import { deleteBinding } from '../actions/serviceBinding';
 import { deleteBuildConfig } from '../actions/buildConfigs';
 
 class DeleteItemButton extends Component {
@@ -21,6 +22,9 @@ class DeleteItemButton extends Component {
         break;
       case 'buildconfig':
         this.props.deleteBuildConfig(itemName);
+        break;
+      case 'serviceBinding':
+        this.props.deleteBinding(itemName);
         break;
       default:
         break;
@@ -84,7 +88,8 @@ class DeleteItemButton extends Component {
 
 const mapDispatchToProps = {
   deleteApp,
-  deleteBuildConfig
+  deleteBuildConfig,
+  deleteBinding
 };
 
 export default connect(null, mapDispatchToProps)(DeleteItemButton);

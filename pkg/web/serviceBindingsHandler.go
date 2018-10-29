@@ -10,24 +10,34 @@ import (
 )
 
 type BindableMobileServiceHandler struct {
-	namespace             string
-	bindableServiceLister mobile.BindableMobileServiceLister
+	namespace            string
+	bindableServiceCRUDL mobile.BindableMobileServiceCRUDL
 }
 
-func NewMobileServiceBindingsHandler(bindableServiceLister mobile.BindableMobileServiceLister, namespace string) *BindableMobileServiceHandler {
+func NewMobileServiceBindingsHandler(bindableServiceCRUDL mobile.BindableMobileServiceCRUDL, namespace string) *BindableMobileServiceHandler {
 	return &BindableMobileServiceHandler{
-		bindableServiceLister: bindableServiceLister,
-		namespace:             namespace,
+		bindableServiceCRUDL: bindableServiceCRUDL,
+		namespace:            namespace,
 	}
 }
 
 func (msih *BindableMobileServiceHandler) List(c echo.Context) error {
-	si, err := msih.bindableServiceLister.List(msih.namespace)
+	mobileClientName := c.Param("name")
+	si, err := msih.bindableServiceCRUDL.List(msih.namespace, mobileClientName)
 	if err != nil {
 		c.Logger().Errorf("error listing service bindings %v", err)
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	return c.JSON(http.StatusOK, si)
+}
+
+func (msih *BindableMobileServiceHandler) Delete(c echo.Context) error {
+	name := c.Param("name")
+	err := msih.bindableServiceCRUDL.Delete(msih.namespace, name)
+	if err != nil {
+		return err
+	}
+	return c.NoContent(http.StatusOK)
 }
 
 func (msih *BindableMobileServiceHandler) Create(c echo.Context) error {
@@ -41,7 +51,7 @@ func (msih *BindableMobileServiceHandler) Create(c echo.Context) error {
 	}
 
 	binding := newMobileBindingObject(*reqData)
-	binding, err := msih.bindableServiceLister.Create(msih.namespace, binding, reqData.FormData)
+	binding, err := msih.bindableServiceCRUDL.Create(msih.namespace, binding, reqData.FormData)
 
 	if err != nil {
 		return err
@@ -83,16 +93,3 @@ func newMobileBindingObject(data ServiceBindingCreateRequest) *scv1beta1.Service
 		},
 	}
 }
-
-/*
-var getMobileBindingMetadata = function(svcToBind, serviceClass) {
-      var consumerId = _.get(ctrl, 'parameterData.CLIENT_ID');
-      var annotations = {};
-      annotations[mobileBindingConsumerAnnotation] = consumerId;
-      annotations[mobileBindingProviderAnnotation] = _.get(svcToBind, 'metadata.name');
-      return {
-        generateName: consumerId.toLowerCase() + '-' + _.get(serviceClass, 'spec.externalMetadata.serviceName').toLowerCase() + '-',
-        annotations: annotations
-      };
-    };
-*/

@@ -4,6 +4,7 @@ import {
 } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
+import DeleteItemButton from '../../containers/DeleteItemButton';
 
 class BoundServiceRow extends Component {
   constructor(props) {
@@ -97,8 +98,8 @@ SDK Setup
         className="boundService"
         actions={(
           <div>
-            <DropdownKebab id={`delete-${this.service.serviceId}`} pullRight>
-              <MenuItem>Delete</MenuItem>
+            <DropdownKebab id={`delete-${this.service.serviceBindingName}`} pullRight>
+              <DeleteItemButton itemType="serviceBinding" itemName={this.service.serviceBindingName} />
             </DropdownKebab>
           </div>
 )}

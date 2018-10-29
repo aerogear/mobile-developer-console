@@ -103,21 +103,24 @@ class Client extends Component {
               <div>
                 <Nav bsClass="nav nav-tabs nav-tabs-pf nav-tabs-pf-secondary">
                   <NavItem eventKey={1}>Configuration</NavItem>
-                  {this.props.buildTabEnabled ? (<NavItem eventKey={2}>Builds</NavItem>) : null }
-                  <NavItem eventKey={3}>Mobile Services</NavItem>
+                  <NavItem eventKey={2}>Mobile Services</NavItem>
+                  {this.props.buildTabEnabled ? (<NavItem eventKey={3}>Builds</NavItem>) : null }
+
                 </Nav>
                 <TabContent id="basic-tabs-content">
                   <TabPane eventKey={1}>
                     <ConfigurationView />
                   </TabPane>
+
+                  <TabPane eventKey={2}>
+                    <MobileServiceView appName={this.props.match.params.id} />
+                  </TabPane>
                   {this.props.buildTabEnabled? 
-                    (<TabPane eventKey={2}>
+                    (<TabPane eventKey={3}>
                       <MobileClientBuildsList appName={this.props.match.params.id} buildConfigs={this.state.buildConfigs} />
                     </TabPane>) : null
                   }
-                  <TabPane eventKey={3}>
-                    <MobileServiceView appName={this.props.match.params.id} />
-                  </TabPane>
+                  
                 </TabContent>
               </div>
             </TabContainer>

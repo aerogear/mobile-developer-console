@@ -13,8 +13,9 @@ type ServiceInstanceLister interface {
 	Watch() func() (watch.Interface, error)
 }
 
-type BindableMobileServiceLister interface {
-	List(namespace string) (*BindableMobileServiceList, error)
+type BindableMobileServiceCRUDL interface {
+	List(namespace string, mobileClientName string) (*BindableMobileServiceList, error)
+	Delete(namespace string, bindingName string) error
 	Create(namespace string, binding *scv1beta1.ServiceBinding, formData map[string]interface{}) (*scv1beta1.ServiceBinding, error)
 }
 type BuildCRUDL interface {

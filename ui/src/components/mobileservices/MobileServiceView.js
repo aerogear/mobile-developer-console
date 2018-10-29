@@ -11,7 +11,7 @@ class MobileServiceView extends Component {
     this.appName = props.appName
     this.createBindingCallback = this.createBindingCallback.bind(this)    
 
-    DataService.bindableServices().then(
+    DataService.bindableServices(this.appName).then(
       
       instances => {
             let unboundServices = [];
@@ -28,6 +28,7 @@ class MobileServiceView extends Component {
                     serviceLogoUrl: serviceIcon,
                     serviceIconClass: serviceIconClass,
                     serviceName: serviceName,
+                    serviceBindingName: instance.serviceBinding.metadata.name,
                     serviceInstanceName: instance.serviceInstance.metadata.name,
                     serviceId: serviceName,
                     serviceDescription: instance.serviceClass.spec.description,
@@ -99,7 +100,7 @@ class MobileServiceView extends Component {
     var credentialSecretName = createSecretName(serviceInstanceName + '-credentials-');
     var parametersSecretName = createSecretName(serviceInstanceName + '-bind-parameters-');
     
-    DataService.createBinding('test', serviceInstanceName, credentialSecretName, parametersSecretName, serviceClassExternalName, formData);
+    DataService.createBinding(this.appName, serviceInstanceName, credentialSecretName, parametersSecretName, serviceClassExternalName, formData);
   }
 
   render() {
