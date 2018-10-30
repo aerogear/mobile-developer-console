@@ -1,4 +1,3 @@
-export const PARAMETERS_SECRET_KEY = "parameters";
 
 export const DNS1123_SUBDOMAIN_VALIDATION = {
     pattern: /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/,

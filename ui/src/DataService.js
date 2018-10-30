@@ -1,5 +1,3 @@
-import {PARAMETERS_SECRET_KEY} from './components/bindingUtils'
-
 const getWSUrl = () => {
   const loc = window.location;
   let newUrl;

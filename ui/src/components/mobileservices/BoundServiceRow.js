@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  ListViewItem, Row, Col, DropdownKebab, MenuItem,
+  ListViewItem, Row, Col, DropdownKebab,
 } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
