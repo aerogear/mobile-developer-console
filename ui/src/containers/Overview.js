@@ -7,7 +7,7 @@ import { fetchServices } from '../actions/services';
 import { fetchBuilds } from '../actions/builds';
 import DataService from '../DataService';
 
-class Overview extends Component {
+export class Overview extends Component {
   componentDidMount() {
     this.props.fetchApps();
     this.props.fetchServices();
