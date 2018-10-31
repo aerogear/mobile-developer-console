@@ -115,18 +115,22 @@ func isNotFoundError(e error) bool {
 func (h *MobileClientsHandler) Create(c echo.Context) error {
 	reqData := new(MobileAppCreateRequest)
 	if err := c.Bind(reqData); err != nil {
+		c.Logger().Errorf("error creating mobile app: %v", err)
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 	if err := c.Validate(reqData); err != nil {
+		c.Logger().Errorf("error creating mobile app: %v", err)
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 	app := newMobileClientObject(*reqData, h.namespace)
 	err := h.mobileClientRepo.Create(app)
 	if err != nil {
+		c.Logger().Errorf("error creating mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	data, err := newMoileClientDataFromObject(app)
 	if err != nil {
+		c.Logger().Errorf("error creating mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, data)
@@ -137,12 +141,15 @@ func (h *MobileClientsHandler) Read(c echo.Context) error {
 	app, err := h.mobileClientRepo.ReadByName(name)
 	if err != nil {
 		if isNotFoundError(err) {
+			c.Logger().Errorf("error reading mobile app: %v", err)
 			return c.String(http.StatusNotFound, err.Error())
 		}
+		c.Logger().Errorf("error reading mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	data, err := newMoileClientDataFromObject(app)
 	if err != nil {
+		c.Logger().Errorf("error reading mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, data)
@@ -151,10 +158,12 @@ func (h *MobileClientsHandler) Read(c echo.Context) error {
 func (h *MobileClientsHandler) List(c echo.Context) error {
 	apps, err := h.mobileClientRepo.List()
 	if err != nil {
+		c.Logger().Errorf("error listing mobile apps: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	data, err := newMobileClientDataListFromObjects(apps)
 	if err != nil {
+		c.Logger().Errorf("error listing mobile apps: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, data)
@@ -164,16 +173,20 @@ func (h *MobileClientsHandler) Update(c echo.Context) error {
 	name := c.Param("name")
 	reqData := new(MobileAppUpdateRequest)
 	if err := c.Bind(reqData); err != nil {
+		c.Logger().Errorf("error updating mobile app: %v", err)
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 	if err := c.Validate(reqData); err != nil {
+		c.Logger().Errorf("error updating mobile app: %v", err)
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 	app, err := h.mobileClientRepo.ReadByName(name)
 	if err != nil {
 		if isNotFoundError(err) {
+			c.Logger().Errorf("error updating mobile app: %v", err)
 			return c.String(http.StatusNotFound, err.Error())
 		}
+		c.Logger().Errorf("error updating mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	if reqData.AppIdentifier != "" {
@@ -181,10 +194,12 @@ func (h *MobileClientsHandler) Update(c echo.Context) error {
 	}
 	uerr := h.mobileClientRepo.Update(app)
 	if uerr != nil {
+		c.Logger().Errorf("error updating mobile app: %v", uerr)
 		return c.String(http.StatusInternalServerError, uerr.Error())
 	}
 	data, err := newMoileClientDataFromObject(app)
 	if err != nil {
+		c.Logger().Errorf("error updating mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, data)
@@ -194,6 +209,7 @@ func (h *MobileClientsHandler) Delete(c echo.Context) error {
 	name := c.Param("name")
 	err := h.mobileClientRepo.DeleteByName(name)
 	if err != nil {
+		c.Logger().Errorf("error deleting mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	return c.NoContent(http.StatusOK)
@@ -204,6 +220,7 @@ func (h *MobileClientsHandler) Watch(c echo.Context) error {
 
 	err := ServeWS(c, getWatchInterface)
 	if err != nil {
+		c.Logger().Errorf("error watching mobile apps: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	return nil

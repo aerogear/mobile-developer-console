@@ -22,7 +22,7 @@ func NewMobileBuildsHandler(buildsCRUDL mobile.BuildCRUDL, namespace string) *Mo
 func (mbh *MobileBuildsHandler) List(c echo.Context) error {
 	builds, err := mbh.buildsCRUDL.List()
 	if err != nil {
-		c.Logger().Errorf("error listing builds %v", err)
+		c.Logger().Errorf("error listing builds: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, builds)
@@ -33,6 +33,7 @@ func (mbh *MobileBuildsHandler) Watch(c echo.Context) error {
 
 	err := ServeWS(c, getWatchInterface)
 	if err != nil {
+		c.Logger().Errorf("error watching builds: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	return nil
