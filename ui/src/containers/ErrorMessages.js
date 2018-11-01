@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ToastNotificationList, ToastNotification } from 'patternfly-react';
-import _ from 'lodash-es';
 import { withRouter } from 'react-router-dom';
 import { dismiss, dismissAll } from '../actions/errors';
 import { wsError } from '../DataService';
 
-class ErrorMessages extends Component {
+export class ErrorMessages extends Component {
   componentWillMount() {
     const { history, dismissAllErrors } = this.props;
     this.unlisten = history.listen(dismissAllErrors);
@@ -21,7 +20,7 @@ class ErrorMessages extends Component {
     wsError.message && errors.push({ error: { message: wsError.message } });
     return (
       <ToastNotificationList>
-        {_.uniq(errors.map(error => error.error.message)).map((error, index) => (
+        {[...new Set(errors.map(error => error.error.message))].map((error, index) => (
           <ToastNotification key={index} onDismiss={() => dismissError(error)}>
             <span>{error}</span>
           </ToastNotification>
