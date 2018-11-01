@@ -66,7 +66,7 @@ const MobileClientCardViewItem = (props) => {
               <PlatformIcon platform={app.spec.clientType} />
             </div>
             <div className="card-body-title">
-              <h1>{app.metadata.name}</h1>
+              <h1>{app.spec.name}</h1>
             </div>
           </CardBody>
           <CardFooter>

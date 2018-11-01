@@ -72,7 +72,7 @@ class ClientEditBaseClass extends Component {
     }
 
     if (this.state.editingMode) {
-      this.props.updateApp(newApp);
+      this.props.updateApp(this.state.app.metadata.name, newApp);
     } else {
       this.props.createApp(newApp);
     }

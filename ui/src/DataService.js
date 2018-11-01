@@ -72,8 +72,8 @@ const dataService = {
   deleteApp: name => deleteItem(`mobileclients/${name}`, name),
   triggerBuild: name => request(`buildconfigs/${name}/instantiate`, 'POST'),
   deleteBuildConfig: name => deleteItem(`buildconfigs/${name}`, name),
-  updateApp: async (app) => {
-    const response = await fetch(`${baseUrl}/mobileclients/aaa`, {
+  updateApp: async (id, app) => {
+    const response = await fetch(`${baseUrl}/mobileclients/${id}`, {
       method: 'POST',
       cache: 'no-cache',
       credentials: 'same-origin',
