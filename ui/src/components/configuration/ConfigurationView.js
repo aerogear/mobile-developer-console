@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'patternfly-react';
+import { Row, Col, Button } from 'patternfly-react';
 import Header from './Header';
 import ServiceSDKInfo from './ServiceSDKInfo';
 import InlineEdit from './InlineEdit';
@@ -59,7 +59,7 @@ class ConfigurationView extends Component {
         <Row>
           <Col md={12}>
             <Header>SDK Configuration</Header>
-            <h4><a>Android SDK Setup</a></h4>
+            <h4><Button bsStyle="link">Android SDK Setup</Button></h4>
           </Col>
           <Col md={12} className="service-configuration">
             <Header className="service-configuration-header">Service Configuration</Header>

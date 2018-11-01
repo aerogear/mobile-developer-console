@@ -11,6 +11,8 @@ import BuildInformation from './BuildInformation';
 import NoBuild from './NoBuild';
 import StartBuildButton from '../../containers/StartBuildButton';
 import DeleteItemButton from '../../containers/DeleteItemButton';
+import './MobileClientBuildListItem.css';
+
 
 const actions = id => (
   <React.Fragment>
@@ -42,7 +44,7 @@ const buildHistory = (builds) => {
 };
 
 const heading = (name, lastBuild) => (
-  <div className="pull-left text-left">
+  <div className="pull-left text-left mobile-client-build-listitem-header">
     {
       lastBuild && (
         <span>
@@ -51,9 +53,9 @@ const heading = (name, lastBuild) => (
         </span>
       )
     }
-    <a className="name">
+    <Button bsStyle="link" className="name">
       <span>{name}</span>
-    </a>
+    </Button>
   </div>
 );
 
@@ -133,8 +135,7 @@ Hide Build History
                         <Row>
                           <Col md={12}>
                             <div className="mobile-chevron">
-                              <a
-                                href=""
+                              <Button
                                 onClick={(e) => {
                                   e.preventDefault();
                                   this.setState({ buildHistoryOpen: !this.state.buildHistoryOpen });
@@ -144,7 +145,7 @@ Hide Build History
                                 { this.state.buildHistoryOpen ? 'Hide' : 'Show' }
                                 {' '}
 build history
-                              </a>
+                              </Button>
                             </div>
                             { this.state.buildHistoryOpen
                               ? <MobileClientBuildHistoryList appName={appName} className="collapse in" id="demo" mobileClientBuilds={clientBuildHistory} />
