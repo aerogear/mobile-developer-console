@@ -4,59 +4,61 @@ import UnboundServiceRow from './UnboundServiceRow';
 import DataService from '../../DataService';
 import BindingPanel from "./BindingPanel";
 import { createSecretName }  from '../bindingUtils';
+import { connect } from 'react-redux';
+import { fetchBindings } from '../../actions/serviceBinding';
 
 class MobileServiceView extends Component {
   constructor(props) {
     super(props);
     this.appName = props.appName
     this.createBindingCallback = this.createBindingCallback.bind(this)    
-
-    DataService.bindableServices(this.appName).then(
+    this.props.fetchBindings(this.appName);
+    // DataService.bindableServices(this.appName).then(
       
-      instances => {
-            let unboundServices = [];
-            let boundServices = [];
-             instances.forEach ( instance => {
+    //   instances => {
+    //         let unboundServices = [];
+    //         let boundServices = [];
+    //          instances.forEach ( instance => {
                
-                let serviceName = instance.name;
-                let serviceIcon = instance.imageUrl;
-                let serviceIconClass = instance.iconClass;
+    //             let serviceName = instance.name;
+    //             let serviceIcon = instance.imageUrl;
+    //             let serviceIconClass = instance.iconClass;
                 
-                if (instance.isBound) {
+    //             if (instance.isBound) {
                   
-                  boundServices.push({
-                    serviceLogoUrl: serviceIcon,
-                    serviceIconClass: serviceIconClass,
-                    serviceName: serviceName,
-                    serviceBindingName: instance.serviceBinding.metadata.name,
-                    serviceInstanceName: instance.serviceInstance.metadata.name,
-                    serviceId: serviceName,
-                    serviceDescription: instance.serviceClass.spec.description,
-                    documentationUrl: instance.serviceClass.spec.externalMetadata.documentationUrl20,
-                    configuration: instance.configuration,
-                    setupText: 'Identity Management SDK setup',            
-                  });
-                } else {
-                  unboundServices.push({
-                    serviceLogoUrl: serviceIcon,
-                    serviceIconClass: serviceIconClass,
-                    serviceName: serviceName,
-                    serviceInstanceName: instance.serviceInstance.metadata.name,
-                    serviceId: serviceName,
-                    bindingSchema : instance.servicePlan.spec.serviceBindingCreateParameterSchema,
-                    form : instance.servicePlan.spec.externalMetadata.schemas.service_binding.create.openshift_form_definition,
-                    serviceDescription: instance.serviceClass.spec.description,
-                    serviceClassExternalName: instance.serviceClass.spec.externalMetadata.serviceName,
-                    setupText: 'Mobile Metrics SDK setups',
-                  });
-                }
+    //               boundServices.push({
+    //                 serviceLogoUrl: serviceIcon,
+    //                 serviceIconClass: serviceIconClass,
+    //                 serviceName: serviceName,
+    //                 serviceBindingName: instance.serviceBinding.metadata.name,
+    //                 serviceInstanceName: instance.serviceInstance.metadata.name,
+    //                 serviceId: serviceName,
+    //                 serviceDescription: instance.serviceClass.spec.description,
+    //                 documentationUrl: instance.serviceClass.spec.externalMetadata.documentationUrl20,
+    //                 configuration: instance.configuration,
+    //                 setupText: 'Identity Management SDK setup',            
+    //               });
+    //             } else {
+    //               unboundServices.push({
+    //                 serviceLogoUrl: serviceIcon,
+    //                 serviceIconClass: serviceIconClass,
+    //                 serviceName: serviceName,
+    //                 serviceInstanceName: instance.serviceInstance.metadata.name,
+    //                 serviceId: serviceName,
+    //                 bindingSchema : instance.servicePlan.spec.serviceBindingCreateParameterSchema,
+    //                 form : instance.servicePlan.spec.externalMetadata.schemas.service_binding.create.openshift_form_definition,
+    //                 serviceDescription: instance.serviceClass.spec.description,
+    //                 serviceClassExternalName: instance.serviceClass.spec.externalMetadata.serviceName,
+    //                 setupText: 'Mobile Metrics SDK setups',
+    //               });
+    //             }
                 
-                this.state.boundServices = boundServices;
-                this.state.unboundServices = unboundServices;
-                this.setState(this.state);
-            })
-          }
-        );
+    //             this.state.boundServices = boundServices;
+    //             this.state.unboundServices = unboundServices;
+    //             this.setState(this.state);
+    //         })
+    //       }
+    //     );
       
     this.state = {
       boundServices: [],
@@ -114,5 +116,16 @@ class MobileServiceView extends Component {
   }
 }
 
-export default MobileServiceView;
 
+function mapStateToProps(state) {
+  return {
+    boundServices: state.boundServices,
+    unboundServices: state.unboundServices
+  };
+}
+
+const mapDispatchToProps = {
+  fetchBindings
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MobileServiceView);

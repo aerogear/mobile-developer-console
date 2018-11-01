@@ -5,6 +5,7 @@ import buildConfigs from './buildConfigs';
 import builds from './builds';
 import user from './user';
 import config from './config';
+import serviceBindings from './serviceBindings';
 
 export default combineReducers({
   apps,
@@ -12,5 +13,6 @@ export default combineReducers({
   buildConfigs,
   builds,
   user,
-  config
+  config, 
+  serviceBindings
 });

@@ -2,9 +2,11 @@ package web
 
 import (
 	"github.com/labstack/echo"
+
+	"strings"
+
 	"github.com/labstack/echo/middleware"
 	"gopkg.in/go-playground/validator.v9"
-	"strings"
 )
 
 type RequestValidator struct {
