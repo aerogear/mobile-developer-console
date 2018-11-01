@@ -1,4 +1,4 @@
-import CreateMobileClientBaseClass from './CreateMobileClientBaseClass';
+import EditMobileClientBaseClass from './EditMobileClientBaseClass';
 import { PLATFORM_XAMARIN } from './Constants';
 import { connect } from 'react-redux';
 import { setStatus, setFieldValue } from '../../actions/apps';
@@ -6,7 +6,7 @@ import { setStatus, setFieldValue } from '../../actions/apps';
 /**
  * Component for the Xamarin specific create mobile client form.
  */
-class CreateXamarinClient extends CreateMobileClientBaseClass {
+class CreateXamarinClient extends EditMobileClientBaseClass {
   constructor(props) {
     super(PLATFORM_XAMARIN, props);
     this.config.appIdentifier.example = 'AeroGear.Xamarin.MyApp';

@@ -1,4 +1,4 @@
-import CreateMobileClientBaseClass from './CreateMobileClientBaseClass';
+import EditMobileClientBaseClass from './EditMobileClientBaseClass';
 import { PLATFORM_ANDROID } from './Constants';
 import { connect } from 'react-redux';
 import { setStatus, setFieldValue } from '../../actions/apps';
@@ -6,7 +6,7 @@ import { setStatus, setFieldValue } from '../../actions/apps';
 /**
  * Component for the Android specific create mobile client form.
  */
-class CreateAndroidClient extends CreateMobileClientBaseClass {
+class CreateAndroidClient extends EditMobileClientBaseClass {
   constructor(props) {
     super(PLATFORM_ANDROID, props);
     this.config.appIdentifier.example = 'org.aerogear.android.myapp';

@@ -6,7 +6,7 @@ import { VerticalFormField } from './VerticalFormField';
 /**
  * Component for the Android specific create mobile client form.
  */
-class CreateMobileClientBaseClass extends Component {
+class EditMobileClientBaseClass extends Component {
   constructor(platformName, props) {
     super(props);
     this.config = {
@@ -135,4 +135,4 @@ class CreateMobileClientBaseClass extends Component {
   }
 }
 
-export default CreateMobileClientBaseClass;
+export default EditMobileClientBaseClass;

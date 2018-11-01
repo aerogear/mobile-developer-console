@@ -1,4 +1,4 @@
-import CreateMobileClientBaseClass from './CreateMobileClientBaseClass';
+import EditMobileClientBaseClass from './EditMobileClientBaseClass';
 import { PLATFORM_CORDOVA } from './Constants';
 import { connect } from 'react-redux';
 import { setStatus, setFieldValue } from '../../actions/apps';
@@ -6,7 +6,7 @@ import { setStatus, setFieldValue } from '../../actions/apps';
 /**
  * Component for the Cordova specific create mobile client form.
  */
-class CreateCordovaClient extends CreateMobileClientBaseClass {
+class CreateCordovaClient extends EditMobileClientBaseClass {
   constructor(props) {
     super(PLATFORM_CORDOVA, props);
     this.config.appIdentifier.example = 'org.aerogear.cordova.myapp';

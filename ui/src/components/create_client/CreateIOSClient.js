@@ -1,4 +1,4 @@
-import CreateMobileClientBaseClass from './CreateMobileClientBaseClass';
+import EditMobileClientBaseClass from './EditMobileClientBaseClass';
 import { PLATFORM_IOS } from './Constants';
 import { connect } from 'react-redux';
 import { setStatus, setFieldValue } from '../../actions/apps';
@@ -6,7 +6,7 @@ import { setStatus, setFieldValue } from '../../actions/apps';
 /**
  * Component for the iOS specific create mobile client form.
  */
-class CreateIOSClient extends CreateMobileClientBaseClass {
+class CreateIOSClient extends EditMobileClientBaseClass {
   constructor(props) {
     super(PLATFORM_IOS, props);
     this.config.appIdentifier.label = '* Bundle ID';
