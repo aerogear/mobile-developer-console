@@ -29,8 +29,8 @@ const MobileClientCardViewItem = (props) => {
       <Card matchHeight /*accented*/ className="mobile-client-card">
         <CardHeading>
           <DropdownKebab id={app.metadata.name} pullRight className="card-dropdown-kebab">
-            <DeleteItemButton itemType="app" itemName={appName} />
-            <EditItemButton itemType="app" itemName={appName} />
+            <EditItemButton itemName={appName} />
+            <DeleteItemButton itemType="app" itemName={appName} item={app} />
           </DropdownKebab>
           <CardTitle>
             {
