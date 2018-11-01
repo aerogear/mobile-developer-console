@@ -131,11 +131,16 @@ const resourceReducer = actions => (state = defaultState, action) => {
         updateError: false,
       };
     case actions.updateSuccess:
+      index = state.items.findIndex(item => item.metadata.name === action.result.metadata.name);
       return {
         ...state,
         isUpdating: false,
         updateError: false,
-        items: [...state.items, action.result],
+        items: [
+          ...state.items.slice(0, index),
+          action.result,
+          ...state.items.slice(index + 1),
+        ],
       };
     case actions.updateFailure:
       return {
