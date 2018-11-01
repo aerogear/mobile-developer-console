@@ -20,13 +20,12 @@ class ClientEditBaseClass extends Component {
     this.createClient = this.createClient.bind(this);
     
     if (editingMode) {
-      var index = this.props.apps.items.findIndex(item => item.metadata.name === this.props.itemName);
+      var app = this.getAppToEdit();
 
       this.state = { ...this.state, 
         editingMode: editingMode,
-        app: this.props.apps.items[index]
       };
-      this.props.registerPlatform( { name: this.state.app.spec.clientType, selected: true });
+      this.props.registerPlatform( { name: app.spec.clientType, selected: true });
     } else {
       for (var key in this.props.platforms) {
         var platform = this.props.platforms[key]
@@ -35,9 +34,18 @@ class ClientEditBaseClass extends Component {
     }
   }
 
+  getAppToEdit() {
+    if (this.props.itemName) {
+      var index = this.props.apps.items.findIndex(item => item.metadata.name === this.props.itemName);
+      return this.props.apps.items[index];  
+    }
+    return null;
+  }
+
+
   open = async () => {
     if (this.state.editingMode) {
-      var platform = this.state.app.spec.clientType;
+      var platform = this.getAppToEdit().spec.clientType;
       this.props.selectPlatform(platform)
     } else {
       this.props.resetForm();
@@ -53,7 +61,7 @@ class ClientEditBaseClass extends Component {
 
   getSelectedPlatform() {
     if (this.state.editingMode) {
-      return this.state.app.spec.clientType;
+      return this.getAppToEdit().spec.clientType;
     } else {
       var platforms = this.props.apps.createClientAppDialog.platforms;
       return Object.keys(platforms).filter(function(key) {
@@ -72,7 +80,7 @@ class ClientEditBaseClass extends Component {
     }
 
     if (this.state.editingMode) {
-      this.props.updateApp(this.state.app.metadata.name, newApp);
+      this.props.updateApp(this.getAppToEdit().metadata.name, newApp);
     } else {
       this.props.createApp(newApp);
     }
@@ -122,16 +130,16 @@ class ClientEditBaseClass extends Component {
 
   renderPlatform() {
     if (this.props.apps.createClientAppDialog.platforms[PLATFORM_ANDROID].selected) {
-      return <CreateAndroidClient app={ this.state.app }/>
+      return <CreateAndroidClient app={ this.getAppToEdit() }/>
     }
     if (this.props.apps.createClientAppDialog.platforms[PLATFORM_IOS].selected) {
-      return <CreateIOSClient app={ this.state.app }/>
+      return <CreateIOSClient app={ this.getAppToEdit() }/>
     }
     if (this.props.apps.createClientAppDialog.platforms[PLATFORM_CORDOVA].selected) {
-      return <CreateCordovaClient app={ this.state.app }/>
+      return <CreateCordovaClient app={ this.getAppToEdit() }/>
     }
     if (this.props.apps.createClientAppDialog.platforms[PLATFORM_XAMARIN].selected) {
-      return <CreateXamarinClient app={ this.state.app } />
+      return <CreateXamarinClient app={ this.getAppToEdit() } />
     }
   }
 
