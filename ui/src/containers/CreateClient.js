@@ -5,7 +5,7 @@ import { createApp, registerPlatform, selectPlatform, resetForm } from '../actio
 
 class CreateClient extends ClientEditBaseClass {
   constructor(props) {
-    super(props);
+    super(props, false);
   }
 }
 

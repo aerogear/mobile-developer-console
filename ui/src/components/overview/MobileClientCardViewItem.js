@@ -4,12 +4,6 @@ import { Link } from 'react-router-dom';
 import DeleteItemButton from '../../containers/DeleteItemButton';
 import EditItemButton from '../../containers/EditItemButton';
 import PlatformIcon from '../common/PlatformIcon';
-import {
-  PLATFORM_ANDROID,
-  PLATFORM_IOS,
-  PLATFORM_CORDOVA,
-  PLATFORM_XAMARIN,
-} from '../../components/create_client/Constants';
 
 const getServiceIcons = (services) => {
   const icons = {

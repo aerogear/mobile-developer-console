@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { MenuItem, Modal, Icon, Button, FormGroup, Alert} from 'patternfly-react';
+import React from 'react';
+import { MenuItem} from 'patternfly-react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { deleteApp, fetchApp, selectPlatform, registerPlatform, updateApp } from '../actions/apps';
