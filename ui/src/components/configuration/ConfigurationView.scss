@@ -1,5 +1,21 @@
-.mobile-client-config {
-  margin-bottom: 25px
+.configurationView {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+}
+
+.configurationView > * {
+  flex: 1 100%;
+  margin-left: 16px;
+  margin-right: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Medium screens */
+@media all and (min-width: 600px) {
+  /* We tell both sidebars to share a row */
+  .aside { flex: 1 auto; }
 }
 
 .service-configuration {
@@ -12,4 +28,26 @@
 
 .dl-horizontal.left dt {
   text-align: left;
+}
+.mobile-client-config {
+  display: block;
+  flex: 1 100%;
+  margin-bottom: 32px;
+} 
+
+.copy-to-clipboard-multiline pre {
+  background-color: #fff;
+  word-break: normal;
+  word-wrap: normal;
+  margin-top: 0px;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+.copy-to-clipboard-multiline .copy-btn {
+  box-shadow: none;
+  position: absolute;
+  right: 0;
+  top: 0
 }

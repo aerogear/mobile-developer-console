@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Row, Col, Button } from 'patternfly-react';
 import Header from './Header';
-import ServiceSDKInfo from './ServiceSDKInfo';
-import InlineEdit from './InlineEdit';
-import CopyToClipboardMultiline from '../common/CopyToClipboardMultiline';
+import { ServiceSDKInfo } from './ServiceSDKInfo';
+import { ServiceSDKDocs } from './ServiceSDKDocs';
+import { CopyToClipboardMultiline } from '../common/CopyToClipboardMultiline';
 
 import './ConfigurationView.css';
+
+// TODO remove mock values
 
 const config = `{
   "version": 1,
@@ -22,61 +23,45 @@ const serviceSDKInfo = [
     serviceId: 'dh-keycloak-apb-h7k9j',
     serviceDescription: 'Identity Management - Identity and Access Management',
     setupText: 'Identity Management SDK setup',
-  }, {
+    docsLink: 'https://docs.aerogear.org/aerogear/latest/identity-management.html#setup'
+  },
+  {
     serviceLogoUrl: 'https://avatars1.githubusercontent.com/u/3380462?s=200&v=4',
     serviceName: 'Mobile Metrics',
     serviceId: 'dh-metrics-apb-wqm5c',
     serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
     setupText: 'Mobile Metrics SDK setups',
-  },
+    docsLink: 'https://docs.aerogear.org/aerogear/latest/mobile-metrics.html#setup'
+  }
 ];
 
 class ConfigurationView extends Component {
   render() {
     return (
       <React.Fragment>
-        <Row>
-          <Col md={6}>
-            <Header>Mobile Client Details</Header>
-            <dl className="dl-horizontal left">
-              <dt>Client Type:</dt>
-              <dd>android</dd>
-              <dt>Client ID:</dt>
-              <dd>com.aerogear.androidshowcase</dd>
-              <dt>Client API Key:</dt>
-              <dd>b331aa8c-6c39-5f07-81f8-9eccf7fd6702</dd>
-              <dt>DMZ Url:</dt>
-              <dd><InlineEdit placeholder="Set DMZ Url" noHorizontalPadding /></dd>
-            </dl>
-          </Col>
-          <Col md={6}>
-            <Header>Mobile Client Config</Header>
-            <CopyToClipboardMultiline className="mobile-client-config">
-              {config}
-            </CopyToClipboardMultiline>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
+        <div className="configurationView">
+          <div>
             <Header>SDK Configuration</Header>
-            <h4><Button bsStyle="link">Android SDK Setup</Button></h4>
-          </Col>
-          <Col md={12} className="service-configuration">
-            <Header className="service-configuration-header">Service Configuration</Header>
-            {
-              serviceSDKInfo.map((info, index) => (
-                <ServiceSDKInfo
-                  serviceLogoUrl={info.serviceLogoUrl}
-                  serviceName={info.serviceName}
-                  serviceId={info.serviceId}
-                  serviceDescription={info.serviceDescription}
-                  setupText={info.setupText}
-                  key={index}
-                />
-              ))
-            }
-          </Col>
-        </Row>
+            <ServiceSDKDocs />
+
+            <h4>Service specific configuration steps</h4>
+            {serviceSDKInfo.map((info, index) => (
+              <ServiceSDKInfo
+                serviceLogoUrl={info.serviceLogoUrl}
+                serviceName={info.serviceName}
+                serviceId={info.serviceId}
+                serviceDescription={info.serviceDescription}
+                setupText={info.setupText}
+                docsLink={info.docsLink}
+                key={index}
+              />
+            ))}
+          </div>
+          <div>
+            <Header>mobile-services.json</Header>
+            <CopyToClipboardMultiline className="mobile-client-config">{config}</CopyToClipboardMultiline>
+          </div>
+        </div>
       </React.Fragment>
     );
   }
