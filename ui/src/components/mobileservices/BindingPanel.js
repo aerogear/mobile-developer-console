@@ -3,6 +3,9 @@ import React, { Component } from 'react';
 import {
   Wizard
 } from 'patternfly-react';
+import { connect } from 'react-redux';
+import { createSecretName }  from '../bindingUtils';
+import { createBinding } from '../../actions/serviceBinding'
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import Form from "react-jsonschema-form";
@@ -25,7 +28,6 @@ class BindingPanel extends Component {
     this.onNextButtonClick = this.onNextButtonClick.bind(this);
     this.onBackButtonClick = this.onBackButtonClick.bind(this);
     this.renderPropertiesSchema = this.renderPropertiesSchema.bind(this);
-    this.createBindingCallback = props.createBindingCallback;
   }
 
   open() {
@@ -113,8 +115,11 @@ onBackButtonClick() {
   
       stepChanged = (step) => {
         if (step === 2) {
+          console.log((this.state));
           this.setState({ loading: true });
-          this.createBindingCallback(this.state.service.serviceInstanceName, this.state.service.serviceClassExternalName, this.formData);
+          const credentialSecretName = createSecretName(this.state.service.serviceInstanceName + '-credentials-');
+          const parametersSecretName = createSecretName(this.state.service.serviceInstanceName + '-bind-parameters-');
+          this.props.createBinding(this.props.appName, this.state.service.serviceInstanceName, credentialSecretName, parametersSecretName, this.state.service.serviceClassExternalName, this.formData);
         }
       }
   
@@ -143,7 +148,7 @@ onBackButtonClick() {
 }
 
 //This renders the json fields using the rules from the form definition.
-function OpenShiftObjectTemplate({ TitleField, uiSchema,schema, properties, title, description }) {
+function OpenShiftObjectTemplate({ TitleField, uiSchema, properties, title, description }) {
   const form = uiSchema.form
 
   return (
@@ -190,4 +195,9 @@ function getFieldSet(field, properties) {
   }</fieldset>;
 }
 
-export default BindingPanel;
+
+const mapDispatchToProps = {
+  createBinding
+};
+
+export default connect(null, mapDispatchToProps)(BindingPanel);

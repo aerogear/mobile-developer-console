@@ -1,18 +1,13 @@
 import React, { Component } from 'react';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
-import DataService from '../../DataService';
 import BindingPanel from "./BindingPanel";
-import { createSecretName }  from '../bindingUtils';
 import { connect } from 'react-redux';
 import { fetchBindings } from '../../actions/serviceBinding';
 
 class MobileServiceView extends Component {
   constructor(props) {
     super(props);
-    this.createBindingCallback = this.createBindingCallback.bind(this)    
-   
-
     this.boundServiceRows = this.boundServiceRows.bind(this);
     this.unboundServiceRows = this.unboundServiceRows.bind(this);
     this.showBindingDialog = this.showBindingDialog.bind(this);
@@ -50,26 +45,19 @@ class MobileServiceView extends Component {
     this.bindingDialog.show(service);
   }
 
-  createBindingCallback(serviceInstanceName, serviceClassExternalName, formData) {
-    var credentialSecretName = createSecretName(serviceInstanceName + '-credentials-');
-    var parametersSecretName = createSecretName(serviceInstanceName + '-bind-parameters-');
-    
-    DataService.createBinding(this.props.appName, serviceInstanceName, credentialSecretName, parametersSecretName, serviceClassExternalName, formData);
-  }
-
   render() {
     return (
       <div>
         {this.boundServiceRows()}
         {this.unboundServiceRows()}
-        <BindingPanel onRef= {(dialog)=>{this.bindingDialog = dialog; }} createBindingCallback={this.createBindingCallback}/>
+        <BindingPanel onRef= {(dialog)=>{this.bindingDialog = dialog; }} />
       </div>
     );
   }
 }
 
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   if (state.serviceBindings.items && state.serviceBindings.items.length >= 1) {
     return {
       boundServices: state.serviceBindings.items[0].boundServices,

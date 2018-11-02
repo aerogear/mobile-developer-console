@@ -6,13 +6,13 @@ export const DNS1123_SUBDOMAIN_VALIDATION = {
   };
 
 export function createSecretName(prefix) {
-    var secretNamePrefixMaxLength = DNS1123_SUBDOMAIN_VALIDATION.length - 6; //We append a 5 digit code and a -;
+    const secretNamePrefixMaxLength = DNS1123_SUBDOMAIN_VALIDATION.length - 6; //We append a 5 digit code and a -;
 
     if (prefix.length > secretNamePrefixMaxLength) {
         prefix = prefix.substring(0, secretNamePrefixMaxLength);
     }
 
-    var randomString = Math.round((Math.pow(36, 6) - Math.random() * Math.pow(36, 6))).toString(36).slice(1);
+    const randomString = Math.round((Math.pow(36, 6) - Math.random() * Math.pow(36, 6))).toString(36).slice(1);
 
     prefix += randomString;
     return prefix;
