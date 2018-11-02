@@ -7,7 +7,7 @@ oc cluster down
 export DEFAULT_CLUSTER_IP=$(ifconfig $(netstat -nr | awk '{if (($1 == "0.0.0.0" || $1 == "default") && $2 != "0.0.0.0" && $2 ~ /[0-9\.]+{4}/){print $NF;} }' | head -n1) | grep 'inet ' | awk '{print $2}')
 
 oc cluster up --public-hostname=$DEFAULT_CLUSTER_IP.nip.io --routing-suffix=$DEFAULT_CLUSTER_IP.nip.io \
---enable=*,service-catalog,automation-service-broker,template-service-broker
+--enable=*,service-catalog,automation-service-broker,template-service-broker || exit 1
 
 oc login -u system:admin
 
