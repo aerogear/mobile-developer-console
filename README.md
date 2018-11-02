@@ -43,7 +43,7 @@ You can follow the docs [here](https://github.com/aerogear/mobile-core)
 Download [archive with oc client binary](https://github.com/openshift/origin/releases/tag/v3.11.0), extract it, add it to your `$PATH` and run:
 
 ```
-oc cluster up --enable=*,service-catalog,automation-service-broker,template-service-broker
+./scripts/oc-cluster-up.sh
 ```
 
 See [OpenShift documentation](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md) for more details.
@@ -55,24 +55,10 @@ Since `oc cluster up` is causing problems for users using Mac OS (since OpenShif
 To spin up OpenShift 3.11 cluster locally, run:
 
 ```
-MINISHIFT_ENABLE_EXPERIMENTAL=y minishift start --openshift-version v3.11.0 --extra-clusterup-flags "--enable=*,service-catalog,automation-service-broker,template-service-broker"
+./scripts/minishift.sh
 ```
 
-See [Minishift](https://docs.okd.io/latest/minishift/getting-started/index.html) documentation for more details
-
-#### Cluster configuration
-
-Once your OpenShift cluster is up & running, it's required to run a post-installation configuration script:
-1. `oc login` to your cluster as user with **cluster-admin** privileges
-2. Export the name of `ansible-service-broker` project in your OpenShift instance (usually it's called `ansible-service-broker`, `openshift-ansible-service-broker` or `openshift-automation-service-broker`), i.e 
-```
-export ASB_PROJECT_NAME='openshift-automation-service-broker'
-```
-3. Run the script
-```
-./scripts/post_install.sh
-```
-4. Wait couple of minutes until Ansible Service Broker is running again
+See [Minishift](https://docs.okd.io/latest/minishift/getting-started/index.html) documentation for more details.
 
 #### Provision Mobile Services
 1. Navigate to your project in OpenShift console and search for `Mobile Developer Console` in the catalog (if it's not available, try to refresh the page and check that Ansible Service Broker is running)
@@ -84,7 +70,16 @@ export ASB_PROJECT_NAME='openshift-automation-service-broker'
 
 > :information_source: Supported version is OpenShift 3.11
 
-Follow the [steps here](#Cluster-configuration) (steps for configuration are the same for local & remote OpenShift instances).
+1. `oc login` to your cluster as user with **cluster-admin** privileges
+2. Export the name of `ansible-service-broker` project in your OpenShift instance (usually it's called `ansible-service-broker`, `openshift-ansible-service-broker` or `openshift-automation-service-broker`), i.e 
+```
+export ASB_PROJECT_NAME='openshift-automation-service-broker'
+```
+3. Run the script
+```
+./scripts/post_install.sh
+```
+4. Wait couple of minutes until Ansible Service Broker is running again
 
 ## Development
 
