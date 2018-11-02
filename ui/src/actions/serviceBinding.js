@@ -8,8 +8,8 @@ export const SERVICE_BINDINGS_FAILURE = 'SERVICE_BINDINGS_FAILURE';
 
 export const fetchBindings = mobileClientName => fetchAction(
   [SERVICE_BINDINGS_REQUEST, SERVICE_BINDINGS_SUCCESS, SERVICE_BINDINGS_FAILURE],
-  DataService.bindableServices(mobileClientName),
-);
+  async () => DataService.bindableServices(mobileClientName),
+)();
 
 export const SERVICE_BINDING_CREATE_REQUEST = 'SERVICE_BINDING_CREATE_REQUEST';
 export const SERVICE_BINDING_CREATE_SUCCESS = 'SERVICE_BINDING_CREATE_SUCCESS';

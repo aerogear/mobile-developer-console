@@ -10,71 +10,23 @@ import { fetchBindings } from '../../actions/serviceBinding';
 class MobileServiceView extends Component {
   constructor(props) {
     super(props);
-    this.appName = props.appName
     this.createBindingCallback = this.createBindingCallback.bind(this)    
-    this.props.fetchBindings(this.appName);
-    // DataService.bindableServices(this.appName).then(
-      
-    //   instances => {
-    //         let unboundServices = [];
-    //         let boundServices = [];
-    //          instances.forEach ( instance => {
-               
-    //             let serviceName = instance.name;
-    //             let serviceIcon = instance.imageUrl;
-    //             let serviceIconClass = instance.iconClass;
-                
-    //             if (instance.isBound) {
-                  
-    //               boundServices.push({
-    //                 serviceLogoUrl: serviceIcon,
-    //                 serviceIconClass: serviceIconClass,
-    //                 serviceName: serviceName,
-    //                 serviceBindingName: instance.serviceBinding.metadata.name,
-    //                 serviceInstanceName: instance.serviceInstance.metadata.name,
-    //                 serviceId: serviceName,
-    //                 serviceDescription: instance.serviceClass.spec.description,
-    //                 documentationUrl: instance.serviceClass.spec.externalMetadata.documentationUrl20,
-    //                 configuration: instance.configuration,
-    //                 setupText: 'Identity Management SDK setup',            
-    //               });
-    //             } else {
-    //               unboundServices.push({
-    //                 serviceLogoUrl: serviceIcon,
-    //                 serviceIconClass: serviceIconClass,
-    //                 serviceName: serviceName,
-    //                 serviceInstanceName: instance.serviceInstance.metadata.name,
-    //                 serviceId: serviceName,
-    //                 bindingSchema : instance.servicePlan.spec.serviceBindingCreateParameterSchema,
-    //                 form : instance.servicePlan.spec.externalMetadata.schemas.service_binding.create.openshift_form_definition,
-    //                 serviceDescription: instance.serviceClass.spec.description,
-    //                 serviceClassExternalName: instance.serviceClass.spec.externalMetadata.serviceName,
-    //                 setupText: 'Mobile Metrics SDK setups',
-    //               });
-    //             }
-                
-    //             this.state.boundServices = boundServices;
-    //             this.state.unboundServices = unboundServices;
-    //             this.setState(this.state);
-    //         })
-    //       }
-    //     );
-      
-    this.state = {
-      boundServices: [],
-      unboundServices: [],
-    };
+   
 
     this.boundServiceRows = this.boundServiceRows.bind(this);
     this.unboundServiceRows = this.unboundServiceRows.bind(this);
     this.showBindingDialog = this.showBindingDialog.bind(this);
   }
 
+  componentDidMount() {
+    this.props.fetchBindings(this.props.appName);
+  }
+
   boundServiceRows() {
     const rows = [];
-    if (this.state.boundServices) {
+    if (this.props.boundServices) {
       rows.push(<h2 key="bound-services">Bound Services</h2>);
-      this.state.boundServices.forEach((service) => {
+      this.props.boundServices.forEach((service) => {
         rows.push(<BoundServiceRow key={service.serviceId} service={service} />);
       });
     }
@@ -85,9 +37,9 @@ class MobileServiceView extends Component {
   unboundServiceRows() {
     const rows = [];
     
-    if (this.state.unboundServices) {
+    if (this.props.unboundServices) {
       rows.push(<h2 key="unbound-services">Unbound Services</h2>);
-      this.state.unboundServices.forEach((service) => {
+      this.props.unboundServices.forEach((service) => {
         rows.push(<UnboundServiceRow key={service.serviceId} service={service} showBindingDialog={this.showBindingDialog} />);
       });
     }
@@ -102,7 +54,7 @@ class MobileServiceView extends Component {
     var credentialSecretName = createSecretName(serviceInstanceName + '-credentials-');
     var parametersSecretName = createSecretName(serviceInstanceName + '-bind-parameters-');
     
-    DataService.createBinding(this.appName, serviceInstanceName, credentialSecretName, parametersSecretName, serviceClassExternalName, formData);
+    DataService.createBinding(this.props.appName, serviceInstanceName, credentialSecretName, parametersSecretName, serviceClassExternalName, formData);
   }
 
   render() {
@@ -117,11 +69,18 @@ class MobileServiceView extends Component {
 }
 
 
-function mapStateToProps(state) {
-  return {
-    boundServices: state.boundServices,
-    unboundServices: state.unboundServices
-  };
+function mapStateToProps(state, ownProps) {
+  if (state.serviceBindings.items && state.serviceBindings.items.length >= 1) {
+    return {
+      boundServices: state.serviceBindings.items[0].boundServices,
+      unboundServices: state.serviceBindings.items[0].unboundServices
+    };
+  } else {
+    return {
+      boundServices: [],
+      unboundServices: []
+    };
+  }
 }
 
 const mapDispatchToProps = {

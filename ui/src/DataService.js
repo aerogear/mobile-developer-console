@@ -89,54 +89,49 @@ const dataService = {
     return response.json();
   },
 
-  bindableServices: async (mobileClientName) => {
-    fetchItems(`${baseUrl}/bindableservices/${mobileClientName}`)
-    .then(instances => {
-            let unboundServices = [];
-            let boundServices = [];
-            let state = {};
-             instances.forEach ( instance => {
-               
-                let serviceName = instance.name;
-                let serviceIcon = instance.imageUrl;
-                let serviceIconClass = instance.iconClass;
-                
-                if (instance.isBound) {
-                  
-                  boundServices.push({
-                    serviceLogoUrl: serviceIcon,
-                    serviceIconClass: serviceIconClass,
-                    serviceName: serviceName,
-                    serviceBindingName: instance.serviceBinding.metadata.name,
-                    serviceInstanceName: instance.serviceInstance.metadata.name,
-                    serviceId: serviceName,
-                    serviceDescription: instance.serviceClass.spec.description,
-                    documentationUrl: instance.serviceClass.spec.externalMetadata.documentationUrl20,
-                    configuration: instance.configuration,
-                    setupText: 'Identity Management SDK setup',            
-                  });
-                } else {
-                  unboundServices.push({
-                    serviceLogoUrl: serviceIcon,
-                    serviceIconClass: serviceIconClass,
-                    serviceName: serviceName,
-                    serviceInstanceName: instance.serviceInstance.metadata.name,
-                    serviceId: serviceName,
-                    bindingSchema : instance.servicePlan.spec.serviceBindingCreateParameterSchema,
-                    form : instance.servicePlan.spec.externalMetadata.schemas.service_binding.create.openshift_form_definition,
-                    serviceDescription: instance.serviceClass.spec.description,
-                    serviceClassExternalName: instance.serviceClass.spec.externalMetadata.serviceName,
-                    setupText: 'Mobile Metrics SDK setups',
-                  });
-                }
-                
-                state.boundServices = boundServices;
-                state.unboundServices = unboundServices;
-                return state;
-            })
-          }
-        );
+  bindableServices: async mobileClientName => {
+    let unboundServices = [];
+    let boundServices = [];
+    
+    const instances = await fetchItems(`${baseUrl}/bindableservices/${mobileClientName}`)
+            
+    instances.forEach ( instance => {        
+      let serviceName = instance.name;
+      let serviceIcon = instance.imageUrl;
+      let serviceIconClass = instance.iconClass;
       
+      if (instance.isBound) {
+        
+        boundServices.push({
+          serviceLogoUrl: serviceIcon,
+          serviceIconClass: serviceIconClass,
+          serviceName: serviceName,
+          serviceBindingName: instance.serviceBinding.metadata.name,
+          serviceInstanceName: instance.serviceInstance.metadata.name,
+          serviceId: serviceName,
+          serviceDescription: instance.serviceClass.spec.description,
+          documentationUrl: instance.serviceClass.spec.externalMetadata.documentationUrl20,
+          configuration: instance.configuration,
+          setupText: 'Identity Management SDK setup',            
+        });
+      } else {
+        unboundServices.push({
+          serviceLogoUrl: serviceIcon,
+          serviceIconClass: serviceIconClass,
+          serviceName: serviceName,
+          serviceInstanceName: instance.serviceInstance.metadata.name,
+          serviceId: serviceName,
+          bindingSchema : instance.servicePlan.spec.serviceBindingCreateParameterSchema,
+          form : instance.servicePlan.spec.externalMetadata.schemas.service_binding.create.openshift_form_definition,
+          serviceDescription: instance.serviceClass.spec.description,
+          serviceClassExternalName: instance.serviceClass.spec.externalMetadata.serviceName,
+          setupText: 'Mobile Metrics SDK setups',
+        });
+      }
+      
+    })
+
+    return {boundServices: boundServices, unboundServices: unboundServices};
   },
   
   createBinding: async (mobileClientName, serviceInstanceName, credentialSecretName, parametersSecretName, serviceClassExternalName, formData) => {
