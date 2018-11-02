@@ -9,14 +9,10 @@ MINISHIFT_ENABLE_EXPERIMENTAL=y minishift start --openshift-version v3.11.0 \
 
 oc login -u system:admin
 
-export ROUTING_SUFFIX=$(minishift ip).nip.io
-
-./setup-router-certs.sh
-
 export ASB_PROJECT_NAME='openshift-automation-service-broker'
 
 ./post_install.sh
 
-echo
-echo "*******************"
-echo "Cluster certificate is located in /tmp/mini-certs/localcluster.crt. Install it to your mobile device."
+export ROUTING_SUFFIX=$(minishift ip).nip.io
+
+./setup-router-certs.sh

@@ -11,14 +11,10 @@ oc cluster up --public-hostname=$DEFAULT_CLUSTER_IP.nip.io --routing-suffix=$DEF
 
 oc login -u system:admin
 
-export ROUTING_SUFFIX=$DEFAULT_CLUSTER_IP.nip.io
-
-./setup-router-certs.sh
-
 export ASB_PROJECT_NAME='openshift-automation-service-broker'
 
 ./post_install.sh
 
-echo
-echo "*******************"
-echo "Cluster certificate is located in /tmp/mini-certs/localcluster.crt. Install it to your mobile device."
+export ROUTING_SUFFIX=$DEFAULT_CLUSTER_IP.nip.io
+
+./setup-router-certs.sh
