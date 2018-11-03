@@ -58,6 +58,8 @@ To spin up OpenShift 3.11 cluster locally, run:
 ./scripts/minishift.sh
 ```
 
+Once the setup is complete, it is possible to stop the cluster with `minishift stop` and then run it again with `minishift start`.
+
 See [Minishift](https://docs.okd.io/latest/minishift/getting-started/index.html) documentation for more details.
 
 #### Provision Mobile Services
