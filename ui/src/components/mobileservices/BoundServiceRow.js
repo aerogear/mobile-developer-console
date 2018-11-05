@@ -120,6 +120,4 @@ SDK Setup
   }
 }
 
-
-
 export default BoundServiceRow;

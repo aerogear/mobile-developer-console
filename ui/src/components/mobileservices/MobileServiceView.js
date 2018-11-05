@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
-import BindingPanel from "./BindingPanel";
 import { connect } from 'react-redux';
 import { fetchBindings } from '../../actions/serviceBinding';
 
@@ -10,7 +9,6 @@ class MobileServiceView extends Component {
     super(props);
     this.boundServiceRows = this.boundServiceRows.bind(this);
     this.unboundServiceRows = this.unboundServiceRows.bind(this);
-    this.showBindingDialog = this.showBindingDialog.bind(this);
   }
 
   componentDidMount() {
@@ -35,14 +33,10 @@ class MobileServiceView extends Component {
     if (this.props.unboundServices) {
       rows.push(<h2 key="unbound-services">Unbound Services</h2>);
       this.props.unboundServices.forEach((service) => {
-        rows.push(<UnboundServiceRow key={service.serviceId} service={service} showBindingDialog={this.showBindingDialog} />);
+        rows.push(<UnboundServiceRow key={service.serviceId} service={service} />);
       });
     }
     return rows;
-  }
-
-  showBindingDialog(service) {
-    this.bindingDialog.show(service);
   }
 
   render() {
@@ -50,14 +44,16 @@ class MobileServiceView extends Component {
       <div>
         {this.boundServiceRows()}
         {this.unboundServiceRows()}
-        <BindingPanel onRef= {(dialog)=>{this.bindingDialog = dialog; }} />
       </div>
     );
   }
 }
 
+function mapStateToProps(state, ownProps) {
+  
+  
+  console.log("MSV own props : " + JSON.stringify(ownProps));
 
-function mapStateToProps(state) {
   if (state.serviceBindings.items && state.serviceBindings.items.length >= 1) {
     return {
       boundServices: state.serviceBindings.items[0].boundServices,

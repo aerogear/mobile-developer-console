@@ -2,14 +2,18 @@ import React, { Component } from 'react';
 import { ListViewItem, Col, Button } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
+import BindingPanel from "./BindingPanel";
 
 class UnboundServiceRow extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      showModal:false
+    }
+
     this.service = props.service;
-    this.showBindingDialog = props.showBindingDialog;
-    
+    this.showBindingDialog = this.showBindingDialog.bind(this);
     this.renderServiceBadge = this.renderServiceBadge.bind(this);
   }
 
@@ -39,13 +43,22 @@ class UnboundServiceRow extends Component {
     return <div><Button onClick={()=>this.showBindingDialog(this.service)}>Create Binding</Button></div> ;
   }
 
+
+  showBindingDialog(service) {
+    this.setState( {
+      showModal:true
+    });
+  }
+
   render() {
-    
     return (
-      <ListViewItem
-        additionalInfo={[this.renderServiceBadge()]}
-        actions={this.renderBindingButtons()}
-      />
+      <React.Fragment>
+        <ListViewItem
+          additionalInfo={[this.renderServiceBadge()]}
+          actions={this.renderBindingButtons()}
+        />
+        <BindingPanel service={this.service} showModal={this.state.showModal} />
+      </React.Fragment>
     );
   }
 }

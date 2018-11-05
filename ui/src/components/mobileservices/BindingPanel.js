@@ -16,67 +16,51 @@ class BindingPanel extends Component {
     
   constructor(props) {
     super(props);
-    this.state = {
-        showModal: false,
-        activeStepIndex: 0,
-        serviceName: props.serviceName
-    };
-
-    this.open = this.open.bind(this);
-    this.show = this.show.bind(this);
+    
     this.saveForm = this.saveForm.bind(this);
     this.onNextButtonClick = this.onNextButtonClick.bind(this);
     this.onBackButtonClick = this.onBackButtonClick.bind(this);
     this.renderPropertiesSchema = this.renderPropertiesSchema.bind(this);
   }
 
-  open() {
-    this.setState({ showModal: true });
-  };
-
-  close = () => {
-    this.setState({ showModal: false });
-  };
-
   onNextButtonClick() {
-    
     const {  activeStepIndex } = this.state;
     this.setState({
       activeStepIndex: (activeStepIndex + 1) % 3
-  })
-}
+    })
+  }
 
-onBackButtonClick() {
-  
-  const {  activeStepIndex } = this.state;
-  this.setState({
-    activeStepIndex: (activeStepIndex - 1) % 3
-})
-}
-
-  show(service) {
-
-    const serviceName = service.serviceName
-    const schema = service.bindingSchema
-    const form = service.form
-
+  onBackButtonClick() {
+    const {  activeStepIndex } = this.state;
     this.setState({
-      serviceName:serviceName,
-      schema:schema,
-      serviceClassExternalName:service.serviceClassExternalName,
-      form:form,
-      loading:false,
-      showModal: false,
-      service:service,
-      activeStepIndex: 0
-    });
+      activeStepIndex: (activeStepIndex - 1) % 3
+    })
+  }
+
+  show() {
     this.stepChanged(0);
     this.open();
   }
 
-  componentDidMount() {
-    this.props.onRef(this)
-}
+  componentWillMount() {
+
+    const serviceName = this.props.service.serviceName
+    const schema = this.props.service.bindingSchema
+    const form = this.props.service.form
+    const serviceClassExternalName = this.props.service.serviceClassExternalName;
+    const service = this.props.service;
+    
+    this.setState({
+      serviceName:serviceName,
+      schema:schema,
+      serviceClassExternalName:serviceClassExternalName,
+      form:form,
+      loading:false,
+      service:service,
+      activeStepIndex: 0
+    });
+  }
+
 
   renderPropertiesSchema() {
     
@@ -127,9 +111,9 @@ onBackButtonClick() {
    render() {
 
        return <Wizard.Pattern
-            show={this.state.showModal}
             onHide={this.close}
             onExited={this.close}
+            show={this.props.showModal}
             title="Create mobile client"
             steps={this.renderWizardSteps()}
             loadingTitle="Creating mobile binding..."
@@ -147,10 +131,13 @@ onBackButtonClick() {
 
 }
 
-
-
 const mapDispatchToProps = {
   createBinding
 };
 
-export default connect(null, mapDispatchToProps)(BindingPanel);
+function mapStateToProps(state, ownProps) {
+  console.log("BindingPanel state : " + JSON.stringify(state.serviceBindings));
+  console.log("BindingPanel own props : " + JSON.stringify(ownProps));
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BindingPanel);
