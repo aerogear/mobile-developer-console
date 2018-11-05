@@ -143,7 +143,7 @@ func TestMobileClientEndpoints(t *testing.T) {
 				return http.Post(url, "application/json", bytes.NewBuffer(jsonStr))
 			},
 			ExpectError:      false,
-			ExpectStatusCode: 500,
+			ExpectStatusCode: 400,
 			ExpectListSize:   0,
 		},
 		{

@@ -4,53 +4,85 @@ import {
   APP_FORM_SETSTATUS,
   APP_FORM_RESET,
   APP_FIELD_SETVALUE
-} from "../actions/apps";
+} from '../actions/apps';
+import { DISMISS_ERROR, DISMISS_ALL_ERRORS } from '../actions/errors';
+import { wsError } from '../DataService';
 
 const defaultState = {
   isFetching: false,
   items: [],
-  fetchError: false,
+  errors: [],
   isCreating: false,
-  createError: false,
   isDeleting: false,
-  deleteError: false,
   isActioning: false,
-  actionError: false,
   isReading: false,
-  readingError: false,
   createClientAppDialog: {
     platforms: {},
     fields: {}
   }
 };
 
+const getErrors = (error, type, errors) => {
+  const index = errors.findIndex(e => e.type === type);
+  if (!error) {
+    if (index >= 0) {
+      return [...errors.slice(0, index), ...errors.slice(index + 1)];
+    }
+    return errors;
+  }
+  if (index >= 0) {
+    return [...errors.slice(0, index), { error, type }, ...errors.slice(index + 1)];
+  }
+  return [{ error, type }, ...errors];
+};
+
 const resourceReducer = actions => (state = defaultState, action) => {
   let index;
+  let errorsToDismiss;
+  let errors;
   switch (action.type) {
+    case DISMISS_ERROR:
+      if (action.errorMessage === wsError.message) {
+        delete wsError.message;
+      }
+      errorsToDismiss = state.errors.filter(e => e.error.message === action.errorMessage);
+      errors = [...state.errors];
+      errorsToDismiss.forEach(e => {
+        index = errors.findIndex(err => err === e);
+        errors = [...errors.slice(0, index), ...errors.slice(index + 1)];
+      });
+      return {
+        ...state,
+        errors
+      };
+    case DISMISS_ALL_ERRORS:
+      delete wsError.message;
+      return {
+        ...state,
+        errors: []
+      };
     case actions.listRequest:
       return {
         ...state,
-        isFetching: true,
-        fetchError: false,
+        isFetching: true
       };
     case actions.listSuccess:
       return {
         ...state,
         isFetching: false,
         items: action.result,
-        fetchError: false,
+        errors: getErrors(null, 'list', state.errors)
       };
     case actions.listFailure:
       return {
         ...state,
         isFetching: false,
-        fetchError: action.error,
+        errors: getErrors(action.error, 'list', state.errors)
       };
     case actions.readRequest:
       return {
         ...state,
-        isReading: true,
-        readingError: false,
+        isReading: true
       };
     case actions.readSuccess:
       index = state.items.findIndex(item => item.metadata.name === action.result.metadata.name);
@@ -58,86 +90,75 @@ const resourceReducer = actions => (state = defaultState, action) => {
         return {
           ...state,
           isReading: false,
-          items: [
-            ...state.items.slice(0, index),
-            action.result,
-            ...state.items.slice(index + 1),
-          ],
-          readingError: false,
-        };
-      } else {
-        return {
-          ...state,
-          isReading: false,
-          items: [...state.items, action.result],
-          readingError: false,
+          items: [...state.items.slice(0, index), action.result, ...state.items.slice(index + 1)],
+          errors: getErrors(null, 'read', state.errors)
         };
       }
+      return {
+        ...state,
+        isReading: false,
+        items: [...state.items, action.result],
+        errors: getErrors(null, 'read', state.errors)
+      };
     case actions.readFailure:
       return {
         ...state,
         isReading: false,
-        readingError: action.error,
+        errors: getErrors(action.error, 'read', state.errors)
       };
     case actions.createRequest:
       return {
         ...state,
-        isCreating: true,
-        createError: false,
+        isCreating: true
       };
     case actions.createSuccess:
       return {
         ...state,
         isCreating: false,
-        createError: false,
-        items: [...state.items, action.result],
+        errors: getErrors(null, 'create', state.errors),
+        items: [...state.items, action.result]
       };
     case actions.createFailure:
       return {
         ...state,
         isCreating: false,
-        createError: action.error,
+        errors: getErrors(action.error, 'create', state.errors)
       };
     case actions.deleteRequest:
       return {
         ...state,
-        isDeleting: true,
-        deleteError: false,
+        isDeleting: true
       };
     case actions.deleteSuccess:
       index = state.items.findIndex(item => item.metadata.name === action.result);
       return {
         ...state,
         isDeleting: false,
-        deleteError: false,
-        items: [
-          ...state.items.slice(0, index),
-          ...state.items.slice(index + 1),
-        ],
+        errors: getErrors(null, 'delete', state.errors),
+        items: [...state.items.slice(0, index), ...state.items.slice(index + 1)]
       };
     case actions.deleteFailure:
       return {
         ...state,
         isDeleting: false,
-        deleteError: action.error,
+        errors: getErrors(action.error, 'delete', state.errors)
       };
     case actions.actionRequest:
       return {
         ...state,
-        isActioning: true,
-        actionError: false,
+        isActioning: true
       };
     case actions.actionSuccess:
       return {
         ...state,
         isActioning: false,
-        actionError: false,
+        errors: getErrors(null, 'action', state.errors)
       };
     case actions.actionFailure:
       return {
         ...state,
         isActioning: false,
-        actionError: action.error,
+        errors: getErrors(action.error, 'action', state.errors)
       };
     default:
       return createClientAppDialog(state, action);
@@ -146,8 +167,8 @@ const resourceReducer = actions => (state = defaultState, action) => {
 
 /**
  * Reducers for the create client app dialog.
- * @param {string} state 
- * @param {*} action 
+ * @param {string} state
+ * @param {*} action
  */
 function createClientAppDialog(state, action) {
   switch (action.type) {

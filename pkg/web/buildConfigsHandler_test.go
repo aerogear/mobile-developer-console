@@ -218,7 +218,7 @@ func TestCreateBuildConfigEndpoint(t *testing.T) {
 					}
 				}
 			}`),
-			ExpectHTTPStatusCode: http.StatusInternalServerError,
+			ExpectHTTPStatusCode: http.StatusBadRequest,
 		},
 	}
 
