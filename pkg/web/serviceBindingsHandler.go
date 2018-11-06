@@ -26,7 +26,7 @@ func (msih *BindableMobileServiceHandler) List(c echo.Context) error {
 	si, err := msih.bindableServiceCRUDL.List(msih.namespace, mobileClientName)
 	if err != nil {
 		c.Logger().Errorf("error listing service bindings %v", err)
-		return c.NoContent(http.StatusInternalServerError)
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, si)
 }
@@ -35,7 +35,8 @@ func (msih *BindableMobileServiceHandler) Delete(c echo.Context) error {
 	name := c.Param("name")
 	err := msih.bindableServiceCRUDL.Delete(msih.namespace, name)
 	if err != nil {
-		return err
+		c.Logger().Errorf("error deleting service binding %v", err)
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 	return c.NoContent(http.StatusOK)
 }
@@ -43,18 +44,21 @@ func (msih *BindableMobileServiceHandler) Delete(c echo.Context) error {
 func (msih *BindableMobileServiceHandler) Create(c echo.Context) error {
 	reqData := new(ServiceBindingCreateRequest)
 	if err := c.Bind(&reqData); err != nil {
-		return err
+		c.Logger().Errorf("Could not bind request to ServiceBindingCreateRequest %v", err)
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	if err := c.Validate(reqData); err != nil {
-		return err
+		c.Logger().Errorf("Binding Creation failed validation %v", err)
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	binding := newMobileBindingObject(*reqData)
 	binding, err := msih.bindableServiceCRUDL.Create(msih.namespace, binding, reqData.FormData)
 
 	if err != nil {
-		return err
+		c.Logger().Errorf("error creating service binding %v", err)
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(200, binding)
