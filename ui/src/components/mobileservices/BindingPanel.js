@@ -131,9 +131,5 @@ const mapDispatchToProps = {
   createBinding
 };
 
-function mapStateToProps(state, ownProps) {
-  console.log("BindingPanel state : " + JSON.stringify(state.serviceBindings));
-  console.log("BindingPanel own props : " + JSON.stringify(ownProps));
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(BindingPanel);
+export default connect(null, mapDispatchToProps)(BindingPanel);

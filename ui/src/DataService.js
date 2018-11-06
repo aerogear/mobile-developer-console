@@ -87,15 +87,21 @@ const dataService = {
       throw Error(`${response.statusText}: ${msg}`);
     }
     return response.json();
-  },
-
+  },  
+  watchBuilds: action => webSocket(action, '/builds/watch'),
+  watchApps: action => webSocket(action, '/mobileclients/watch'),
+  watchBuildConfigs: action => webSocket(action, '/buildconfigs/watch'),
+  watchServices: action => webSocket(action, '/serviceinstances/watch'),
+  generateDownloadURL: name => request(`builds/${name}/gendownloadurl`, 'POST'),
+  fetchUser: () => request('user', 'GET'),
   bindableServices: async mobileClientName => {
     let unboundServices = [];
     let boundServices = [];
     
-    const instances = await fetchItems(`${baseUrl}/bindableservices/${mobileClientName}`)
+    const instances = await fetchItems(`bindableservices/${mobileClientName}`)
             
-    instances.forEach ( instance => {        
+    instances.forEach ( instance => {
+      
       let serviceName = instance.name;
       let serviceIcon = instance.imageUrl;
       let serviceIconClass = instance.iconClass;
@@ -133,7 +139,6 @@ const dataService = {
 
     return {boundServices: boundServices, unboundServices: unboundServices};
   },
-  
   createBinding: async (mobileClientName, serviceInstanceName, credentialSecretName, parametersSecretName, serviceClassExternalName, formData) => {
 
     const binding = {
@@ -160,14 +165,9 @@ const dataService = {
     }
     return response.json();
   },
-
   deleteBinding: name => deleteItem(`bindableservices/${name}`, name),
-  watchBuilds: action => webSocket(action, '/builds/watch'),
-  watchApps: action => webSocket(action, '/mobileclients/watch'),
-  watchBuildConfigs: action => webSocket(action, '/buildconfigs/watch'),
-  watchServices: action => webSocket(action, '/serviceinstances/watch'),
-  generateDownloadURL: name => request(`builds/${name}/gendownloadurl`, 'POST'),
-  fetchUser: () => request('user', 'GET')
+
+
 };
 
 export default dataService;
