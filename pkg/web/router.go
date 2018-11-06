@@ -2,9 +2,11 @@ package web
 
 import (
 	"github.com/labstack/echo"
+
+	"strings"
+
 	"github.com/labstack/echo/middleware"
 	"gopkg.in/go-playground/validator.v9"
-	"strings"
 )
 
 type RequestValidator struct {
@@ -38,9 +40,15 @@ func SetupMobileServicesRoute(r *echo.Group, handler *MobileServiceInstancesHand
 	r.GET("/serviceinstances/watch", handler.Watch)
 }
 
+func SetupBindableMobileServiceRoute(r *echo.Group, handler *BindableMobileServiceHandler) {
+	r.GET("/bindableservices/:name", handler.List)
+	r.DELETE("/bindableservices/:name", handler.Delete)
+	r.POST("/bindableservices", handler.Create)
+}
+
 func SetupMobileBuildsRoute(r *echo.Group, handler *MobileBuildsHandler) {
 	r.GET("/builds", handler.List)
-    r.GET("/builds/watch", handler.Watch)
+	r.GET("/builds/watch", handler.Watch)
 	r.POST("/builds/:name/gendownloadurl", handler.GenerateDownloadURL)
 }
 

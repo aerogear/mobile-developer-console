@@ -85,46 +85,53 @@ class Client extends Component {
 
   render() {
     const mobileApp = this.props.apps.items.find(app => app.metadata.name === this.props.match.params.id);
+    if (mobileApp) {
 
-    return (
-      <Grid fluid className="client-details">
-        <Breadcrumb>
-          <Breadcrumb.Item active>
-            <Link to="/overview">Mobile Apps</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item active>
-            { mobileApp.spec.name }
-          </Breadcrumb.Item>
-        </Breadcrumb>
-        { mobileApp && this.header(mobileApp) }
-        {
-          mobileApp && (
-            <TabContainer id="basic-tabs-pf" defaultActiveKey={1}>
-              <div>
-                <Nav bsClass="nav nav-tabs nav-tabs-pf nav-tabs-pf-secondary">
-                  <NavItem eventKey={1}>Configuration</NavItem>
-                  {this.props.buildTabEnabled ? (<NavItem eventKey={2}>Builds</NavItem>) : null }
-                  <NavItem eventKey={3}>Mobile Services</NavItem>
-                </Nav>
-                <TabContent id="basic-tabs-content">
-                  <TabPane eventKey={1}>
-                    <ConfigurationView />
-                  </TabPane>
-                  {this.props.buildTabEnabled? 
-                    (<TabPane eventKey={2}>
-                      <MobileClientBuildsList appName={this.props.match.params.id} buildConfigs={this.state.buildConfigs} />
-                    </TabPane>) : null
-                  }
-                  <TabPane eventKey={3}>
-                    <MobileServiceView />
-                  </TabPane>
-                </TabContent>
-              </div>
-            </TabContainer>
-          )
-        }
-      </Grid>
-    );
+        return (
+          <Grid fluid className="client-details">
+            <Breadcrumb>
+              <Breadcrumb.Item active>
+                <Link to="/overview">Mobile Apps</Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item active>
+                { mobileApp.spec.name }
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            { mobileApp && this.header(mobileApp) }
+            {
+              mobileApp && (
+                <TabContainer id="basic-tabs-pf" defaultActiveKey={1}>
+                  <div>
+                    <Nav bsClass="nav nav-tabs nav-tabs-pf nav-tabs-pf-secondary">
+                      <NavItem eventKey={1}>Configuration</NavItem>
+                      <NavItem eventKey={2}>Mobile Services</NavItem>
+                      {this.props.buildTabEnabled ? (<NavItem eventKey={3}>Builds</NavItem>) : null }
+
+                    </Nav>
+                    <TabContent id="basic-tabs-content">
+                      <TabPane eventKey={1}>
+                        <ConfigurationView />
+                      </TabPane>
+
+                      <TabPane eventKey={2}>
+                        <MobileServiceView appName={this.props.match.params.id} />
+                      </TabPane>
+                      {this.props.buildTabEnabled? 
+                        (<TabPane eventKey={3}>
+                          <MobileClientBuildsList appName={this.props.match.params.id} buildConfigs={this.state.buildConfigs} />
+                        </TabPane>) : null
+                      }
+                      
+                    </TabContent>
+                  </div>
+                </TabContainer>
+              )
+            }
+          </Grid>
+        );
+      } else {
+        return (<div/>);
+      }
   }
 }
 

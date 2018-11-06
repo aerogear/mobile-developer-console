@@ -1,53 +1,25 @@
 import React, { Component } from 'react';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
+import { connect } from 'react-redux';
+import { fetchBindings } from '../../actions/serviceBinding';
 
 class MobileServiceView extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      boundServices: [{
-        serviceLogoUrl: 'https://pbs.twimg.com/profile_images/702119821979344897/oAC05cEB_400x400.png',
-        serviceName: 'Identity Management',
-        serviceId: 'dh-keycloak-apb-h7k9j',
-        serviceDescription: 'Identity Management - Identity and Access Management',
-        documentationUrl: 'http://docs.keycloak.org',
-        setupText: 'Identity Management SDK setup',
-      }, {
-        serviceLogoUrl: 'https://avatars1.githubusercontent.com/u/3380462?s=200&v=4',
-        serviceName: 'Mobile Metrics',
-        serviceId: 'dh-metrics-apb-wqm5c',
-        serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
-        setupText: 'Mobile Metrics SDK setups',
-        configuration: [{ key: 'A property', value: 'A Value' }, { key: 'Another property', value: 'Another Value' }],
-      }],
-      unboundServices: [{
-        serviceLogoUrl: 'https://pbs.twimg.com/profile_images/702119821979344897/oAC05cEB_400x400.png',
-        serviceName: 'Identity Management',
-        serviceId: 'dh-keycloak-apb-h7k9j',
-        serviceDescription: 'Identity Management - Identity and Access Management',
-        documentationUrl: 'http://docs.keycloak.org',
-        setupText: 'Identity Management SDK setup',
-      }, {
-        serviceLogoUrl: 'https://avatars1.githubusercontent.com/u/3380462?s=200&v=4',
-        serviceName: 'Mobile Metrics',
-        serviceId: 'dh-metrics-apb-wqm5c',
-        serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
-        setupText: 'Mobile Metrics SDK setups',
-        configuration: [{ key: 'A property', value: 'A Value' }, { key: 'Another property', value: 'Another Value' }],
-      }],
-    };
-
     this.boundServiceRows = this.boundServiceRows.bind(this);
     this.unboundServiceRows = this.unboundServiceRows.bind(this);
   }
 
+  componentDidMount() {
+    this.props.fetchBindings(this.props.appName);
+  }
+
   boundServiceRows() {
     const rows = [];
-    if (this.state.boundServices) {
+    if (this.props.boundServices) {
       rows.push(<h2 key="bound-services">Bound Services</h2>);
-      this.state.boundServices.forEach((service) => {
+      this.props.boundServices.forEach((service) => {
         rows.push(<BoundServiceRow key={service.serviceId} service={service} />);
       });
     }
@@ -57,9 +29,10 @@ class MobileServiceView extends Component {
 
   unboundServiceRows() {
     const rows = [];
-    if (this.state.unboundServices) {
+    
+    if (this.props.unboundServices) {
       rows.push(<h2 key="unbound-services">Unbound Services</h2>);
-      this.state.unboundServices.forEach((service) => {
+      this.props.unboundServices.forEach((service) => {
         rows.push(<UnboundServiceRow key={service.serviceId} service={service} />);
       });
     }
@@ -76,4 +49,26 @@ class MobileServiceView extends Component {
   }
 }
 
-export default MobileServiceView;
+function mapStateToProps(state, ownProps) {
+  
+  
+  console.log("MSV own props : " + JSON.stringify(ownProps));
+
+  if (state.serviceBindings.items && state.serviceBindings.items.length >= 1) {
+    return {
+      boundServices: state.serviceBindings.items[0].boundServices,
+      unboundServices: state.serviceBindings.items[0].unboundServices
+    };
+  } else {
+    return {
+      boundServices: [],
+      unboundServices: []
+    };
+  }
+}
+
+const mapDispatchToProps = {
+  fetchBindings
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MobileServiceView);
