@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
+	v1beta1 "github.com/kubernetes-incubator/service-catalog/pkg/apis/servicecatalog/v1beta1"
 	scv1beta1 "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset/typed/servicecatalog/v1beta1"
 	k8v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -54,13 +55,13 @@ func (lister *BindableMobileServiceCRUDLImpl) List(namespace string, mobileClien
 
 	serviceBindingList := BindableMobileServiceList{}
 
-	serviceBindings, err := lister.scClient.ServiceBindings(namespace).List(listOpts)
+	serviceInstances, err := lister.scClient.ServiceInstances(namespace).List(listOpts)
 
 	if err != nil {
 		return nil, err
 	}
 
-	serviceInstances, err := lister.scClient.ServiceInstances(namespace).List(listOpts)
+	servicePlans, err := lister.scClient.ClusterServicePlans().List(listOpts)
 
 	if err != nil {
 		return nil, err
@@ -68,83 +69,101 @@ func (lister *BindableMobileServiceCRUDLImpl) List(namespace string, mobileClien
 
 	for _, serviceInstance := range serviceInstances.Items {
 
-		bindableService := BindableMobileService{}
-
 		csc, err := lister.scClient.ClusterServiceClasses().Get(serviceInstance.Spec.ClusterServiceClassRef.Name, getOpts)
 
 		if err != nil {
 			return nil, err
 		}
 
-		if csc.Spec.ExternalMetadata != nil {
-
-			var x interface{}
-
-			json.Unmarshal(csc.Spec.ExternalMetadata.Raw, &x)
-			m := x.(map[string]interface{})
-
-			bindableService.Name = m["displayName"].(string)
-
-			if m["imageUrl"] != nil {
-				bindableService.ImageURL = m["imageUrl"].(string)
-			} else {
-				if m["console.openshift.io/iconClass"] != nil {
-					bindableService.IconClass = m["console.openshift.io/iconClass"].(string)
-				} else {
-					bindableService.ImageURL = "https://avatars1.githubusercontent.com/u/3380462?s=200&v=4"
-				}
-			}
-
-		}
-
-		servicePlans, err := lister.scClient.ClusterServicePlans().List(listOpts)
-
-		if err != nil {
-			return nil, err
-		}
-		var servicePlan ServicePlan
-
-		for _, sb := range servicePlans.Items {
-			if sb.Spec.ClusterServiceClassRef.Name == csc.Name {
-				servicePlan = sb
-			}
-		}
-
-		var serviceBinding ServiceBinding
-
-		for _, sb := range serviceBindings.Items {
-			if sb.Spec.ServiceInstanceRef.Name == serviceInstance.ObjectMeta.Name &&
-				sb.ObjectMeta.Annotations["binding.aerogear.org/consumer"] == mobileClientName {
-				serviceBinding = sb
-				bindableService.IsBound = true
-				client, err := lister.mobileClientRepo.ReadByName(mobileClientName)
-
-				if err != nil {
-					return nil, err
-				}
-
-				bindableService.MobileClient = *client
-
-				serviceConfigurationAnnotations := client.ObjectMeta.Annotations
-				for key, jsonString := range serviceConfigurationAnnotations {
-					if strings.Contains(key, "org.aerogear.binding."+serviceInstance.ObjectMeta.Name) {
-						bindableService.Configuration = append(bindableService.Configuration, jsonString)
-					}
-				}
-			}
-		}
-
-		bindableService.ServiceBinding = serviceBinding
-		bindableService.ServiceClass = *csc
-		bindableService.ServiceInstance = serviceInstance
-		bindableService.ServicePlan = servicePlan
-
 		if contains(csc.Spec.Tags, "mobile-client-enabled") {
+			bindableService := BindableMobileService{}
+
+			bindableService.ServiceInstance = serviceInstance
+			bindableService.ServiceClass = *csc
+
+			attachServiceIcon(&bindableService, csc)
+			attachServicePlan(&bindableService, servicePlans, csc)
+			err = attachCurrentBindings(lister, namespace, mobileClientName, &bindableService, serviceInstance)
+
+			if err != nil {
+				return nil, err
+			}
+
 			serviceBindingList.Items = append(serviceBindingList.Items, bindableService)
 		}
 	}
 
 	return &serviceBindingList, nil
+}
+
+func attachCurrentBindings(lister *BindableMobileServiceCRUDLImpl, namespace string, mobileClientName string, bindableService *BindableMobileService, serviceInstance ServiceInstance) error {
+	var serviceBinding ServiceBinding
+	listOpts := v1.ListOptions{}
+
+	serviceBindings, err := lister.scClient.ServiceBindings(namespace).List(listOpts)
+
+	if err != nil {
+		return err
+	}
+	for _, sb := range serviceBindings.Items {
+		if sb.Spec.ServiceInstanceRef.Name == serviceInstance.ObjectMeta.Name &&
+			sb.ObjectMeta.Annotations["binding.aerogear.org/consumer"] == mobileClientName {
+			serviceBinding = sb
+			bindableService.IsBound = true
+			client, err := lister.mobileClientRepo.ReadByName(mobileClientName)
+
+			if err != nil {
+				return err
+			}
+
+			bindableService.MobileClient = *client
+
+			serviceConfigurationAnnotations := client.ObjectMeta.Annotations
+			for key, jsonString := range serviceConfigurationAnnotations {
+				if strings.Contains(key, "org.aerogear.binding."+serviceInstance.ObjectMeta.Name) {
+					bindableService.Configuration = append(bindableService.Configuration, jsonString)
+				}
+			}
+		}
+	}
+
+	bindableService.ServiceBinding = serviceBinding
+	return nil
+}
+
+func attachServicePlan(bindableService *BindableMobileService, servicePlans *v1beta1.ClusterServicePlanList, csc *v1beta1.ClusterServiceClass) {
+	var servicePlan ServicePlan
+
+	for _, sb := range servicePlans.Items {
+		if sb.Spec.ClusterServiceClassRef.Name == csc.Name {
+			servicePlan = sb
+		}
+	}
+
+	bindableService.ServicePlan = servicePlan
+}
+
+func attachServiceIcon(bindableService *BindableMobileService, csc *v1beta1.ClusterServiceClass) {
+	if csc.Spec.ExternalMetadata != nil {
+
+		var x interface{}
+
+		json.Unmarshal(csc.Spec.ExternalMetadata.Raw, &x)
+		m := x.(map[string]interface{})
+
+		bindableService.Name = m["displayName"].(string)
+
+		if m["imageUrl"] != nil {
+			bindableService.ImageURL = m["imageUrl"].(string)
+		} else {
+			if m["console.openshift.io/iconClass"] != nil {
+				bindableService.IconClass = m["console.openshift.io/iconClass"].(string)
+			} else {
+				bindableService.ImageURL = "https://avatars1.githubusercontent.com/u/3380462?s=200&v=4"
+			}
+		}
+
+	}
 }
 
 //Filter Helper for service instances
