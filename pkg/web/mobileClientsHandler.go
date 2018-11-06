@@ -189,9 +189,15 @@ func (h *MobileClientsHandler) Update(c echo.Context) error {
 		c.Logger().Errorf("error updating mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
+
 	if reqData.AppIdentifier != "" {
 		app.Spec.AppIdentifier = reqData.AppIdentifier
 	}
+
+	if reqData.Name != "" {
+		app.Spec.Name = reqData.Name
+	}
+
 	uerr := h.mobileClientRepo.Update(app)
 	if uerr != nil {
 		c.Logger().Errorf("error updating mobile app: %v", uerr)

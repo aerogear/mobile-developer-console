@@ -28,6 +28,15 @@ export const createApp = app => fetchAction(
   async () => DataService.createApp(app),
 )();
 
+export const APP_UPDATE_REQUEST = 'APP_UPDATE_REQUEST';
+export const APP_UPDATE_SUCCESS = 'APP_UPDATE_SUCCESS';
+export const APP_UPDATE_FAILURE = 'APP_UPDATE_FAILURE';
+
+export const updateApp = (id, app) => fetchAction(
+  [APP_UPDATE_REQUEST, APP_UPDATE_SUCCESS, APP_UPDATE_FAILURE],
+  async () => DataService.updateApp(id, app),
+)();
+
 export const APP_DELETE_REQUEST = 'APP_DELETE_REQUEST';
 export const APP_DELETE_SUCCESS = 'APP_DELETE_SUCCESS';
 export const APP_DELETE_FAILURE = 'APP_DELETE_FAILURE';

@@ -43,8 +43,13 @@ class DeleteItemButton extends Component {
     });
   };
 
+  getItemName() {
+    return this.props.item ? this.props.item.spec.name : this.props.itemName;
+  }
+
   render() {
-    const { itemType, itemName } = this.props;
+    const { itemType } = this.props;
+    const itemName = this.getItemName();
 
     return (
       <Route

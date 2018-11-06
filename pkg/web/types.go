@@ -18,6 +18,7 @@ type MobileAppCreateRequest struct {
 //MobileAppUpdateRequest is the data type for the update request
 type MobileAppUpdateRequest struct {
 	AppIdentifier string `json:"appIdentifier" validate:"required"`
+	Name string `json:"name" validate:"required"`
 }
 
 //MobileClientServiceData represents the services in the `mobile-services.json` file

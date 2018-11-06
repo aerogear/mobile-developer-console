@@ -72,6 +72,22 @@ const dataService = {
   deleteApp: name => deleteItem(`mobileclients/${name}`, name),
   triggerBuild: name => request(`buildconfigs/${name}/instantiate`, 'POST'),
   deleteBuildConfig: name => deleteItem(`buildconfigs/${name}`, name),
+  updateApp: async (id, app) => {
+    const response = await fetch(`${baseUrl}/mobileclients/${id}`, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      body: JSON.stringify(app),
+    });
+    if (!response.ok) {
+      const msg = await response.text();
+      throw Error(`${response.statusText}: ${msg}`);
+    }
+    return response.json();
+  },  
   watchBuilds: action => webSocket(action, '/builds/watch'),
   watchApps: action => webSocket(action, '/mobileclients/watch'),
   watchBuildConfigs: action => webSocket(action, '/buildconfigs/watch'),
