@@ -17,7 +17,6 @@ class BindingPanel extends Component {
   constructor(props) {
     super(props);
     
-    this.saveForm = this.saveForm.bind(this);
     this.onNextButtonClick = this.onNextButtonClick.bind(this);
     this.onBackButtonClick = this.onBackButtonClick.bind(this);
     this.renderPropertiesSchema = this.renderPropertiesSchema.bind(this);
@@ -67,15 +66,12 @@ class BindingPanel extends Component {
           return <Form schema={this.state.schema}
           uiSchema={{form:this.state.form}}
           ObjectFieldTemplate={OpenShiftObjectTemplate}
-          onChange={debounce(e => this.saveForm(e.formData), 150)} >
+          onChange={debounce(e => this.formData = e.formData, 150)} >
           <div/>
           </Form>
 
     }
   
-    saveForm(formData) {
-      this.formData = formData
-    }
 
     renderWizardSteps() {
       return [{title:"Binding",render:()=>{
@@ -111,8 +107,8 @@ class BindingPanel extends Component {
    render() {
 
        return <Wizard.Pattern
-            onHide={this.close}
-            onExited={this.close}
+            onHide={this.props.close}
+            onExited={this.props.close}
             show={this.props.showModal}
             title="Create mobile client"
             steps={this.renderWizardSteps()}

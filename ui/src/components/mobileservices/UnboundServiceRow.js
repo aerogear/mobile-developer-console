@@ -13,7 +13,6 @@ class UnboundServiceRow extends Component {
     }
 
     this.service = props.service;
-    this.showBindingDialog = this.showBindingDialog.bind(this);
     this.renderServiceBadge = this.renderServiceBadge.bind(this);
   }
 
@@ -40,14 +39,7 @@ class UnboundServiceRow extends Component {
   }
 
   renderBindingButtons() {
-    return <div><Button onClick={()=>this.showBindingDialog(this.service)}>Create Binding</Button></div> ;
-  }
-
-
-  showBindingDialog(service) {
-    this.setState( {
-      showModal:true
-    });
+    return <div><Button onClick={()=>this.setState( { showModal:true })}>Create Binding</Button></div> ;
   }
 
   render() {
@@ -57,7 +49,7 @@ class UnboundServiceRow extends Component {
           additionalInfo={[this.renderServiceBadge()]}
           actions={this.renderBindingButtons()}
         />
-        <BindingPanel service={this.service} showModal={this.state.showModal} />
+        <BindingPanel service={this.service} showModal={this.state.showModal} close={()=>{this.setState({showModal:false})}}/>
       </React.Fragment>
     );
   }
