@@ -3,13 +3,15 @@ import { PLATFORM_CORDOVA } from './Constants';
 import { connect } from 'react-redux';
 import { setStatus, setFieldValue } from '../../actions/apps';
 
+export const EXAMPLE_APPIDENTIFIER = 'org.aerogear.cordova.myapp';
+
 /**
  * Component for the Cordova specific create mobile client form.
  */
 class CreateCordovaClient extends EditMobileClientBaseClass {
   constructor(props) {
     super(PLATFORM_CORDOVA, props);
-    this.config.appIdentifier.example = 'org.aerogear.cordova.myapp';
+    this.config.appIdentifier.example = EXAMPLE_APPIDENTIFIER;
   }
 }
 

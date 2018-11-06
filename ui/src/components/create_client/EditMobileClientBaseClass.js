@@ -3,6 +3,15 @@ import { Grid, Form } from 'patternfly-react';
 import { CREATE_CLIENT_APP_ID, CREATE_CLIENT_NAME } from './Constants';
 import { VerticalFormField } from './VerticalFormField';
 
+export const LABEL_APPNAME = '* App Name';
+export const EXAMPLE_APPNAME = 'myapp';
+export const HELP_APPNAME = 'App name must only contain lowercase letters, numbers and dots.';
+
+export const LABEL_APPIDENTIFIER = '* Package Name';
+export const EXAMPLE_APPIDENTIFIER = 'org.aerogear.myapp';
+export const HELP_APPIDENTIFIER =
+  'Package name must have at least two segments, start with a letter and contain only letters, dots, numbers and _.';
+
 /**
  * Component for the Android specific create mobile client form.
  */
@@ -12,15 +21,14 @@ class EditMobileClientBaseClass extends Component {
     this.config = {
       platform: platformName,
       appName: {
-        label: '* App Name',
-        example: 'myapp',
-        help: 'App name must only contain lowercase letters, numbers and dots.'
+        label: LABEL_APPNAME,
+        example: EXAMPLE_APPNAME,
+        help: HELP_APPNAME
       },
       appIdentifier: {
-        label: '* Package Name',
-        example: 'org.aerogear.myapp',
-        help:
-          'Package name must have at least two segments, start with a letter and contain only letters, dots, numbers and _.'
+        label: LABEL_APPIDENTIFIER,
+        example: EXAMPLE_APPIDENTIFIER,
+        help: HELP_APPIDENTIFIER
       }
     };
     // initializing validation state
@@ -96,7 +104,7 @@ class EditMobileClientBaseClass extends Component {
         controlId: CREATE_CLIENT_NAME,
         label: this.config.appName.label,
         useFieldLevelHelp: false,
-        showHelp: this.props.ui.fields[CREATE_CLIENT_NAME] && this.props.ui.fields[CREATE_CLIENT_NAME].valid === false, // show the help only if some help text is configured
+        showHelp: this.props.ui.fields[CREATE_CLIENT_NAME] && this.props.ui.fields[CREATE_CLIENT_NAME].valid === false, // show the help only if some invalid value is entered
         help: this.config.appName.help,
         content: this.config.appName.help,
         placeholder: this.config.appName.example,
@@ -113,7 +121,7 @@ class EditMobileClientBaseClass extends Component {
         label: this.config.appIdentifier.label,
         useFieldLevelHelp: false,
         showHelp:
-          this.props.ui.fields[CREATE_CLIENT_APP_ID] && this.props.ui.fields[CREATE_CLIENT_APP_ID].valid === false, // show the help only if some help text is configured
+          this.props.ui.fields[CREATE_CLIENT_APP_ID] && this.props.ui.fields[CREATE_CLIENT_APP_ID].valid === false, // show the help only if some invalid value is entered
         help: this.config.appIdentifier.help,
         placeholder: this.config.appIdentifier.example,
         content: this.config.appIdentifier.help,
