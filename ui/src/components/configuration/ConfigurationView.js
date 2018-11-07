@@ -3,18 +3,19 @@ import Header from './Header';
 import { ServiceSDKInfo } from './ServiceSDKInfo';
 import { ServiceSDKDocs } from './ServiceSDKDocs';
 import { CopyToClipboardMultiline } from '../common/CopyToClipboardMultiline';
+import { Row, Col } from 'patternfly-react';
 
 import './ConfigurationView.css';
 
 // TODO remove mock values
 
-const config = `{
+const config = {
   "version": 1,
   "clusterName": "https://192.168.0.106:8443",
   "namespace": "myproject",
   "clientId": "myapp-android",
   "services": []
-}`;
+};
 
 const serviceSDKInfo = [
   {
@@ -37,10 +38,11 @@ const serviceSDKInfo = [
 
 class ConfigurationView extends Component {
   render() {
+    config.services = this.props.app.status.services;
     return (
       <React.Fragment>
-        <div className="configurationView">
-          <div>
+        <Row className="configurationView">
+          <Col xs={6}>
             <Header>SDK Configuration</Header>
             <ServiceSDKDocs />
 
@@ -56,12 +58,12 @@ class ConfigurationView extends Component {
                 key={index}
               />
             ))}
-          </div>
-          <div>
+          </Col>
+          <Col xs={6}>
             <Header>mobile-services.json</Header>
-            <CopyToClipboardMultiline className="mobile-client-config">{config}</CopyToClipboardMultiline>
-          </div>
-        </div>
+            <CopyToClipboardMultiline className="mobile-client-config">{JSON.stringify(config, null, 2)}</CopyToClipboardMultiline>
+          </Col>
+        </Row>
       </React.Fragment>
     );
   }

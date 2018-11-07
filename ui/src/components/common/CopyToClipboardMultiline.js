@@ -15,7 +15,10 @@ const spanizeString = code => (
 
 export const CopyToClipboardMultiline = ({ children: code = '', className }) => (
   <div className={classNames('input-group', 'copy-to-clipboard-multiline', className)}>
-    <pre>{spanizeString(code)}</pre>
+    <pre>
+      {spanizeString(code)}
+      <div className="pre-rest" />
+    </pre>
     <span>
       <CopyToClipboard text={code}>
         <OverlayTrigger
