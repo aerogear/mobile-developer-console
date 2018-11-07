@@ -101,7 +101,8 @@ func main() {
 	serverConfigHandler := web.NewServerConfigHandler(config)
 	web.SetupServerConfigRouter(apiGroup, serverConfigHandler)
 
-	go stub.WatchSecrets(namespace, secretsCRUDL, mobileClientsRepo)
+	getWatchInterface := secretsCRUDL.Watch(namespace)
+	go stub.Watch(getWatchInterface, func() { stub.HandleSecretsChange(namespace, mobileClientsRepo, secretsCRUDL) })
 
 	log.WithFields(log.Fields{"listenAddress": config.ListenAddress}).Info("Starting application")
 	log.Fatal(http.ListenAndServe(config.ListenAddress, router))

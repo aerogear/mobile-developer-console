@@ -1,54 +1,14 @@
 package stub
 
 import (
-	"time"
-
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	"github.com/aerogear/mobile-developer-console/pkg/mobile"
 	"github.com/labstack/gommon/log"
 	"k8s.io/api/core/v1"
 )
 
-func WatchSecrets(namespace string, secretsCRUDL mobile.SecretsCRUDL, mobileAppRepo mobile.MobileClientRepo) {
-	getWatchInterface := secretsCRUDL.Watch(namespace)
-	watchInterface, err := getWatchInterface()
-	if err != nil {
-		return
-	}
-	events := watchInterface.ResultChan()
-	defer func() {
-		if watchInterface != nil {
-			watchInterface.Stop()
-		}
-	}()
-	willHandle := false
-	for {
-		select {
-		case _, ok := <-events:
-			if !ok {
-				watchInterface.Stop()
-				watchInterface, err = getWatchInterface()
-				if err != nil {
-					return
-				}
-				events = watchInterface.ResultChan()
-				continue
-			}
-			if willHandle {
-				continue
-			}
-			willHandle = true
-			timer := time.NewTimer(time.Second)
-			go func(timer *time.Timer) {
-				<-timer.C
-				willHandle = false
-				handleChange(namespace, mobileAppRepo, secretsCRUDL)
-			}(timer)
-		}
-	}
-}
-
-func handleChange(namespace string, mobileAppRepo mobile.MobileClientRepo, secretsCRUDL mobile.SecretsCRUDL) {
+func HandleSecretsChange(namespace string, mobileAppRepo mobile.MobileClientRepo, secretsCRUDL mobile.SecretsCRUDL) {
+	log.Info("handling change in secrets")
 	apps, err := mobileAppRepo.List()
 	if err != nil {
 		return

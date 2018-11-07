@@ -28,7 +28,9 @@ func (crudl *SecretsCRUDLImpl) List(namespace string) (*v1.SecretList, error) {
 
 func (crudl *SecretsCRUDLImpl) Watch(namespace string) func() (watch.Interface, error) {
 	return func() (watch.Interface, error) {
-		watchOpts := metav1.ListOptions{}
+		watchOpts := metav1.ListOptions{
+			LabelSelector: "mobile",
+		}
 		return crudl.secretsClient.Secrets(namespace).Watch(watchOpts)
 	}
 }

@@ -1,13 +1,9 @@
 package stub
 
 import (
-	"fmt"
-	"sync"
 	"testing"
-	"time"
 
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
-	v12 "k8s.io/api/core/v1"
 	errors2 "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -15,8 +11,6 @@ import (
 
 	k8v1 "k8s.io/api/core/v1"
 )
-
-var m sync.Mutex
 
 type mockMobileClientRepo struct {
 	mockStore map[string]*v1alpha1.MobileClient
@@ -35,9 +29,7 @@ func (r *mockMobileClientRepo) Create(app *v1alpha1.MobileClient) error {
 }
 
 func (r *mockMobileClientRepo) ReadByName(name string) (*v1alpha1.MobileClient, error) {
-	m.Lock()
 	app := r.mockStore[name]
-	m.Unlock()
 	if app != nil {
 		return app, nil
 	}
@@ -48,13 +40,10 @@ func (r *mockMobileClientRepo) ReadByName(name string) (*v1alpha1.MobileClient, 
 
 func (r *mockMobileClientRepo) Update(app *v1alpha1.MobileClient) error {
 	name := app.Name
-	m.Lock()
 	if r.mockStore[name] != nil {
 		r.mockStore[name] = app
-		m.Unlock()
 		return nil
 	}
-	m.Unlock()
 	return &errors2.StatusError{ErrStatus: v1.Status{
 		Reason: v1.StatusReasonNotFound,
 	}}
@@ -130,16 +119,31 @@ func (m *mockSecretsCRUDL) Watch(namespace string) func() (watch.Interface, erro
 	}
 }
 
-func createSecret(labels map[string]string, data map[string][]byte, version string) v12.Secret {
-	secret := v12.Secret{
-		TypeMeta: metav1.TypeMeta{},
-		ObjectMeta: metav1.ObjectMeta{
-			Labels:          labels,
-			ResourceVersion: version,
-		},
-		Data: data,
+type mockSecretsCRUDL2 struct{}
+
+func NewMockSecretsCRUDL2() *mockSecretsCRUDL2 {
+	return &mockSecretsCRUDL2{}
+}
+
+func (m *mockSecretsCRUDL2) List(namespace string) (*k8v1.SecretList, error) {
+	labels := make(map[string]string)
+	labels["mobile"] = "enabled"
+	labels["clientId"] = "test-app"
+	data := make(map[string][]byte)
+	data["id"] = []byte("test-service")
+	return &k8v1.SecretList{
+		Items: []k8v1.Secret{},
+	}, nil
+}
+
+func (m *mockSecretsCRUDL2) Create(namespace string, secret *k8v1.Secret) (*k8v1.Secret, error) {
+	return nil, nil
+}
+
+func (m *mockSecretsCRUDL2) Watch(namespace string) func() (watch.Interface, error) {
+	return func() (watch.Interface, error) {
+		return &mockWatchInterface{}, nil
 	}
-	return secret
 }
 
 func TestHandler(t *testing.T) {
@@ -155,11 +159,15 @@ func TestHandler(t *testing.T) {
 		Status: v1alpha1.MobileClientStatus{},
 	}
 	mockApps.Create(client)
-	go WatchSecrets("test-namespace", mockSecrets, mockApps)
-	time.Sleep(3 * time.Second)
+	HandleSecretsChange("test-namespace", mockApps, mockSecrets)
 	app, _ := mockApps.ReadByName("test-app")
-	fmt.Println(app)
 	if len(app.Status.Services) != 1 {
+		t.Fatalf("mobile client validation failed")
+	}
+	mockSecrets2 := NewMockSecretsCRUDL2()
+	HandleSecretsChange("test-namespace", mockApps, mockSecrets2)
+	app, _ = mockApps.ReadByName("test-app")
+	if len(app.Status.Services) != 0 {
 		t.Fatalf("mobile client validation failed")
 	}
 }
