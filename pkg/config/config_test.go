@@ -7,7 +7,7 @@ import (
 )
 
 func TestConfig(t *testing.T) {
-	expected := Config{ListenAddress: ":4000", LogLevel: "info", LogFormat: "text", ApiRoutePrefix: "/api", OperatorResyncPeriod: 10, WsWriteWait: 10, WsPongWait: 60, BuildTabEnabled: false}
+	expected := Config{ListenAddress: ":4000", LogLevel: "info", LogFormat: "text", ApiRoutePrefix: "/api", WsWriteWait: 10, WsPongWait: 60, BuildTabEnabled: false}
 	config := GetConfig()
 
 	if !reflect.DeepEqual(expected, config) {
@@ -16,7 +16,7 @@ func TestConfig(t *testing.T) {
 }
 
 func TestConfigEnvironmentVariables(t *testing.T) {
-	expected := Config{ListenAddress: ":5000", LogLevel: "info", LogFormat: "text", ApiRoutePrefix: "/api", OperatorResyncPeriod: 20, WsWriteWait: 10, WsPongWait: 60, BuildTabEnabled: true}
+	expected := Config{ListenAddress: ":5000", LogLevel: "info", LogFormat: "text", ApiRoutePrefix: "/api", WsWriteWait: 10, WsPongWait: 60, BuildTabEnabled: true}
 
 	os.Setenv("PORT", "5000")
 	os.Setenv("RESYNC_PERIOD", "20")

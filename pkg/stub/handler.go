@@ -1,92 +1,109 @@
 package stub
 
 import (
-	"context"
+	"time"
 
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	"github.com/aerogear/mobile-developer-console/pkg/mobile"
-	"github.com/operator-framework/operator-sdk/pkg/sdk"
-	log "github.com/sirupsen/logrus"
+	"github.com/labstack/gommon/log"
 	"k8s.io/api/core/v1"
 )
 
-func NewHandler(mobileAppRepo mobile.MobileClientRepo) sdk.Handler {
-	return &Handler{
-		mobileClientRepo: mobileAppRepo,
+func WatchSecrets(namespace string, secretsCRUDL mobile.SecretsCRUDL, mobileAppRepo mobile.MobileClientRepo) {
+	getWatchInterface := secretsCRUDL.Watch(namespace)
+	watchInterface, err := getWatchInterface()
+	if err != nil {
+		return
 	}
-}
-
-type Handler struct {
-	// Fill me
-	mobileClientRepo mobile.MobileClientRepo
-}
-
-func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
-	switch o := event.Object.(type) {
-	case *v1.Secret:
-		secret := o
-
-		if !isValidSecret(secret) {
-			return nil
+	events := watchInterface.ResultChan()
+	defer func() {
+		if watchInterface != nil {
+			watchInterface.Stop()
 		}
-
-		labels := secret.GetLabels()
-		clientId := labels["clientId"]
-
-		app, err := h.mobileClientRepo.ReadByName(clientId)
-		if err != nil {
-			log.Errorf("failed to read mobile client by name %v", clientId)
-			return err
-		}
-
-		serviceId := string(secret.Data["id"])
-		services := app.Status.Services
-		existing, i := findService(services, serviceId)
-
-		if event.Deleted && existing != nil {
-			log.Infof("remove service %v from app %v", serviceId, clientId)
-			//we should remove the existing from the services
-			services = removeService(services, i)
-			app.Status.Services = services
-			err := h.mobileClientRepo.Update(app)
-			if err != nil {
-				log.Errorf("failed to update mobile client %v", err)
-				return err
+	}()
+	willHandle := false
+	for {
+		select {
+		case _, ok := <-events:
+			if !ok {
+				watchInterface.Stop()
+				watchInterface, err = getWatchInterface()
+				if err != nil {
+					return
+				}
+				events = watchInterface.ResultChan()
+				continue
 			}
-			return nil
+			if willHandle {
+				continue
+			}
+			willHandle = true
+			timer := time.NewTimer(time.Second)
+			go func(timer *time.Timer) {
+				<-timer.C
+				willHandle = false
+				handleChange(namespace, mobileAppRepo, secretsCRUDL)
+			}(timer)
 		}
-
-		log.Infof("add/update service %v to app %v", serviceId, clientId)
-		service, err := newMobileServiceFromSecret(secret)
-		if err != nil {
-			log.Errorf("failed to create service from secret due to error: %v", err)
-			return err
-		}
-
-		if existing != nil && existing.Version == service.Version {
-			log.Infof("ignore service %v as it is not changed", serviceId)
-			return nil
-		}
-
-		if existing != nil {
-			log.Infof("update an existing service %v, remove it first", serviceId)
-			services = removeService(services, i)
-		}
-
-		services = append(services, *service)
-		app.Status.Services = services
-		err = h.mobileClientRepo.Update(app)
-		if err != nil {
-			log.Errorf("failed to update mobile client %v", err)
-			return err
-		}
-		return nil
 	}
-	log.Warnf("Unexpected data type received: %v", event.Object.GetObjectKind())
-	return nil
 }
 
-func isValidSecret(secret *v1.Secret) bool {
+func handleChange(namespace string, mobileAppRepo mobile.MobileClientRepo, secretsCRUDL mobile.SecretsCRUDL) {
+	apps, err := mobileAppRepo.List()
+	if err != nil {
+		return
+	}
+	secrets, err := secretsCRUDL.List(namespace)
+	if err != nil {
+		return
+	}
+	for _, app := range apps.Items {
+		newServices := getServicesForAppFromSecrets(secrets, app)
+		if servicesChanged(newServices, app.Status.Services) {
+			app.Status.Services = newServices
+			err := mobileAppRepo.Update(&app)
+			if err != nil {
+				log.Errorf("failed to update mobile app: %v", err)
+				continue
+			}
+			log.Infof("app %v updated with new services", app.Name)
+		}
+	}
+}
+
+func servicesChanged(newServices []v1alpha1.MobileClientService, existingServices []v1alpha1.MobileClientService) bool {
+	if len(existingServices) != len(newServices) {
+		return true
+	}
+	changed := false
+	for _, newService := range newServices {
+		serviceID := newService.Id
+		existing, _ := findService(existingServices, serviceID)
+		if existing == nil || existing.Version != newService.Version {
+			changed = true
+			break
+		}
+	}
+	return changed
+}
+
+func getServicesForAppFromSecrets(secrets *v1.SecretList, app v1alpha1.MobileClient) []v1alpha1.MobileClientService {
+	var services []v1alpha1.MobileClientService
+	for _, secret := range secrets.Items {
+		if !isValidSecret(secret) {
+			continue
+		}
+		labels := secret.GetLabels()
+		clientID := labels["clientId"]
+		if app.Name != clientID {
+			continue
+		}
+		services = append(services, newMobileServiceFromSecret(secret))
+	}
+	return services
+}
+
+func isValidSecret(secret v1.Secret) bool {
 	labels := secret.GetLabels()
 	if labels["mobile"] != "" && labels["clientId"] != "" && secret.Data["id"] != nil {
 		return true
@@ -94,9 +111,9 @@ func isValidSecret(secret *v1.Secret) bool {
 	return false
 }
 
-func findService(services []v1alpha1.MobileClientService, serviceId string) (*v1alpha1.MobileClientService, int) {
+func findService(services []v1alpha1.MobileClientService, serviceID string) (*v1alpha1.MobileClientService, int) {
 	for i, service := range services {
-		if service.Id == serviceId {
+		if service.Id == serviceID {
 			return &service, i
 		}
 	}
@@ -108,13 +125,13 @@ func removeService(services []v1alpha1.MobileClientService, index int) []v1alpha
 	return s
 }
 
-func newMobileServiceFromSecret(secret *v1.Secret) (*v1alpha1.MobileClientService, error) {
-	return &v1alpha1.MobileClientService{
+func newMobileServiceFromSecret(secret v1.Secret) v1alpha1.MobileClientService {
+	return v1alpha1.MobileClientService{
 		Id:      string(secret.Data["id"]),
 		Name:    string(secret.Data["name"]),
 		Type:    string(secret.Data["type"]),
 		Url:     string(secret.Data["uri"]),
 		Config:  secret.Data["config"],
 		Version: secret.ResourceVersion,
-	}, nil
+	}
 }
