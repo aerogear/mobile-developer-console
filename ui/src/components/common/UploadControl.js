@@ -10,7 +10,7 @@ class UploadControl extends Component {
 
     const file = files[0];
     const start = 0;
-    const stop = file.size - 1;
+    const stop = file.size;
 
     const reader = new FileReader();
     const component = this;
@@ -21,7 +21,7 @@ class UploadControl extends Component {
       }
     };
 
-    const blob = file.slice(start, stop + 1);
+    const blob = file.slice(start, stop);
     reader.readAsText(blob);
   };
 

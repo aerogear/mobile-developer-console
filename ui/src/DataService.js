@@ -78,16 +78,32 @@ const dataService = {
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
-        'Content-Type': 'application/json; charset=utf-8',
+        'Content-Type': 'application/json; charset=utf-8'
       },
-      body: JSON.stringify(app),
+      body: JSON.stringify(app)
     });
     if (!response.ok) {
       const msg = await response.text();
       throw Error(`${response.statusText}: ${msg}`);
     }
     return response.json();
-  },  
+  },
+  createBuildConfig: async config => {
+    const response = await fetch(`${baseUrl}/buildconfigs`, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify(config)
+    });
+    if (!response.ok) {
+      const msg = await response.text();
+      throw Error(`${response.statusText}: ${msg}`);
+    }
+    return response.json();
+  },
   watchBuilds: action => webSocket(action, '/builds/watch'),
   watchApps: action => webSocket(action, '/mobileclients/watch'),
   watchBuildConfigs: action => webSocket(action, '/buildconfigs/watch'),
@@ -97,17 +113,17 @@ const dataService = {
   bindableServices: async mobileClientName => {
     let unboundServices = [];
     let boundServices = [];
-    
+
     const instances = await fetchItems(`bindableservices/${mobileClientName}`)
-            
+
     instances.forEach ( instance => {
-      
+
       let serviceName = instance.name;
       let serviceIcon = instance.imageUrl;
       let serviceIconClass = instance.iconClass;
-      
+
       if (instance.isBound) {
-        
+
         boundServices.push({
           serviceLogoUrl: serviceIcon,
           serviceIconClass: serviceIconClass,
@@ -118,7 +134,7 @@ const dataService = {
           serviceDescription: instance.serviceClass.spec.description,
           documentationUrl: instance.serviceClass.spec.externalMetadata.documentationUrl20,
           configuration: instance.configuration,
-          setupText: 'Identity Management SDK setup',            
+          setupText: 'Identity Management SDK setup',
         });
       } else {
         unboundServices.push({
@@ -134,7 +150,7 @@ const dataService = {
           setupText: 'Mobile Metrics SDK setups',
         });
       }
-      
+
     })
 
     return {boundServices: boundServices, unboundServices: unboundServices};

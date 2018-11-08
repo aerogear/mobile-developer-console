@@ -22,11 +22,9 @@ import DataService from '../DataService';
 import PlatformIcon from '../components/common/PlatformIcon';
 import DeleteItemButton from './DeleteItemButton';
 
-import '../components/common/Client.css';
+import './Client.css';
 import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
-
 import BuildConfigDialog from './BuildConfigDialog';
-import { KEY_CR_CLIENT_ID, KEY_CR_CLIENT_TYPE } from '../components/build/Constants';
 
 const TAB_CONFIGURATION = 1;
 const TAB_BUILDS = 2;
@@ -72,7 +70,7 @@ class Client extends Component {
       const mobileApp = this.getMobileApp();
       if (mobileApp.spec) {
         const configs = this.props.buildConfigs.items.filter(
-          config => config.metadata.labels['mobile-client-id'] === mobileApp.spec.AppIdentifier
+          config => config.metadata.labels['mobile-client-id'] === mobileApp.spec.appIdentifier
         );
 
         configs.forEach(config => delete config.builds);
@@ -98,8 +96,9 @@ class Client extends Component {
     }
   };
 
-  header = (clientType, config) => {
+  header = clientInfo => {
     const { selectedTab, showBuildConfigDialog = false } = this.state;
+    const { clientType } = clientInfo;
     return (
       <div className="app-header-wrapper">
         <div className="app-header">
@@ -111,12 +110,12 @@ class Client extends Component {
         </div>
         <div className="app-actions-dropdown">
           <DropdownButton id="app-actions-dropdown" title="Actions" pullRight>
-            {config && selectedTab === TAB_BUILDS ? (
+            {clientInfo && selectedTab === TAB_BUILDS ? (
               <React.Fragment>
                 <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
                 <BuildConfigDialog
                   update={false}
-                  initialConfig={config}
+                  clientInfo={clientInfo}
                   show={showBuildConfigDialog}
                   onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
                 />
@@ -134,8 +133,8 @@ class Client extends Component {
   render() {
     const mobileApp = this.getMobileApp();
     const { spec = {} } = mobileApp;
-    const { clientType = '', AppIdentifier: clientId = '' } = spec;
-    const config = { [KEY_CR_CLIENT_ID]: clientId, [KEY_CR_CLIENT_TYPE]: clientType };
+    const { clientType = '', appIdentifier: clientId = '' } = spec;
+    const clientInfo = { clientId, clientType };
     const { selectedTab } = this.state;
 
     return (
@@ -146,7 +145,7 @@ class Client extends Component {
           </Breadcrumb.Item>
           <Breadcrumb.Item active>{this.props.match.params.id}</Breadcrumb.Item>
         </Breadcrumb>
-        {mobileApp && this.header(clientType, config)}
+        {mobileApp && this.header(clientInfo)}
         {this.props.apps.readingError ? (
           <Alert>{this.props.apps.readingError.message}</Alert>
         ) : (
@@ -165,7 +164,7 @@ class Client extends Component {
                   <TabPane eventKey={TAB_BUILDS}>
                     <MobileClientBuildOverviewList
                       appName={this.props.match.params.id}
-                      config={config}
+                      clientInfo={clientInfo}
                       buildConfigs={this.state.buildConfigs}
                     />
                   </TabPane>

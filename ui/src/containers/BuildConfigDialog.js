@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CreateBuildConfigDialog from '../components/build/CreateBuildConfigDialog';
 import { createBuildConfig } from '../actions/buildConfigs';
+import { KEY_CR_CLIENT_ID, KEY_CR_CLIENT_TYPE } from '../components/build/Constants';
 
 class BuildConfigDialog extends Component {
-  buildUpdated = configUpdate => {
-    const config = Object.assign({}, configUpdate.config);
+  buildConfigCreated = createBuildConfigState => {
+    const config = Object.assign({}, createBuildConfigState.config);
+    const { clientId, clientType } = this.props.clientInfo;
+    config[KEY_CR_CLIENT_ID] = clientId;
+    config[KEY_CR_CLIENT_TYPE] = clientType;
     this.props.createBuildConfig(config);
     this.close();
   };
@@ -24,22 +28,15 @@ class BuildConfigDialog extends Component {
   };
 
   render = () => {
-    const { update, initialConfig, show } = this.props;
+    const { show } = this.props;
     return (
       <CreateBuildConfigDialog
-        initialConfig={initialConfig}
         show={show}
-        title={update ? 'Edit build config' : 'Create build config'}
-        onSave={this.buildUpdated}
+        title="Create build config"
+        onSave={this.buildConfigCreated}
         onCancel={this.close}
       />
     );
-  };
-}
-
-function mapStateToProps(state) {
-  return {
-    config: state
   };
 }
 
@@ -48,6 +45,6 @@ const mapDispatchToProps = {
 };
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(BuildConfigDialog);

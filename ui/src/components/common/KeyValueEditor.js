@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, FormControl, Icon, FormGroup } from 'patternfly-react';
+import { Row, Col, FormControl, Icon, FormGroup, Button } from 'patternfly-react';
 
 import './KeyValueEditor.css';
 
@@ -78,9 +78,9 @@ class KeyValueEditor extends Component {
         </Row>
       ))}
       <FormGroup>
-        <a role="button" onClick={this.addRow}>
+        <Button bsStyle="link" className="btn-add" onClick={this.addRow}>
           Add Environment Variable
-        </a>
+        </Button>
       </FormGroup>
     </div>
   );

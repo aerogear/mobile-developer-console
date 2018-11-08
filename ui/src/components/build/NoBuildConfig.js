@@ -10,8 +10,8 @@ class NoBuildConfig extends Component {
   }
 
   render = () => {
-    const { config } = this.props;
     const { show } = this.state;
+    const { clientInfo } = this.props;
     return (
       <div className="note">
         <h2>No Build Config</h2>
@@ -21,9 +21,8 @@ class NoBuildConfig extends Component {
         </Button>
         {
           <BuildConfigDialog
-            update={false}
-            initialConfig={config}
             show={show}
+            clientInfo={clientInfo}
             onShowStateChanged={isShown => this.setState({ show: isShown })}
           />
         }
