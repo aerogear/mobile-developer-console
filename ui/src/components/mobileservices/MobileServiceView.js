@@ -50,10 +50,6 @@ class MobileServiceView extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  
-  
-  console.log("MSV own props : " + JSON.stringify(ownProps));
-
   if (state.serviceBindings.items && state.serviceBindings.items.length >= 1) {
     return {
       boundServices: state.serviceBindings.items[0].boundServices,
