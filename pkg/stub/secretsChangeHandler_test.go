@@ -83,29 +83,19 @@ func (m *mockWatchInterface) ResultChan() <-chan watch.Event {
 	return ch
 }
 
-type mockSecretsCRUDL struct{}
+type mockSecretsCRUDL struct {
+	secrets []k8v1.Secret
+}
 
-func NewMockSecretsCRUDL() *mockSecretsCRUDL {
-	return &mockSecretsCRUDL{}
+func NewMockSecretsCRUDL(secrets []k8v1.Secret) *mockSecretsCRUDL {
+	return &mockSecretsCRUDL{
+		secrets: secrets,
+	}
 }
 
 func (m *mockSecretsCRUDL) List(namespace string) (*k8v1.SecretList, error) {
-	labels := make(map[string]string)
-	labels["mobile"] = "enabled"
-	labels["clientId"] = "test-app"
-	data := make(map[string][]byte)
-	data["id"] = []byte("test-service")
 	return &k8v1.SecretList{
-		Items: []k8v1.Secret{
-			k8v1.Secret{
-				TypeMeta: metav1.TypeMeta{},
-				ObjectMeta: metav1.ObjectMeta{
-					Labels:          labels,
-					ResourceVersion: "1",
-				},
-				Data: data,
-			},
-		},
+		Items: m.secrets,
 	}, nil
 }
 
@@ -119,35 +109,39 @@ func (m *mockSecretsCRUDL) Watch(namespace string) func() (watch.Interface, erro
 	}
 }
 
-type mockSecretsCRUDL2 struct{}
-
-func NewMockSecretsCRUDL2() *mockSecretsCRUDL2 {
-	return &mockSecretsCRUDL2{}
-}
-
-func (m *mockSecretsCRUDL2) List(namespace string) (*k8v1.SecretList, error) {
+func createSecret(id string, clientId string) k8v1.Secret {
 	labels := make(map[string]string)
 	labels["mobile"] = "enabled"
-	labels["clientId"] = "test-app"
+	labels["clientId"] = clientId
 	data := make(map[string][]byte)
-	data["id"] = []byte("test-service")
-	return &k8v1.SecretList{
-		Items: []k8v1.Secret{},
-	}, nil
-}
-
-func (m *mockSecretsCRUDL2) Create(namespace string, secret *k8v1.Secret) (*k8v1.Secret, error) {
-	return nil, nil
-}
-
-func (m *mockSecretsCRUDL2) Watch(namespace string) func() (watch.Interface, error) {
-	return func() (watch.Interface, error) {
-		return &mockWatchInterface{}, nil
+	data["id"] = []byte(id)
+	return k8v1.Secret{
+		TypeMeta: metav1.TypeMeta{},
+		ObjectMeta: metav1.ObjectMeta{
+			Labels:          labels,
+			ResourceVersion: "1",
+		},
+		Data: data,
 	}
 }
 
 func TestHandler(t *testing.T) {
-	mockSecrets := NewMockSecretsCRUDL()
+	cases := []struct {
+		Name    string
+		Secrets []k8v1.Secret
+	}{
+		{
+			Name: "test one binding",
+			Secrets: []k8v1.Secret{
+				createSecret("test-service", "test-app"),
+			},
+		},
+		{
+			Name:    "test no bindings",
+			Secrets: []k8v1.Secret{},
+		},
+	}
+
 	mockApps := NewMockMobileClientRepo()
 	client := &v1alpha1.MobileClient{
 		ObjectMeta: metav1.ObjectMeta{
@@ -159,15 +153,15 @@ func TestHandler(t *testing.T) {
 		Status: v1alpha1.MobileClientStatus{},
 	}
 	mockApps.Create(client)
-	HandleSecretsChange("test-namespace", mockApps, mockSecrets)
-	app, _ := mockApps.ReadByName("test-app")
-	if len(app.Status.Services) != 1 {
-		t.Fatalf("mobile client validation failed")
-	}
-	mockSecrets2 := NewMockSecretsCRUDL2()
-	HandleSecretsChange("test-namespace", mockApps, mockSecrets2)
-	app, _ = mockApps.ReadByName("test-app")
-	if len(app.Status.Services) != 0 {
-		t.Fatalf("mobile client validation failed")
+
+	for _, tc := range cases {
+		t.Run(tc.Name, func(t *testing.T) {
+			mockSecrets := NewMockSecretsCRUDL(tc.Secrets)
+			HandleSecretsChange("test-namespace", mockApps, mockSecrets)
+			app, _ := mockApps.ReadByName("test-app")
+			if len(app.Status.Services) != len(tc.Secrets) {
+				t.Fatalf("mobile client validation failed")
+			}
+		})
 	}
 }

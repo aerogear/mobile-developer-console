@@ -103,6 +103,8 @@ func main() {
 
 	getWatchInterface := secretsCRUDL.Watch(namespace)
 	go stub.Watch(getWatchInterface, func() { stub.HandleSecretsChange(namespace, mobileClientsRepo, secretsCRUDL) })
+	// preform first check and update services if needed
+	stub.HandleSecretsChange(namespace, mobileClientsRepo, secretsCRUDL)
 
 	log.WithFields(log.Fields{"listenAddress": config.ListenAddress}).Info("Starting application")
 	log.Fatal(http.ListenAndServe(config.ListenAddress, router))
