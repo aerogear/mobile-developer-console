@@ -9,6 +9,7 @@ class MobileServiceView extends Component {
     super(props);
     this.boundServiceRows = this.boundServiceRows.bind(this);
     this.unboundServiceRows = this.unboundServiceRows.bind(this);
+    this.setDefaultBindingProperties= this.setDefaultBindingProperties.bind(this);
   }
 
   componentDidMount() {
@@ -33,10 +34,21 @@ class MobileServiceView extends Component {
     if (this.props.unboundServices) {
       rows.push(<h2 key="unbound-services">Unbound Services</h2>);
       this.props.unboundServices.forEach((service) => {
+        this.setDefaultBindingProperties(service);
         rows.push(<UnboundServiceRow key={service.serviceId} service={service} />);
       });
     }
     return rows;
+  }
+
+  setDefaultBindingProperties(service) {
+    try {
+      if (service.bindingSchema.properties["CLIENT_ID"]) {
+        service.bindingSchema.properties["CLIENT_ID"].default = this.props.appName;
+      }
+    } catch {
+      console.log("Null reference setting default properties for " + service.serviceId);
+    }
   }
 
   render() {
