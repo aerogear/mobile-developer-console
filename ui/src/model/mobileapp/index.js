@@ -1,1 +1,0 @@
-export { MobileApp } from './mobileapp';

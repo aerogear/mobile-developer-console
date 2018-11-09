@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Grid, Form } from 'patternfly-react';
 import { CREATE_CLIENT_APP_ID, CREATE_CLIENT_NAME } from './Constants';
 import { VerticalFormField } from './VerticalFormField';
-import { MobileApp } from '../../model/mobileapp/index';
+import { MobileApp } from '../../model/datamodel';
 
 export const LABEL_APPNAME = '* App Name';
 export const EXAMPLE_APPNAME = 'myapp';

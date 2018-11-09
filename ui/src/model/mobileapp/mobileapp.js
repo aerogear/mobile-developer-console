@@ -1,5 +1,6 @@
-import { Spec } from './spec';
+import { Spec } from "./mobileappspec";
 import { Metadata } from './metadata';
+import { Status } from './status';
 
 export const PROPERTIES = {
   NAME: 'name',
@@ -17,6 +18,7 @@ export class MobileApp {
     }
     this.spec = new Spec(this.app);
     this.metadata = new Metadata(this.app);
+    this.status = new Status(this.app);
   }
 
   getID() {
@@ -29,6 +31,14 @@ export class MobileApp {
 
   getType() {
     return this.getSpec().getType();
+  }
+
+  getAppIdentifier() {
+    return this.getSpec().getAppIdentifier();
+  }
+
+  getStatus() {
+    return this.status;
   }
 
   setAppDetails(appName, appType, appIdentifier) {
@@ -81,6 +91,20 @@ export class MobileApp {
 
   toJSON() {
     return { ...this.app };
+  }
+
+  /**
+   * Finds an app into an array of raw json apps and returns an instance of MobileApp if found or null otherwise
+   * @param ary the array of json apps data
+   * @param appID the id of the app to be found
+   * @returns {*}
+   */
+  static find(ary, appID) {
+    const mobileAppJson = ary.find(app => app.metadata.name === appID);
+    if (mobileAppJson) {
+      return new MobileApp(mobileAppJson);
+    }
+    return null;
   }
 }
 

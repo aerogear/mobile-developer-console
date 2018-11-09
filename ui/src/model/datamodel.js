@@ -1,1 +1,1 @@
-export { MobileApp } from './mobileapp/index';
+export { MobileApp } from './mobileapp/mobileapp';
