@@ -11,7 +11,8 @@ import {
   BUILD_CONFIG_CREATE_FAILURE,
   BUILD_CONFIG_FIELD_SET_VALUE,
   BUILD_CONFIG_FIELD_SET_UI_STATE,
-  BUILD_CONFIG_FIELD_REMOVE_VALUE
+  BUILD_CONFIG_FIELD_REMOVE_VALUE,
+  BUILD_CONFIG_CLEAR_STATE
 } from '../actions/buildConfigs';
 import resourceReducer from './resource';
 import {
@@ -107,6 +108,11 @@ export const buildConfigReducer = (prevState = initialState, action) => {
         unset(state, field);
         unset(state, ofValidation(field));
       });
+      return state;
+    }
+    case BUILD_CONFIG_CLEAR_STATE: {
+      const state = cloneDeep(prevState);
+      unset(state, 'config');
       return state;
     }
     default:

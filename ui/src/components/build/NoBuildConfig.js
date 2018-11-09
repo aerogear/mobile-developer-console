@@ -19,13 +19,11 @@ class NoBuildConfig extends Component {
         <Button bsStyle="primary" bsSize="large" onClick={() => this.setState({ show: true })}>
           Create build config
         </Button>
-        {
-          <BuildConfigDialog
-            show={show}
-            clientInfo={clientInfo}
-            onShowStateChanged={isShown => this.setState({ show: isShown })}
-          />
-        }
+        <BuildConfigDialog
+          show={show}
+          clientInfo={clientInfo}
+          onShowStateChanged={isShown => this.setState({ show: isShown })}
+        />
       </div>
     );
   };

@@ -31,6 +31,7 @@ export const createBuildConfig = config =>
 export const BUILD_CONFIG_FIELD_SET_VALUE = 'BUILD_CONFIG_FIELD_SET_VALUE';
 export const BUILD_CONFIG_FIELD_REMOVE_VALUE = 'BUILD_CONFIG_FIELD_REMOVE_VALUE';
 export const BUILD_CONFIG_FIELD_SET_UI_STATE = 'BUILD_CONFIG_FIELD_SET_UI_STATE';
+export const BUILD_CONFIG_CLEAR_STATE = 'BUILD_CONFIG_CLEAR_STATE';
 
 /**
  * Creates action for setting the value of a field into the state
@@ -60,3 +61,8 @@ export const createRemoveValues = (path = null) => (...values) => ({
   type: BUILD_CONFIG_FIELD_REMOVE_VALUE,
   payload: { path, values }
 });
+
+/**
+ * Clears the state for create build config dialog.
+ */
+export const clearState = () => ({ type: BUILD_CONFIG_CLEAR_STATE });

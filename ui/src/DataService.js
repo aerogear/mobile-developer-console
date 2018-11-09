@@ -89,18 +89,10 @@ const dataService = {
     return response.json();
   },
   createBuildConfig: async config => {
-    const response = await fetch(`${baseUrl}/buildconfigs`, {
-      method: 'POST',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(config)
-    });
+    const response = await fetch(`${baseUrl}/buildconfigs`, requestConfig('POST', config));
     if (!response.ok) {
       const msg = await response.text();
-      throw Error(`${response.statusText}: ${msg}`);
+      throw Error(msg);
     }
     return response.json();
   },
@@ -111,69 +103,72 @@ const dataService = {
   generateDownloadURL: name => request(`builds/${name}/gendownloadurl`, 'POST'),
   fetchUser: () => request('user', 'GET'),
   bindableServices: async mobileClientName => {
-    let unboundServices = [];
-    let boundServices = [];
+    const unboundServices = [];
+    const boundServices = [];
 
-    const instances = await fetchItems(`bindableservices/${mobileClientName}`)
+    const instances = await fetchItems(`bindableservices/${mobileClientName}`);
 
-    instances.forEach ( instance => {
-
-      let serviceName = instance.name;
-      let serviceIcon = instance.imageUrl;
-      let serviceIconClass = instance.iconClass;
+    instances.forEach(instance => {
+      const serviceName = instance.name;
+      const serviceIcon = instance.imageUrl;
+      const serviceIconClass = instance.iconClass;
 
       if (instance.isBound) {
-
         boundServices.push({
           serviceLogoUrl: serviceIcon,
-          serviceIconClass: serviceIconClass,
-          serviceName: serviceName,
+          serviceIconClass,
+          serviceName,
           serviceBindingName: instance.serviceBinding.metadata.name,
           serviceInstanceName: instance.serviceInstance.metadata.name,
           serviceId: serviceName,
           serviceDescription: instance.serviceClass.spec.description,
           documentationUrl: instance.serviceClass.spec.externalMetadata.documentationUrl20,
           configuration: instance.configuration,
-          setupText: 'Identity Management SDK setup',
+          setupText: 'Identity Management SDK setup'
         });
       } else {
         unboundServices.push({
           serviceLogoUrl: serviceIcon,
-          serviceIconClass: serviceIconClass,
-          serviceName: serviceName,
+          serviceIconClass,
+          serviceName,
           serviceInstanceName: instance.serviceInstance.metadata.name,
           serviceId: serviceName,
-          bindingSchema : instance.servicePlan.spec.serviceBindingCreateParameterSchema,
-          form : instance.servicePlan.spec.externalMetadata.schemas.service_binding.create.openshift_form_definition,
+          bindingSchema: instance.servicePlan.spec.serviceBindingCreateParameterSchema,
+          form: instance.servicePlan.spec.externalMetadata.schemas.service_binding.create.openshift_form_definition,
           serviceDescription: instance.serviceClass.spec.description,
           serviceClassExternalName: instance.serviceClass.spec.externalMetadata.serviceName,
-          setupText: 'Mobile Metrics SDK setups',
+          setupText: 'Mobile Metrics SDK setups'
         });
       }
+    });
 
-    })
-
-    return {boundServices: boundServices, unboundServices: unboundServices};
+    return { boundServices, unboundServices };
   },
-  createBinding: async (mobileClientName, serviceInstanceName, credentialSecretName, parametersSecretName, serviceClassExternalName, formData) => {
-
+  createBinding: async (
+    mobileClientName,
+    serviceInstanceName,
+    credentialSecretName,
+    parametersSecretName,
+    serviceClassExternalName,
+    formData
+  ) => {
     const binding = {
-      mobileClientName: mobileClientName,
-      serviceInstanceName:serviceInstanceName,
-      bindingParametersName:parametersSecretName,
-      bindingSecretName:credentialSecretName,
-      serviceClassExternalName:serviceClassExternalName,
-      formData:formData
-    }
+      mobileClientName,
+      serviceInstanceName,
+      bindingParametersName: parametersSecretName,
+      bindingSecretName: credentialSecretName,
+      serviceClassExternalName,
+      formData
+    };
 
     const response = await fetch(`${baseUrl}/bindableservices`, {
       method: 'POST',
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
-        'Content-Type': 'application/json; charset=utf-8',
+        'Content-Type': 'application/json; charset=utf-8'
       },
-      body: JSON.stringify(binding),
+      body: JSON.stringify(binding)
     });
     if (!response.ok) {
       const msg = await response.text();
@@ -181,9 +176,7 @@ const dataService = {
     }
     return response.json();
   },
-  deleteBinding: name => deleteItem(`bindableservices/${name}`, name),
-
-
+  deleteBinding: name => deleteItem(`bindableservices/${name}`, name)
 };
 
 export default dataService;

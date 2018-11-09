@@ -27,8 +27,8 @@ import { MobileClientBuildOverviewList } from '../components/build/MobileClientB
 import BuildConfigDialog from './BuildConfigDialog';
 
 const TAB_CONFIGURATION = 1;
-const TAB_BUILDS = 2;
-const TAB_MOBILE_SERVICES = 3;
+const TAB_MOBILE_SERVICES = 2;
+const TAB_BUILDS = 3;
 
 class Client extends Component {
   constructor(props) {
@@ -80,7 +80,6 @@ class Client extends Component {
           if (matchingConfig) {
             matchingConfig.builds = matchingConfig.builds || [];
             matchingConfig.builds.push(build);
-            this.setState({ matchingConfig });
           }
         });
 
@@ -136,8 +135,8 @@ class Client extends Component {
     const { clientType = '', appIdentifier: clientId = '' } = spec;
     const clientInfo = { clientId, clientType };
     const { selectedTab } = this.state;
-
-    return (
+    const appName = this.props.match.params.id;
+    return mobileApp ? (
       <Grid fluid className="client-details">
         <Breadcrumb>
           <Breadcrumb.Item active>
@@ -145,7 +144,7 @@ class Client extends Component {
           </Breadcrumb.Item>
           <Breadcrumb.Item active>{this.props.match.params.id}</Breadcrumb.Item>
         </Breadcrumb>
-        {mobileApp && this.header(clientInfo)}
+        {this.header(clientInfo)}
         {this.props.apps.readingError ? (
           <Alert>{this.props.apps.readingError.message}</Alert>
         ) : (
@@ -160,23 +159,25 @@ class Client extends Component {
                 <TabPane eventKey={TAB_CONFIGURATION}>
                   <ConfigurationView app={mobileApp} />
                 </TabPane>
+                <TabPane eventKey={TAB_MOBILE_SERVICES}>
+                  <MobileServiceView appName={appName} />
+                </TabPane>
                 {this.props.buildTabEnabled ? (
                   <TabPane eventKey={TAB_BUILDS}>
                     <MobileClientBuildOverviewList
-                      appName={this.props.match.params.id}
+                      appName={appName}
                       clientInfo={clientInfo}
                       buildConfigs={this.state.buildConfigs}
                     />
                   </TabPane>
                 ) : null}
-                <TabPane eventKey={TAB_MOBILE_SERVICES}>
-                  <MobileServiceView  appName={appName} />
-                </TabPane>
               </TabContent>
             </div>
           </TabContainer>
         )}
       </Grid>
+    ) : (
+      <React.Fragment />
     );
   }
 }

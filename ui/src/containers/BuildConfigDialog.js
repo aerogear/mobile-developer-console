@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CreateBuildConfigDialog from '../components/build/CreateBuildConfigDialog';
-import { createBuildConfig } from '../actions/buildConfigs';
+import { createBuildConfig, clearState } from '../actions/buildConfigs';
 import { KEY_CR_CLIENT_ID, KEY_CR_CLIENT_TYPE } from '../components/build/Constants';
 
 class BuildConfigDialog extends Component {
@@ -11,6 +11,7 @@ class BuildConfigDialog extends Component {
     config[KEY_CR_CLIENT_ID] = clientId;
     config[KEY_CR_CLIENT_TYPE] = clientType;
     this.props.createBuildConfig(config);
+    this.props.clearState();
     this.close();
   };
 
@@ -41,7 +42,8 @@ class BuildConfigDialog extends Component {
 }
 
 const mapDispatchToProps = {
-  createBuildConfig
+  createBuildConfig,
+  clearState
 };
 
 export default connect(
