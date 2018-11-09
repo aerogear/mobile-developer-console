@@ -13,7 +13,7 @@ import {
   PLATFORM_XAMARIN
 } from '../components/create_client/Constants';
 import '../components/create_client/create_client.css';
-import { MobileApp } from '../model/mobileapp';
+import { MobileApp } from "../model/mobileapp/index";
 
 class ClientEditBaseClass extends Component {
   constructor(props, editingMode) {

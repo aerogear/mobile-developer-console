@@ -1,4 +1,5 @@
-import { PLATFORM_ANDROID } from '../components/create_client/Constants';
+import { Spec } from './spec';
+import { Metadata } from './metadata';
 
 export const PROPERTIES = {
   NAME: 'name',
@@ -14,8 +15,8 @@ export class MobileApp {
       // we are creating a new app
       this.app = {};
     }
-    this.spec = new MobileAppSpec(this.app);
-    this.metadata = new MobileAppMetadata(this.app);
+    this.spec = new Spec(this.app);
+    this.metadata = new Metadata(this.app);
   }
 
   getID() {
@@ -80,81 +81,6 @@ export class MobileApp {
 
   toJSON() {
     return { ...this.app };
-  }
-}
-
-class MobileAppSpec {
-  constructor(appJson) {
-    if (appJson.spec) {
-      this.spec = appJson.spec;
-    } else {
-      this.spec = { clientType: PLATFORM_ANDROID };
-      appJson.spec = this.spec;
-    }
-    this.set.bind(this);
-  }
-
-  getApiKey() {
-    return this.spec.apiKey;
-  }
-
-  getDmzUrl() {
-    return this.spec.dmzUrl;
-  }
-
-  getType() {
-    return this.spec.clientType;
-  }
-
-  getName() {
-    return this.spec.name;
-  }
-
-  setName(newName) {
-    this.spec.name = newName;
-  }
-
-  setType(newType) {
-    this.spec.clientType = newType;
-  }
-
-  setAppIdentifier(newAppIdentifier) {
-    this.spec.appIdentifier = newAppIdentifier;
-  }
-
-  set(key, value) {
-    this.spec[key] = value;
-  }
-
-  get(key) {
-    const value = this.spec[key];
-    return value;
-  }
-
-  toJSON() {
-    return { ...this.spec };
-  }
-}
-
-class MobileAppMetadata {
-  constructor(appJson) {
-    this.metadata = appJson.metadata;
-  }
-
-  getID() {
-    return this.metadata.name;
-  }
-
-  getNamespace() {
-    return this.metadata.namespace;
-  }
-
-  getSelfLink() {
-    return this.metadata.selfLink;
-  }
-
-  getUID() {
-    return this.metadata.uid;
   }
 }
 
