@@ -17,7 +17,7 @@ import {
   PLATFORM_CORDOVA,
   PLATFORM_XAMARIN,
 } from '../../components/create_client/Constants';
-import { MobileApp } from "../../model/mobileapp";
+import { MobileApp } from "../../model/mobileapp/index";
 
 const SUPPORTED_PLATFORMS = [PLATFORM_ANDROID, PLATFORM_CORDOVA, PLATFORM_IOS, PLATFORM_XAMARIN];
 
