@@ -1,15 +1,21 @@
 oc project default
 
-rm -rf /tmp/mini-certs
-mkdir /tmp/mini-certs
-cd /tmp/mini-certs
+rm -rf /tmp/oc-certs
+mkdir /tmp/oc-certs
+cd /tmp/oc-certs
 
-oc get secret router-certs --template='{{index .data "tls.crt"}}' -n default  |  \
-base64 --decode | sed -e '1,/^-----END RSA PRIVATE KEY-----$/ d'  >localcluster.crt
+oc get secret router-certs --template='{{index .data "tls.crt"}}' -n default | \
+    base64 --decode | sed -e '1,/^-----END RSA PRIVATE KEY-----$/ d' >localcluster.crt
 
-minishift ssh -- cat /var/lib/minishift/base/openshift-controller-manager/ca.crt >ca.crt
-minishift ssh -- cat /var/lib/minishift/base/openshift-controller-manager/ca.key >ca.key
-minishift ssh -- cat /var/lib/minishift/base/openshift-controller-manager/ca.serial.txt >ca.serial.txt
+if [ -z "${MINISHIFT}" ]; then
+    cp "${CONTROLLER_MANAGER_DIR}/ca.crt" ./
+    cp "${CONTROLLER_MANAGER_DIR}/ca.key" ./
+    cp "${CONTROLLER_MANAGER_DIR}/ca.serial.txt" ./
+else
+    minishift ssh -- cat /var/lib/minishift/base/openshift-controller-manager/ca.crt >ca.crt
+    minishift ssh -- cat /var/lib/minishift/base/openshift-controller-manager/ca.key >ca.key
+    minishift ssh -- cat /var/lib/minishift/base/openshift-controller-manager/ca.serial.txt >ca.serial.txt
+fi
 
 oc adm ca create-server-cert \
     --signer-cert=ca.crt \
@@ -38,4 +44,4 @@ oc rollout latest dc/router
 
 echo
 echo "*******************"
-echo "Cluster certificate is located in /tmp/mini-certs/localcluster.crt. Install it to your mobile device."
+echo "Cluster certificate is located in /tmp/oc-certs/localcluster.crt. Install it to your mobile device."
