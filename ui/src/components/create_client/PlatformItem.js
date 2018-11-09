@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { PLATFORM_ANDROID, PLATFORM_IOS, PLATFORM_CORDOVA, PLATFORM_XAMARIN } from './Constants';
 import { connect } from 'react-redux';
 import { selectPlatform } from '../../actions/apps';
-import { MobileApp } from "../../model/mobileapp/index";
+import { MobileApp } from "../../model/datamodel";
 
 /**
  * This represent a single platform item to be choosen into the UI when creating clients

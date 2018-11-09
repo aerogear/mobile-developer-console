@@ -27,6 +27,10 @@ export class Spec {
     return this.spec.name;
   }
 
+  getAppIdentifier() {
+    return this.spec.appIdentifier;
+  }
+
   setName(newName) {
     this.spec.name = newName;
   }

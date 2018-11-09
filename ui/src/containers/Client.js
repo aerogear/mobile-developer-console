@@ -21,6 +21,8 @@ import { fetchBuilds } from '../actions/builds';
 import DataService from '../DataService';
 import PlatformIcon from '../components/common/PlatformIcon';
 import DeleteItemButton from './DeleteItemButton';
+import { MobileApp } from "../model/datamodel";
+
 
 import './Client.css';
 import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
@@ -62,7 +64,7 @@ class Client extends Component {
   }
 
   getMobileApp() {
-    return this.props.apps.items.find(app => app.metadata.name === this.props.match.params.id) || {};
+    return MobileApp.find(this.props.apps.items, this.props.match.params.id) || new MobileApp();
   }
 
   componentDidUpdate(prevProps) {
@@ -95,26 +97,26 @@ class Client extends Component {
     }
   };
 
-  header = clientInfo => {
+  header = mobileApp => {
     const { selectedTab, showBuildConfigDialog = false } = this.state;
-    const { clientType } = clientInfo;
+    const clientType = mobileApp.getType();
     return (
       <div className="app-header-wrapper">
         <div className="app-header">
           <PlatformIcon small platform={clientType} />
           <div>
             <span className="platform">{clientType}</span>
-            <h1>{this.props.match.params.id}</h1>
+            <h1>{mobileApp.getName()}</h1>
           </div>
         </div>
         <div className="app-actions-dropdown">
           <DropdownButton id="app-actions-dropdown" title="Actions" pullRight>
-            {clientInfo && selectedTab === TAB_BUILDS ? (
+            {mobileApp && selectedTab === TAB_BUILDS ? (
               <React.Fragment>
                 <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
                 <BuildConfigDialog
                   update={false}
-                  clientInfo={clientInfo}
+                  clientInfo={{ clientId: mobileApp.getAppIdentifier(), clientType: mobileApp.getType() }}
                   show={showBuildConfigDialog}
                   onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
                 />
@@ -142,9 +144,9 @@ class Client extends Component {
           <Breadcrumb.Item active>
             <Link to="/overview">Mobile Apps</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item active>{this.props.match.params.id}</Breadcrumb.Item>
+          <Breadcrumb.Item active>{mobileApp.getName()}</Breadcrumb.Item>
         </Breadcrumb>
-        {this.header(clientInfo)}
+        {this.header(mobileApp)}
         {this.props.apps.readingError ? (
           <Alert>{this.props.apps.readingError.message}</Alert>
         ) : (

@@ -13,7 +13,7 @@ import {
   PLATFORM_XAMARIN
 } from '../components/create_client/Constants';
 import '../components/create_client/create_client.css';
-import { MobileApp } from "../model/mobileapp/index";
+import { MobileApp } from '../model/datamodel';
 
 class ClientEditBaseClass extends Component {
   constructor(props, editingMode) {
@@ -137,7 +137,11 @@ class ClientEditBaseClass extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.close}>Cancel</Button>
-          <Button bsStyle="primary" onClick={this.createClient} disabled={this.getMobileAppToEdit() && !this.getMobileAppToEdit().isValid()}>
+          <Button
+            bsStyle="primary"
+            onClick={this.createClient}
+            disabled={this.getMobileAppToEdit() && !this.getMobileAppToEdit().isValid()}
+          >
             {this.state.editingMode ? 'Save' : 'Create'}
           </Button>
         </Modal.Footer>

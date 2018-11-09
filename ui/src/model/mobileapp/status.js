@@ -28,4 +28,8 @@ export class Status {
     // TODO: return a list of object instead of the JSON
     return this.status.services;
   }
+
+  toJSON() {
+    return this.status;
+  }
 }
