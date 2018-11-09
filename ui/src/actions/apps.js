@@ -19,15 +19,15 @@ export const APP_CREATE_SUCCESS = 'APP_CREATE_SUCCESS';
 export const APP_CREATE_FAILURE = 'APP_CREATE_FAILURE';
 
 export const createApp = app =>
-  fetchAction([APP_CREATE_REQUEST, APP_CREATE_SUCCESS, APP_CREATE_FAILURE], async () => DataService.createApp(app))();
+  fetchAction([APP_CREATE_REQUEST, APP_CREATE_SUCCESS, APP_CREATE_FAILURE], async () => DataService.createApp(app.getSpec().toJSON()))();
 
 export const APP_UPDATE_REQUEST = 'APP_UPDATE_REQUEST';
 export const APP_UPDATE_SUCCESS = 'APP_UPDATE_SUCCESS';
 export const APP_UPDATE_FAILURE = 'APP_UPDATE_FAILURE';
 
-export const updateApp = (id, app) =>
+export const updateApp = app =>
   fetchAction([APP_UPDATE_REQUEST, APP_UPDATE_SUCCESS, APP_UPDATE_FAILURE], async () =>
-    DataService.updateApp(id, app)
+    DataService.updateApp(app.getID(), app.getSpec().toJSON())
   )();
 
 export const APP_DELETE_REQUEST = 'APP_DELETE_REQUEST';
@@ -38,23 +38,10 @@ export const deleteApp = name =>
   fetchAction([APP_DELETE_REQUEST, APP_DELETE_SUCCESS, APP_DELETE_FAILURE], async () => DataService.deleteApp(name))();
 
 // CREATE CLIENT APP DIALOG ACTIONS
-export const APP_PLATFORM_REGISTER = 'PLATFORM_REGISTER';
 export const APP_PLATFORM_SELECT = 'PLATFORM_SELECT';
-export const APP_FORM_SETSTATUS = 'FORM_SETSTATUS';
 export const APP_FORM_RESET = 'FORM_RESET';
 export const APP_FIELD_SETVALUE = 'FIELD_SETVALUE';
 export const APP_EDIT = 'APP_EDIT';
-
-/**
- * The list of platforms that the user can choose from are dynamic.
- * This method is called as soon as the list of the platform to be supported is know
- * to register into the state an initial state for all of them.
- * @param {string} platform
- */
-export const registerPlatform = platform => ({
-  type: APP_PLATFORM_REGISTER,
-  platform: { name: platform.name }
-});
 
 /**
  * When a platform is selected, this action is called to update the state with the selection
@@ -64,15 +51,6 @@ export const registerPlatform = platform => ({
 export const selectPlatform = platform => ({
   type: APP_PLATFORM_SELECT,
   platform: { name: platform }
-});
-
-/**
- * This action is called to update the state with the current validation state of the form.
- * @param {boolean} newStatus
- */
-export const setStatus = newStatus => ({
-  type: APP_FORM_SETSTATUS,
-  payload: { status: newStatus }
 });
 
 /**

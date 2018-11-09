@@ -1,7 +1,7 @@
 import EditMobileClientBaseClass from './EditMobileClientBaseClass';
 import { PLATFORM_CORDOVA } from './Constants';
 import { connect } from 'react-redux';
-import { setStatus, setFieldValue, editApp } from '../../actions/apps';
+import { setFieldValue, editApp } from '../../actions/apps';
 
 export const EXAMPLE_APPIDENTIFIER = 'org.aerogear.cordova.myapp';
 
@@ -22,7 +22,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setStatus,
   setFieldValue,
   editApp
 };

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import EditMobileClientBaseClass from './EditMobileClientBaseClass';
 import { PLATFORM_XAMARIN } from './Constants';
-import { setStatus, setFieldValue, editApp } from '../../actions/apps';
+import { setFieldValue, editApp } from '../../actions/apps';
 
 export const EXAMPLE_APPIDENTIFIER = 'AeroGear.Xamarin.MyApp';
 
@@ -22,7 +22,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setStatus,
   setFieldValue,
   editApp
 };

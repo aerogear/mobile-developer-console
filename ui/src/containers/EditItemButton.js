@@ -2,7 +2,7 @@ import React from 'react';
 import { MenuItem} from 'patternfly-react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
-import { deleteApp, fetchApp, selectPlatform, registerPlatform, updateApp, editApp } from '../actions/apps';
+import { deleteApp, fetchApp, selectPlatform, updateApp, editApp } from '../actions/apps';
 import { deleteBuildConfig } from '../actions/buildConfigs';
 import ClientEditBaseClass from './ClientEditBaseClass';
 
@@ -36,7 +36,6 @@ const mapDispatchToProps = {
   deleteApp,
   deleteBuildConfig,
   selectPlatform,
-  registerPlatform,
   fetchApp,
   updateApp
 };

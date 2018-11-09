@@ -1,4 +1,4 @@
-import { CREATE_CLIENT_APP_ID, CREATE_CLIENT_NAME } from '../components/create_client/Constants';
+import { PLATFORM_ANDROID } from '../components/create_client/Constants';
 
 export const PROPERTIES = {
   NAME: 'name',
@@ -19,7 +19,7 @@ export class MobileApp {
   }
 
   getID() {
-    return this.app.metadata.name;
+    return this.metadata.getID();
   }
 
   getName() {
@@ -83,12 +83,12 @@ export class MobileApp {
   }
 }
 
-export class MobileAppSpec {
+class MobileAppSpec {
   constructor(appJson) {
     if (appJson.spec) {
       this.spec = appJson.spec;
     } else {
-      this.spec = {};
+      this.spec = { clientType: PLATFORM_ANDROID };
       appJson.spec = this.spec;
     }
     this.set.bind(this);
@@ -136,7 +136,7 @@ export class MobileAppSpec {
   }
 }
 
-export class MobileAppMetadata {
+class MobileAppMetadata {
   constructor(appJson) {
     this.metadata = appJson.metadata;
   }

@@ -24,15 +24,6 @@ class ClientEditBaseClass extends Component {
       editingMode
     };
     this.createClient = this.createClient.bind(this);
-
-    if (editingMode) {
-      //this.props.registerPlatform({ name: this.getMobileAppToEdit(), selected: true });
-    } else {
-      for (const key in this.props.platforms) {
-        const platform = this.props.platforms[key];
-        //this.props.registerPlatform({ name: platform, selected: false });
-      }
-    }
   }
 
   getMobileAppToEdit(newWindow) {
@@ -67,9 +58,9 @@ class ClientEditBaseClass extends Component {
     this.setState({ loading: true });
     const newApp = this.getMobileAppToEdit();
     if (this.state.editingMode) {
-      this.props.updateApp(newApp.getID(), newApp.getSpec().toJSON());
+      this.props.updateApp(newApp);
     } else {
-      this.props.createApp(newApp.getSpec());
+      this.props.createApp(newApp);
     }
   }
 
