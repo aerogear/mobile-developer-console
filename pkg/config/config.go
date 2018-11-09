@@ -8,29 +8,27 @@ import (
 )
 
 type Config struct {
-	ListenAddress        string //will look like ":4000"
-	LogLevel             string
-	LogFormat            string
-	StaticFilesDir       string
-	ApiRoutePrefix       string
-	OperatorResyncPeriod int
-	WsWriteWait          int
-	WsPongWait           int
-	BuildTabEnabled      bool
+	ListenAddress   string //will look like ":4000"
+	LogLevel        string
+	LogFormat       string
+	StaticFilesDir  string
+	ApiRoutePrefix  string
+	WsWriteWait     int
+	WsPongWait      int
+	BuildTabEnabled bool
 }
 
 func GetConfig() Config {
 
 	return Config{
-		ListenAddress:        fmt.Sprintf(":%v", getEnv("PORT", "4000")),
-		LogLevel:             strings.ToLower(getEnv("LOG_LEVEL", "info")),
-		LogFormat:            strings.ToLower(getEnv("LOG_FORMAT", "text")), //cann be text or json
-		StaticFilesDir:       getEnv("STATIC_FILES_DIR", ""),
-		ApiRoutePrefix:       "/api", //should start with a "/",
-		OperatorResyncPeriod: getEnvAsInt("RESYNC_PERIOD", 10),
-		WsWriteWait:          getEnvAsInt("WS_WRITE_WAIT", 10),
-		WsPongWait:           getEnvAsInt("WS_PONG_WAIT", 60),
-		BuildTabEnabled:      getEnvAsBool("ENABLE_BUILD_TAB", false),
+		ListenAddress:   fmt.Sprintf(":%v", getEnv("PORT", "4000")),
+		LogLevel:        strings.ToLower(getEnv("LOG_LEVEL", "info")),
+		LogFormat:       strings.ToLower(getEnv("LOG_FORMAT", "text")), //cann be text or json
+		StaticFilesDir:  getEnv("STATIC_FILES_DIR", ""),
+		ApiRoutePrefix:  "/api", //should start with a "/",
+		WsWriteWait:     getEnvAsInt("WS_WRITE_WAIT", 10),
+		WsPongWait:      getEnvAsInt("WS_PONG_WAIT", 60),
+		BuildTabEnabled: getEnvAsBool("ENABLE_BUILD_TAB", false),
 	}
 }
 

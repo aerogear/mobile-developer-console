@@ -29,6 +29,8 @@ class Client extends Component {
     const appName = this.props.match.params.id;
 
     this.props.fetchApp(appName);
+    this.wsApps = DataService.watchApps(() => this.props.fetchApp(appName));
+
     if (this.props.buildTabEnabled) {
       this.props.fetchBuildConfigs();
       this.props.fetchBuilds();
@@ -39,6 +41,7 @@ class Client extends Component {
   }
 
   componentWillUnmount() {
+    this.wsApps && this.wsApps.close();
     this.wsBuildConfigs && this.wsBuildConfigs.close();
     this.wsBuilds && this.wsBuilds.close();
   }
@@ -110,7 +113,7 @@ class Client extends Component {
                     </Nav>
                     <TabContent id="basic-tabs-content">
                       <TabPane eventKey={1}>
-                        <ConfigurationView />
+                        <ConfigurationView app={mobileApp} />
                       </TabPane>
 
                       <TabPane eventKey={2}>

@@ -142,6 +142,7 @@ func (r *MobileClientRepoImpl) Watch() func() (watch.Interface, error) {
 		sdk.Watch("mobile.k8s.io/v1alpha1", "MobileClient", r.namespace, 0)
 		handler = NewMobileHandler()
 		sdk.Handle(handler)
+		go sdk.Run(context.Background())
 	}
 	watcher := MobileWatcher{
 		events: make(chan watch.Event),

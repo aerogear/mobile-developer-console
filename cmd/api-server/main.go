@@ -11,12 +11,9 @@ import (
 	"github.com/aerogear/mobile-developer-console/pkg/web"
 	log "github.com/sirupsen/logrus"
 
-	"context"
-
 	"github.com/aerogear/mobile-developer-console/pkg/stub"
 	sc "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset"
 	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
-	"github.com/operator-framework/operator-sdk/pkg/sdk"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 )
@@ -87,15 +84,6 @@ func main() {
 		mobileBuildsHandler := web.NewMobileBuildsHandler(buildCRUDL, namespace)
 		web.SetupMobileBuildsRoute(apiGroup, mobileBuildsHandler)
 
-	}
-
-	buildClient, err := buildv1.NewForConfig(cfg)
-	if err != nil {
-		log.Fatalf("Error init build client: %v", err)
-	}
-
-	{
-
 		buildConfigCRUDL := mobile.NewBuildConfigCRUDL(buildClient, namespace)
 
 		mobileBuildConfigsHandler := web.NewMobileBuildConfigsHandler(buildConfigCRUDL, secretsCRUDL, namespace)
@@ -113,15 +101,10 @@ func main() {
 	serverConfigHandler := web.NewServerConfigHandler(config)
 	web.SetupServerConfigRouter(apiGroup, serverConfigHandler)
 
-	resource := "v1"
-	kind := "Secret"
-	resyncPeriod := config.OperatorResyncPeriod
-
-	go func() {
-		sdk.Watch(resource, kind, namespace, resyncPeriod)
-		sdk.Handle(stub.NewHandler(mobileClientsRepo))
-		sdk.Run(context.Background())
-	}()
+	getWatchInterface := secretsCRUDL.Watch(namespace)
+	go stub.Watch(getWatchInterface, func() { stub.HandleSecretsChange(namespace, mobileClientsRepo, secretsCRUDL) })
+	// preform first check and update services if needed
+	stub.HandleSecretsChange(namespace, mobileClientsRepo, secretsCRUDL)
 
 	log.WithFields(log.Fields{"listenAddress": config.ListenAddress}).Info("Starting application")
 	log.Fatal(http.ListenAndServe(config.ListenAddress, router))

@@ -43,4 +43,6 @@ type MobileClientRepo interface {
 
 type SecretsCRUDL interface {
 	Create(namespace string, secret *k8v1.Secret) (*k8v1.Secret, error)
+	List(namespace string) (*k8v1.SecretList, error)
+	Watch(namespace string) func() (watch.Interface, error)
 }
