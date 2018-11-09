@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import EditMobileClientBaseClass from './EditMobileClientBaseClass';
 import { PLATFORM_ANDROID } from './Constants';
-import { setStatus, setFieldValue } from '../../actions/apps';
+import { setStatus, setFieldValue, editApp } from '../../actions/apps';
 
 export const EXAMPLE_APPIDENTIFIER = 'org.aerogear.android.myapp';
 
@@ -24,6 +24,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   setStatus,
   setFieldValue,
+  editApp
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateAndroidClient);
