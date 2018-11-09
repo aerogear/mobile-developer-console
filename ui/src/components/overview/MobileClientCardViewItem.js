@@ -46,7 +46,7 @@ const MobileClientCardViewItem = (props) => {
                 null
             }
             {
-              (buildTabEnabled && builds.numFailedBuilds === 0 && builds.numInProgressBuilds === 0) ?
+              (!buildTabEnabled || (builds.numFailedBuilds === 0 && builds.numInProgressBuilds === 0)) ?
                 <span />
               :
                 null
