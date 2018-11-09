@@ -1,7 +1,7 @@
 import EditMobileClientBaseClass from './EditMobileClientBaseClass';
 import { PLATFORM_IOS } from './Constants';
 import { connect } from 'react-redux';
-import { setStatus, setFieldValue, editApp } from '../../actions/apps';
+import { setFieldValue, editApp } from '../../actions/apps';
 
 export const LABEL_APPID = '* Bundle ID';
 export const EXAMPLE_APPID = 'org.aerogear.ios.myapp';
@@ -25,7 +25,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setStatus,
   setFieldValue,
   editApp
 };

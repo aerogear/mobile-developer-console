@@ -1,7 +1,5 @@
 import {
-  APP_PLATFORM_REGISTER,
   APP_PLATFORM_SELECT,
-  APP_FORM_SETSTATUS,
   APP_FORM_RESET,
   APP_FIELD_SETVALUE,
   APP_EDIT
@@ -202,24 +200,12 @@ function createClientAppDialog(state, action) {
           fields: {}
         }
       };
-    case APP_PLATFORM_REGISTER:
-      var newState = { ...state };
-      if (!newState.createClientAppDialog.platforms[action.platform.name]) {
-        newState.createClientAppDialog.platforms[action.platform.name] = { selected: false };
-      }
-      return newState;
-    case APP_PLATFORM_SELECT:
+    case APP_PLATFORM_SELECT: {
       const selectedPlatform = action.platform.name;
-      // var newPlatformState = JSON.parse(JSON.stringify(state.createClientAppDialog.platforms));
-      // for (const platform in newPlatformState) {
-      //   newPlatformState[platform] = { selected: platform === selectedPlatform };
-      // }
-
       return {
         ...state,
         createClientAppDialog: {
           ...state.createClientAppDialog,
-          // platforms: newPlatformState,
           app: {
             ...state.createClientAppDialog.app,
             spec: {
@@ -229,14 +215,7 @@ function createClientAppDialog(state, action) {
           }
         }
       };
-    case APP_FORM_SETSTATUS:
-      if (state.createClientAppDialog.valid === action.payload.status) {
-        return state;
-      }
-      return {
-        ...state,
-        createClientAppDialog: { ...state.createClientAppDialog, valid: action.payload.status }
-      };
+    }
     case APP_FIELD_SETVALUE: {
       const appModel = new MobileApp({ ...state.createClientAppDialog.app });
       appModel.setProperty(action.payload.name, action.payload.value);
