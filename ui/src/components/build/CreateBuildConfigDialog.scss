@@ -3,6 +3,20 @@
   min-height: 100%;
 }
 
+.advancedOptions {
+  padding-top:16px;
+  padding-left:16px;
+  padding-bottom:16px;
+}
+
+.advancedOptions > .form-group > label::before {
+  padding-left:16px;
+}
+
+.sourceSection {
+  padding: 0;
+}
+
 .help-block {
   margin-bottom: 0px;
   display: block;
@@ -37,4 +51,10 @@
 
 .gutter-top-bottom button {
   margin-right: 10px;
+}
+
+.modalBody {
+
+  height: 600px;
+  overflow-y: scroll;
 }

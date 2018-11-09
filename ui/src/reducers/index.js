@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import apps from './apps';
 import services from './services';
-import buildConfigs from './buildConfigs';
+import buildConfigs, { buildConfigReducer } from './buildConfigs';
 import builds from './builds';
 import user from './user';
 import config from './config';
@@ -11,6 +11,7 @@ export default combineReducers({
   apps,
   services,
   buildConfigs,
+  createBuildConfig: buildConfigReducer,
   builds,
   user,
   config, 

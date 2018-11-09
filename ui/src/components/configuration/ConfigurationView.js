@@ -10,11 +10,11 @@ import './ConfigurationView.css';
 // TODO remove mock values
 
 const config = {
-  "version": 1,
-  "clusterName": "https://192.168.0.106:8443",
-  "namespace": "myproject",
-  "clientId": "myapp-android",
-  "services": []
+  version: 1,
+  clusterName: 'https://192.168.0.106:8443',
+  namespace: 'myproject',
+  clientId: 'myapp-android',
+  services: []
 };
 
 const serviceSDKInfo = [
@@ -38,7 +38,9 @@ const serviceSDKInfo = [
 
 class ConfigurationView extends Component {
   render() {
-    config.services = this.props.app.status.services;
+    const { status = {} } = this.props.app;
+    const { services = [] } = status;
+    config.services = services;
     return (
       <React.Fragment>
         <Row className="configurationView">
@@ -61,7 +63,9 @@ class ConfigurationView extends Component {
           </Col>
           <Col xs={6}>
             <Header>mobile-services.json</Header>
-            <CopyToClipboardMultiline className="mobile-client-config">{JSON.stringify(config, null, 2)}</CopyToClipboardMultiline>
+            <CopyToClipboardMultiline className="mobile-client-config">
+              {JSON.stringify(config, null, 2)}
+            </CopyToClipboardMultiline>
           </Col>
         </Row>
       </React.Fragment>

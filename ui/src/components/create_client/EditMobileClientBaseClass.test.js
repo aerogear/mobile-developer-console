@@ -5,11 +5,7 @@ import CreateIOSClient, { LABEL_APPID as IOS_LABEL_APPID, EXAMPLE_APPID as IOS_E
 import CreateAndroidClient, { EXAMPLE_APPIDENTIFIER as ANDROID_EXAMPLE_APPID } from './CreateAndroidClient';
 import CreateCordovaClient, { EXAMPLE_APPIDENTIFIER as CORDOVA_EXAMPLE_APPID } from './CreateCordovaClient';
 import CreateXamarinClient, { EXAMPLE_APPIDENTIFIER as XAMARIN_EXAMPLE_APPID } from './CreateXamarinClient';
-import {
-  LABEL_APPNAME,
-  EXAMPLE_APPNAME,
-  LABEL_APPIDENTIFIER,
-} from './EditMobileClientBaseClass';
+import { LABEL_APPNAME, EXAMPLE_APPNAME, LABEL_APPIDENTIFIER } from './EditMobileClientBaseClass';
 import configureStore from '../../configureStore';
 
 Enzyme.configure({ adapter: new Adapter() });
