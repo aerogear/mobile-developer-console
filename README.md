@@ -148,9 +148,17 @@ Changes to `.js` files are handled by Node server([react-scripts](https://github
 
 ## Test
 
+### Backend unit tests
 ```bash
 make test
 ```
+
+### Backend integration tests
+1. Build the API Server: `make build`
+2. Follow [these instructions](#Run-locally) to target existing OpenShift project (**Note:** the project must not contain existing mobile clients)
+3. Install dependencies: `cd integration_tests && npm install`
+4. Run the tests: `npm test`
+
 
 ## Generate the API definition for the CRD
 
