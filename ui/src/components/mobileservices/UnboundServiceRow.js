@@ -39,7 +39,7 @@ class UnboundServiceRow extends Component {
   }
 
   renderBindingButtons() {
-    return <div><Button onClick={()=>this.setState( { showModal:true })}>Create Binding</Button></div> ;
+    return <div><Button onClick={()=>this.setState( { showModal:true })}>Bind to App</Button></div> ;
   }
 
   render() {
