@@ -88,7 +88,7 @@ func (r *mockMobileClientRepo) Watch() func() (watch.Interface, error) {
 var apiPrefix = "/api"
 
 func setupMobileClientsServer(repo mobile.MobileClientRepo, apiPrefix string) *httptest.Server {
-	h := NewMobileClientsHandler(repo, "test")
+	h := NewMobileClientsHandler(repo, "test", "test.url")
 
 	r := NewRouter("", apiPrefix)
 	apiRoute := r.Group(apiPrefix)

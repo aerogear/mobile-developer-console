@@ -13,14 +13,16 @@ import (
 )
 
 type MobileClientsHandler struct {
-	namespace        string
-	mobileClientRepo mobile.MobileClientRepo
+	namespace          string
+	mobileClientRepo   mobile.MobileClientRepo
+	openshiftMasterURL string
 }
 
-func NewMobileClientsHandler(mobileClientRepo mobile.MobileClientRepo, namespace string) *MobileClientsHandler {
+func NewMobileClientsHandler(mobileClientRepo mobile.MobileClientRepo, namespace string, openshiftMasterURL string) *MobileClientsHandler {
 	return &MobileClientsHandler{
-		namespace:        namespace,
-		mobileClientRepo: mobileClientRepo,
+		namespace:          namespace,
+		mobileClientRepo:   mobileClientRepo,
+		openshiftMasterURL: openshiftMasterURL,
 	}
 }
 
@@ -60,7 +62,7 @@ func newMobileClientServiceFromObject(service *v1alpha1.MobileClientService) (*M
 	return s, nil
 }
 
-func newMoileClientDataFromObject(app *v1alpha1.MobileClient) (*MobileClientData, error) {
+func newMoileClientDataFromObject(app *v1alpha1.MobileClient, openshiftMasterURL string) (*MobileClientData, error) {
 	services := make([]MobileClientServiceData, 0)
 	for _, service := range app.Status.Services {
 		s, err := newMobileClientServiceFromObject(&service)
@@ -71,7 +73,7 @@ func newMoileClientDataFromObject(app *v1alpha1.MobileClient) (*MobileClientData
 	}
 	status := &MobileClientStatusData{
 		Version:     1,
-		ClusterName: app.GetClusterName(),
+		ClusterName: openshiftMasterURL,
 		Namespace:   app.GetNamespace(),
 		ClientId:    app.Spec.Name,
 		Services:    services,
@@ -84,10 +86,10 @@ func newMoileClientDataFromObject(app *v1alpha1.MobileClient) (*MobileClientData
 	}, nil
 }
 
-func newMobileClientDataListFromObjects(list *v1alpha1.MobileClientList) (*MobileClientDataList, error) {
+func newMobileClientDataListFromObjects(list *v1alpha1.MobileClientList, openshiftMasterURL string) (*MobileClientDataList, error) {
 	items := make([]MobileClientData, 0)
 	for _, app := range list.Items {
-		data, err := newMoileClientDataFromObject(&app)
+		data, err := newMoileClientDataFromObject(&app, openshiftMasterURL)
 		if err != nil {
 			return nil, err
 		}
@@ -128,7 +130,7 @@ func (h *MobileClientsHandler) Create(c echo.Context) error {
 		c.Logger().Errorf("error creating mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	data, err := newMoileClientDataFromObject(app)
+	data, err := newMoileClientDataFromObject(app, h.openshiftMasterURL)
 	if err != nil {
 		c.Logger().Errorf("error creating mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
@@ -147,7 +149,7 @@ func (h *MobileClientsHandler) Read(c echo.Context) error {
 		c.Logger().Errorf("error reading mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	data, err := newMoileClientDataFromObject(app)
+	data, err := newMoileClientDataFromObject(app, h.openshiftMasterURL)
 	if err != nil {
 		c.Logger().Errorf("error reading mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
@@ -161,7 +163,7 @@ func (h *MobileClientsHandler) List(c echo.Context) error {
 		c.Logger().Errorf("error listing mobile apps: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	data, err := newMobileClientDataListFromObjects(apps)
+	data, err := newMobileClientDataListFromObjects(apps, h.openshiftMasterURL)
 	if err != nil {
 		c.Logger().Errorf("error listing mobile apps: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
@@ -203,7 +205,7 @@ func (h *MobileClientsHandler) Update(c echo.Context) error {
 		c.Logger().Errorf("error updating mobile app: %v", uerr)
 		return c.String(http.StatusInternalServerError, uerr.Error())
 	}
-	data, err := newMoileClientDataFromObject(app)
+	data, err := newMoileClientDataFromObject(app, h.openshiftMasterURL)
 	if err != nil {
 		c.Logger().Errorf("error updating mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
