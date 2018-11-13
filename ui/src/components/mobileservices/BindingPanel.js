@@ -48,6 +48,11 @@ class BindingPanel extends Component {
     const { service } = this.props;
     const schema = this.props.service.bindingSchema;
 
+    const serviceName = this.props.service.getName()
+    const schema = this.props.service.getBindingSchema()
+    const form = this.props.service.getFormDefinition()
+    const service = this.props.service;
+    
     this.setState({
       serviceName,
       schema,
@@ -95,13 +100,20 @@ class BindingPanel extends Component {
           </form>
         )
       },
-      {
-        title: 'Parameters',
-        render: () => this.renderPropertiesSchema()
-      },
-      {
-        title: 'Results',
-        render: () => <div>review the binding</div>
+      {title:"Results",render:()=>{
+        return <div>review the binding</div>
+      }},]
+         
+      }
+  
+      stepChanged = (step) => {
+        if (step === 2) {
+          console.log((this.state));
+          this.setState({ loading: true });
+          const credentialSecretName = createSecretName(this.state.service.getServiceInstanceName() + '-credentials-');
+          const parametersSecretName = createSecretName(this.state.service.getServiceInstanceName() + '-bind-parameters-');
+          this.props.createBinding(this.props.appName, this.state.service.getServiceInstanceName(), credentialSecretName, parametersSecretName, this.state.service.getServiceClassExternalName(), this.formData);
+        }
       }
     ];
   }
@@ -199,7 +211,7 @@ class BindingPanel extends Component {
         activeStepIndex={this.state.activeStepIndex}
       />
     );
-  }
+  };
 }
 
 const mapDispatchToProps = {

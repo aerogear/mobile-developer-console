@@ -20,8 +20,13 @@ class MobileServiceView extends Component {
     const rows = [];
     if (this.props.boundServices) {
       rows.push(<h2 key="bound-services">Bound Services</h2>);
+<<<<<<< HEAD
       this.props.boundServices.forEach(service => {
         rows.push(<BoundServiceRow key={service.serviceId} service={service} />);
+=======
+      this.props.boundServices.forEach((service) => {
+        rows.push(<BoundServiceRow key={service.getId()} service={service} />);
+>>>>>>>  ✨ add mobile service models
       });
     }
 
@@ -35,13 +40,14 @@ class MobileServiceView extends Component {
       rows.push(<h2 key="unbound-services">Unbound Services</h2>);
       this.props.unboundServices.forEach(service => {
         this.setDefaultBindingProperties(service);
-        rows.push(<UnboundServiceRow key={service.serviceId} service={service} />);
+        rows.push(<UnboundServiceRow key={service.getId()} service={service} />);
       });
     }
     return rows;
   }
 
   setDefaultBindingProperties(service) {
+<<<<<<< HEAD
     try {
       if (service.bindingSchema.properties.CLIENT_ID) {
         service.bindingSchema.properties.CLIENT_ID.default = this.props.appName;
@@ -49,6 +55,9 @@ class MobileServiceView extends Component {
     } catch {
       console.log(`Null reference setting default properties for ${service.serviceId}`);
     }
+=======
+    service.setBindingSchemaDefaultValues("CLIENT_ID", this.props.appName);
+>>>>>>>  ✨ add mobile service models
   }
 
   render() {
@@ -61,7 +70,7 @@ class MobileServiceView extends Component {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   if (state.serviceBindings.items && state.serviceBindings.items.length >= 1) {
     return {
       boundServices: state.serviceBindings.items[0].boundServices,

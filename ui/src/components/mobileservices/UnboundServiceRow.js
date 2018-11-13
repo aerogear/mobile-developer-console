@@ -17,24 +17,37 @@ class UnboundServiceRow extends Component {
   }
 
   renderServiceBadge() {
+<<<<<<< HEAD
     let icon = <div />;
     if (this.service.serviceIconClass != null && this.service.serviceIconClass.length > 0) {
       icon = <span className={`${this.service.serviceIconClass} logo`} />;
     } else {
       icon = <img src={this.service.serviceLogoUrl} alt="" />;
+=======
+    let icon = <div/>;
+    if (this.service.getIconClass() != null && this.service.getIconClass().length > 0) {
+      icon = <span className={this.service.getIconClass() + " logo"}/>
+    } else {
+      icon = <img src={this.service.getLogoUrl()} alt="" />
+>>>>>>>  ✨ add mobile service models
     }
     return (
-      <Col md={3} key={this.service.serviceId} className="service-sdk-info">
+      <Col md={3} key={this.service.getId()} className="service-sdk-info">
         <Col md={12}>
           {icon}
           <div className="service-name">
             <h4>
+<<<<<<< HEAD
               <div>
                 <a href={`#${this.service.serviceId}`}>{this.service.serviceName}</a>
               </div>
               <div>
                 <small>{this.service.serviceId}</small>
               </div>
+=======
+              <div><a href={`#${this.service.getId()}`}>{this.service.getName()}</a></div>
+              <div><small>{this.service.getId()}</small></div>
+>>>>>>>  ✨ add mobile service models
             </h4>
           </div>
         </Col>

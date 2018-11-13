@@ -1,3 +1,5 @@
+import {BoundMobileService, UnboundMobileService} from './models/mobileService';
+
 const getWSUrl = () => {
   const loc = window.location;
   let newUrl;
@@ -109,36 +111,10 @@ const dataService = {
     const instances = await fetchItems(`bindableservices/${mobileClientName}`);
 
     instances.forEach(instance => {
-      const serviceName = instance.name;
-      const serviceIcon = instance.imageUrl;
-      const serviceIconClass = instance.iconClass;
-
       if (instance.isBound) {
-        boundServices.push({
-          serviceLogoUrl: serviceIcon,
-          serviceIconClass,
-          serviceName,
-          serviceBindingName: instance.serviceBinding.metadata.name,
-          serviceInstanceName: instance.serviceInstance.metadata.name,
-          serviceId: serviceName,
-          serviceDescription: instance.serviceClass.spec.description,
-          documentationUrl: instance.serviceClass.spec.externalMetadata.documentationUrl20,
-          configuration: instance.configuration,
-          setupText: 'Identity Management SDK setup'
-        });
+        boundServices.push(new BoundMobileService(instance));
       } else {
-        unboundServices.push({
-          serviceLogoUrl: serviceIcon,
-          serviceIconClass,
-          serviceName,
-          serviceInstanceName: instance.serviceInstance.metadata.name,
-          serviceId: serviceName,
-          bindingSchema: instance.servicePlan.spec.serviceBindingCreateParameterSchema,
-          form: instance.servicePlan.spec.externalMetadata.schemas.service_binding.create.openshift_form_definition,
-          serviceDescription: instance.serviceClass.spec.description,
-          serviceClassExternalName: instance.serviceClass.spec.externalMetadata.serviceName,
-          setupText: 'Mobile Metrics SDK setups'
-        });
+        unboundServices.push(new UnboundMobileService(instance));
       }
     });
 
