@@ -24,3 +24,4 @@ main
 .r.logs.log
 server.log
 */_tmp*
+*/node_modules
