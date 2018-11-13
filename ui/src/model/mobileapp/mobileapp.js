@@ -1,4 +1,4 @@
-import { Spec } from "./mobileappspec";
+import { Spec } from './mobileappspec';
 import { Metadata } from './metadata';
 import { Status } from './status';
 

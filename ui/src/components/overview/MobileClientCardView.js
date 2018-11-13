@@ -145,17 +145,16 @@ class MobileClientCardView extends Component {
           <div className="form-group">
             <CreateClient platforms={SUPPORTED_PLATFORMS} item={new MobileApp().toJSON()} />
           </div>
-          {filter &&
-            filter.length > 0 && (
-              <Toolbar.Results>
-                <Filter.ActiveLabel>Active Filters:</Filter.ActiveLabel>
-                <Filter.List>
-                  <Filter.Item key="1" filterData={{ filter }} onRemove={e => this.removeFilter(e)}>
-                    {filter}
-                  </Filter.Item>
-                </Filter.List>
-              </Toolbar.Results>
-            )}
+          {filter && filter.length > 0 && (
+            <Toolbar.Results>
+              <Filter.ActiveLabel>Active Filters:</Filter.ActiveLabel>
+              <Filter.List>
+                <Filter.Item key="1" filterData={{ filter }} onRemove={e => this.removeFilter(e)}>
+                  {filter}
+                </Filter.Item>
+              </Filter.List>
+            </Toolbar.Results>
+          )}
         </Toolbar>
         {mobileClients.length ? this.renderAppCards() : this.getEmptyState()}
       </div>

@@ -22,7 +22,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  setFieldValue
+  setFieldValue,
   editApp
 };
 
