@@ -1,10 +1,11 @@
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
-Enzyme.configure({ adapter: new Adapter() });
 
 import DataService from '../DataService';
 import { Overview } from './Overview';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 jest.mock('../DataService');
 
@@ -19,9 +20,9 @@ describe('Overview', () => {
       fetchServices: mockFetchServices,
       fetchBuilds: mockFetchBuilds,
       buildTabEnabled: true,
-      apps: {items: []},
-      services: {items: []},
-      builds: {items: []}
+      apps: { items: [] },
+      services: { items: [] },
+      builds: { items: [] }
     };
 
     const wrapper = shallow(<Overview {...props} />);

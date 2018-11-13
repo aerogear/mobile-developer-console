@@ -1,6 +1,6 @@
+import { connect } from 'react-redux';
 import EditMobileClientBaseClass from './EditMobileClientBaseClass';
 import { PLATFORM_CORDOVA } from './Constants';
-import { connect } from 'react-redux';
 import { setFieldValue, editApp } from '../../actions/apps';
 
 export const EXAMPLE_APPIDENTIFIER = 'org.aerogear.cordova.myapp';
@@ -17,13 +17,16 @@ class CreateCordovaClient extends EditMobileClientBaseClass {
 
 function mapStateToProps(state) {
   return {
-    ui: state.apps.createClientAppDialog,
+    ui: state.apps.createClientAppDialog
   };
 }
 
 const mapDispatchToProps = {
-  setFieldValue,
+  setFieldValue
   editApp
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateCordovaClient);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateCordovaClient);

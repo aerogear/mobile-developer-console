@@ -4,15 +4,18 @@ import { connect } from 'react-redux';
 import { triggerBuild } from '../actions/builds';
 
 class StartBuildButton extends Component {
-    triggerBuild = () => {
-      this.props.triggerBuild(this.props.jobName);
-    }
+  triggerBuild = () => {
+    this.props.triggerBuild(this.props.jobName);
+  };
 
-    render = () => <Button onClick={this.triggerBuild}>Start Build</Button>;
+  render = () => <Button onClick={this.triggerBuild}>Start Build</Button>;
 }
 
 const mapDispatchToProps = {
-  triggerBuild,
+  triggerBuild
 };
 
-export default connect(null, mapDispatchToProps)(StartBuildButton);
+export default connect(
+  null,
+  mapDispatchToProps
+)(StartBuildButton);

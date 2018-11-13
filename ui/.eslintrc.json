@@ -5,7 +5,10 @@
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "react/destructuring-assignment": 0,
         "react/prop-types": 0,
-        "react/no-did-update-set-state": 0
+        "react/no-did-update-set-state": 0,
+        "react/prefer-stateless-function": 0,
+        "import/no-named-as-default": 0,
+        "func-names": 0
     },
     "env": {
         "browser": true

@@ -1,9 +1,9 @@
+import { Row, Col } from 'patternfly-react';
 import React, { Component } from 'react';
 import Header from './Header';
 import { ServiceSDKInfo } from './ServiceSDKInfo';
 import { ServiceSDKDocs } from './ServiceSDKDocs';
-import { CopyToClipboardMultiline } from '../common/CopyToClipboardMultiline';
-import { Row, Col } from 'patternfly-react';
+import CopyToClipboardMultiline from '../common/CopyToClipboardMultiline';
 
 import './ConfigurationView.css';
 

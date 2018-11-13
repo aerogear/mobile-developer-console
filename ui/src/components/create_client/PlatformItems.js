@@ -8,7 +8,7 @@ import './create_client.css';
  */
 class PlatformItems extends Component {
   rows() {
-    let rows = [];
+    const rows = [];
     React.Children.map(this.props.children, (child, i) => {
       rows.push(
         <Grid.Col sm={6} md={2} key={i}>
@@ -23,11 +23,9 @@ class PlatformItems extends Component {
   render() {
     return (
       <Grid bsClass="platform-items">
-        <Grid.Row>
-          {this.rows()}
-        </Grid.Row>
+        <Grid.Row>{this.rows()}</Grid.Row>
       </Grid>
-    )
+    );
   }
 }
 

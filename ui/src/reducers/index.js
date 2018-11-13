@@ -14,6 +14,6 @@ export default combineReducers({
   createBuildConfig: buildConfigReducer,
   builds,
   user,
-  config, 
+  config,
   serviceBindings
 });

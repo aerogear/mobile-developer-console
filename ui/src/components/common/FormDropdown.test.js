@@ -1,9 +1,10 @@
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
-Enzyme.configure({ adapter: new Adapter() });
 
-import FormDropdown from "./FormDropdown";
+import FormDropdown from './FormDropdown';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('FormDropdown', () => {
   it('test render', () => {

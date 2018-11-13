@@ -1,9 +1,10 @@
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
-Enzyme.configure({ adapter: new Adapter() });
 
 import MobileClientCardView from './MobileClientCardView';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('MobileClientCardView', () => {
   it('test render empty view', () => {
@@ -12,24 +13,27 @@ describe('MobileClientCardView', () => {
   });
 
   it('test render apps', () => {
-    const apps = [{
-      metadata: {
-        name: 'android-app'
+    const apps = [
+      {
+        metadata: {
+          name: 'android-app'
+        },
+        status: {
+          services: []
+        }
       },
-      status: {
-        services: []
+      {
+        metadata: {
+          name: 'ios-app'
+        },
+        status: {
+          services: []
+        }
       }
-    }, {
-      metadata: {
-        name: 'ios-app'
-      },
-      status: {
-        services: []
-      }
-    }];
+    ];
     const wrapper = shallow(<MobileClientCardView mobileClients={apps} mobileClientBuilds={[]} />);
     expect(wrapper.find('MobileClientCardViewItem')).toHaveLength(2);
-    wrapper.find('FormControl').simulate('change', {target: {value: 'ios'}});
+    wrapper.find('FormControl').simulate('change', { target: { value: 'ios' } });
     const e = {
       key: 'Enter',
       stopPropagation: () => {},

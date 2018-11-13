@@ -1,9 +1,10 @@
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
-Enzyme.configure({ adapter: new Adapter() });
 
-import MobileListViewItem from "./MobileListViewItem";
+import MobileListViewItem from './MobileListViewItem';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('MobileListViewItem', () => {
   it('test render', () => {

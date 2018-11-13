@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuItem} from 'patternfly-react';
+import { MenuItem } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { deleteApp, fetchApp, selectPlatform, updateApp, editApp } from '../actions/apps';
@@ -17,7 +17,7 @@ class EditItemButton extends ClientEditBaseClass {
         render={props => (
           <React.Fragment>
             <MenuItem onClick={this.open}>Edit</MenuItem>
-            { this.renderModal() }
+            {this.renderModal()}
           </React.Fragment>
         )}
       />
@@ -40,4 +40,7 @@ const mapDispatchToProps = {
   updateApp
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditItemButton);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EditItemButton);

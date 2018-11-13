@@ -18,7 +18,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   createApp,
   selectPlatform,
-  resetForm,
+  resetForm
   editApp
 };
 

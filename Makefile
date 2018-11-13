@@ -40,7 +40,7 @@ ui:
 
 .PHONY: ui-test-cover
 ui-test-cover:
-	cd ui && npm install && npm run build-css && npm run coverage
+	cd ui && npm run lint && npm install && npm run build-css && npm run coverage
 
 .PHONY: serve
 serve: build ui
