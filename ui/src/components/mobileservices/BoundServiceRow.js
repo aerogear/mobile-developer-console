@@ -4,6 +4,14 @@ import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import DeleteItemButton from '../../containers/DeleteItemButton';
 
+function configurationView(configuration) {
+  if (configuration.type === 'href') {
+    return <a href={configuration.value}>{configuration.value}</a>;
+  }
+
+  return configuration.value;
+}
+
 class BoundServiceRow extends Component {
   constructor(props) {
     super(props);
@@ -15,19 +23,11 @@ class BoundServiceRow extends Component {
   }
 
   renderServiceBadge() {
-<<<<<<< HEAD
     let icon = <div />;
-    if (this.service.serviceIconClass != null && this.service.serviceIconClass.length > 0) {
-      icon = <span className={`${this.service.serviceIconClass} logo`} />;
-    } else {
-      icon = <img src={this.service.serviceLogoUrl} alt="" />;
-=======
-    let icon = <div/>
     if (this.service.getIconClass() != null && this.service.getIconClass().length > 0) {
-      icon = <span className ={this.service.getIconClass() + " logo"}/>
+      icon = <span className={`${this.service.getIconClass()} logo`} />;
     } else {
-      icon = <img src={this.service.getLogoUrl()} alt="" />
->>>>>>>  ✨ add mobile service models
+      icon = <img src={this.service.getLogoUrl()} alt="" />;
     }
     return (
       <Col key={this.service.getId()} md={3} className="service-sdk-info">
@@ -35,15 +35,10 @@ class BoundServiceRow extends Component {
           {icon}
           <div className="service-name">
             <h4>
-<<<<<<< HEAD
-              <div>{this.service.serviceName}</div>
-              <div>
-                <small>{this.service.serviceId}</small>
-              </div>
-=======
               <div>{this.service.getName()}</div>
-              <div><small>{this.service.getId()}</small></div>
->>>>>>>  ✨ add mobile service models
+              <div>
+                <small>{this.service.getId()}</small>
+              </div>
             </h4>
           </div>
         </Col>
@@ -62,13 +57,8 @@ class BoundServiceRow extends Component {
             Documentation :
           </Col>
           <Col md={4} className="detailsValue">
-<<<<<<< HEAD
-            <a href="{this.service.documentationUrl}">
-              SDK Setup
-=======
             <a href="{this.service.getDocumentationUrl()}">
-SDK Setup
->>>>>>>  ✨ add mobile service models
+              SDK Setup
               <i className="fa fa-external-link" aria-hidden="true" />
             </a>
           </Col>
@@ -76,9 +66,8 @@ SDK Setup
       );
     }
 
-<<<<<<< HEAD
-    if (this.service.configuration) {
-      propertyFragment = this.service.configuration.map(configuration => {
+    if (this.service.getConfiguration()) {
+      propertyFragment = this.service.getConfiguration().map(configuration => {
         configuration = JSON.parse(configuration);
 
         return (
@@ -87,29 +76,10 @@ SDK Setup
               {configuration.label} :
             </Col>
             <Col md={4} className="detailsValue">
-              {BoundServiceRow.configurationView(configuration)}
+              {configurationView(configuration)}
             </Col>
           </Row>
         );
-=======
-
-    
-    if (this.service.getConfiguration()) {
-      propertyFragment = this.service.getConfiguration().map(configuration => {
-        
-        configuration = JSON.parse(configuration)
-        
-        return <Row key={configuration.label}>
-          <Col md={2} className="detailsKey">
-            {configuration.label}
-            {' '}
-:
-          </Col>
-          <Col md={4} className="detailsValue">
-            {this.configurationView(configuration)}
-          </Col>
-        </Row>
->>>>>>>  ✨ add mobile service models
       });
     } else {
       propertyFragment = <div>No configuration data to show for this service.</div>;
@@ -140,14 +110,6 @@ SDK Setup
         {this.renderServiceDetails()}
       </ListViewItem>
     );
-  }
-
-  static configurationView(configuration) {
-    if (configuration.type === 'href') {
-      return <a href={configuration.value}>{configuration.value}</a>;
-    }
-
-    return configuration.value;
   }
 }
 

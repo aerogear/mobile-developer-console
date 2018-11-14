@@ -1,5 +1,5 @@
-import { connect } from 'react-redux';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
 import { fetchBindings } from '../../actions/serviceBinding';
@@ -20,13 +20,8 @@ class MobileServiceView extends Component {
     const rows = [];
     if (this.props.boundServices) {
       rows.push(<h2 key="bound-services">Bound Services</h2>);
-<<<<<<< HEAD
       this.props.boundServices.forEach(service => {
-        rows.push(<BoundServiceRow key={service.serviceId} service={service} />);
-=======
-      this.props.boundServices.forEach((service) => {
         rows.push(<BoundServiceRow key={service.getId()} service={service} />);
->>>>>>>  ✨ add mobile service models
       });
     }
 
@@ -47,17 +42,7 @@ class MobileServiceView extends Component {
   }
 
   setDefaultBindingProperties(service) {
-<<<<<<< HEAD
-    try {
-      if (service.bindingSchema.properties.CLIENT_ID) {
-        service.bindingSchema.properties.CLIENT_ID.default = this.props.appName;
-      }
-    } catch {
-      console.log(`Null reference setting default properties for ${service.serviceId}`);
-    }
-=======
-    service.setBindingSchemaDefaultValues("CLIENT_ID", this.props.appName);
->>>>>>>  ✨ add mobile service models
+    service.setBindingSchemaDefaultValues('CLIENT_ID', this.props.appName);
   }
 
   render() {

@@ -1,11 +1,14 @@
+import { find } from 'lodash-es';
+
 export class MobileService {
   constructor(json = {}) {
     this.data = json;
     this.configuration = this.data.configuration || {};
-    //TODO: we can add more models for those fields
+    // TODO: we can add more models for those fields
     this.serviceInstance = this.data.serviceInstance || {};
     this.serviceBinding = this.data.serviceBinding || {};
     this.serviceClass = this.data.serviceClass || {};
+    this.setupText = '';
   }
 
   getName() {
@@ -31,7 +34,7 @@ export class MobileService {
   isBound() {
     return this.data.isBound;
   }
-  
+
   getBindingName() {
     return this.serviceBinding.metadata.name;
   }
@@ -41,19 +44,19 @@ export class MobileService {
   }
 
   getSetupText() {
-
+    return this.setupText;
   }
 
   toJSON() {
     return {
       ...this.data
-    }
+    };
   }
 }
 
 export class BoundMobileService extends MobileService {
   constructor(json = {}) {
-    super(json)
+    super(json);
   }
 
   getConfiguration() {
@@ -67,15 +70,15 @@ export class BoundMobileService extends MobileService {
 
 export class UnboundMobileService extends MobileService {
   constructor(json = {}) {
-    super(json)
+    super(json);
     this.servicePlan = this.data.servicePlan || {};
   }
 
   getBindingSchema() {
-    return this.servicePlan.spec.serviceBindingCreateParameterSchema
+    return this.servicePlan.spec.serviceBindingCreateParameterSchema;
   }
 
-  setBindingSchemaDefaultValues(name, value){
+  setBindingSchemaDefaultValues(name, value) {
     if (this.getBindingSchema().properties[name]) {
       this.getBindingSchema().properties[name].default = value;
     }
@@ -90,7 +93,12 @@ export class UnboundMobileService extends MobileService {
   }
 
   isBindingOperationInProgress() {
-    return this.serviceBinding.status.asyncOpInProgress;
+    const { conditions } = this.serviceBinding.status;
+    // the bind operation could be in-flight. In this case, the operation is neither ready, or failed.
+    if (conditions && find(conditions, { type: 'Ready', status: 'False' }) && !this.isBindingOperationFailed()) {
+      return true;
+    }
+    return false;
   }
 
   getBindingOperation() {
@@ -98,9 +106,8 @@ export class UnboundMobileService extends MobileService {
   }
 
   isBindingOperationFailed() {
-    const conditions = this.serviceBinding.status.conditions;
-    const asyncOpInProgress = this.serviceBinding.status.asyncOpInProgress;
-    if(conditions && conditions[0] && conditions[0].status === 'False' && !asyncOpInProgress) {
+    const { conditions } = this.serviceBinding.status;
+    if (conditions && find(conditions, { type: 'Failed', status: 'True' })) {
       return true;
     }
     return false;

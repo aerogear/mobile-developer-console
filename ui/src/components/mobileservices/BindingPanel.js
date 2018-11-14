@@ -1,8 +1,8 @@
-import Form from 'react-jsonschema-form';
-import debounce from 'lodash/debounce';
 import React, { Component } from 'react';
 import { Wizard } from 'patternfly-react';
 import { connect } from 'react-redux';
+import Form from 'react-jsonschema-form';
+import debounce from 'lodash/debounce';
 import { createSecretName } from '../bindingUtils';
 import { createBinding } from '../../actions/serviceBinding';
 import '../configuration/ServiceSDKInfo.css';
@@ -44,15 +44,12 @@ class BindingPanel extends Component {
   }
 
   componentWillMount() {
-    const { serviceName, form } = this.props.service;
+    const serviceName = this.props.service.getName();
+    const schema = this.props.service.getBindingSchema();
+    const form = this.props.service.getFormDefinition();
     const { service } = this.props;
     const schema = this.props.service.bindingSchema;
 
-    const serviceName = this.props.service.getName()
-    const schema = this.props.service.getBindingSchema()
-    const form = this.props.service.getFormDefinition()
-    const service = this.props.service;
-    
     this.setState({
       serviceName,
       schema,
@@ -100,60 +97,28 @@ class BindingPanel extends Component {
           </form>
         )
       },
-      {title:"Results",render:()=>{
-        return <div>review the binding</div>
-      }},]
-         
+      {
+        title: 'Parameters',
+        render: () => this.renderPropertiesSchema()
+      },
+      {
+        title: 'Results',
+        render: () => <div>review the binding</div>
       }
-  
-      stepChanged = (step) => {
-        if (step === 2) {
-          console.log((this.state));
-          this.setState({ loading: true });
-          const credentialSecretName = createSecretName(this.state.service.getServiceInstanceName() + '-credentials-');
-          const parametersSecretName = createSecretName(this.state.service.getServiceInstanceName() + '-bind-parameters-');
-          this.props.createBinding(this.props.appName, this.state.service.getServiceInstanceName(), credentialSecretName, parametersSecretName, this.state.service.getServiceClassExternalName(), this.formData);
-        }
-      }
-<<<<<<< HEAD
     ];
   }
-=======
-  
-
-   render() {
-
-       return <Wizard.Pattern
-            onHide={this.props.close}
-            onExited={this.props.close}
-            show={this.props.showModal}
-            title="Create mobile client"
-            steps={this.renderWizardSteps()}
-            loadingTitle="Creating mobile binding..."
-            loadingMessage="This may take a while. You can close this wizard."
-            loading={this.state.loading}
-
-            onStepChanged={this.stepChanged}
-            nextText={this.state.activeStepIndex === 1 ? 'Create' : 'Next'}
-            onNext={this.onNextButtonClick}
-            onBack={this.onBackButtonClick}
-            activeStepIndex={this.state.activeStepIndex}
-          />;
-       
-   }
->>>>>>>  💄show the progress of the bind/unbind operations
 
   stepChanged = step => {
     if (step === 2) {
       this.setState({ loading: true });
-      const credentialSecretName = createSecretName(`${this.state.service.serviceInstanceName}-credentials-`);
-      const parametersSecretName = createSecretName(`${this.state.service.serviceInstanceName}-bind-parameters-`);
+      const credentialSecretName = createSecretName(`${this.state.service.getServiceInstanceName()}-credentials-`);
+      const parametersSecretName = createSecretName(`${this.state.service.getServiceInstanceName()}-bind-parameters-`);
       this.props.createBinding(
         this.props.appName,
-        this.state.service.serviceInstanceName,
+        this.state.service.getServiceInstanceName(),
         credentialSecretName,
         parametersSecretName,
-        this.state.service.serviceClassExternalName,
+        this.state.service.getServiceClassExternalName(),
         this.formData
       );
     }
@@ -227,7 +192,7 @@ class BindingPanel extends Component {
         title="Create mobile client"
         steps={this.renderWizardSteps()}
         loadingTitle="Creating mobile binding..."
-        loadingMessage="This may take a while."
+        loadingMessage="This may take a while. You can close this wizard."
         loading={this.state.loading}
         onStepChanged={this.stepChanged}
         nextText={this.state.activeStepIndex === 1 ? 'Create' : 'Next'}
@@ -236,7 +201,7 @@ class BindingPanel extends Component {
         activeStepIndex={this.state.activeStepIndex}
       />
     );
-  };
+  }
 }
 
 const mapDispatchToProps = {

@@ -1,4 +1,4 @@
-import {BoundMobileService, UnboundMobileService} from './models/mobileService';
+import { BoundMobileService, UnboundMobileService } from './models/mobileService';
 
 const getWSUrl = () => {
   const loc = window.location;
