@@ -63,6 +63,7 @@ class BindingPanel extends Component {
           uiSchema={{form:this.state.form}}
           ref={(form)=>{this.form = form;}}
           validate={this.validate}
+          showErrorList={false}
           ObjectFieldTemplate={OpenShiftObjectTemplate}
           onChange={debounce(e => this.formData = e.formData, 150)} >
                 <div/>
@@ -108,32 +109,42 @@ class BindingPanel extends Component {
        /**
    * see https://github.com/mozilla-services/react-jsonschema-form/tree/6cb26d17c0206b610b130729db930d5906d3fdd3#form-data-validation
    */
-  validate = (form, errors) => {
+  validate = (formData, errors) => {
     var hasError = false;
     /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
-
+    console.log(this.form)
     for (var key in errors) {
       switch (key) {
         case "CLIENT_ID":
         case "CLIENT_TYPE":
-          if (!form[key]) {
+          if (!formData[key]) {
             errors[key].addError(key + " is a required field.")
             hasError = true;
           }
           break;
         case "googlekey":
         case "projectNumber":
-          if (((form.googlekey || form.projectNumber)) && !(form.googlekey && form.projectNumber)) {
+          if (((formData.googlekey || formData.projectNumber)) && !(formData.googlekey && formData.projectNumber)) {
             errors[key].addError("FCM requires a Key field and Project Number.")
             hasError = true;
           }
+          break;
         case "cert":
         case "iosIsProduction":
         case "passphrase":
-          if ((form.cert || form.passphrase) && !(form.cert && form.passphrase)) {
+          if ((formData.cert || formData.passphrase) && !(formData.cert && formData.passphrase)) {
             errors[key].addError("APNS requires a certificate and passphrase.")
             hasError = true;
+          } else if (formData.passphrase && formData.cert){
+            const confirmPasswordFieldId = this.form.state.idSchema['passphrase'].$id + '2';
+            const confirmPasswordField = document.getElementById(confirmPasswordFieldId);
+            const passwordConfirmation = confirmPasswordField.value;
+            if (formData.passphrase !== passwordConfirmation)
+            errors[key].addError("Passphrase does not match.")
+            hasError = true;
+
           }
+          break;
         default:
           continue;
       }
