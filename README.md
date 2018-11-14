@@ -40,6 +40,17 @@ You can follow the docs [here](https://github.com/aerogear/mobile-core)
 
 :penguin: Linux
 
+You may need to configure your firewall first:
+
+```
+sudo firewall-cmd --permanent --add-port=8443/tcp
+sudo firewall-cmd --permanent --add-port=8053/tcp
+sudo firewall-cmd --permanent --add-port=53/udp
+sudo firewall-cmd --permanent --add-port=443/tcp
+sudo firewall-cmd --permanent --add-port=80/tcp
+sudo firewall-cmd --reload
+```
+
 Download [archive with oc client binary](https://github.com/openshift/origin/releases/tag/v3.11.0), extract it, add it to your `$PATH` and run:
 
 ```

@@ -14,5 +14,6 @@ export ASB_PROJECT_NAME='openshift-automation-service-broker'
 ./post_install.sh
 
 export ROUTING_SUFFIX=$(minishift ip).nip.io
+export MINISHIFT=true
 
 ./setup-router-certs.sh
