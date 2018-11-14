@@ -1,12 +1,7 @@
-import {
-  APP_PLATFORM_REGISTER,
-  APP_PLATFORM_SELECT,
-  APP_FORM_SETSTATUS,
-  APP_FORM_RESET,
-  APP_FIELD_SETVALUE
-} from '../actions/apps';
+import { APP_PLATFORM_SELECT, APP_FORM_RESET, APP_FIELD_SETVALUE, APP_EDIT } from '../actions/apps';
 import { DISMISS_ERROR, DISMISS_ALL_ERRORS } from '../actions/errors';
 import { wsError } from '../DataService';
+import { MobileApp } from '../model/datamodel';
 
 const defaultState = {
   isFetching: false,
@@ -128,7 +123,7 @@ const resourceReducer = actions => (state = defaultState, action) => {
       return {
         ...state,
         isUpdating: true,
-        updateError: false,
+        updateError: false
       };
     case actions.updateSuccess:
       index = state.items.findIndex(item => item.metadata.name === action.result.metadata.name);
@@ -136,17 +131,13 @@ const resourceReducer = actions => (state = defaultState, action) => {
         ...state,
         isUpdating: false,
         updateError: false,
-        items: [
-          ...state.items.slice(0, index),
-          action.result,
-          ...state.items.slice(index + 1),
-        ],
+        items: [...state.items.slice(0, index), action.result, ...state.items.slice(index + 1)]
       };
     case actions.updateFailure:
       return {
         ...state,
         isUpdating: false,
-        updateError: action.error,
+        updateError: action.error
       };
     case actions.deleteRequest:
       return {
@@ -204,47 +195,44 @@ function createClientAppDialog(state, action) {
           fields: {}
         }
       };
-    case APP_PLATFORM_REGISTER:
-      var newState = { ...state };
-      if (!newState.createClientAppDialog.platforms[action.platform.name]) {
-        newState.createClientAppDialog.platforms[action.platform.name] = { selected: false };
-      }
-      return newState;
-    case APP_PLATFORM_SELECT:
-      var selectedPlatform = action.platform.name;
-      var newPlatformState = JSON.parse(JSON.stringify(state.createClientAppDialog.platforms));
-      for (var platform in newPlatformState) {
-        newPlatformState[platform] = { selected: platform === selectedPlatform };
-      }
-
-      return {
-        ...state,
-        createClientAppDialog: { ...state.createClientAppDialog, platforms: newPlatformState }
-      }
-    case APP_FORM_SETSTATUS:
-      if (state.createClientAppDialog.valid === action.payload.status) {
-        return state;
-      }
-      return {
-        ...state,
-        createClientAppDialog: { ...state.createClientAppDialog, valid: action.payload.status }
-      }
-    case APP_FIELD_SETVALUE:
+    case APP_PLATFORM_SELECT: {
+      const selectedPlatform = action.platform.name;
       return {
         ...state,
         createClientAppDialog: {
           ...state.createClientAppDialog,
-          fields: {
-            ...state.createClientAppDialog.fields,
-            [action.payload.name]: { value: action.payload.value, valid: action.payload.valid }
+          app: {
+            ...state.createClientAppDialog.app,
+            spec: {
+              ...state.createClientAppDialog.app.spec,
+              clientType: selectedPlatform
+            }
           }
         }
-      }
+      };
+    }
+    case APP_FIELD_SETVALUE: {
+      const appModel = new MobileApp({ ...state.createClientAppDialog.app });
+      appModel.setProperty(action.payload.name, action.payload.value);
+      return {
+        ...state,
+        createClientAppDialog: {
+          ...state.createClientAppDialog,
+          app: appModel.toJSON()
+        }
+      };
+    }
+    case APP_EDIT:
+      return {
+        ...state,
+        createClientAppDialog: {
+          ...state.createClientAppDialog,
+          app: action.payload
+        }
+      };
     default:
       return state;
   }
 }
-
-
 
 export default resourceReducer;

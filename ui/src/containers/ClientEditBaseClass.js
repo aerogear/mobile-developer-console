@@ -13,6 +13,7 @@ import {
   PLATFORM_XAMARIN
 } from '../components/create_client/Constants';
 import '../components/create_client/create_client.css';
+import { MobileApp } from '../model/datamodel';
 
 class ClientEditBaseClass extends Component {
   constructor(props, editingMode) {
@@ -20,43 +21,29 @@ class ClientEditBaseClass extends Component {
     this.state = {
       showModal: false,
       loading: false,
-      valid: false
+      editingMode
     };
     this.createClient = this.createClient.bind(this);
-
-    if (editingMode) {
-      const app = this.getAppToEdit();
-
-      this.state = {
-        ...this.state,
-        editingMode
-      };
-      this.props.registerPlatform({ name: app.spec.clientType, selected: true });
-    } else {
-      for (const key in this.props.platforms) {
-        const platform = this.props.platforms[key];
-        this.props.registerPlatform({ name: platform, selected: false });
-      }
-    }
   }
 
-  getAppToEdit() {
-    if (this.props.item) {
-      return this.props.item;
-    }
-    if (this.props.itemName) {
-      const index = this.props.apps.items.findIndex(item => item.metadata.name === this.props.itemName);
-      return this.props.apps.items[index];
+  getMobileAppToEdit(newWindow) {
+    if (!newWindow && this.props.apps.createClientAppDialog.app) {
+      return new MobileApp({ ...this.props.apps.createClientAppDialog.app });
+    } else if (this.props.item) {
+      const appJson = this.props.item;
+      if (appJson) {
+        return new MobileApp(JSON.parse(JSON.stringify(appJson)));
+      }
     }
     return null;
   }
 
   open = async () => {
+    const app = this.getMobileAppToEdit(true);
+    this.props.editApp(app);
     if (this.state.editingMode) {
-      const platform = this.getAppToEdit().spec.clientType;
-      this.props.selectPlatform(platform);
+      this.props.selectPlatform(app.getType());
     } else {
-      this.props.resetForm();
       this.props.selectPlatform(this.props.platforms[0]);
     }
 
@@ -67,25 +54,11 @@ class ClientEditBaseClass extends Component {
     });
   };
 
-  getSelectedPlatform() {
-    if (this.state.editingMode) {
-      return this.getAppToEdit().spec.clientType;
-    }
-    const { platforms } = this.props.apps.createClientAppDialog;
-    return Object.keys(platforms).filter(key => platforms[key].selected)[0];
-  }
-
   createClient() {
     this.setState({ loading: true });
-
-    const newApp = {
-      name: this.props.apps.createClientAppDialog.fields.name.value,
-      appIdentifier: this.props.apps.createClientAppDialog.fields.appIdentifier.value,
-      clientType: this.getSelectedPlatform()
-    };
-
+    const newApp = this.getMobileAppToEdit();
     if (this.state.editingMode) {
-      this.props.updateApp(this.getAppToEdit().metadata.name, newApp);
+      this.props.updateApp(newApp);
     } else {
       this.props.createApp(newApp);
     }
@@ -111,8 +84,7 @@ class ClientEditBaseClass extends Component {
     const availablePlatforms = [];
     let platform;
     if (this.state.editingMode) {
-      const app = this.getAppToEdit();
-      platform = app.spec.clientType;
+      platform = this.getMobileAppToEdit().getType();
       availablePlatforms.push(<PlatformItem type={platform} key={platform} />);
     } else {
       for (const key in this.props.platforms) {
@@ -130,19 +102,19 @@ class ClientEditBaseClass extends Component {
   }
 
   renderPlatform() {
-    if (this.props.apps.createClientAppDialog.platforms[PLATFORM_ANDROID].selected) {
-      return <CreateAndroidClient app={this.getAppToEdit()} />;
+    const app = this.getMobileAppToEdit();
+    switch (app.getType()) {
+      case PLATFORM_ANDROID:
+        return <CreateAndroidClient editing={this.state.editingMode} />;
+      case PLATFORM_CORDOVA:
+        return <CreateCordovaClient editing={this.state.editingMode} />;
+      case PLATFORM_IOS:
+        return <CreateIOSClient editing={this.state.editingMode} />;
+      case PLATFORM_XAMARIN:
+        return <CreateXamarinClient editing={this.state.editingMode} />;
+      default:
+        return null;
     }
-    if (this.props.apps.createClientAppDialog.platforms[PLATFORM_IOS].selected) {
-      return <CreateIOSClient app={this.getAppToEdit()} />;
-    }
-    if (this.props.apps.createClientAppDialog.platforms[PLATFORM_CORDOVA].selected) {
-      return <CreateCordovaClient app={this.getAppToEdit()} />;
-    }
-    if (this.props.apps.createClientAppDialog.platforms[PLATFORM_XAMARIN].selected) {
-      return <CreateXamarinClient app={this.getAppToEdit()} />;
-    }
-    return null;
   }
 
   renderModal() {
@@ -165,7 +137,11 @@ class ClientEditBaseClass extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.close}>Cancel</Button>
-          <Button bsStyle="primary" onClick={this.createClient} disabled={!this.props.apps.createClientAppDialog.valid}>
+          <Button
+            bsStyle="primary"
+            onClick={this.createClient}
+            disabled={this.getMobileAppToEdit() && !this.getMobileAppToEdit().isValid()}
+          >
             {this.state.editingMode ? 'Save' : 'Create'}
           </Button>
         </Modal.Footer>
