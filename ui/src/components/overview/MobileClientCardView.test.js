@@ -14,21 +14,14 @@ describe('MobileClientCardView', () => {
   it('test render apps', () => {
     const apps = [{
       metadata: {
-        name: 'android-app'
-      },
-      status: {
-        services: []
-      }
-    }, {
-      metadata: {
-        name: 'ios-app'
+        name: 'my-app'
       },
       status: {
         services: []
       }
     }];
     const wrapper = shallow(<MobileClientCardView mobileClients={apps} mobileClientBuilds={[]} />);
-    expect(wrapper.find('MobileClientCardViewItem')).toHaveLength(2);
+    expect(wrapper.find('MobileClientCardViewItem')).toHaveLength(1);
     wrapper.find('FormControl').simulate('change', {target: {value: 'ios'}});
     const e = {
       key: 'Enter',
@@ -39,3 +32,4 @@ describe('MobileClientCardView', () => {
     expect(wrapper.find('MobileClientCardViewItem')).toHaveLength(1);
   });
 });
+// TODO: what's this test above?

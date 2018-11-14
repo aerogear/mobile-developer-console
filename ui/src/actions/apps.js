@@ -38,20 +38,9 @@ export const deleteApp = name =>
   fetchAction([APP_DELETE_REQUEST, APP_DELETE_SUCCESS, APP_DELETE_FAILURE], async () => DataService.deleteApp(name))();
 
 // CREATE CLIENT APP DIALOG ACTIONS
-export const APP_PLATFORM_SELECT = 'PLATFORM_SELECT';
 export const APP_FORM_RESET = 'FORM_RESET';
 export const APP_FIELD_SETVALUE = 'FIELD_SETVALUE';
 export const APP_EDIT = 'APP_EDIT';
-
-/**
- * When a platform is selected, this action is called to update the state with the selection
- * and deselect all the other platforms.
- * @param {string} platform
- */
-export const selectPlatform = platform => ({
-  type: APP_PLATFORM_SELECT,
-  platform: { name: platform }
-});
 
 /**
  * Sets the value of a field into the state

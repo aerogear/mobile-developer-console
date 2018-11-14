@@ -39,26 +39,6 @@
   .card-pf-body {
     text-align: center;
   
-    .card-body-icon {
-      align-items: center;
-      display: flex;
-      font-size: 20px;
-      height: 92px;
-      justify-content: center;
-      position: relative;
-    
-      span, img {
-        max-height: 60px;
-        max-width: 60px;
-      }
-      img {
-        width: 60px;
-      }
-      .fa {
-        font-size: 60px;
-      }
-    }
-  
     .card-body-title {
       flex: 1 1 0%;
       font-size: 20px;

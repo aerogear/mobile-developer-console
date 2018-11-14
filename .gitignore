@@ -24,3 +24,6 @@ main
 .r.logs.log
 server.log
 */_tmp*
+
+# with 3.11 we have this folder created with oc cluster up
+openshift.local.clusterup

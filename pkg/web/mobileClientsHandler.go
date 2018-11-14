@@ -35,7 +35,6 @@ func newMobileClientObject(data MobileAppCreateRequest, namespace string) *v1alp
 			Namespace: namespace,
 		},
 		Spec: v1alpha1.MobileClientSpec{
-			ClientType:    data.ClientType,
 			Name:          data.Name,
 			AppIdentifier: data.AppIdentifier,
 			ApiKey:        uuid.NewV4().String(),

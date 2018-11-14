@@ -3,7 +3,6 @@ import { Card, CardHeading, CardTitle, CardBody, CardFooter, DropdownKebab } fro
 import { Link } from 'react-router-dom';
 import DeleteItemButton from '../../containers/DeleteItemButton';
 import EditItemButton from '../../containers/EditItemButton';
-import PlatformIcon from '../common/PlatformIcon';
 
 const getServiceIcons = (services) => {
   const icons = {
@@ -56,9 +55,6 @@ const MobileClientCardViewItem = (props) => {
         
         <Link to={`/mobileclient/${app.metadata.name}`}>
           <CardBody>
-            <div className="card-body-icon">
-              <PlatformIcon platform={app.spec.clientType} />
-            </div>
             <div className="card-body-title">
               <h1>{app.spec.name}</h1>
             </div>

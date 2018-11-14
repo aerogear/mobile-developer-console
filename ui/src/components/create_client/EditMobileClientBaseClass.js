@@ -14,13 +14,12 @@ export const HELP_APPIDENTIFIER =
   'Package name must have at least two segments, start with a letter and contain only letters, dots, numbers and _.';
 
 /**
- * Component for the platform specific create/edit mobile client form.
+ * Base component for the create/edit mobile client form.
  */
 class EditMobileClientBaseClass extends Component {
-  constructor(platformName, props) {
+  constructor(props) {
     super(props);
     this.config = {
-      platform: platformName,
       appName: {
         label: LABEL_APPNAME,
         example: EXAMPLE_APPNAME,

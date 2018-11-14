@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import '../components/create_client/create_client.css';
 import ClientEditBaseClass from './ClientEditBaseClass';
-import { createApp, selectPlatform, resetForm, editApp } from '../actions/apps';
+import { createApp, resetForm, editApp } from '../actions/apps';
 
 class CreateClient extends ClientEditBaseClass {
   constructor(props) {
@@ -17,7 +17,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   createApp,
-  selectPlatform,
   resetForm,
   editApp
 };

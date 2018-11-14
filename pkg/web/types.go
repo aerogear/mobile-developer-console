@@ -10,7 +10,6 @@ import (
 type MobileAppCreateRequest struct {
 	//has to be unique per namespace, can not be changed later
 	Name          string `json:"name" validate:"required"`
-	ClientType    string `json:"clientType" validate:"required,oneof=android iOS cordova xamarin"`
 	AppIdentifier string `json:"appIdentifier"" validate:"required"`
 	DmzUrl        string `json:"dmzUrl"`
 }

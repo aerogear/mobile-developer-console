@@ -42,7 +42,7 @@
     "lint": "eslint 'src/**/*.js'"
   },
   "homepage": "/",
-  "devDependencies": {    
+  "devDependencies": {
     "cors-anywhere": "^0.4.1",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.6.0",
