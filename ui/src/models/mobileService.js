@@ -89,8 +89,20 @@ export class UnboundMobileService extends MobileService {
     return this.serviceClass.spec.externalMetadata.serviceName;
   }
 
-  getCurrentBindStatus() {
-    //TODO: implement me
-    return "inprogress";
+  isBindingOperationInProgress() {
+    return this.serviceBinding.status.asyncOpInProgress;
+  }
+
+  getBindingOperation() {
+    return this.serviceBinding.status.currentOperation;
+  }
+
+  isBindingOperationFailed() {
+    const conditions = this.serviceBinding.status.conditions;
+    const asyncOpInProgress = this.serviceBinding.status.asyncOpInProgress;
+    if(conditions && conditions[0] && conditions[0].status === 'False' && !asyncOpInProgress) {
+      return true;
+    }
+    return false;
   }
 }

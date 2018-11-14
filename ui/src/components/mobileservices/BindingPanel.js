@@ -115,8 +115,33 @@ class BindingPanel extends Component {
           this.props.createBinding(this.props.appName, this.state.service.getServiceInstanceName(), credentialSecretName, parametersSecretName, this.state.service.getServiceClassExternalName(), this.formData);
         }
       }
+<<<<<<< HEAD
     ];
   }
+=======
+  
+
+   render() {
+
+       return <Wizard.Pattern
+            onHide={this.props.close}
+            onExited={this.props.close}
+            show={this.props.showModal}
+            title="Create mobile client"
+            steps={this.renderWizardSteps()}
+            loadingTitle="Creating mobile binding..."
+            loadingMessage="This may take a while. You can close this wizard."
+            loading={this.state.loading}
+
+            onStepChanged={this.stepChanged}
+            nextText={this.state.activeStepIndex === 1 ? 'Create' : 'Next'}
+            onNext={this.onNextButtonClick}
+            onBack={this.onBackButtonClick}
+            activeStepIndex={this.state.activeStepIndex}
+          />;
+       
+   }
+>>>>>>>  💄show the progress of the bind/unbind operations
 
   stepChanged = step => {
     if (step === 2) {

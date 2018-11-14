@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
-import { ListViewItem, Col, Button } from 'patternfly-react';
+import { ListViewItem, Col, Button, Icon } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
+<<<<<<< HEAD
 import BindingPanel from './BindingPanel';
+=======
+import BindingPanel from "./BindingPanel";
+import { ListView } from 'patternfly-react/dist/js/components/ListView';
+>>>>>>>  💄show the progress of the bind/unbind operations
 
 class UnboundServiceRow extends Component {
   constructor(props) {
@@ -14,6 +19,7 @@ class UnboundServiceRow extends Component {
 
     this.service = props.service;
     this.renderServiceBadge = this.renderServiceBadge.bind(this);
+    this.renderBindingStatus = this.renderBindingStatus.bind(this);
   }
 
   renderServiceBadge() {
@@ -55,17 +61,44 @@ class UnboundServiceRow extends Component {
     );
   }
 
+  renderBindingStatus() {
+    return (
+      <ListView.InfoItem key="bind-status">
+        {this.service.isBindingOperationInProgress() && (
+          <React.Fragment>
+            <Icon name="spinner" spin size="lg" />
+            {this.service.getBindingOperation()} In Progress
+          </React.Fragment>
+        )}
+        {this.service.isBindingOperationFailed() && (
+          <React.Fragment>
+            <Icon type="pf" name="error-circle-o" />
+            Operation Failed. Please Try Again.
+          </React.Fragment>
+        )}
+      </ListView.InfoItem>
+    );
+  }
+
   renderBindingButtons() {
+<<<<<<< HEAD
     return (
       <div>
         <Button onClick={() => this.setState({ showModal: true })}>Bind to App</Button>
       </div>
     );
+=======
+    if (this.service.isBindingOperationInProgress()) {
+      return null;
+    }
+    return <div><Button onClick={()=>this.setState( { showModal:true })}>Bind to App</Button></div> ;
+>>>>>>>  💄show the progress of the bind/unbind operations
   }
 
   render() {
     return (
       <React.Fragment>
+<<<<<<< HEAD
         <ListViewItem additionalInfo={[this.renderServiceBadge()]} actions={this.renderBindingButtons()} />
         <BindingPanel
           service={this.service}
@@ -73,6 +106,11 @@ class UnboundServiceRow extends Component {
           close={() => {
             this.setState({ showModal: false });
           }}
+=======
+        <ListViewItem
+          additionalInfo={[this.renderServiceBadge(), this.renderBindingStatus()]}
+          actions={this.renderBindingButtons()}
+>>>>>>>  💄show the progress of the bind/unbind operations
         />
       </React.Fragment>
     );
