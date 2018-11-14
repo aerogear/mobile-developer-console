@@ -1,3 +1,4 @@
+import { has } from 'lodash-es';
 import {
   KEY_CR_NAME,
   KEY_CR_SOURCE_GITURL,
@@ -17,7 +18,6 @@ import {
   KEY_CR_BUILD_IOS_CREDENTIALS_PROFILE_PASSWORD,
   withPath
 } from '../Constants';
-import { has } from 'lodash-es';
 import { VALIDATION_OK, validateNotEmpty, validateGitUrl, VALIDATION_ERROR } from '../../common/Validation';
 
 export const setWithValidation = (dispatcher, validation) => (key, value) =>
@@ -36,7 +36,6 @@ export function isAllValid(obj) {
     }
     if (value === VALIDATION_ERROR) {
       resolution = false;
-      return false;
     }
   });
   return resolution;
@@ -55,7 +54,6 @@ export function checkMandatoryFields(state) {
     fields.forEach(field => {
       const hasIt = has(state, withPath(path, field));
       if (affectsFun(state)) valid = valid && hasIt;
-      console.log(`${withPath(path, field)} - ${hasIt}`);
     });
   });
   return valid;

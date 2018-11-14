@@ -19,7 +19,9 @@ export const APP_CREATE_SUCCESS = 'APP_CREATE_SUCCESS';
 export const APP_CREATE_FAILURE = 'APP_CREATE_FAILURE';
 
 export const createApp = app =>
-  fetchAction([APP_CREATE_REQUEST, APP_CREATE_SUCCESS, APP_CREATE_FAILURE], async () => DataService.createApp(app.getSpec().toJSON()))();
+  fetchAction([APP_CREATE_REQUEST, APP_CREATE_SUCCESS, APP_CREATE_FAILURE], async () =>
+    DataService.createApp(app.getSpec().toJSON())
+  )();
 
 export const APP_UPDATE_REQUEST = 'APP_UPDATE_REQUEST';
 export const APP_UPDATE_SUCCESS = 'APP_UPDATE_SUCCESS';

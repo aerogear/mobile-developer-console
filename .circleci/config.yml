@@ -25,6 +25,7 @@ jobs:
     
     steps:
       - checkout
+      - run: make ui-check-code-style
       - run: make ui-test-cover
       - run: make ui
       - persist_to_workspace:

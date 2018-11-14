@@ -1,3 +1,4 @@
+/* eslint guard-for-in: 0 */
 import React, { Component } from 'react';
 import { FormGroup, ControlLabel, Button, Modal, Alert, Icon } from 'patternfly-react';
 import PlatformItem from '../components/create_client/PlatformItem';

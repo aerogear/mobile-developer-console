@@ -7,5 +7,5 @@ export const SERVICES_FAILURE = 'SERVICES_FAILURE';
 
 export const fetchServices = fetchAction(
   [SERVICES_REQUEST, SERVICES_SUCCESS, SERVICES_FAILURE],
-  DataService.serviceInstances,
+  DataService.serviceInstances
 );

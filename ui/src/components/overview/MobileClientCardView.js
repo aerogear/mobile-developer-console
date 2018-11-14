@@ -15,7 +15,7 @@ import {
   PLATFORM_ANDROID,
   PLATFORM_IOS,
   PLATFORM_CORDOVA,
-  PLATFORM_XAMARIN,
+  PLATFORM_XAMARIN
 } from '../../components/create_client/Constants';
 import { MobileApp } from '../../model/datamodel';
 
@@ -25,7 +25,7 @@ class MobileClientCardView extends Component {
   constructor(props) {
     super(props);
     this.state = { filter: '', currentValue: '' };
-    
+
     this.emptyStateMessage = {
       noAppsCreated: 'You have no mobile apps right now. Create one to get started.',
       noAppsAfterFiltering: 'No mobile apps match the entered filter.'
@@ -145,17 +145,16 @@ class MobileClientCardView extends Component {
           <div className="form-group">
             <CreateClient platforms={SUPPORTED_PLATFORMS} item={new MobileApp().toJSON()} />
           </div>
-          {filter &&
-            filter.length > 0 && (
-              <Toolbar.Results>
-                <Filter.ActiveLabel>Active Filters:</Filter.ActiveLabel>
-                <Filter.List>
-                  <Filter.Item key="1" filterData={{ filter }} onRemove={e => this.removeFilter(e)}>
-                    {filter}
-                  </Filter.Item>
-                </Filter.List>
-              </Toolbar.Results>
-            )}
+          {filter && filter.length > 0 && (
+            <Toolbar.Results>
+              <Filter.ActiveLabel>Active Filters:</Filter.ActiveLabel>
+              <Filter.List>
+                <Filter.Item key="1" filterData={{ filter }} onRemove={e => this.removeFilter(e)}>
+                  {filter}
+                </Filter.Item>
+              </Filter.List>
+            </Toolbar.Results>
+          )}
         </Toolbar>
         {mobileClients.length ? this.renderAppCards() : this.getEmptyState()}
       </div>

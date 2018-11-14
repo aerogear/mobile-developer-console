@@ -5,19 +5,18 @@ if (window && window.SERVER_DATA) {
     const serverConfig = JSON.parse(window.SERVER_DATA);
     buildTabEnabled = serverConfig.ENABLE_BUILD_TAB;
   } catch (e) {
-    console.error("failed to parse the server config data", e);
+    console.error('failed to parse the server config data', e);
   }
 } else {
-  console.warn("no server data available");
+  console.warn('no server data available');
 }
 
 const defaultState = {
-  buildTabEnabled: buildTabEnabled
+  buildTabEnabled
 };
 
-const r = (state = defaultState) => {
-  //the config state is immutable
-  return state;
-}
+const r = (state = defaultState) =>
+  // the config state is immutable
+  state;
 
 export default r;

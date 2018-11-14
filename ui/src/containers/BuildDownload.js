@@ -1,8 +1,8 @@
+import QRCode from 'qrcode.react';
 import React, { Component } from 'react';
 import { Button, MessageDialog, Alert, Spinner } from 'patternfly-react';
 import { connect } from 'react-redux';
 import '../components/build/BuildDownload.css';
-import QRCode from 'qrcode.react';
 import { generateDownloadURL } from '../actions/builds';
 
 const content = downloadURL => (
@@ -12,10 +12,14 @@ const content = downloadURL => (
     </Alert>
     <dl>
       <dt>Download from URL:</dt>
-      <dd><a href={downloadURL}>{downloadURL}</a></dd>
+      <dd>
+        <a href={downloadURL}>{downloadURL}</a>
+      </dd>
       <br />
       <dt>or scan QR code to install:</dt>
-      <dd className="build-qr-code"><QRCode value={downloadURL} size={200} /></dd>
+      <dd className="build-qr-code">
+        <QRCode value={downloadURL} size={200} />
+      </dd>
     </dl>
   </React.Fragment>
 );
@@ -82,4 +86,7 @@ const mapDispatchToProps = {
   generateDownloadURL
 };
 
-export default connect(null, mapDispatchToProps)(BuildDownload);
+export default connect(
+  null,
+  mapDispatchToProps
+)(BuildDownload);

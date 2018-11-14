@@ -1,7 +1,7 @@
+import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
-import { connect } from 'react-redux';
 import { fetchBindings } from '../../actions/serviceBinding';
 
 class MobileServiceView extends Component {
@@ -9,7 +9,7 @@ class MobileServiceView extends Component {
     super(props);
     this.boundServiceRows = this.boundServiceRows.bind(this);
     this.unboundServiceRows = this.unboundServiceRows.bind(this);
-    this.setDefaultBindingProperties= this.setDefaultBindingProperties.bind(this);
+    this.setDefaultBindingProperties = this.setDefaultBindingProperties.bind(this);
   }
 
   componentDidMount() {
@@ -20,7 +20,7 @@ class MobileServiceView extends Component {
     const rows = [];
     if (this.props.boundServices) {
       rows.push(<h2 key="bound-services">Bound Services</h2>);
-      this.props.boundServices.forEach((service) => {
+      this.props.boundServices.forEach(service => {
         rows.push(<BoundServiceRow key={service.serviceId} service={service} />);
       });
     }
@@ -30,10 +30,10 @@ class MobileServiceView extends Component {
 
   unboundServiceRows() {
     const rows = [];
-    
+
     if (this.props.unboundServices) {
       rows.push(<h2 key="unbound-services">Unbound Services</h2>);
-      this.props.unboundServices.forEach((service) => {
+      this.props.unboundServices.forEach(service => {
         this.setDefaultBindingProperties(service);
         rows.push(<UnboundServiceRow key={service.serviceId} service={service} />);
       });
@@ -43,11 +43,11 @@ class MobileServiceView extends Component {
 
   setDefaultBindingProperties(service) {
     try {
-      if (service.bindingSchema.properties["CLIENT_ID"]) {
-        service.bindingSchema.properties["CLIENT_ID"].default = this.props.appName;
+      if (service.bindingSchema.properties.CLIENT_ID) {
+        service.bindingSchema.properties.CLIENT_ID.default = this.props.appName;
       }
     } catch {
-      console.log("Null reference setting default properties for " + service.serviceId);
+      console.log(`Null reference setting default properties for ${service.serviceId}`);
     }
   }
 
@@ -67,16 +67,18 @@ function mapStateToProps(state, ownProps) {
       boundServices: state.serviceBindings.items[0].boundServices,
       unboundServices: state.serviceBindings.items[0].unboundServices
     };
-  } else {
-    return {
-      boundServices: [],
-      unboundServices: []
-    };
   }
+  return {
+    boundServices: [],
+    unboundServices: []
+  };
 }
 
 const mapDispatchToProps = {
   fetchBindings
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MobileServiceView);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MobileServiceView);

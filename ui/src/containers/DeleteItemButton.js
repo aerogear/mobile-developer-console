@@ -69,15 +69,19 @@ class DeleteItemButton extends Component {
               secondaryActionButtonContent="Cancel"
               primaryActionButtonBsStyle="danger"
               title="Confirm Delete"
-              secondaryContent={(
+              secondaryContent={
                 <React.Fragment>
-                  <p>Are you sure you want to delete the {itemType} '<b>{itemName}</b>'?</p>
                   <p>
-                    {itemName} and its data will no longer be available.{' '}
-                    <b>It cannot be undone.</b> Make sure this is something you really want to do!
+                    {`Are you sure you want to delete the ${itemType} '`}
+                    <b>{itemName}</b>
+                    {`'?`}
+                  </p>
+                  <p>
+                    {itemName} and its data will no longer be available. <b>It cannot be undone.</b> Make sure this is
+                    something you really want to do!
                   </p>
                 </React.Fragment>
-              )}
+              }
             />
           </React.Fragment>
         )}
@@ -92,4 +96,7 @@ const mapDispatchToProps = {
   deleteBinding
 };
 
-export default connect(null, mapDispatchToProps)(DeleteItemButton);
+export default connect(
+  null,
+  mapDispatchToProps
+)(DeleteItemButton);

@@ -21,8 +21,7 @@ import { fetchBuilds } from '../actions/builds';
 import DataService from '../DataService';
 import PlatformIcon from '../components/common/PlatformIcon';
 import DeleteItemButton from './DeleteItemButton';
-import { MobileApp } from "../model/datamodel";
-
+import { MobileApp } from '../model/datamodel';
 
 import './Client.css';
 import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';

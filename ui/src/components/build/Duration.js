@@ -9,7 +9,7 @@ class Duration extends Component {
     super(props);
 
     this.state = {
-      timeSinceLastUpdate: 0,
+      timeSinceLastUpdate: 0
     };
   }
 
@@ -40,17 +40,14 @@ class Duration extends Component {
     this.setState(state => ({
       timeSinceLastUpdate: state.timeSinceLastUpdate + 1
     }));
-  }
+  };
 
   render() {
     const { duration, inProgress } = this.props;
 
     return moment
-      .duration(
-        duration +
-        (inProgress ? this.state.timeSinceLastUpdate * 1000 : 0)
-      )
-      .format('h[h] m[m] s[s]')
+      .duration(duration + (inProgress ? this.state.timeSinceLastUpdate * 1000 : 0))
+      .format('h[h] m[m] s[s]');
   }
 }
 

@@ -1,11 +1,7 @@
-import {
-  USER_INFO_REQUEST,
-  USER_INFO_SUCCESS,
-  USER_INFO_FAILURE
-} from '../actions/users';
+import { USER_INFO_REQUEST, USER_INFO_SUCCESS, USER_INFO_FAILURE } from '../actions/users';
 
 const defaultState = {
-  currentUser: {name: "Unknown"},
+  currentUser: { name: 'Unknown' },
   loading: false,
   loadError: false
 };

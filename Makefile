@@ -34,13 +34,21 @@ test_cover:
 build: setup
 	go build -o $(BINARY) ./cmd/api-server/main.go
 
+.PHONY:
+ui-npm-install:
+	cd ui && npm install
+
 .PHONY: ui
-ui:
-	cd ui && npm install && npm run build
+ui: ui-npm-install
+	cd ui && npm run build
+
+.PHONY: ui-check-code-style
+ui-check-code-style: ui
+	node ui/node_modules/eslint/bin/eslint ui/src/
 
 .PHONY: ui-test-cover
-ui-test-cover:
-	cd ui && npm install && npm run build-css && npm run coverage
+ui-test-cover: ui-npm-install
+	cd ui && npm run build-css && npm run coverage
 
 .PHONY: serve
 serve: build ui

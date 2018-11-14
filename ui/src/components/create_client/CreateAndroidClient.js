@@ -17,7 +17,7 @@ class CreateAndroidClient extends EditMobileClientBaseClass {
 
 function mapStateToProps(state) {
   return {
-    ui: state.apps.createClientAppDialog,
+    ui: state.apps.createClientAppDialog
   };
 }
 
@@ -26,4 +26,7 @@ const mapDispatchToProps = {
   editApp
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateAndroidClient);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateAndroidClient);

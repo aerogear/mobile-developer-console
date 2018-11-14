@@ -20,7 +20,7 @@ const builds = resourceReducer({
   createFailure: BUILD_TRIGGER_FAILURE,
   actionRequest: BUILD_DOWNLOAD_REQUEST,
   actionSuccess: BUILD_DOWNLOAD_SUCCESS,
-  actionFailure: BUILD_DOWNLOAD_FAILURE,
+  actionFailure: BUILD_DOWNLOAD_FAILURE
 });
 
 export default builds;

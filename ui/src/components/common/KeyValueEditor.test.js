@@ -1,9 +1,10 @@
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import React from 'react';
-Enzyme.configure({ adapter: new Adapter() });
 
 import KeyValueEditor from './KeyValueEditor';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('KeyValueEditor', () => {
   it('test render', () => {
@@ -14,11 +15,14 @@ describe('KeyValueEditor', () => {
 
   it('test add and delete', () => {
     const wrapper = shallow(<KeyValueEditor />);
-    wrapper.find({placeholder:'Key'}).simulate('change', {target: {value: 'testKey'}});
-    wrapper.find({placeholder:'Value'}).simulate('change', {target: {value: 'testValue'}});
+    wrapper.find({ placeholder: 'Key' }).simulate('change', { target: { value: 'testKey' } });
+    wrapper.find({ placeholder: 'Value' }).simulate('change', { target: { value: 'testValue' } });
     wrapper.find('.btn-add').simulate('click');
     expect(wrapper.find('Row')).toHaveLength(3);
-    wrapper.find('button').first().simulate('click', {preventDefault:()=>{}});
+    wrapper
+      .find('button')
+      .first()
+      .simulate('click', { preventDefault: () => {} });
     expect(wrapper.find('Row')).toHaveLength(2);
   });
 });

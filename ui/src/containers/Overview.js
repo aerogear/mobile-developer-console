@@ -58,4 +58,7 @@ const mapDispatchToProps = {
   fetchBuilds
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Overview);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Overview);
