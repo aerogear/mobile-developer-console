@@ -20,15 +20,15 @@ class BindingPanel extends Component {
   }
 
   onNextButtonClick() {
-    const {  activeStepIndex } = this.state;
+    const { activeStepIndex } = this.state;
     if (activeStepIndex === 1) {
-      this.form.submit()
-      return false;//swallow the event, see validate function
-    } else {
-      this.setState({
-        activeStepIndex: (activeStepIndex + 1) % 3
-      })
+      this.form.submit();
+      return false; // swallow the event, see validate function
     }
+    this.setState({
+      activeStepIndex: (activeStepIndex + 1) % 3
+    });
+    return true;
   }
 
   onBackButtonClick() {
@@ -44,8 +44,9 @@ class BindingPanel extends Component {
   }
 
   componentWillMount() {
-    const { serviceName, bindingSchema: schema, form } = this.props.service;
+    const { serviceName, form } = this.props.service;
     const { service } = this.props;
+    const schema = this.props.service.bindingSchema;
 
     this.setState({
       serviceName,
@@ -58,19 +59,22 @@ class BindingPanel extends Component {
   }
 
   renderPropertiesSchema() {
-    
-          return <Form schema={this.state.schema}
-          uiSchema={{form:this.state.form}}
-          ref={(form)=>{this.form = form;}}
-          validate={this.validate}
-          showErrorList={false}
-          ObjectFieldTemplate={OpenShiftObjectTemplate}
-          onChange={debounce(e => this.formData = e.formData, 150)} >
-                <div/>
-          </Form>
-
-    }
-  
+    return (
+      <Form
+        schema={this.state.schema}
+        uiSchema={{ form: this.state.form }}
+        ref={form => {
+          this.form = form;
+        }}
+        validate={this.validate}
+        showErrorList={false}
+        ObjectFieldTemplate={OpenShiftObjectTemplate}
+        onChange={debounce(e => (this.formData = e.formData), 150)} // eslint-disable-line no-return-assign
+      >
+        <div />
+      </Form>
+    );
+  }
 
   renderWizardSteps() {
     return [
@@ -91,95 +95,16 @@ class BindingPanel extends Component {
           </form>
         )
       },
-      {title:"Results",render:()=>{
-        return <div>review the binding</div>
-      }},]
-         
+      {
+        title: 'Parameters',
+        render: () => this.renderPropertiesSchema()
+      },
+      {
+        title: 'Results',
+        render: () => <div>review the binding</div>
       }
-  
-      stepChanged = (step) => {
-        if (step === 2) {
-          this.setState({ loading: true });
-          const credentialSecretName = createSecretName(this.state.service.serviceInstanceName + '-credentials-');
-          const parametersSecretName = createSecretName(this.state.service.serviceInstanceName + '-bind-parameters-');
-          this.props.createBinding(this.props.appName, this.state.service.serviceInstanceName, credentialSecretName, parametersSecretName, this.state.service.serviceClassExternalName, this.formData);
-        }
-      }
-  
-       /**
-   * see https://github.com/mozilla-services/react-jsonschema-form/tree/6cb26d17c0206b610b130729db930d5906d3fdd3#form-data-validation
-   */
-  validate = (formData, errors) => {
-    var hasError = false;
-    /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
-    console.log(this.form)
-    for (var key in errors) {
-      switch (key) {
-        case "CLIENT_ID":
-        case "CLIENT_TYPE":
-          if (!formData[key]) {
-            errors[key].addError(key + " is a required field.")
-            hasError = true;
-          }
-          break;
-        case "googlekey":
-        case "projectNumber":
-          if (((formData.googlekey || formData.projectNumber)) && !(formData.googlekey && formData.projectNumber)) {
-            errors[key].addError("FCM requires a Key field and Project Number.")
-            hasError = true;
-          }
-          break;
-        case "cert":
-        case "iosIsProduction":
-        case "passphrase":
-          if ((formData.cert || formData.passphrase) && !(formData.cert && formData.passphrase)) {
-            errors[key].addError("APNS requires a certificate and passphrase.")
-            hasError = true;
-          } else if (formData.passphrase && formData.cert){
-            const confirmPasswordFieldId = this.form.state.idSchema['passphrase'].$id + '2';
-            const confirmPasswordField = document.getElementById(confirmPasswordFieldId);
-            const passwordConfirmation = confirmPasswordField.value;
-            if (formData.passphrase !== passwordConfirmation)
-            errors[key].addError("Passphrase does not match.")
-            hasError = true;
-
-          }
-          break;
-        default:
-          continue;
-      }
-    }
-
-    if (!hasError) {//Avdance to final screen if valid
-      this.setState({
-        activeStepIndex: 2
-      })
-      this.stepChanged(2);
-    }
-
-    return errors;
+    ];
   }
-
-   render() {
-
-       return <Wizard.Pattern
-            onHide={this.props.close}
-            onExited={this.props.close}
-            show={this.props.showModal}
-            title="Create mobile client"
-            steps={this.renderWizardSteps()}
-            loadingTitle="Creating mobile binding..."
-            loadingMessage="This may take a while."
-            loading={this.state.loading}
-
-            onStepChanged={this.stepChanged}
-            nextText={this.state.activeStepIndex === 1 ? 'Create' : 'Next'}
-            onNext={this.onNextButtonClick}
-            onBack={this.onBackButtonClick}
-            activeStepIndex={this.state.activeStepIndex}
-          />;
-       
-   }
 
   stepChanged = step => {
     if (step === 2) {
@@ -195,6 +120,65 @@ class BindingPanel extends Component {
         this.formData
       );
     }
+  };
+
+  /**
+   * see https://github.com/mozilla-services/react-jsonschema-form/tree/6cb26d17c0206b610b130729db930d5906d3fdd3#form-data-validation
+   */
+  validate = (formData, errors) => {
+    let hasError = false;
+    /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
+    for (const key in errors) {
+      if (errors.hasOwnProperty(key)) {
+        switch (key) {
+          case 'CLIENT_ID':
+          case 'CLIENT_TYPE':
+            if (!formData[key]) {
+              errors[key].addError(`${key} is a required field.`);
+              hasError = true;
+            }
+            break;
+          case 'googlekey':
+          case 'projectNumber':
+            if ((formData.googlekey || formData.projectNumber) && !(formData.googlekey && formData.projectNumber)) {
+              errors[key].addError('FCM requires a Key field and Project Number.');
+              hasError = true;
+            }
+            break;
+          case 'cert':
+            if ((formData.cert || formData.passphrase) && !(formData.cert && formData.passphrase)) {
+              errors.iosIsProduction.addError('APNS requires a certificate and passphrase.');
+              hasError = true;
+            }
+            break;
+          case 'iosIsProduction':
+            break;
+          case 'passphrase':
+            if (formData.passphrase && formData.cert) {
+              const confirmPasswordFieldId = `${this.form.state.idSchema.passphrase.$id}2`;
+              const confirmPasswordField = document.getElementById(confirmPasswordFieldId);
+              const passwordConfirmation = confirmPasswordField.value;
+              if (formData.passphrase !== passwordConfirmation) {
+                errors.iosIsProduction.addError('Passphrase does not match.');
+                hasError = true;
+              }
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
+    if (!hasError) {
+      // Avdance to final screen if valid
+      this.setState({
+        activeStepIndex: 2
+      });
+      this.stepChanged(2);
+    }
+
+    return errors;
   };
 
   render() {
@@ -217,8 +201,6 @@ class BindingPanel extends Component {
     );
   }
 }
-
-
 
 const mapDispatchToProps = {
   createBinding
