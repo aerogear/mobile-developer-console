@@ -7,16 +7,16 @@ import MobileClientCardView from './MobileClientCardView';
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('MobileClientCardView', () => {
-  it('test render empty view', () => {
-    const wrapper = shallow(<MobileClientCardView mobileClients={[]} />);
-    expect(wrapper.find('EmptyState')).toHaveLength(1);
-  });
+    it('test filter by app name', () => {
+        const wrapper = shallow(<MobileClientCardView mobileClients={[]} />);
+        expect(wrapper.find('EmptyState')).toHaveLength(1);
+    });
 
   it('test render apps', () => {
     const apps = [
       {
         metadata: {
-          name: 'android-app'
+          name: 'my-app'
         },
         status: {
           services: []
@@ -24,7 +24,7 @@ describe('MobileClientCardView', () => {
       },
       {
         metadata: {
-          name: 'ios-app'
+          name: 'your-app'
         },
         status: {
           services: []
@@ -33,7 +33,7 @@ describe('MobileClientCardView', () => {
     ];
     const wrapper = shallow(<MobileClientCardView mobileClients={apps} mobileClientBuilds={[]} />);
     expect(wrapper.find('MobileClientCardViewItem')).toHaveLength(2);
-    wrapper.find('FormControl').simulate('change', { target: { value: 'ios' } });
+    wrapper.find('FormControl').simulate('change', { target: { value: 'your' } });
     const e = {
       key: 'Enter',
       stopPropagation: () => {},

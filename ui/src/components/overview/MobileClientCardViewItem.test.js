@@ -12,9 +12,7 @@ describe('MobileClientCardViewItem', () => {
       metadata: {
         name: 'test'
       },
-      spec: {
-        cleintType: 'android'
-      }
+      spec: {}
     };
     const services = [{ type: 'metrics' }, { type: 'keycloak' }, { type: 'push' }, { type: 'sync' }];
     const buildTabEnabled = true;
@@ -25,7 +23,6 @@ describe('MobileClientCardViewItem', () => {
     expect(wrapper.find('DropdownKebab')).toHaveLength(1);
     expect(wrapper.find('span.pficon-error-circle-o')).toHaveLength(1);
     expect(wrapper.find('span.fa-refresh')).toHaveLength(1);
-    expect(wrapper.find('PlatformIcon')).toHaveLength(1);
     expect(wrapper.find('img.icon')).toHaveLength(4);
   });
 });

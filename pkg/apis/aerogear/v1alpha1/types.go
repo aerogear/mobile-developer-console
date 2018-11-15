@@ -24,7 +24,6 @@ type MobileClient struct {
 
 type MobileClientSpec struct {
 	// Fill me
-	ClientType    string `json:"clientType,required"`
 	Name          string `json:"name,required"`
 	AppIdentifier string `json:"appIdentifier",required`
 	ApiKey        string `json:"apiKey"` //TODO: not sure if this is still required.

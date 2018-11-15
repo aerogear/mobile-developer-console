@@ -1,12 +1,9 @@
-import { PLATFORM_ANDROID } from '../../components/create_client/Constants';
-
 export class Spec {
   constructor(appJson) {
     if (appJson.spec) {
       this.spec = appJson.spec;
     } else {
-      this.spec = { clientType: PLATFORM_ANDROID };
-      appJson.spec = this.spec;
+      appJson.spec = this.spec = {}
     }
     this.set.bind(this);
   }
@@ -19,10 +16,6 @@ export class Spec {
     return this.spec.dmzUrl;
   }
 
-  getType() {
-    return this.spec.clientType;
-  }
-
   getName() {
     return this.spec.name;
   }
@@ -33,10 +26,6 @@ export class Spec {
 
   setName(newName) {
     this.spec.name = newName;
-  }
-
-  setType(newType) {
-    this.spec.clientType = newType;
   }
 
   setAppIdentifier(newAppIdentifier) {

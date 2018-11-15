@@ -25,3 +25,6 @@ main
 server.log
 */_tmp*
 */node_modules
+
+# with 3.11 we have this folder created with oc cluster up
+openshift.local.clusterup

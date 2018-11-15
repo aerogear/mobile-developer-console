@@ -1,16 +1,15 @@
 import { connect } from 'react-redux';
 import EditMobileClientBaseClass from './EditMobileClientBaseClass';
-import { PLATFORM_ANDROID } from './Constants';
 import { setFieldValue, editApp } from '../../actions/apps';
 
-export const EXAMPLE_APPIDENTIFIER = 'org.aerogear.android.myapp';
+export const EXAMPLE_APPIDENTIFIER = 'org.aerogear.myapp';
 
 /**
- * Component for the Android specific create mobile client form.
+ * Component for the create mobile client form.
  */
-class CreateAndroidClient extends EditMobileClientBaseClass {
+export class CreateClient extends EditMobileClientBaseClass {
   constructor(props) {
-    super(PLATFORM_ANDROID, props);
+    super(props);
     this.config.appIdentifier.example = EXAMPLE_APPIDENTIFIER;
   }
 }
@@ -29,4 +28,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CreateAndroidClient);
+)(CreateClient);

@@ -29,10 +29,6 @@ export class MobileApp {
     return this.getSpec().getName();
   }
 
-  getType() {
-    return this.getSpec().getType();
-  }
-
   getAppIdentifier() {
     return this.getSpec().getAppIdentifier();
   }
@@ -41,9 +37,8 @@ export class MobileApp {
     return this.status;
   }
 
-  setAppDetails(appName, appType, appIdentifier) {
+  setAppDetails(appName, appIdentifier) {
     this.spec.setName(appName);
-    this.spec.setType(appType);
     this.spec.setAppIdentifier(appIdentifier);
   }
 

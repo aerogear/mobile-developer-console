@@ -11,15 +11,7 @@ import {
 import './MobileClientCardView.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
 import CreateClient from '../../containers/CreateClient';
-import {
-  PLATFORM_ANDROID,
-  PLATFORM_IOS,
-  PLATFORM_CORDOVA,
-  PLATFORM_XAMARIN
-} from '../../components/create_client/Constants';
 import { MobileApp } from '../../model/datamodel';
-
-const SUPPORTED_PLATFORMS = [PLATFORM_ANDROID, PLATFORM_CORDOVA, PLATFORM_IOS, PLATFORM_XAMARIN];
 
 class MobileClientCardView extends Component {
   constructor(props) {
@@ -47,7 +39,7 @@ class MobileClientCardView extends Component {
       <EmptyState>
         <EmptyStateTitle>{this.emptyStateMessage.noAppsCreated}</EmptyStateTitle>
         <EmptyStateAction>
-          <CreateClient createButtonSize="large" platforms={SUPPORTED_PLATFORMS} item={new MobileApp().toJSON()} />
+          <CreateClient createButtonSize="large" item={new MobileApp().toJSON()} />
         </EmptyStateAction>
       </EmptyState>
     );
@@ -143,7 +135,7 @@ class MobileClientCardView extends Component {
             />
           </Filter>
           <div className="form-group">
-            <CreateClient platforms={SUPPORTED_PLATFORMS} item={new MobileApp().toJSON()} />
+            <CreateClient item={new MobileApp().toJSON()} />
           </div>
           {filter && filter.length > 0 && (
             <Toolbar.Results>
