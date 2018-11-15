@@ -1,4 +1,4 @@
-import { APP_PLATFORM_SELECT, APP_FORM_RESET, APP_FIELD_SETVALUE, APP_EDIT } from '../actions/apps';
+import { APP_FORM_RESET, APP_FIELD_SETVALUE, APP_EDIT } from '../actions/apps';
 import { DISMISS_ERROR, DISMISS_ALL_ERRORS } from '../actions/errors';
 import { wsError } from '../DataService';
 import { MobileApp } from '../model/datamodel';
@@ -12,7 +12,6 @@ const defaultState = {
   isActioning: false,
   isReading: false,
   createClientAppDialog: {
-    platforms: {},
     fields: {}
   }
 };
@@ -191,26 +190,9 @@ function createClientAppDialog(state, action) {
       return {
         ...state,
         createClientAppDialog: {
-          platforms: state.createClientAppDialog.platforms,
           fields: {}
         }
       };
-    case APP_PLATFORM_SELECT: {
-      const selectedPlatform = action.platform.name;
-      return {
-        ...state,
-        createClientAppDialog: {
-          ...state.createClientAppDialog,
-          app: {
-            ...state.createClientAppDialog.app,
-            spec: {
-              ...state.createClientAppDialog.app.spec,
-              clientType: selectedPlatform
-            }
-          }
-        }
-      };
-    }
     case APP_FIELD_SETVALUE: {
       const appModel = new MobileApp({ ...state.createClientAppDialog.app });
       appModel.setProperty(action.payload.name, action.payload.value);

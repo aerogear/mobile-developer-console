@@ -19,7 +19,6 @@ import { fetchApp } from '../actions/apps';
 import { fetchBuildConfigs } from '../actions/buildConfigs';
 import { fetchBuilds } from '../actions/builds';
 import DataService from '../DataService';
-import PlatformIcon from '../components/common/PlatformIcon';
 import DeleteItemButton from './DeleteItemButton';
 import { MobileApp } from '../model/datamodel';
 
@@ -98,13 +97,10 @@ class Client extends Component {
 
   header = mobileApp => {
     const { selectedTab, showBuildConfigDialog = false } = this.state;
-    const clientType = mobileApp.getType();
     return (
       <div className="app-header-wrapper">
         <div className="app-header">
-          <PlatformIcon small platform={clientType} />
           <div>
-            <span className="platform">{clientType}</span>
             <h1>{mobileApp.getName()}</h1>
           </div>
         </div>
@@ -115,7 +111,7 @@ class Client extends Component {
                 <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
                 <BuildConfigDialog
                   update={false}
-                  clientInfo={{ clientId: mobileApp.getAppIdentifier(), clientType: mobileApp.getType() }}
+                  clientInfo={{ clientId: mobileApp.getAppIdentifier()}}
                   show={showBuildConfigDialog}
                   onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
                 />
@@ -133,8 +129,8 @@ class Client extends Component {
   render() {
     const mobileApp = this.getMobileApp();
     const { spec = {} } = mobileApp;
-    const { clientType = '', appIdentifier: clientId = '' } = spec;
-    const clientInfo = { clientId, clientType };
+    const { appIdentifier: clientId = '' } = spec;
+    const clientInfo = { clientId };
     const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
     return mobileApp ? (

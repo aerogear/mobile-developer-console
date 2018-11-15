@@ -1,18 +1,7 @@
 /* eslint guard-for-in: 0 */
 import React, { Component } from 'react';
 import { FormGroup, ControlLabel, Button, Modal, Alert, Icon } from 'patternfly-react';
-import PlatformItem from '../components/create_client/PlatformItem';
-import PlatformItems from '../components/create_client/PlatformItems';
-import CreateAndroidClient from '../components/create_client/CreateAndroidClient';
-import CreateCordovaClient from '../components/create_client/CreateCordovaClient';
-import CreateXamarinClient from '../components/create_client/CreateXamarinClient';
-import CreateIOSClient from '../components/create_client/CreateIOSClient';
-import {
-  PLATFORM_ANDROID,
-  PLATFORM_IOS,
-  PLATFORM_CORDOVA,
-  PLATFORM_XAMARIN
-} from '../components/create_client/Constants';
+import CreateClient from '../components/create_client/CreateClient';
 import '../components/create_client/create_client.css';
 import { MobileApp } from '../model/datamodel';
 
@@ -42,11 +31,6 @@ class ClientEditBaseClass extends Component {
   open = async () => {
     const app = this.getMobileAppToEdit(true);
     this.props.editApp(app);
-    if (this.state.editingMode) {
-      this.props.selectPlatform(app.getType());
-    } else {
-      this.props.selectPlatform(this.props.platforms[0]);
-    }
 
     this.setState({
       error: null,
@@ -81,43 +65,6 @@ class ClientEditBaseClass extends Component {
     }
   };
 
-  renderPlatformSelection() {
-    const availablePlatforms = [];
-    let platform;
-    if (this.state.editingMode) {
-      platform = this.getMobileAppToEdit().getType();
-      availablePlatforms.push(<PlatformItem type={platform} key={platform} />);
-    } else {
-      for (const key in this.props.platforms) {
-        platform = this.props.platforms[key];
-        availablePlatforms.push(<PlatformItem type={platform} key={platform} />);
-      }
-    }
-
-    return (
-      <FormGroup>
-        <ControlLabel className="required">Application Platform</ControlLabel>
-        <PlatformItems itemSelected={this.selectPlatform}>{availablePlatforms}</PlatformItems>
-      </FormGroup>
-    );
-  }
-
-  renderPlatform() {
-    const app = this.getMobileAppToEdit();
-    switch (app.getType()) {
-      case PLATFORM_ANDROID:
-        return <CreateAndroidClient editing={this.state.editingMode} />;
-      case PLATFORM_CORDOVA:
-        return <CreateCordovaClient editing={this.state.editingMode} />;
-      case PLATFORM_IOS:
-        return <CreateIOSClient editing={this.state.editingMode} />;
-      case PLATFORM_XAMARIN:
-        return <CreateXamarinClient editing={this.state.editingMode} />;
-      default:
-        return null;
-    }
-  }
-
   renderModal() {
     return (
       <Modal show={this.state.showModal}>
@@ -133,8 +80,7 @@ class ClientEditBaseClass extends Component {
               {this.state.error}
             </Alert>
           )}
-          <FormGroup key={this.state.selectedPlatform}>{this.renderPlatform()}</FormGroup>
-          {this.renderPlatformSelection()}
+          <FormGroup><CreateClient editing={this.state.editingMode} /></FormGroup>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.close}>Cancel</Button>

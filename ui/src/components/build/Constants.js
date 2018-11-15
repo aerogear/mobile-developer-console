@@ -1,9 +1,3 @@
-/* clientType */
-export const CLIENT_TYPE_ANDROID = 'android';
-export const CLIENT_TYPE_IOS = 'ios';
-export const CLIENT_TYPE_CORDOVA = 'cordova';
-export const CLIENT_TYPE_XAMARIN = 'xamarin';
-
 /* SourceConfig authType */
 export const BUILD_AUTH_TYPE_BASIC = 'basic';
 export const BUILD_AUTH_TYPE_PUBLIC = 'public';
