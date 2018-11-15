@@ -111,9 +111,7 @@ export const buildConfigReducer = (prevState = initialState, action) => {
       return state;
     }
     case BUILD_CONFIG_CLEAR_STATE: {
-      const state = cloneDeep(prevState);
-      unset(state, 'config');
-      return state;
+      return cloneDeep(initialState);
     }
     default:
       return prevState;
