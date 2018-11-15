@@ -57,7 +57,7 @@ class BoundServiceRow extends Component {
             Documentation :
           </Col>
           <Col md={4} className="detailsValue">
-            <a href="{this.service.getDocumentationUrl()}">
+            <a href={this.service.getDocumentationUrl()}>
               SDK Setup
               <i className="fa fa-external-link" aria-hidden="true" />
             </a>
