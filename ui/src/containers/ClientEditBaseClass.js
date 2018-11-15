@@ -1,6 +1,6 @@
 /* eslint guard-for-in: 0 */
 import React, { Component } from 'react';
-import { FormGroup, ControlLabel, Button, Modal, Alert, Icon } from 'patternfly-react';
+import { FormGroup, Button, Modal, Alert, Icon } from 'patternfly-react';
 import CreateClient from '../components/create_client/CreateClient';
 import '../components/create_client/create_client.css';
 import { MobileApp } from '../model/datamodel';
@@ -80,7 +80,9 @@ class ClientEditBaseClass extends Component {
               {this.state.error}
             </Alert>
           )}
-          <FormGroup><CreateClient editing={this.state.editingMode} /></FormGroup>
+          <FormGroup>
+            <CreateClient editing={this.state.editingMode} />
+          </FormGroup>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.close}>Cancel</Button>

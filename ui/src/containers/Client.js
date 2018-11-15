@@ -111,7 +111,7 @@ class Client extends Component {
                 <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
                 <BuildConfigDialog
                   update={false}
-                  clientInfo={{ clientId: mobileApp.getAppIdentifier()}}
+                  clientInfo={{ clientId: mobileApp.getAppIdentifier() }}
                   show={showBuildConfigDialog}
                   onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
                 />
