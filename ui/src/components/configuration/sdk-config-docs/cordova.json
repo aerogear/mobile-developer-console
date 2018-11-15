@@ -1,0 +1,35 @@
+{
+   "sdkInit": {
+    "introduction": "First step is to install the Core AeroGear module, the module manages and binds all services together on the client side.",
+     "commands": [
+         ["Install AeroGear Core package","npm install @aerogear/app"]
+     ]
+   }, 
+   "services": {
+       "keycloak": {
+            "introduction": "Execute following commands in your project directory to install all necessary NPM packages needed for the Identity Management service:",            
+            "commands": [
+                ["Install the AeroGear Auth package from NPM","npm install @aerogear/auth"]
+            ]
+       },
+       "push": {
+        "introduction": "Execute following commands in your project directory to install all necessary NPM packages needed for the Push Notifications service:",            
+           "commands:": [
+               ["Install Cordova plugin `cordova-plugin-aerogear-push` for push","cordova plugin add @aerogear/cordova-plugin-aerogear-push"],
+               ["Install Unified Push Server package needed for Device registration","npm install --save @aerogear/push"]
+           ]
+       },
+       "metrics": {
+           "introduction": "Metrics is included in all SDK modules, if you already use a component from the AeroGear SDK in your app. You'll need only to install this NPM package to enable it:",            
+           "commands":[
+               ["Install `cordova-plugin-aerogear-metrics` Cordova plugin","cordova plugin add @aerogear/cordova-plugin-aerogear-metrics"]
+           ]
+       },
+       "sync": {
+           "introduction":"Execute following commands in your project directory to install all necessary NPM packages needed for the Sync service:",
+           "commands": [
+               []
+           ]
+       }
+   } 
+}

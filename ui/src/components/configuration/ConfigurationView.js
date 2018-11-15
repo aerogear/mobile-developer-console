@@ -36,7 +36,7 @@ class ConfigurationView extends Component {
         <Row className="configurationView">
           <Col xs={6}>
             <Header>SDK Configuration</Header>
-            <ServiceSDKDocs />
+            <ServiceSDKDocs mobileApp={this.props.app} />
 
             <h4>Service specific configuration steps</h4>
             {serviceSDKInfo.map((info, index) => (
