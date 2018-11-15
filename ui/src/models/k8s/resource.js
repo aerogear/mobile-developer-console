@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 import Metadata from './metadata';
-import Spec from './spec';
+import Spec from './basespec';
 import Status from './status';
 
 /**

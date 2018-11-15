@@ -1,6 +1,6 @@
-import BaseSpec from '../k8s/spec';
+import Spec from '../k8s/basespec';
 
-export default class AppSpec extends BaseSpec {
+export default class AppSpec extends Spec {
   constructor(json = {}) {
     super(json);
   }
