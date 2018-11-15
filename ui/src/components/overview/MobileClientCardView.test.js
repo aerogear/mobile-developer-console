@@ -7,10 +7,10 @@ import MobileClientCardView from './MobileClientCardView';
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('MobileClientCardView', () => {
-    it('test filter by app name', () => {
-        const wrapper = shallow(<MobileClientCardView mobileClients={[]} />);
-        expect(wrapper.find('EmptyState')).toHaveLength(1);
-    });
+  it('test filter by app name', () => {
+    const wrapper = shallow(<MobileClientCardView mobileClients={[]} />);
+    expect(wrapper.find('EmptyState')).toHaveLength(1);
+  });
 
   it('test render apps', () => {
     const apps = [

@@ -3,7 +3,8 @@ export class Spec {
     if (appJson.spec) {
       this.spec = appJson.spec;
     } else {
-      appJson.spec = this.spec = {}
+      this.spec = {};
+      appJson.spec = this.spec;
     }
     this.set.bind(this);
   }
