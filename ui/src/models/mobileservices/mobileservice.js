@@ -1,14 +1,14 @@
 import { find } from 'lodash-es';
+import Resource from '../k8s/resource';
 
 export class MobileService {
   constructor(json = {}) {
     this.data = json;
     this.configuration = this.data.configuration || {};
-    // TODO: we can add more models for those fields
-    this.serviceInstance = this.data.serviceInstance || {};
-    this.serviceBinding = this.data.serviceBinding || {};
-    this.serviceClass = this.data.serviceClass || {};
     this.setupText = '';
+    this.serviceInstance = new Resource(this.data.serviceInstance);
+    this.serviceBinding = new Resource(this.data.serviceBinding);
+    this.serviceClass = new Resource(this.data.serviceClass);
   }
 
   getName() {
@@ -20,7 +20,7 @@ export class MobileService {
   }
 
   getDescription() {
-    return this.serviceClass.spec.description;
+    return this.serviceClass.spec.get('description');
   }
 
   getLogoUrl() {
@@ -36,11 +36,11 @@ export class MobileService {
   }
 
   getBindingName() {
-    return this.serviceBinding.metadata.name;
+    return this.serviceBinding.metadata.get('name');
   }
 
   getServiceInstanceName() {
-    return this.serviceInstance.metadata.name;
+    return this.serviceInstance.metadata.get('name');
   }
 
   getSetupText() {
@@ -64,36 +64,37 @@ export class BoundMobileService extends MobileService {
   }
 
   getDocumentationUrl() {
-    return this.serviceClass.spec.externalMetadata.documentationUrl;
+    return this.serviceClass.spec.get('externalMetadata.documentationUrl');
   }
 }
 
 export class UnboundMobileService extends MobileService {
   constructor(json = {}) {
     super(json);
-    this.servicePlan = this.data.servicePlan || {};
+    this.servicePlan = new Resource(this.data.servicePlan);
   }
 
   getBindingSchema() {
-    return this.servicePlan.spec.serviceBindingCreateParameterSchema;
+    return this.servicePlan.spec.get('serviceBindingCreateParameterSchema');
   }
 
   setBindingSchemaDefaultValues(name, value) {
-    if (this.getBindingSchema().properties[name]) {
-      this.getBindingSchema().properties[name].default = value;
+    const bindingSchema = this.getBindingSchema();
+    if (bindingSchema && bindingSchema.properties[name]) {
+      bindingSchema.properties[name].default = value;
     }
   }
 
   getFormDefinition() {
-    return this.servicePlan.spec.externalMetadata.schemas.service_binding.create.openshift_form_definition;
+    return this.servicePlan.spec.get('externalMetadata.schemas.service_binding.create.openshift_form_definition');
   }
 
   getServiceClassExternalName() {
-    return this.serviceClass.spec.externalMetadata.serviceName;
+    return this.serviceClass.spec.get('externalMetadata.serviceName');
   }
 
   isBindingOperationInProgress() {
-    const { conditions } = this.serviceBinding.status;
+    const conditions = this.serviceBinding.status.get('conditions');
     // the bind operation could be in-flight. In this case, the operation is neither ready, or failed.
     if (conditions && find(conditions, { type: 'Ready', status: 'False' }) && !this.isBindingOperationFailed()) {
       return true;
@@ -102,11 +103,11 @@ export class UnboundMobileService extends MobileService {
   }
 
   getBindingOperation() {
-    return this.serviceBinding.status.currentOperation;
+    return this.serviceBinding.status.get('currentOperation');
   }
 
   isBindingOperationFailed() {
-    const { conditions } = this.serviceBinding.status;
+    const conditions = this.serviceBinding.status.get('conditions');
     if (conditions && find(conditions, { type: 'Failed', status: 'True' })) {
       return true;
     }

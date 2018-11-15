@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { FormGroup, Button, Modal, Alert, Icon } from 'patternfly-react';
 import CreateClient from '../components/create_client/CreateClient';
 import '../components/create_client/create_client.css';
-import { MobileApp } from '../model/datamodel';
+import { MobileApp } from '../models';
 
 class ClientEditBaseClass extends Component {
   constructor(props, editingMode) {

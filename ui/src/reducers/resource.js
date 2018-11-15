@@ -1,7 +1,7 @@
 import { APP_FORM_RESET, APP_FIELD_SETVALUE, APP_EDIT } from '../actions/apps';
 import { DISMISS_ERROR, DISMISS_ALL_ERRORS } from '../actions/errors';
 import { wsError } from '../DataService';
-import { MobileApp } from '../model/datamodel';
+import { MobileApp } from '../models';
 
 const defaultState = {
   isFetching: false,

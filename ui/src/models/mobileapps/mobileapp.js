@@ -1,28 +1,23 @@
-import { Spec } from './mobileappspec';
-import { Metadata } from './metadata';
-import { Status } from './status';
+import { get } from 'lodash-es';
+import Metadata from '../k8s/metadata';
+import AppSpec from './mobileappspec';
+import AppStatus from './mobileappstatus';
 
 export const PROPERTIES = {
   NAME: 'name',
   APP_IDENTIFIER: 'appIdentifier'
 };
 
-export class MobileApp {
+export default class MobileApp {
   constructor(json) {
-    if (json) {
-      // we are loading an existing app
-      this.app = json;
-    } else {
-      // we are creating a new app
-      this.app = {};
-    }
-    this.spec = new Spec(this.app);
-    this.metadata = new Metadata(this.app);
-    this.status = new Status(this.app);
+    this.app = json || {};
+    this.spec = new AppSpec(this.app.spec);
+    this.metadata = new Metadata(this.app.metadata);
+    this.status = new AppStatus(this.app.status);
   }
 
   getID() {
-    return this.metadata.getID();
+    return this.metadata.getName();
   }
 
   getName() {
@@ -43,18 +38,11 @@ export class MobileApp {
   }
 
   setProperty(propertyName, propertyValue) {
-    switch (propertyName) {
-      default:
-        this.getSpec().set(propertyName, propertyValue);
-        break;
-    }
+    this.getSpec().set(propertyName, propertyValue);
   }
 
   getProperty(propertyName) {
-    switch (propertyName) {
-      default:
-        return this.getSpec().get(propertyName);
-    }
+    return this.getSpec().get(propertyName);
   }
 
   _validateProperty(propertyName) {
@@ -95,12 +83,10 @@ export class MobileApp {
    * @returns {*}
    */
   static find(ary, appID) {
-    const mobileAppJson = ary.find(app => app.metadata.name === appID);
+    const mobileAppJson = ary.find(app => get(app, 'metadata.name') === appID);
     if (mobileAppJson) {
       return new MobileApp(mobileAppJson);
     }
     return null;
   }
 }
-
-export default MobileApp;

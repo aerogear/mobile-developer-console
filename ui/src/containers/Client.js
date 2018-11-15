@@ -20,7 +20,7 @@ import { fetchBuildConfigs } from '../actions/buildConfigs';
 import { fetchBuilds } from '../actions/builds';
 import DataService from '../DataService';
 import DeleteItemButton from './DeleteItemButton';
-import { MobileApp } from '../model/datamodel';
+import { MobileApp } from '../models';
 
 import './Client.css';
 import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
@@ -70,7 +70,7 @@ class Client extends Component {
       const mobileApp = this.getMobileApp();
       if (mobileApp.spec) {
         const configs = this.props.buildConfigs.items.filter(
-          config => config.metadata.labels['mobile-client-id'] === mobileApp.spec.appIdentifier
+          config => config.metadata.labels['mobile-client-id'] === mobileApp.getAppIdentifier()
         );
 
         configs.forEach(config => delete config.builds);
