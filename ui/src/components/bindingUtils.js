@@ -6,7 +6,7 @@ export const DNS1123_SUBDOMAIN_VALIDATION = {
 };
 
 export function createSecretName(prefix) {
-  const secretNamePrefixMaxLength = DNS1123_SUBDOMAIN_VALIDATION.length - 6; // We append a 5 digit code and a -;
+  const secretNamePrefixMaxLength = DNS1123_SUBDOMAIN_VALIDATION.maxlength - 6; // We append a 5 digit code and a -;
 
   if (prefix.length > secretNamePrefixMaxLength) {
     prefix = prefix.substring(0, secretNamePrefixMaxLength);
@@ -16,6 +16,6 @@ export function createSecretName(prefix) {
     .toString(36)
     .slice(1);
 
-  prefix += randomString;
+  prefix += `-${randomString}`;
   return prefix;
 }
