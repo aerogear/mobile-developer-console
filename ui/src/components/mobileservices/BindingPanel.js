@@ -48,7 +48,6 @@ class BindingPanel extends Component {
     const schema = this.props.service.getBindingSchema();
     const form = this.props.service.getFormDefinition();
     const { service } = this.props;
-    const schema = this.props.service.bindingSchema;
 
     this.setState({
       serviceName,
