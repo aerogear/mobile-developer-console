@@ -31,6 +31,19 @@ func (msih *BindableMobileServiceHandler) List(c echo.Context) error {
 	return c.JSON(http.StatusOK, si)
 }
 
+func (msih *BindableMobileServiceHandler) Watch(c echo.Context) error {
+	mobileClientName := c.Param("name")
+
+	getWatchInterface := msih.bindableServiceCRUDL.Watch(msih.namespace, mobileClientName)
+
+	err := ServeWS(c, getWatchInterface)
+	if err != nil {
+		c.Logger().Errorf("error watching build configs: %v", err)
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	return nil
+}
+
 func (msih *BindableMobileServiceHandler) Delete(c echo.Context) error {
 	name := c.Param("name")
 	err := msih.bindableServiceCRUDL.Delete(msih.namespace, name)

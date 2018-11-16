@@ -783,6 +783,7 @@
     "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset/typed/servicecatalog/v1beta1",
     "github.com/labstack/echo",
     "github.com/labstack/echo/middleware",
+    "github.com/labstack/gommon/log",
     "github.com/openshift/api/build/v1",
     "github.com/openshift/client-go/build/clientset/versioned/fake",
     "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1",

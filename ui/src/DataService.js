@@ -104,6 +104,7 @@ const dataService = {
   watchServices: action => webSocket(action, '/serviceinstances/watch'),
   generateDownloadURL: name => request(`builds/${name}/gendownloadurl`, 'POST'),
   fetchUser: () => request('user', 'GET'),
+  watchBindableServices: (mobileClientName, action) => webSocket(action, `/bindableservices/${mobileClientName}/watch`),
   bindableServices: async mobileClientName => {
     const unboundServices = [];
     const boundServices = [];

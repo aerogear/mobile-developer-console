@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
 import { fetchBindings } from '../../actions/serviceBinding';
+import DataService from '../../DataService';
 
 class MobileServiceView extends Component {
   constructor(props) {
@@ -14,6 +15,11 @@ class MobileServiceView extends Component {
 
   componentDidMount() {
     this.props.fetchBindings(this.props.appName);
+    this.wsBindings = DataService.watchBindableServices(this.props.appName, ()=>this.props.fetchBindings(this.props.appName));
+  }
+
+  componentWillUnmount() {
+    this.wsServices.close();
   }
 
   boundServiceRows() {
