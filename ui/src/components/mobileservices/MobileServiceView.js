@@ -1,5 +1,5 @@
-import { connect } from 'react-redux';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
 import { fetchBindings } from '../../actions/serviceBinding';
@@ -21,7 +21,7 @@ class MobileServiceView extends Component {
     if (this.props.boundServices) {
       rows.push(<h2 key="bound-services">Bound Services</h2>);
       this.props.boundServices.forEach(service => {
-        rows.push(<BoundServiceRow key={service.serviceId} service={service} />);
+        rows.push(<BoundServiceRow key={service.getId()} service={service} />);
       });
     }
 
@@ -35,20 +35,14 @@ class MobileServiceView extends Component {
       rows.push(<h2 key="unbound-services">Unbound Services</h2>);
       this.props.unboundServices.forEach(service => {
         this.setDefaultBindingProperties(service);
-        rows.push(<UnboundServiceRow key={service.serviceId} service={service} />);
+        rows.push(<UnboundServiceRow key={service.getId()} service={service} />);
       });
     }
     return rows;
   }
 
   setDefaultBindingProperties(service) {
-    try {
-      if (service.bindingSchema.properties.CLIENT_ID) {
-        service.bindingSchema.properties.CLIENT_ID.default = this.props.appName;
-      }
-    } catch {
-      console.log(`Null reference setting default properties for ${service.serviceId}`);
-    }
+    service.setBindingSchemaDefaultValues('CLIENT_ID', this.props.appName);
   }
 
   render() {
@@ -61,7 +55,7 @@ class MobileServiceView extends Component {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   if (state.serviceBindings.items && state.serviceBindings.items.length >= 1) {
     return {
       boundServices: state.serviceBindings.items[0].boundServices,

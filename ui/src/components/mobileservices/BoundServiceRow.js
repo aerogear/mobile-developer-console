@@ -4,6 +4,14 @@ import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import DeleteItemButton from '../../containers/DeleteItemButton';
 
+function configurationView(configuration) {
+  if (configuration.type === 'href') {
+    return <a href={configuration.value}>{configuration.value}</a>;
+  }
+
+  return configuration.value;
+}
+
 class BoundServiceRow extends Component {
   constructor(props) {
     super(props);
@@ -16,20 +24,20 @@ class BoundServiceRow extends Component {
 
   renderServiceBadge() {
     let icon = <div />;
-    if (this.service.serviceIconClass != null && this.service.serviceIconClass.length > 0) {
-      icon = <span className={`${this.service.serviceIconClass} logo`} />;
+    if (this.service.getIconClass() != null && this.service.getIconClass().length > 0) {
+      icon = <span className={`${this.service.getIconClass()} logo`} />;
     } else {
-      icon = <img src={this.service.serviceLogoUrl} alt="" />;
+      icon = <img src={this.service.getLogoUrl()} alt="" />;
     }
     return (
-      <Col key={this.service.serviceId} md={3} className="service-sdk-info">
+      <Col key={this.service.getId()} md={3} className="service-sdk-info">
         <Col md={12}>
           {icon}
           <div className="service-name">
             <h4>
-              <div>{this.service.serviceName}</div>
+              <div>{this.service.getName()}</div>
               <div>
-                <small>{this.service.serviceId}</small>
+                <small>{this.service.getId()}</small>
               </div>
             </h4>
           </div>
@@ -42,14 +50,14 @@ class BoundServiceRow extends Component {
     let documentationFragment;
     let propertyFragment;
 
-    if (this.service.documentationUrl) {
+    if (this.service.getDocumentationUrl()) {
       documentationFragment = (
         <Row>
           <Col md={2} className="detailsKey">
             Documentation :
           </Col>
           <Col md={4} className="detailsValue">
-            <a href="{this.service.documentationUrl}">
+            <a href="{this.service.getDocumentationUrl()}">
               SDK Setup
               <i className="fa fa-external-link" aria-hidden="true" />
             </a>
@@ -58,8 +66,8 @@ class BoundServiceRow extends Component {
       );
     }
 
-    if (this.service.configuration) {
-      propertyFragment = this.service.configuration.map(configuration => {
+    if (this.service.getConfiguration()) {
+      propertyFragment = this.service.getConfiguration().map(configuration => {
         configuration = JSON.parse(configuration);
 
         return (
@@ -68,7 +76,7 @@ class BoundServiceRow extends Component {
               {configuration.label} :
             </Col>
             <Col md={4} className="detailsValue">
-              {BoundServiceRow.configurationView(configuration)}
+              {configurationView(configuration)}
             </Col>
           </Row>
         );
@@ -92,8 +100,8 @@ class BoundServiceRow extends Component {
         className="boundService"
         actions={
           <div>
-            <DropdownKebab id={`delete-${this.service.serviceBindingName}`} pullRight>
-              <DeleteItemButton itemType="serviceBinding" itemName={this.service.serviceBindingName} />
+            <DropdownKebab id={`delete-${this.service.getBindingName()}`} pullRight>
+              <DeleteItemButton itemType="serviceBinding" itemName={this.service.getBindingName()} />
             </DropdownKebab>
           </div>
         }
@@ -102,14 +110,6 @@ class BoundServiceRow extends Component {
         {this.renderServiceDetails()}
       </ListViewItem>
     );
-  }
-
-  static configurationView(configuration) {
-    if (configuration.type === 'href') {
-      return <a href={configuration.value}>{configuration.value}</a>;
-    }
-
-    return configuration.value;
   }
 }
 

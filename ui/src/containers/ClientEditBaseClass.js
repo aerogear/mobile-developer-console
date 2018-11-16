@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { FormGroup, Button, Modal, Alert, Icon } from 'patternfly-react';
 import CreateClient from '../components/create_client/CreateClient';
 import '../components/create_client/create_client.css';
-import { MobileApp } from '../model/datamodel';
+import { MobileApp } from '../models';
 
 class ClientEditBaseClass extends Component {
   constructor(props, editingMode) {
@@ -17,8 +17,8 @@ class ClientEditBaseClass extends Component {
   }
 
   getMobileAppToEdit(newWindow) {
-    if (!newWindow && this.props.apps.createClientAppDialog.app) {
-      return new MobileApp({ ...this.props.apps.createClientAppDialog.app });
+    if (!newWindow && this.props.createClientAppDialog.app) {
+      return new MobileApp({ ...this.props.createClientAppDialog.app });
     } else if (this.props.item) {
       const appJson = this.props.item;
       if (appJson) {

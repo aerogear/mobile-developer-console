@@ -109,7 +109,9 @@ func attachCurrentBindings(lister *BindableMobileServiceCRUDLImpl, namespace str
 		if sb.Spec.ServiceInstanceRef.Name == serviceInstance.ObjectMeta.Name &&
 			sb.ObjectMeta.Annotations["binding.aerogear.org/consumer"] == mobileClientName {
 			serviceBinding = sb
-			bindableService.IsBound = true
+			if serviceBindingIsReady(sb) {
+				bindableService.IsBound = true
+			}
 			client, err := lister.mobileClientRepo.ReadByName(mobileClientName)
 
 			if err != nil {
@@ -204,5 +206,15 @@ func makeParametersSecret(binding *ServiceBinding, binding2 *ServiceBinding, for
 		Type:       "Opaque",
 		StringData: map[string]string{"parameters": string(jsonStringData)},
 	}
+}
 
+func serviceBindingIsReady(binding ServiceBinding) bool {
+	ready := false
+	for _, condition := range binding.Status.Conditions {
+		if condition.Type == v1beta1.ServiceBindingConditionReady && condition.Status == v1beta1.ConditionTrue {
+			ready = true
+			break
+		}
+	}
+	return ready
 }
