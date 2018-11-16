@@ -15,7 +15,7 @@ class MobileServiceView extends Component {
 
   componentDidMount() {
     this.props.fetchBindings(this.props.appName);
-    this.wsBindings = DataService.watchBindableServices(this.props.appName, ()=>this.props.fetchBindings(this.props.appName));
+    this.wsBindings = DataService.watchBindableServices(this.props.appName, ()=>{console.log("bindings socket"); console.log(arguments);this.props.fetchBindings(this.props.appName)});
   }
 
   componentWillUnmount() {
