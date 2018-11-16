@@ -42,8 +42,8 @@ export default class MobileApp {
   }
 
   getProperty(propertyName) {
-    //the get/set property methods only supports get/set fields on the spec object for now.
-    //but it can be extended to support accessing more fields on more objects (like status).
+    // the get/set property methods only supports get/set fields on the spec object for now.
+    // but it can be extended to support accessing more fields on more objects (like status).
     return this.getSpec().get(propertyName);
   }
 
