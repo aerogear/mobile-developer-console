@@ -11,7 +11,8 @@ class CreateClient extends ClientEditBaseClass {
 
 function mapStateToProps(state) {
   return {
-    apps: state.apps
+    apps: state.apps,
+    createClientAppDialog: state.createClientAppDialog
   };
 }
 

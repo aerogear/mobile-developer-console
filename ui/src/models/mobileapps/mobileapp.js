@@ -32,11 +32,6 @@ export default class MobileApp {
     return this.status;
   }
 
-  setAppDetails(appName, appIdentifier) {
-    this.spec.setName(appName);
-    this.spec.setAppIdentifier(appIdentifier);
-  }
-
   setProperty(propertyName, propertyValue) {
     this.getSpec().set(propertyName, propertyValue);
   }
@@ -75,7 +70,7 @@ export default class MobileApp {
   }
 
   toJSON() {
-    return { ...this.app };
+    return { ...this.app, spec: this.spec.toJSON(), metadata: this.metadata.toJSON(), status: this.status.toJSON() };
   }
 
   /**

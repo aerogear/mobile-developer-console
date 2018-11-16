@@ -16,7 +16,7 @@ export class CreateClient extends EditMobileClientBaseClass {
 
 function mapStateToProps(state) {
   return {
-    ui: state.apps.createClientAppDialog
+    ui: state.createClientAppDialog
   };
 }
 

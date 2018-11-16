@@ -6,6 +6,7 @@ import builds from './builds';
 import user from './user';
 import config from './config';
 import serviceBindings from './serviceBindings';
+import createClientAppDialog from './createClientAppDialog';
 
 export default combineReducers({
   apps,
@@ -15,5 +16,6 @@ export default combineReducers({
   builds,
   user,
   config,
-  serviceBindings
+  serviceBindings,
+  createClientAppDialog
 });

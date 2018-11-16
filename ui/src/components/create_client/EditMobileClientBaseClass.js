@@ -55,7 +55,7 @@ class EditMobileClientBaseClass extends Component {
         help: this.config.appName.help,
         content: this.config.appName.help,
         placeholder: this.config.appName.example,
-        value: this.app.getProperty(CREATE_CLIENT_NAME),
+        value: this.app.getProperty(CREATE_CLIENT_NAME) || '',
         formControl: ({ validationState, ...props }) => <Form.FormControl type="text" {...props} autoFocus />,
         validationState: this._validate(CREATE_CLIENT_NAME),
         onChange: e => this.props.setFieldValue(CREATE_CLIENT_NAME, e.target.value)
@@ -78,6 +78,7 @@ class EditMobileClientBaseClass extends Component {
   }
 
   render() {
+    this.app = new MobileApp({ ...this.props.ui.app });
     const generatedFields = this.getFormFields().map(formField => VerticalFormField({ ...formField }));
     return (
       <div>

@@ -1,7 +1,5 @@
-import { APP_FORM_RESET, APP_FIELD_SETVALUE, APP_EDIT } from '../actions/apps';
 import { DISMISS_ERROR, DISMISS_ALL_ERRORS } from '../actions/errors';
 import { wsError } from '../DataService';
-import { MobileApp } from '../models';
 
 const defaultState = {
   isFetching: false,
@@ -10,10 +8,7 @@ const defaultState = {
   isCreating: false,
   isDeleting: false,
   isActioning: false,
-  isReading: false,
-  createClientAppDialog: {
-    fields: {}
-  }
+  isReading: false
 };
 
 const getErrors = (error, type, errors) => {
@@ -175,46 +170,8 @@ const resourceReducer = actions => (state = defaultState, action) => {
         errors: getErrors(action.error, 'action', state.errors)
       };
     default:
-      return createClientAppDialog(state, action);
-  }
-};
-
-/**
- * Reducers for the create client app dialog.
- * @param {string} state
- * @param {*} action
- */
-function createClientAppDialog(state, action) {
-  switch (action.type) {
-    case APP_FORM_RESET:
-      return {
-        ...state,
-        createClientAppDialog: {
-          fields: {}
-        }
-      };
-    case APP_FIELD_SETVALUE: {
-      const appModel = new MobileApp({ ...state.createClientAppDialog.app });
-      appModel.setProperty(action.payload.name, action.payload.value);
-      return {
-        ...state,
-        createClientAppDialog: {
-          ...state.createClientAppDialog,
-          app: appModel.toJSON()
-        }
-      };
-    }
-    case APP_EDIT:
-      return {
-        ...state,
-        createClientAppDialog: {
-          ...state.createClientAppDialog,
-          app: action.payload
-        }
-      };
-    default:
       return state;
   }
-}
+};
 
 export default resourceReducer;

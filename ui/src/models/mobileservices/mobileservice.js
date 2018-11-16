@@ -49,7 +49,11 @@ export class MobileService {
 
   toJSON() {
     return {
-      ...this.data
+      ...this.data,
+      configuration: this.configuration,
+      serviceInstance: this.serviceInstance.toJSON(),
+      serviceBinding: this.serviceBinding.toJSON(),
+      serviceClass: this.serviceClass.toJSON()
     };
   }
 }
@@ -112,5 +116,12 @@ export class UnboundMobileService extends MobileService {
       return true;
     }
     return false;
+  }
+
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      servicePlan: this.servicePlan.toJSON()
+    };
   }
 }
