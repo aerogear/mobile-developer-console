@@ -109,7 +109,6 @@ const dataService = {
     const boundServices = [];
 
     const instances = await fetchItems(`bindableservices/${mobileClientName}`);
-
     instances.forEach(instance => {
       if (instance.isBound) {
         boundServices.push(new BoundMobileService(instance));

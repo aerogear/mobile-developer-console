@@ -9,18 +9,100 @@ import {
   SERVICE_BINDING_DELETE_SUCCESS,
   SERVICE_BINDING_DELETE_FAILURE
 } from '../actions/serviceBinding';
-import resourceReducer from './resource';
 
-const serviceBindings = resourceReducer({
-  readRequest: SERVICE_BINDINGS_REQUEST,
-  readSuccess: SERVICE_BINDINGS_SUCCESS,
-  readFailure: SERVICE_BINDINGS_FAILURE,
-  createRequest: SERVICE_BINDING_CREATE_REQUEST,
-  createSuccess: SERVICE_BINDING_CREATE_SUCCESS,
-  createFailure: SERVICE_BINDING_CREATE_FAILURE,
-  deleteRequest: SERVICE_BINDING_DELETE_REQUEST,
-  deleteSuccess: SERVICE_BINDING_DELETE_SUCCESS,
-  deleteFailure: SERVICE_BINDING_DELETE_FAILURE
-});
+const defaultState = {
+  isFetching: false,
+  items: [],
+  errors: [],
+  isCreating: false,
+  isDeleting: false,
+  isActioning: false,
+  isReading: false
+};
 
-export default serviceBindings;
+const getErrors = (error, type, errors) => {
+  const index = errors.findIndex(e => e.type === type);
+  if (!error) {
+    if (index >= 0) {
+      return [...errors.slice(0, index), ...errors.slice(index + 1)];
+    }
+    return errors;
+  }
+  if (index >= 0) {
+    return [...errors.slice(0, index), { error, type }, ...errors.slice(index + 1)];
+  }
+  return [{ error, type }, ...errors];
+};
+
+const serviceBindingsReducer = (state = defaultState, action) => {
+  let index;
+  switch (action.type) {
+    case SERVICE_BINDINGS_REQUEST:
+      return {
+        ...state,
+        isReading: true
+      };
+    case SERVICE_BINDINGS_SUCCESS:
+      index = state.items.findIndex(item => item.metadata.name === action.result.metadata.name);
+      if (index >= 0) {
+        return {
+          ...state,
+          isReading: false,
+          items: [...state.items.slice(0, index), action.result, ...state.items.slice(index + 1)],
+          errors: getErrors(null, 'read', state.errors)
+        };
+      }
+      return {
+        ...state,
+        isReading: false,
+        items: [...state.items, action.result],
+        errors: getErrors(null, 'read', state.errors)
+      };
+    case SERVICE_BINDINGS_FAILURE:
+      return {
+        ...state,
+        isReading: false,
+        errors: getErrors(action.error, 'read', state.errors)
+      };
+    case SERVICE_BINDING_CREATE_REQUEST:
+      return {
+        ...state,
+        isCreating: true
+      };
+    case SERVICE_BINDING_CREATE_SUCCESS:
+      return {
+        ...state,
+        isCreating: false,
+        errors: getErrors(null, 'create', state.errors),
+        items: [...state.items, action.result]
+      };
+    case SERVICE_BINDING_CREATE_FAILURE:
+      return {
+        ...state,
+        isCreating: false,
+        errors: getErrors(action.error, 'create', state.errors)
+      };
+    case SERVICE_BINDING_DELETE_REQUEST:
+      return {
+        ...state,
+        isDeleting: true
+      };
+    case SERVICE_BINDING_DELETE_SUCCESS: {
+      return {
+        ...state,
+        isDeleting: false,
+        errors: getErrors(null, 'delete', state.errors)
+      };
+    }
+    case SERVICE_BINDING_DELETE_FAILURE:
+      return {
+        ...state,
+        isDeleting: false,
+        errors: getErrors(action.error, 'delete', state.errors)
+      };
+    default:
+      return state;
+  }
+};
+
+export default serviceBindingsReducer;
