@@ -12,7 +12,8 @@ import {
 
 const defaultState = {
   isFetching: false,
-  items: [],
+  boundServices: [],
+  unboundServices: [],
   errors: [],
   isCreating: false,
   isDeleting: false,
@@ -35,7 +36,6 @@ const getErrors = (error, type, errors) => {
 };
 
 const serviceBindingsReducer = (state = defaultState, action) => {
-  let index;
   switch (action.type) {
     case SERVICE_BINDINGS_REQUEST:
       return {
@@ -43,20 +43,12 @@ const serviceBindingsReducer = (state = defaultState, action) => {
         isReading: true
       };
     case SERVICE_BINDINGS_SUCCESS:
-      index = state.items.findIndex(item => item.metadata.name === action.result.metadata.name);
-      if (index >= 0) {
-        return {
-          ...state,
-          isReading: false,
-          items: [...state.items.slice(0, index), action.result, ...state.items.slice(index + 1)],
-          errors: getErrors(null, 'read', state.errors)
-        };
-      }
       return {
         ...state,
         isReading: false,
-        items: [...state.items, action.result],
-        errors: getErrors(null, 'read', state.errors)
+        errors: getErrors(null, 'read', state.errors),
+        boundServices: action.result.boundServices,
+        unboundServices: action.result.unboundServices
       };
     case SERVICE_BINDINGS_FAILURE:
       return {
@@ -74,7 +66,6 @@ const serviceBindingsReducer = (state = defaultState, action) => {
         ...state,
         isCreating: false,
         errors: getErrors(null, 'create', state.errors),
-        items: [...state.items, action.result]
       };
     case SERVICE_BINDING_CREATE_FAILURE:
       return {
