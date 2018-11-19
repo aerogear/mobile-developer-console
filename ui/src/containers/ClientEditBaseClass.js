@@ -23,9 +23,9 @@ class ClientEditBaseClass extends Component {
 
     if (this.props.item) {
       return new MobileApp(JSON.parse(JSON.stringify(this.props.item)));
-    } else {
-      return new MobileApp();
     }
+
+    return new MobileApp();
   }
 
   open = async () => {

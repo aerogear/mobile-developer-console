@@ -11,7 +11,6 @@ import {
 import './MobileClientCardView.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
 import CreateClient from '../../containers/CreateClient';
-import { MobileApp } from '../../models';
 
 class MobileClientCardView extends Component {
   constructor(props) {

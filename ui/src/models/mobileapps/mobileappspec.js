@@ -28,5 +28,4 @@ export default class AppSpec extends Spec {
   setType(newType) {
     this.set('clientType', newType);
   }
-
 }

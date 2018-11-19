@@ -27,7 +27,6 @@ export default class MobileApp {
     return this.status;
   }
 
-
   setProperty(propertyName, propertyValue) {
     this.getSpec().set(propertyName, propertyValue);
   }
