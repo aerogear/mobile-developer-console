@@ -150,7 +150,7 @@ func TestMobileClientEndpoints(t *testing.T) {
 			Name: "test create a mobile client",
 			GetResponse: func(server *httptest.Server) (*http.Response, error) {
 				url := fmt.Sprintf("%s%s/mobileclients", server.URL, apiPrefix)
-				var jsonStr = []byte(`{"name":"testapp","appIdentifier":"testAppId"}`)
+				var jsonStr = []byte(`{"name":"testapp"}`)
 				return http.Post(url, "application/json", bytes.NewBuffer(jsonStr))
 			},
 			ExpectError:      false,
@@ -193,7 +193,7 @@ func TestMobileClientEndpoints(t *testing.T) {
 			Name: "test update a mobile client",
 			GetResponse: func(server *httptest.Server) (*http.Response, error) {
 				url := fmt.Sprintf("%s%s/mobileclients/testapp", server.URL, apiPrefix)
-				var jsonStr = []byte(`{"appIdentifier":"testAppIdUpdated", "name":"testApp"}`)
+				var jsonStr = []byte(`{"name":"testApp"}`)
 				return http.Post(url, "application/json", bytes.NewBuffer(jsonStr))
 			},
 			ExpectError:      false,

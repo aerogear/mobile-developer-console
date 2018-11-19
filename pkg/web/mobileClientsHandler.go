@@ -38,7 +38,6 @@ func newMobileClientObject(data MobileAppCreateRequest, namespace string) *v1alp
 		},
 		Spec: v1alpha1.MobileClientSpec{
 			Name:          data.Name,
-			AppIdentifier: data.AppIdentifier,
 			ApiKey:        uuid.NewV4().String(),
 			DmzUrl:        data.DmzUrl,
 		},
@@ -189,10 +188,6 @@ func (h *MobileClientsHandler) Update(c echo.Context) error {
 		}
 		c.Logger().Errorf("error updating mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
-	}
-
-	if reqData.AppIdentifier != "" {
-		app.Spec.AppIdentifier = reqData.AppIdentifier
 	}
 
 	if reqData.Name != "" {

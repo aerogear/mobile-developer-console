@@ -4,8 +4,7 @@ import AppSpec from './mobileappspec';
 import AppStatus from './mobileappstatus';
 
 export const PROPERTIES = {
-  NAME: 'name',
-  APP_IDENTIFIER: 'appIdentifier'
+  NAME: 'name'
 };
 
 export default class MobileApp {
@@ -22,10 +21,6 @@ export default class MobileApp {
 
   getName() {
     return this.getSpec().getName();
-  }
-
-  getAppIdentifier() {
-    return this.getSpec().getAppIdentifier();
   }
 
   getStatus() {
@@ -48,8 +43,6 @@ export default class MobileApp {
       switch (propertyName) {
         case PROPERTIES.NAME:
           return value.match('^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$');
-        case PROPERTIES.APP_IDENTIFIER:
-          return value.match('^[a-zA-Z][\\w]*(\\.[a-zA-Z][\\w]*)+$');
         default:
           return 'success';
       }
@@ -62,7 +55,7 @@ export default class MobileApp {
     if (propertyName) {
       return this._validateProperty(propertyName);
     }
-    return this._validateProperty(PROPERTIES.NAME) && this._validateProperty(PROPERTIES.APP_IDENTIFIER);
+    return this._validateProperty(PROPERTIES.NAME);
   }
 
   getSpec() {

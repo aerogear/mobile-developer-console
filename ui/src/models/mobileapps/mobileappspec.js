@@ -21,19 +21,11 @@ export default class AppSpec extends Spec {
     return this.get('name');
   }
 
-  getAppIdentifier() {
-    return this.get('appIdentifier');
-  }
-
   setName(newName) {
     this.set('name', newName);
   }
 
   setType(newType) {
     this.set('clientType', newType);
-  }
-
-  setAppIdentifier(newAppIdentifier) {
-    this.set('appIdentifier', newAppIdentifier);
   }
 }

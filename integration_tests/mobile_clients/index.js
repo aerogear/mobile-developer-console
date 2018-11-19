@@ -3,7 +3,6 @@ const sendRequest = require('../util/sendRequest')
 
 const template = {
   name: "integration-test-client",
-  appIdentifier: "integration.test",
   clientType: "android"
 }
 
@@ -26,7 +25,6 @@ describe('when creating a new client', () => {
     assert.equal(res.data.metadata.name, template.name)
     assert.equal(res.data.spec.name, template.name)
     assert.equal(res.data.spec.clientType, template.clientType)
-    assert.equal(res.data.spec.appIdentifier, template.appIdentifier)
     assert.equal(res.data.status.clientId, template.name)
   });
 
@@ -44,7 +42,6 @@ describe('when listing a client', () => {
     assert.equal(listedClientData.metadata.name, template.name)
     assert.equal(listedClientData.spec.name, template.name)
     assert.equal(listedClientData.spec.clientType, template.clientType)
-    assert.equal(listedClientData.spec.appIdentifier, template.appIdentifier)
     assert.equal(listedClientData.status.clientId, template.name)
   });
 
