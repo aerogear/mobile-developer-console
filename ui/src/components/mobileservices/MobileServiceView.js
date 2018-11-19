@@ -62,6 +62,7 @@ class MobileServiceView extends Component {
   }
 
   render() {
+    console.log(this.props.unboundServices)
     return (
       <div>
         {this.boundServiceRows()}
