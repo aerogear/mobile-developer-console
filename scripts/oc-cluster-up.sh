@@ -11,15 +11,13 @@ fi
 oc cluster up \
     --public-hostname=$DEFAULT_CLUSTER_IP.nip.io \
     --routing-suffix=$DEFAULT_CLUSTER_IP.nip.io \
-    --no-proxy=$DEFAULT_CLUSTER_IP || exit
+    --no-proxy=$DEFAULT_CLUSTER_IP || exit 1
 
 oc cluster add service-catalog
 oc cluster add automation-service-broker
 oc cluster add template-service-broker
 
 oc login -u system:admin
-
-export ASB_PROJECT_NAME='openshift-automation-service-broker'
 
 chcon -Rt svirt_sandbox_file_t .
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 oc project default
 
 rm -rf /tmp/oc-certs
