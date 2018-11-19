@@ -13,6 +13,7 @@ import {
 } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { find } from 'lodash-es';
 import ConfigurationView from '../components/configuration/ConfigurationView';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
 import { fetchApp } from '../actions/apps';
@@ -26,17 +27,23 @@ import './Client.css';
 import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
 import BuildConfigDialog from './BuildConfigDialog';
 
-const TAB_CONFIGURATION = 1;
-const TAB_MOBILE_SERVICES = 2;
-const TAB_BUILDS = 3;
+export const TAB_CONFIGURATION = { key: 1, hash: 'configuration' };
+export const TAB_MOBILE_SERVICES = { key: 2, hash: 'services' };
+export const TAB_BUILDS = { key: 3, hash: 'builds' };
 
-class Client extends Component {
+const TABS = [TAB_CONFIGURATION, TAB_MOBILE_SERVICES, TAB_BUILDS];
+
+export class Client extends Component {
   constructor(props) {
     super(props);
+    let initialTab = find(TABS, { hash: props.location.hash.substring(1) });
+    if (!initialTab) {
+      initialTab = TAB_CONFIGURATION;
+    }
 
     this.state = {
       buildConfigs: [],
-      selectedTab: TAB_CONFIGURATION
+      selectedTab: initialTab.key
     };
     this.handleNavSelect = this.handleNavSelect.bind(this);
   }
@@ -107,7 +114,7 @@ class Client extends Component {
         </div>
         <div className="app-actions-dropdown">
           <DropdownButton id="app-actions-dropdown" title="Actions" pullRight>
-            {mobileApp && selectedTab === TAB_BUILDS ? (
+            {mobileApp && selectedTab === TAB_BUILDS.key ? (
               <React.Fragment>
                 <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
                 <BuildConfigDialog
@@ -147,19 +154,27 @@ class Client extends Component {
           <TabContainer id="basic-tabs-pf" activeKey={selectedTab} onSelect={this.handleNavSelect}>
             <div>
               <Nav bsClass="nav nav-tabs nav-tabs-pf nav-tabs-pf-secondary">
-                <NavItem eventKey={TAB_CONFIGURATION}>Configuration</NavItem>
-                {this.props.buildTabEnabled ? <NavItem eventKey={TAB_BUILDS}>Builds</NavItem> : null}
-                <NavItem eventKey={TAB_MOBILE_SERVICES}>Mobile Services</NavItem>
+                <NavItem eventKey={TAB_CONFIGURATION.key} href={`#${TAB_CONFIGURATION.hash}`}>
+                  Configuration
+                </NavItem>
+                {this.props.buildTabEnabled ? (
+                  <NavItem eventKey={TAB_BUILDS.key} href={`#${TAB_BUILDS.hash}`}>
+                    Builds
+                  </NavItem>
+                ) : null}
+                <NavItem eventKey={TAB_MOBILE_SERVICES.key} href={`#${TAB_MOBILE_SERVICES.hash}`}>
+                  Mobile Services
+                </NavItem>
               </Nav>
               <TabContent>
-                <TabPane eventKey={TAB_CONFIGURATION}>
+                <TabPane eventKey={TAB_CONFIGURATION.key}>
                   <ConfigurationView app={mobileApp} />
                 </TabPane>
-                <TabPane eventKey={TAB_MOBILE_SERVICES}>
+                <TabPane eventKey={TAB_MOBILE_SERVICES.key}>
                   <MobileServiceView appName={appName} />
                 </TabPane>
                 {this.props.buildTabEnabled ? (
-                  <TabPane eventKey={TAB_BUILDS}>
+                  <TabPane eventKey={TAB_BUILDS.key}>
                     <MobileClientBuildOverviewList
                       appName={appName}
                       clientInfo={clientInfo}
