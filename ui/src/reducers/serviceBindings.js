@@ -1,3 +1,5 @@
+import { findIndex } from 'lodash-es';
+
 import {
   SERVICE_BINDINGS_REQUEST,
   SERVICE_BINDINGS_SUCCESS,
@@ -9,6 +11,8 @@ import {
   SERVICE_BINDING_DELETE_SUCCESS,
   SERVICE_BINDING_DELETE_FAILURE
 } from '../actions/serviceBinding';
+
+import { UnboundMobileService } from '../models';
 
 const defaultState = {
   isFetching: false,
@@ -35,6 +39,12 @@ const getErrors = (error, type, errors) => {
   return [{ error, type }, ...errors];
 };
 
+const configureInProgress = (serviceBinding, currentOperation) => ({
+  ...serviceBinding,
+  isBound: false,
+  serviceBinding: { status: { currentOperation, conditions: [{ type: 'Ready', status: 'False' }] } }
+});
+
 const serviceBindingsReducer = (state = defaultState, action) => {
   switch (action.type) {
     case SERVICE_BINDINGS_REQUEST:
@@ -42,7 +52,7 @@ const serviceBindingsReducer = (state = defaultState, action) => {
         ...state,
         isReading: true
       };
-    case SERVICE_BINDINGS_SUCCESS:
+    case SERVICE_BINDINGS_SUCCESS: {
       return {
         ...state,
         isReading: false,
@@ -50,6 +60,7 @@ const serviceBindingsReducer = (state = defaultState, action) => {
         boundServices: action.result.boundServices,
         unboundServices: action.result.unboundServices
       };
+    }
     case SERVICE_BINDINGS_FAILURE:
       return {
         ...state,
@@ -61,12 +72,29 @@ const serviceBindingsReducer = (state = defaultState, action) => {
         ...state,
         isCreating: true
       };
-    case SERVICE_BINDING_CREATE_SUCCESS:
-      return {
+    case SERVICE_BINDING_CREATE_SUCCESS: {
+      const { serviceInstanceName } = action.result;
+      const index = findIndex(
+        state.unboundServices,
+        binding => binding.serviceInstance.metadata.data.name === serviceInstanceName
+      );
+      const newBindingService = new UnboundMobileService(
+        configureInProgress(state.unboundServices[index].toJSON(), 'Binding')
+      );
+
+      const newState = {
         ...state,
         isCreating: false,
+        unboundServices: [
+          ...state.unboundServices.slice(0, index),
+          newBindingService,
+          ...state.unboundServices.slice(index + 1)
+        ],
         errors: getErrors(null, 'create', state.errors)
       };
+
+      return newState;
+    }
     case SERVICE_BINDING_CREATE_FAILURE:
       return {
         ...state,
@@ -79,9 +107,21 @@ const serviceBindingsReducer = (state = defaultState, action) => {
         isDeleting: true
       };
     case SERVICE_BINDING_DELETE_SUCCESS: {
+      const deletedBindingName = action.result;
+      const index = findIndex(
+        state.boundServices,
+        item => item.serviceBinding.metadata.data.name === deletedBindingName
+      );
+
+      const unboundService = new UnboundMobileService(
+        configureInProgress(state.boundServices[index].toJSON(), 'Unbinding')
+      );
+
       return {
         ...state,
         isDeleting: false,
+        boundServices: [...state.boundServices.slice(0, index), ...state.boundServices.slice(index + 1)],
+        unboundServices: [...state.unboundServices, unboundService],
         errors: getErrors(null, 'delete', state.errors)
       };
     }

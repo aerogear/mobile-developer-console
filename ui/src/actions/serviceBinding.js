@@ -25,13 +25,15 @@ export const createBinding = (
   fetchAction(
     [SERVICE_BINDING_CREATE_REQUEST, SERVICE_BINDING_CREATE_SUCCESS, SERVICE_BINDING_CREATE_FAILURE],
     async () =>
-      DataService.createBinding(
-        mobileClientName,
-        serviceInstanceName,
-        credentialSecretName,
-        parametersSecretName,
-        serviceClassExternalName,
-        formData
+      DataService.mobileApp(formData.CLIENT_ID).then(mobileApp =>
+        DataService.createBinding(
+          mobileClientName,
+          serviceInstanceName,
+          credentialSecretName,
+          parametersSecretName,
+          serviceClassExternalName,
+          formData
+        ).then(binding => ({ mobileApp, binding, serviceInstanceName }))
       )
   )();
 

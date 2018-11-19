@@ -4,7 +4,7 @@ import Resource from '../k8s/resource';
 export class MobileService {
   constructor(json = {}) {
     this.data = json;
-    this.configuration = this.data.configuration || {};
+    this.configuration = this.data.configuration || [];
     this.setupText = '';
     this.serviceInstance = new Resource(this.data.serviceInstance);
     this.serviceBinding = new Resource(this.data.serviceBinding);

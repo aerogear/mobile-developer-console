@@ -12,29 +12,28 @@ class UnboundServiceRow extends Component {
       showModal: false
     };
 
-    this.service = props.service;
     this.renderServiceBadge = this.renderServiceBadge.bind(this);
     this.renderBindingStatus = this.renderBindingStatus.bind(this);
   }
 
   renderServiceBadge() {
     let icon = <div />;
-    if (this.service.getIconClass() != null && this.service.getIconClass().length > 0) {
-      icon = <span className={`${this.service.getIconClass()} logo`} />;
+    if (this.props.service.getIconClass() != null && this.props.service.getIconClass().length > 0) {
+      icon = <span className={`${this.props.service.getIconClass()} logo`} />;
     } else {
-      icon = <img src={this.service.getLogoUrl()} alt="" />;
+      icon = <img src={this.props.service.getLogoUrl()} alt="" />;
     }
     return (
-      <Col md={3} key={this.service.getId()} className="service-sdk-info">
+      <Col md={3} key={this.props.service.getId()} className="service-sdk-info">
         <Col md={12}>
           {icon}
           <div className="service-name">
             <h4>
               <div>
-                <a href={`#${this.service.getId()}`}>{this.service.getName()}</a>
+                <a href={`#${this.props.service.getId()}`}>{this.props.service.getName()}</a>
               </div>
               <div>
-                <small>{this.service.getId()}</small>
+                <small>{this.props.service.getId()}</small>
               </div>
             </h4>
           </div>
@@ -46,13 +45,13 @@ class UnboundServiceRow extends Component {
   renderBindingStatus() {
     return (
       <ListView.InfoItem key="bind-status">
-        {this.service.isBindingOperationInProgress() && (
+        {this.props.service.isBindingOperationInProgress() && (
           <React.Fragment>
             <Icon name="spinner" spin size="lg" />
-            {this.service.getBindingOperation()} In Progress
+            {this.props.service.getBindingOperation()} In Progress
           </React.Fragment>
         )}
-        {this.service.isBindingOperationFailed() && (
+        {this.props.service.isBindingOperationFailed() && (
           <React.Fragment>
             <Icon type="pf" name="error-circle-o" />
             Operation Failed. Please Try Again Later.
@@ -63,7 +62,7 @@ class UnboundServiceRow extends Component {
   }
 
   renderBindingButtons() {
-    if (this.service.isBindingOperationInProgress()) {
+    if (this.props.service.isBindingOperationInProgress()) {
       return null;
     }
     return (
@@ -81,7 +80,7 @@ class UnboundServiceRow extends Component {
           actions={this.renderBindingButtons()}
         />
         <BindingPanel
-          service={this.service}
+          service={this.props.service}
           showModal={this.state.showModal}
           close={() => {
             this.setState({ showModal: false });
