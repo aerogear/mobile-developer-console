@@ -1,72 +1,15 @@
 package stub
 
 import (
+	"github.com/aerogear/mobile-developer-console/pkg/mobile"
 	"testing"
-
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
-	errors2 "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 
 	k8v1 "k8s.io/api/core/v1"
 )
 
-type mockMobileClientRepo struct {
-	mockStore map[string]*v1alpha1.MobileClient
-}
-
-func NewMockMobileClientRepo() *mockMobileClientRepo {
-	repo := &mockMobileClientRepo{}
-	repo.mockStore = make(map[string]*v1alpha1.MobileClient)
-	return repo
-}
-
-func (r *mockMobileClientRepo) Create(app *v1alpha1.MobileClient) error {
-	name := app.Name
-	r.mockStore[name] = app
-	return nil
-}
-
-func (r *mockMobileClientRepo) ReadByName(name string) (*v1alpha1.MobileClient, error) {
-	app := r.mockStore[name]
-	if app != nil {
-		return app, nil
-	}
-	return nil, &errors2.StatusError{ErrStatus: v1.Status{
-		Reason: v1.StatusReasonNotFound,
-	}}
-}
-
-func (r *mockMobileClientRepo) Update(app *v1alpha1.MobileClient) error {
-	name := app.Name
-	if r.mockStore[name] != nil {
-		r.mockStore[name] = app
-		return nil
-	}
-	return &errors2.StatusError{ErrStatus: v1.Status{
-		Reason: v1.StatusReasonNotFound,
-	}}
-}
-
-func (r *mockMobileClientRepo) List() (*v1alpha1.MobileClientList, error) {
-	items := make([]v1alpha1.MobileClient, 0)
-	for _, app := range r.mockStore {
-		items = append(items, *app)
-	}
-	return &v1alpha1.MobileClientList{
-		Items: items,
-	}, nil
-}
-
-func (r *mockMobileClientRepo) DeleteByName(name string) error {
-	delete(r.mockStore, name)
-	return nil
-}
-
-func (r *mockMobileClientRepo) Watch() func() (watch.Interface, error) {
-	return nil
-}
 
 type mockWatchInterface struct{}
 
@@ -142,7 +85,7 @@ func TestHandler(t *testing.T) {
 		},
 	}
 
-	mockApps := NewMockMobileClientRepo()
+	mockApps := mobile.NewMockMobileClientRepo()
 	client := &v1alpha1.MobileClient{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "test-app",
