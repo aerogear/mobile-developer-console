@@ -39,7 +39,7 @@ class MobileClientCardView extends Component {
       <EmptyState>
         <EmptyStateTitle>{this.emptyStateMessage.noAppsCreated}</EmptyStateTitle>
         <EmptyStateAction>
-          <CreateClient createButtonSize="large" item={new MobileApp().toJSON()} />
+          <CreateClient createButtonSize="large" />
         </EmptyStateAction>
       </EmptyState>
     );
@@ -135,7 +135,7 @@ class MobileClientCardView extends Component {
             />
           </Filter>
           <div className="form-group">
-            <CreateClient item={new MobileApp().toJSON()} />
+            <CreateClient />
           </div>
           {filter && filter.length > 0 && (
             <Toolbar.Results>

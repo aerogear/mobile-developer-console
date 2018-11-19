@@ -70,7 +70,7 @@ class Client extends Component {
       const mobileApp = this.getMobileApp();
       if (mobileApp.spec) {
         const configs = this.props.buildConfigs.items.filter(
-          config => config.metadata.labels['mobile-client-id'] === mobileApp.getAppIdentifier()
+          config => config.metadata.labels['mobile-client-id'] === mobileApp.getID()
         );
 
         configs.forEach(config => delete config.builds);
@@ -97,6 +97,7 @@ class Client extends Component {
 
   header = mobileApp => {
     const { selectedTab, showBuildConfigDialog = false } = this.state;
+    // passing empty string to build config dialog for now as the client id.
     return (
       <div className="app-header-wrapper">
         <div className="app-header">
@@ -111,7 +112,7 @@ class Client extends Component {
                 <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
                 <BuildConfigDialog
                   update={false}
-                  clientInfo={{ clientId: mobileApp.getAppIdentifier() }}
+                  clientInfo={{ clientId: '' }}
                   show={showBuildConfigDialog}
                   onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
                 />
@@ -128,9 +129,7 @@ class Client extends Component {
 
   render() {
     const mobileApp = this.getMobileApp();
-    const { spec = {} } = mobileApp;
-    const { appIdentifier: clientId = '' } = spec;
-    const clientInfo = { clientId };
+    const clientInfo = { clientId: '' };
     const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
     return mobileApp ? (

@@ -4,6 +4,5 @@ metadata:
   name: "example"
 spec:
   name: "android-app"
-  appIdentifier: "test.aerogear.org"
   apiKey: "bf997a82-9415-40fc-8480-e222a97d55b4"
 

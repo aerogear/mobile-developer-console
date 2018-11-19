@@ -10,13 +10,11 @@ import (
 type MobileAppCreateRequest struct {
 	//has to be unique per namespace, can not be changed later
 	Name          string `json:"name" validate:"required"`
-	AppIdentifier string `json:"appIdentifier"" validate:"required"`
 	DmzUrl        string `json:"dmzUrl"`
 }
 
 //MobileAppUpdateRequest is the data type for the update request
 type MobileAppUpdateRequest struct {
-	AppIdentifier string `json:"appIdentifier" validate:"required"`
 	Name string `json:"name" validate:"required"`
 }
 

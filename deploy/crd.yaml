@@ -24,9 +24,6 @@ spec:
             name:
               type: string
               pattern: '([\w-])'
-            appIdentifier:
-              type: string
-              pattern: '([\w-])'
             dmzUrl:
               type: string
               nullable: true
