@@ -15,7 +15,11 @@ class MobileServiceView extends Component {
 
   componentDidMount() {
     this.props.fetchBindings(this.props.appName);
-    this.wsBindings = DataService.watchBindableServices(this.props.appName, ()=>{console.log("bindings socket"); console.log(arguments);this.props.fetchBindings(this.props.appName)});
+    this.wsBindings = DataService.watchBindableServices(this.props.appName, ()=>{
+      console.log("bindings socket"); 
+      console.log(arguments);
+      this.props.fetchBindings(this.props.appName)
+    });
   }
 
   componentWillUnmount() {
@@ -47,6 +51,12 @@ class MobileServiceView extends Component {
     return rows;
   }
 
+  shouldComponentUpdate() {
+    console.log("Update!")
+    return true;
+  }
+
+  //This makes the field in the binding form set to the mobile client name
   setDefaultBindingProperties(service) {
     service.setBindingSchemaDefaultValues('CLIENT_ID', this.props.appName);
   }
