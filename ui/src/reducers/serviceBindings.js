@@ -65,7 +65,7 @@ const serviceBindingsReducer = (state = defaultState, action) => {
       return {
         ...state,
         isCreating: false,
-        errors: getErrors(null, 'create', state.errors),
+        errors: getErrors(null, 'create', state.errors)
       };
     case SERVICE_BINDING_CREATE_FAILURE:
       return {

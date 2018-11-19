@@ -33,6 +33,7 @@ class DeleteItemButton extends Component {
     // See https://github.com/react-bootstrap/react-bootstrap/issues/541
     document.dispatchEvent(new MouseEvent('click'));
     navigate && history.replace(navigate);
+    this.handleDialogClose();
   };
 
   openDialog = () => {
