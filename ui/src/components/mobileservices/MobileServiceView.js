@@ -56,16 +56,7 @@ class MobileServiceView extends Component {
 }
 
 function mapStateToProps(state) {
-  if (state.serviceBindings.items && state.serviceBindings.items.length >= 1) {
-    return {
-      boundServices: state.serviceBindings.items[0].boundServices,
-      unboundServices: state.serviceBindings.items[0].unboundServices
-    };
-  }
-  return {
-    boundServices: [],
-    unboundServices: []
-  };
+  return state.serviceBindings;
 }
 
 const mapDispatchToProps = {

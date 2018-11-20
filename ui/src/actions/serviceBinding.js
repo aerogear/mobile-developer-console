@@ -32,7 +32,7 @@ export const createBinding = (
         parametersSecretName,
         serviceClassExternalName,
         formData
-      )
+      ).then(binding => ({ binding, serviceInstanceName }))
   )();
 
 export const SERVICE_BINDING_DELETE_REQUEST = 'SERVICE_BINDING_DELETE_REQUEST';

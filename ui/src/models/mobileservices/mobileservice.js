@@ -4,7 +4,7 @@ import Resource from '../k8s/resource';
 export class MobileService {
   constructor(json = {}) {
     this.data = json;
-    this.configuration = this.data.configuration || {};
+    this.configuration = this.data.configuration || [];
     this.setupText = '';
     this.serviceInstance = new Resource(this.data.serviceInstance);
     this.serviceBinding = new Resource(this.data.serviceBinding);
@@ -70,6 +70,18 @@ export class BoundMobileService extends MobileService {
   getDocumentationUrl() {
     return this.serviceClass.spec.get('externalMetadata.documentationUrl');
   }
+
+  /**
+   * This method returns an instance of 'UnboundMobileService' with a state of 'Unbinding in progress'
+   * @returns {UnboundMobileService}
+   */
+  unbind() {
+    return new UnboundMobileService({
+      ...this.data,
+      isBound: false,
+      serviceBinding: { status: { currentOperation: 'Unbinding', conditions: [{ type: 'Ready', status: 'False' }] } }
+    });
+  }
 }
 
 export class UnboundMobileService extends MobileService {
@@ -116,6 +128,18 @@ export class UnboundMobileService extends MobileService {
       return true;
     }
     return false;
+  }
+
+  /**
+   * This method returns a new instance of UnboundMobileService, with a status of 'Binding in progress'
+   * @returns {UnboundMobileService}
+   */
+  bind() {
+    return new UnboundMobileService({
+      ...this.data,
+      isBound: false,
+      serviceBinding: { status: { currentOperation: 'Binding', conditions: [{ type: 'Ready', status: 'False' }] } }
+    });
   }
 
   toJSON() {
