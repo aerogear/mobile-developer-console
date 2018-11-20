@@ -110,6 +110,7 @@ Checkout to $GOPATH/src/github.com/aerogear
 ```bash
 mkdir -v $GOPATH/src/github.com/aerogear
 git clone https://github.com/aerogear/mobile-developer-console $GOPATH/src/github.com/aerogear/mobile-developer-console
+cd $GOPATH/src/github.com/aerogear/mobile-developer-console
 ```
 
 ```bash
