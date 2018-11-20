@@ -38,18 +38,8 @@ class ConfigurationView extends Component {
             <Header>SDK Configuration</Header>
             <ServiceSDKDocs mobileApp={this.props.app} />
 
-            <h4>Service specific configuration steps</h4>
-            {serviceSDKInfo.map((info, index) => (
-              <ServiceSDKInfo
-                serviceLogoUrl={info.serviceLogoUrl}
-                serviceName={info.serviceName}
-                serviceId={info.serviceId}
-                serviceDescription={info.serviceDescription}
-                setupText={info.setupText}
-                docsLink={info.docsLink}
-                key={index}
-              />
-            ))}
+            <h4>Service specific documentation</h4>
+            <ServiceSDKInfo mobileApp={this.props.app} />
           </Col>
           <Col xs={6}>
             <Header>mobile-services.json</Header>
