@@ -97,10 +97,7 @@ const serviceBindingsReducer = (state = defaultState, action) => {
       };
     case SERVICE_BINDING_DELETE_SUCCESS: {
       const deletedBindingName = action.result;
-      const index = findIndex(
-        state.boundServices,
-        item => item.serviceBinding.metadata.data.name === deletedBindingName
-      );
+      const index = findIndex(state.boundServices, item => item.getBindingName() === deletedBindingName);
       return {
         ...state,
         isDeleting: false,
