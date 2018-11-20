@@ -12,8 +12,6 @@ import {
   SERVICE_BINDING_DELETE_FAILURE
 } from '../actions/serviceBinding';
 
-import { UnboundMobileService } from '../models';
-
 const defaultState = {
   isFetching: false,
   boundServices: [],
@@ -38,12 +36,6 @@ const getErrors = (error, type, errors) => {
   }
   return [{ error, type }, ...errors];
 };
-
-const configureInProgress = (serviceBinding, currentOperation) => ({
-  ...serviceBinding,
-  isBound: false,
-  serviceBinding: { status: { currentOperation, conditions: [{ type: 'Ready', status: 'False' }] } }
-});
 
 const serviceBindingsReducer = (state = defaultState, action) => {
   switch (action.type) {
@@ -76,10 +68,7 @@ const serviceBindingsReducer = (state = defaultState, action) => {
       const { serviceInstanceName } = action.result;
       const index = findIndex(
         state.unboundServices,
-        binding => binding.serviceInstance.metadata.data.name === serviceInstanceName
-      );
-      const newBindingService = new UnboundMobileService(
-        configureInProgress(state.unboundServices[index].toJSON(), 'Binding')
+        binding => binding.getServiceInstanceName() === serviceInstanceName
       );
 
       const newState = {
@@ -87,7 +76,7 @@ const serviceBindingsReducer = (state = defaultState, action) => {
         isCreating: false,
         unboundServices: [
           ...state.unboundServices.slice(0, index),
-          newBindingService,
+          state.unboundServices[index].bind(),
           ...state.unboundServices.slice(index + 1)
         ],
         errors: getErrors(null, 'create', state.errors)
@@ -112,16 +101,11 @@ const serviceBindingsReducer = (state = defaultState, action) => {
         state.boundServices,
         item => item.serviceBinding.metadata.data.name === deletedBindingName
       );
-
-      const unboundService = new UnboundMobileService(
-        configureInProgress(state.boundServices[index].toJSON(), 'Unbinding')
-      );
-
       return {
         ...state,
         isDeleting: false,
         boundServices: [...state.boundServices.slice(0, index), ...state.boundServices.slice(index + 1)],
-        unboundServices: [...state.unboundServices, unboundService],
+        unboundServices: [...state.unboundServices, state.boundServices[index].unbind()],
         errors: getErrors(null, 'delete', state.errors)
       };
     }

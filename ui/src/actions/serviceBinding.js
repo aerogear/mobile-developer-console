@@ -25,16 +25,14 @@ export const createBinding = (
   fetchAction(
     [SERVICE_BINDING_CREATE_REQUEST, SERVICE_BINDING_CREATE_SUCCESS, SERVICE_BINDING_CREATE_FAILURE],
     async () =>
-      DataService.mobileApp(formData.CLIENT_ID).then(mobileApp =>
-        DataService.createBinding(
-          mobileClientName,
-          serviceInstanceName,
-          credentialSecretName,
-          parametersSecretName,
-          serviceClassExternalName,
-          formData
-        ).then(binding => ({ mobileApp, binding, serviceInstanceName }))
-      )
+      DataService.createBinding(
+        mobileClientName,
+        serviceInstanceName,
+        credentialSecretName,
+        parametersSecretName,
+        serviceClassExternalName,
+        formData
+      ).then(binding => ({ binding, serviceInstanceName }))
   )();
 
 export const SERVICE_BINDING_DELETE_REQUEST = 'SERVICE_BINDING_DELETE_REQUEST';
