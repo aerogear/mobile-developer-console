@@ -184,7 +184,7 @@ describe('Delete Binding', () => {
     });
     expect(newState.isDeleting).toBe(false);
     expect(newState.unboundServices).toHaveLength(1);
-    expect(newState.errors.length).toBe(1);
+    expect(newState.errors).toHaveLength(1);
     expect(newState.errors[0]).toEqual({ error: 'service unbinding test error', type: 'delete' });
   });
 });
