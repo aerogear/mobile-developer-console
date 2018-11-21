@@ -1,6 +1,8 @@
 package mobile
 
 import (
+	"testing"
+
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	sctypes "github.com/kubernetes-incubator/service-catalog/pkg/apis/servicecatalog/v1beta1"
 	fakesc "github.com/kubernetes-incubator/service-catalog/pkg/client/clientset_generated/clientset/fake"
@@ -8,7 +10,6 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	fakecore "k8s.io/client-go/kubernetes/fake"
-	"testing"
 )
 
 const (
@@ -26,21 +27,21 @@ func getSecrectClient(objects ...runtime.Object) SecretsCRUDL {
 }
 
 func TestCreate(t *testing.T) {
-	cases := []struct{
-		Name string
-		ExpectError bool
-		SCClient v1beta1.ServicecatalogV1beta1Interface
+	cases := []struct {
+		Name          string
+		ExpectError   bool
+		SCClient      v1beta1.ServicecatalogV1beta1Interface
 		SecrectClient SecretsCRUDL
 	}{
 		{
-			Name: "Create a BindableService",
-			ExpectError: false,
-			SCClient: getSCClient(),
+			Name:          "Create a BindableService",
+			ExpectError:   false,
+			SCClient:      getSCClient(),
 			SecrectClient: getSecrectClient(),
 		},
 	}
 
-	for _,tc := range cases {
+	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
 			scClient := tc.SCClient
 			secretClient := tc.SecrectClient
@@ -76,22 +77,59 @@ func TestCreate(t *testing.T) {
 	}
 }
 
+func TestWatch(t *testing.T) {
+
+	cases := []struct {
+		Name          string
+		ExpectError   bool
+		SCClient      v1beta1.ServicecatalogV1beta1Interface
+		SecrectClient SecretsCRUDL
+	}{
+		{
+			Name:          "Watch bindings",
+			ExpectError:   false,
+			SCClient:      getSCClient(),
+			SecrectClient: getSecrectClient(),
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.Name, func(t *testing.T) {
+
+			scClient := tc.SCClient
+			secretClient := tc.SecrectClient
+			crudl := NewServiceBindingLister(scClient, nil, secretClient)
+
+			result, err := crudl.Watch(namespace, "testapp")()
+			if err != nil {
+				t.Fatalf("error: %v", err)
+			}
+			if result == nil {
+				t.Fatalf("no watch interface returned")
+			}
+			if err != nil && !tc.ExpectError {
+				t.Fatalf("unexpected error: %v", err)
+			}
+		})
+	}
+}
+
 func TestDelete(t *testing.T) {
 	b := &sctypes.ServiceBinding{
 		ObjectMeta: v1.ObjectMeta{
-			Name:"testbinding",
+			Name:      "testbinding",
 			Namespace: namespace,
 		},
 	}
-	cases := []struct{
-		Name string
+	cases := []struct {
+		Name        string
 		ExpectError bool
-		SCClient v1beta1.ServicecatalogV1beta1Interface
+		SCClient    v1beta1.ServicecatalogV1beta1Interface
 	}{
 		{
-			Name: "Delete a BindableService",
+			Name:        "Delete a BindableService",
 			ExpectError: false,
-			SCClient: getSCClient(b),
+			SCClient:    getSCClient(b),
 		},
 	}
 
@@ -118,7 +156,7 @@ func TestDelete(t *testing.T) {
 func newClusterServiceClass(name string) *sctypes.ClusterServiceClass {
 	return &sctypes.ClusterServiceClass{
 		ObjectMeta: v1.ObjectMeta{
-			Name: name,
+			Name:      name,
 			Namespace: namespace,
 		},
 		Spec: sctypes.ClusterServiceClassSpec{
@@ -132,7 +170,7 @@ func newClusterServiceClass(name string) *sctypes.ClusterServiceClass {
 func newClusterServicePlan(planName string, classRefName string) *sctypes.ClusterServicePlan {
 	return &sctypes.ClusterServicePlan{
 		ObjectMeta: v1.ObjectMeta{
-			Name: planName,
+			Name:      planName,
 			Namespace: namespace,
 		},
 		Spec: sctypes.ClusterServicePlanSpec{
@@ -146,7 +184,7 @@ func newClusterServicePlan(planName string, classRefName string) *sctypes.Cluste
 func newServiceInstance(name string, classRefName string) *sctypes.ServiceInstance {
 	return &sctypes.ServiceInstance{
 		ObjectMeta: v1.ObjectMeta{
-			Name: name,
+			Name:      name,
 			Namespace: namespace,
 		},
 		Spec: sctypes.ServiceInstanceSpec{
@@ -160,19 +198,19 @@ func newServiceInstance(name string, classRefName string) *sctypes.ServiceInstan
 func newSerivceBinding(name string, instanceRef string, status sctypes.ConditionStatus) *sctypes.ServiceBinding {
 	return &sctypes.ServiceBinding{
 		ObjectMeta: v1.ObjectMeta{
-			Name: name,
-			Namespace: namespace,
+			Name:        name,
+			Namespace:   namespace,
 			Annotations: map[string]string{"binding.aerogear.org/consumer": "testapp"},
 		},
 		Spec: sctypes.ServiceBindingSpec{
-			ServiceInstanceRef:sctypes.LocalObjectReference{
+			ServiceInstanceRef: sctypes.LocalObjectReference{
 				Name: instanceRef,
 			},
 		},
 		Status: sctypes.ServiceBindingStatus{
 			Conditions: []sctypes.ServiceBindingCondition{
 				{
-					Type: sctypes.ServiceBindingConditionReady,
+					Type:   sctypes.ServiceBindingConditionReady,
 					Status: status,
 				},
 			},
@@ -183,7 +221,7 @@ func newSerivceBinding(name string, instanceRef string, status sctypes.Condition
 func TestList(t *testing.T) {
 	app := &v1alpha1.MobileClient{
 		ObjectMeta: v1.ObjectMeta{
-			Name: "testapp",
+			Name:      "testapp",
 			Namespace: namespace,
 		},
 	}
@@ -198,14 +236,14 @@ func TestList(t *testing.T) {
 	serviceInstance2 := newServiceInstance("serviceinstance2", "serviceclass2")
 	serviceBinding2 := newSerivceBinding("serviceBinding2", "serviceinstance2", sctypes.ConditionFalse)
 
-	cases := []struct{
-		Name string
-		ExpectError bool
-		SCClient v1beta1.ServicecatalogV1beta1Interface
+	cases := []struct {
+		Name             string
+		ExpectError      bool
+		SCClient         v1beta1.ServicecatalogV1beta1Interface
 		MobileClientRepo MobileClientRepo
 	}{
 		{
-			Name: "List BindableServices for an app",
+			Name:        "List BindableServices for an app",
 			ExpectError: false,
 			SCClient: getSCClient(
 				serviceClass1,
