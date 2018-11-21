@@ -37,9 +37,9 @@ func newMobileClientObject(data MobileAppCreateRequest, namespace string) *v1alp
 			Namespace: namespace,
 		},
 		Spec: v1alpha1.MobileClientSpec{
-			Name:          data.Name,
-			ApiKey:        uuid.NewV4().String(),
-			DmzUrl:        data.DmzUrl,
+			Name:   data.Name,
+			ApiKey: uuid.NewV4().String(),
+			DmzUrl: data.DmzUrl,
 		},
 	}
 }
@@ -70,11 +70,10 @@ func newMoileClientDataFromObject(app *v1alpha1.MobileClient, openshiftMasterURL
 		services = append(services, *s)
 	}
 	status := &MobileClientStatusData{
-		Version:     1,
-		ClusterName: openshiftMasterURL,
-		Namespace:   app.GetNamespace(),
-		ClientId:    app.Spec.Name,
-		Services:    services,
+		Version:   1,
+		Namespace: app.GetNamespace(),
+		ClientId:  app.Spec.Name,
+		Services:  services,
 	}
 	return &MobileClientData{
 		TypeMeta:   app.TypeMeta,
