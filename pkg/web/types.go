@@ -9,8 +9,8 @@ import (
 //MobileAppCreateRequest is the data type for the create request
 type MobileAppCreateRequest struct {
 	//has to be unique per namespace, can not be changed later
-	Name          string `json:"name" validate:"required"`
-	DmzUrl        string `json:"dmzUrl"`
+	Name   string `json:"name" validate:"required"`
+	DmzUrl string `json:"dmzUrl"`
 }
 
 //MobileAppUpdateRequest is the data type for the update request
@@ -37,11 +37,10 @@ type MobileClientData struct {
 
 //MobileClientStatusData represents the content in the `mobile-services.json` file
 type MobileClientStatusData struct {
-	Version     int                       `json:"version"`
-	ClusterName string                    `json:"clusterName"`
-	Namespace   string                    `json:"namespace"`
-	ClientId    string                    `json:"clientId"`
-	Services    []MobileClientServiceData `json:"services"`
+	Version   int                       `json:"version"`
+	Namespace string                    `json:"namespace"`
+	ClientId  string                    `json:"clientId"`
+	Services  []MobileClientServiceData `json:"services"`
 }
 
 //MobileClientDataList is the list of MobileClientServiceData

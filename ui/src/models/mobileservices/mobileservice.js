@@ -96,7 +96,7 @@ export class UnboundMobileService extends MobileService {
 
   setBindingSchemaDefaultValues(name, value) {
     const bindingSchema = this.getBindingSchema();
-    if (bindingSchema && bindingSchema.properties[name]) {
+    if (bindingSchema && bindingSchema.properties && bindingSchema.properties[name]) {
       bindingSchema.properties[name].default = value;
     }
   }

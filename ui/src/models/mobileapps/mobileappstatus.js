@@ -13,10 +13,6 @@ export default class AppStatus extends Status {
     return this.get('clientId');
   }
 
-  getClusterName() {
-    return this.get('clusterName');
-  }
-
   getNamespace() {
     return this.get('namespace');
   }
