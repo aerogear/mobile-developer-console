@@ -52,12 +52,13 @@ func (m *mockSecretsCRUDL) Watch(namespace string) func() (watch.Interface, erro
 	}
 }
 
-func createSecret(id string, clientId string) k8v1.Secret {
+func createSecret(clientId string, url string) k8v1.Secret {
 	labels := make(map[string]string)
 	labels["mobile"] = "enabled"
 	labels["clientId"] = clientId
 	data := make(map[string][]byte)
-	data["id"] = []byte(id)
+	data["uri"] = []byte(url)
+	data["config"] = []byte("{}")
 	return k8v1.Secret{
 		TypeMeta: metav1.TypeMeta{},
 		ObjectMeta: metav1.ObjectMeta{
@@ -72,16 +73,28 @@ func TestHandler(t *testing.T) {
 	cases := []struct {
 		Name    string
 		Secrets []k8v1.Secret
+		ExpectedServices int
 	}{
 		{
 			Name: "test one binding",
 			Secrets: []k8v1.Secret{
-				createSecret("test-service", "test-app"),
+				createSecret("test-app", "http://test.com"),
+				k8v1.Secret{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: map[string]string{
+							"mobile": "enabled",
+							"clientId": "test-app",
+						},
+					},
+					Data: make(map[string][]byte),
+				},
 			},
+			ExpectedServices: 1,
 		},
 		{
 			Name:    "test no bindings",
 			Secrets: []k8v1.Secret{},
+			ExpectedServices: 0,
 		},
 	}
 
@@ -102,7 +115,7 @@ func TestHandler(t *testing.T) {
 			mockSecrets := NewMockSecretsCRUDL(tc.Secrets)
 			HandleSecretsChange("test-namespace", mockApps, mockSecrets)
 			app, _ := mockApps.ReadByName("test-app")
-			if len(app.Status.Services) != len(tc.Secrets) {
+			if len(app.Status.Services) != tc.ExpectedServices {
 				t.Fatalf("mobile client validation failed")
 			}
 		})
