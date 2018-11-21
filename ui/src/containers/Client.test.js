@@ -1,10 +1,7 @@
-import Enzyme, { shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { shallow } from 'enzyme';
 import React from 'react';
 import { TabContainer, NavItem } from 'patternfly-react';
 import { Client, TAB_CONFIGURATION, TAB_MOBILE_SERVICES } from './Client';
-
-Enzyme.configure({ adapter: new Adapter() });
 
 jest.mock('../DataService');
 

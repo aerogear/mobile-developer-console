@@ -1,11 +1,9 @@
 /* eslint guard-for-in: 0 */
 
-import Enzyme, { shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { shallow } from 'enzyme';
 import React from 'react';
 import { OpenShiftObjectTemplate } from './bindingPanelUtils';
 
-Enzyme.configure({ adapter: new Adapter() });
 describe('BindingPanelUtils', () => {
   const title = 'test_title';
   const rootClientId = 'root_CLIENT_ID';

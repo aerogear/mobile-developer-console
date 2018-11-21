@@ -1,11 +1,8 @@
-import Enzyme, { shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { shallow } from 'enzyme';
 import React from 'react';
 import CreateClient from './CreateClient';
 import { LABEL_APPNAME, EXAMPLE_APPNAME } from './EditMobileClientBaseClass';
 import configureStore from '../../configureStore';
-
-Enzyme.configure({ adapter: new Adapter() });
 
 const store = configureStore();
 
