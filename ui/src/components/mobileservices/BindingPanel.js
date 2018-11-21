@@ -9,7 +9,7 @@ import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import { OpenShiftObjectTemplate } from './bindingPanelUtils';
 
-class BindingPanel extends Component {
+export class BindingPanel extends Component {
   constructor(props) {
     super(props);
 
@@ -110,8 +110,8 @@ class BindingPanel extends Component {
   stepChanged = step => {
     if (step === 2) {
       this.setState({ loading: true });
-      const credentialSecretName = createSecretName(`${this.state.service.getServiceInstanceName()}-credentials-`);
-      const parametersSecretName = createSecretName(`${this.state.service.getServiceInstanceName()}-bind-parameters-`);
+      const credentialSecretName = createSecretName(`${this.state.service.getServiceInstanceName()}-credentials`);
+      const parametersSecretName = createSecretName(`${this.state.service.getServiceInstanceName()}-bind-parameters`);
       this.props.createBinding(
         this.props.appName,
         this.state.service.getServiceInstanceName(),

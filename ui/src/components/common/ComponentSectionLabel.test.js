@@ -1,10 +1,7 @@
-import Enzyme, { shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { shallow } from 'enzyme';
 import React from 'react';
 
 import ComponentSectionLabel from './ComponentSectionLabel';
-
-Enzyme.configure({ adapter: new Adapter() });
 
 describe('ComponentSectionLabel', () => {
   it('test render', () => {

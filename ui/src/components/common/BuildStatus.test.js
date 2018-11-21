@@ -1,12 +1,10 @@
 /* eslint guard-for-in: 0 */
 
-import Enzyme, { shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { shallow } from 'enzyme';
 import React from 'react';
 
 import BuildStatus from './BuildStatus';
 
-Enzyme.configure({ adapter: new Adapter() });
 describe('BuildStatus', () => {
   it('test success', () => {
     const statusIconMapping = {

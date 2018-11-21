@@ -1,9 +1,6 @@
-import Enzyme, { mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { mount } from 'enzyme';
 import React from 'react';
 import { ErrorMessages } from './ErrorMessages';
-
-Enzyme.configure({ adapter: new Adapter() });
 
 describe('ErrorMessages', () => {
   it('test render', () => {

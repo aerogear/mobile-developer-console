@@ -11,7 +11,6 @@ export const OpenShiftObjectTemplate = function({
   description
 }) {
   const { form } = uiSchema;
-
   return (
     <div>
       <TitleField title={title} />
@@ -99,8 +98,8 @@ function getFieldSet(field, properties, idSchema, schema) {
         );
       case 'password':
         return (
-          <div>
-            <div key={property.content.key}>
+          <div key={`${property.content.key}-parent`}>
+            <div key={`${property.content.key}`}>
               <label className="control-label" htmlFor={id}>
                 {schema.properties[item.key].title}
               </label>
@@ -111,7 +110,7 @@ function getFieldSet(field, properties, idSchema, schema) {
                 onBlur={event => property.content.props.onChange(event.target.value)}
               />
             </div>
-            <div key={`${property.content.key}2`}>
+            <div key={`${property.content.key}-confirm`}>
               <label className="control-label" htmlFor={`${id}2`}>
                 {'Confirm Password'}
               </label>
@@ -125,7 +124,7 @@ function getFieldSet(field, properties, idSchema, schema) {
   });
 
   return (
-    <fieldset>
+    <fieldset key={field.title}>
       <h2>{title}</h2>
       {fieldSetItems}
     </fieldset>
