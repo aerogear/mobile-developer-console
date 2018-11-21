@@ -2,11 +2,11 @@ package mobile
 
 import (
 	scv1beta1 "github.com/kubernetes-incubator/service-catalog/pkg/apis/servicecatalog/v1beta1"
+	"k8s.io/apimachinery/pkg/watch"
 )
 
 //TODO: if required, we should make this configurable from the tests
 type MockBindableMobileServiceCRUDL struct {
-
 }
 
 func NewMockBindableServices() *MockBindableMobileServiceCRUDL {
@@ -18,6 +18,10 @@ func (m *MockBindableMobileServiceCRUDL) Create(namespace string, binding *scv1b
 }
 
 func (m *MockBindableMobileServiceCRUDL) Delete(namespace string, bindingName string) error {
+	return nil
+}
+
+func (m *MockBindableMobileServiceCRUDL) Watch(namespace string, mobileClientName string) func() (watch.Interface, error) {
 	return nil
 }
 
