@@ -52,7 +52,7 @@ function getOpenShiftField(field, properties, idSchema, schema) {
           <select
             className="form-control"
             multiple={false}
-            defaultValue={typeof defaultValue === "undefined" ? "" : defaultValue}
+            defaultValue={typeof defaultValue === 'undefined' ? '' : defaultValue}
             id={id}
             onChange={event => {
               property.content.props.onChange(event.target.value);
@@ -67,7 +67,6 @@ function getOpenShiftField(field, properties, idSchema, schema) {
         </div>
       );
     }
-    console.log(field)
     return <div key={property.content.key}>{property.content}</div>;
   }
   return getFieldSet(field, properties, idSchema, schema);
