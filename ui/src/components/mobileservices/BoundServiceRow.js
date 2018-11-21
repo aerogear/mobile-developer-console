@@ -16,28 +16,26 @@ class BoundServiceRow extends Component {
   constructor(props) {
     super(props);
 
-    this.service = props.service;
-
     this.renderServiceBadge = this.renderServiceBadge.bind(this);
     this.renderServiceDetails = this.renderServiceDetails.bind(this);
   }
 
   renderServiceBadge() {
     let icon = <div />;
-    if (this.service.getIconClass() != null && this.service.getIconClass().length > 0) {
-      icon = <span className={`${this.service.getIconClass()} logo`} />;
+    if (this.props.service.getIconClass() != null && this.props.service.getIconClass().length > 0) {
+      icon = <span className={`${this.props.service.getIconClass()} logo`} />;
     } else {
-      icon = <img src={this.service.getLogoUrl()} alt="" />;
+      icon = <img src={this.props.service.getLogoUrl()} alt="" />;
     }
     return (
-      <Col key={this.service.getId()} md={3} className="service-sdk-info">
+      <Col key={this.props.service.getId()} md={3} className="service-sdk-info">
         <Col md={12}>
           {icon}
           <div className="service-name">
             <h4>
-              <div>{this.service.getName()}</div>
+              <div>{this.props.service.getName()}</div>
               <div>
-                <small>{this.service.getId()}</small>
+                <small>{this.props.service.getId()}</small>
               </div>
             </h4>
           </div>
@@ -50,14 +48,14 @@ class BoundServiceRow extends Component {
     let documentationFragment;
     let propertyFragment;
 
-    if (this.service.getDocumentationUrl()) {
+    if (this.props.service.getDocumentationUrl()) {
       documentationFragment = (
         <Row>
           <Col md={2} className="detailsKey">
             Documentation :
           </Col>
           <Col md={4} className="detailsValue">
-            <a href={this.service.getDocumentationUrl()}>
+            <a href={this.props.service.getDocumentationUrl()}>
               SDK Setup
               <i className="fa fa-external-link" aria-hidden="true" />
             </a>
@@ -66,8 +64,8 @@ class BoundServiceRow extends Component {
       );
     }
 
-    if (this.service.getConfiguration()) {
-      propertyFragment = this.service.getConfiguration().map(configuration => {
+    if (this.props.service.getConfiguration()) {
+      propertyFragment = this.props.service.getConfiguration().map(configuration => {
         configuration = JSON.parse(configuration);
 
         return (
@@ -100,8 +98,8 @@ class BoundServiceRow extends Component {
         className="boundService"
         actions={
           <div>
-            <DropdownKebab id={`delete-${this.service.getBindingName()}`} pullRight>
-              <DeleteItemButton itemType="serviceBinding" itemName={this.service.getBindingName()} />
+            <DropdownKebab id={`delete-${this.props.service.getBindingName()}`} pullRight>
+              <DeleteItemButton itemType="serviceBinding" itemName={this.props.service.getBindingName()} />
             </DropdownKebab>
           </div>
         }

@@ -9,6 +9,7 @@ import (
 	k8v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
 )
 
 type BindableMobileServiceCRUDLImpl struct {
@@ -45,6 +46,13 @@ func (lister *BindableMobileServiceCRUDLImpl) Create(namespace string, binding *
 
 func (lister *BindableMobileServiceCRUDLImpl) Delete(namespace string, bindingName string) error {
 	return lister.scClient.ServiceBindings(namespace).Delete(bindingName, &v1.DeleteOptions{})
+}
+
+func (lister *BindableMobileServiceCRUDLImpl) Watch(namespace string, mobileClientName string) func() (watch.Interface, error) {
+	return func() (watch.Interface, error) {
+		watchOpts := metav1.ListOptions{}
+		return lister.scClient.ServiceBindings(namespace).Watch(watchOpts)
+	}
 }
 
 func (lister *BindableMobileServiceCRUDLImpl) List(namespace string, mobileClientName string) (*BindableMobileServiceList, error) {
