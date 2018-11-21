@@ -9,7 +9,7 @@ import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import { OpenShiftObjectTemplate } from './bindingPanelUtils';
 
-class BindingPanel extends Component {
+export class BindingPanel extends Component {
   constructor(props) {
     super(props);
 
