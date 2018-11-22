@@ -43,7 +43,7 @@ function getOpenShiftField(field, properties, idSchema, schema) {
       );
     } else if (field === 'CLIENT_TYPE') {
       const enumArray = schema.properties[field].enum;
-
+      const defaultValue = schema.properties[field].default;
       return (
         <div key={property.content.key}>
           <label className="control-label" htmlFor={id}>
@@ -52,6 +52,7 @@ function getOpenShiftField(field, properties, idSchema, schema) {
           <select
             className="form-control"
             multiple={false}
+            defaultValue={typeof defaultValue === 'undefined' ? '' : defaultValue}
             id={id}
             onChange={event => {
               property.content.props.onChange(event.target.value);
