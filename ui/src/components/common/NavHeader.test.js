@@ -1,6 +1,6 @@
 import { shallow } from 'enzyme';
 import React from 'react';
-import NavHeader from './NavHeader';
+import { _NavHeader as NavHeader } from './NavHeader';
 
 describe('NavHeader', () => {
   it('test render', () => {
