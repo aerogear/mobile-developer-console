@@ -9,6 +9,11 @@ import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import { OpenShiftObjectTemplate } from './bindingPanelUtils';
 
+import { AndroidUPSBindingValidator } from './validators/AndroidBindingValidator';
+import { IOSUPSBindingValidator } from './validators/IOSBindingValidator';
+import { CommonFieldsValidator } from './validators/CommonFieldsValidator';
+import { ValidationEngine } from './validators/ValidationEngine';
+
 export class BindingPanel extends Component {
   constructor(props) {
     super(props);
@@ -127,51 +132,29 @@ export class BindingPanel extends Component {
    * see https://github.com/mozilla-services/react-jsonschema-form/tree/6cb26d17c0206b610b130729db930d5906d3fdd3#form-data-validation
    */
   validate = (formData, errors) => {
-    let hasError = false;
     /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
-    for (const key in errors) {
-      if (errors.hasOwnProperty(key)) {
-        switch (key) {
-          case 'CLIENT_ID':
-          case 'CLIENT_TYPE':
-            if (!formData[key]) {
-              errors[key].addError(`${key} is a required field.`);
-              hasError = true;
-            }
-            break;
-          case 'googlekey':
-          case 'projectNumber':
-            if ((formData.googlekey || formData.projectNumber) && !(formData.googlekey && formData.projectNumber)) {
-              errors[key].addError('FCM requires a Key field and Project Number.');
-              hasError = true;
-            }
-            break;
-          case 'cert':
-            if ((formData.cert || formData.passphrase) && !(formData.cert && formData.passphrase)) {
-              errors.iosIsProduction.addError('APNS requires a certificate and passphrase.');
-              hasError = true;
-            }
-            break;
-          case 'iosIsProduction':
-            break;
-          case 'passphrase':
-            if (formData.passphrase && formData.cert) {
+    const validationEngine = new ValidationEngine(formData, errors)
+      .with(new CommonFieldsValidator())
+      .with(new AndroidUPSBindingValidator({ platformDetector: () => formData.CLIENT_TYPE }))
+      .with(
+        new IOSUPSBindingValidator({
+          platformDetector: () => formData.CLIENT_TYPE,
+          errorField: 'iosIsProduction',
+          preValidate: null,
+          postValidate: (key, value) => {
+            if (value && key === 'passphrase') {
               const confirmPasswordFieldId = `${this.form.state.idSchema.passphrase.$id}2`;
               const confirmPasswordField = document.getElementById(confirmPasswordFieldId);
               const passwordConfirmation = confirmPasswordField.value;
-              if (formData.passphrase !== passwordConfirmation) {
-                errors.iosIsProduction.addError('Passphrase does not match.');
-                hasError = true;
+              if (value !== passwordConfirmation) {
+                return 'Passphrase does not match.';
               }
             }
-            break;
-          default:
-            break;
-        }
-      }
-    }
-
-    if (!hasError) {
+            return null;
+          }
+        })
+      );
+    if (!validationEngine.validate()) {
       // Avdance to final screen if valid
       this.setState({
         activeStepIndex: 2
