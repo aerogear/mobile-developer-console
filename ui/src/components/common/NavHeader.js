@@ -1,10 +1,10 @@
 import React from 'react';
 import { Masthead, MenuItem, Icon } from 'patternfly-react';
-
+import { withRouter } from 'react-router-dom';
 import './NavHeader.css';
 
-const NavHeader = ({ title, user, helpDropdownItems, userDropdownItems }) => (
-  <Masthead title={title} navToggle={false}>
+const NavHeader = ({ title, user, helpDropdownItems, userDropdownItems, titleHref, history }) => (
+  <Masthead title={title} navToggle={false} onTitleClick={() => history.push(titleHref)}>
     <Masthead.Collapse>
       <Masthead.Dropdown id="app-help-dropdown" noCaret title={<span title="Help" className="pficon pficon-help" />}>
         {helpDropdownItems.map((item, index) => (
@@ -33,4 +33,4 @@ const NavHeader = ({ title, user, helpDropdownItems, userDropdownItems }) => (
   </Masthead>
 );
 
-export default NavHeader;
+export default withRouter(NavHeader);
