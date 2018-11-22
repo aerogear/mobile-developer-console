@@ -21,7 +21,7 @@ class MobileServiceView extends Component {
   }
 
   componentWillUnmount() {
-    this.wsServices.close();
+    this.wsServices && this.wsServices.close();
   }
 
   boundServiceRows() {
