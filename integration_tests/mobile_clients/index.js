@@ -2,8 +2,7 @@ const assert = require('assert')
 const sendRequest = require('../util/sendRequest')
 
 const template = {
-  name: "integration-test-client",
-  clientType: "android"
+  name: "integration-test-client"
 }
 
 describe('initially', () => {
@@ -24,7 +23,6 @@ describe('when creating a new client', () => {
   it('created client should have required metadata', () => {
     assert.equal(res.data.metadata.name, template.name)
     assert.equal(res.data.spec.name, template.name)
-    assert.equal(res.data.spec.clientType, template.clientType)
     assert.equal(res.data.status.clientId, template.name)
   });
 
@@ -41,7 +39,6 @@ describe('when listing a client', () => {
     const listedClientData = res.data.items[0]
     assert.equal(listedClientData.metadata.name, template.name)
     assert.equal(listedClientData.spec.name, template.name)
-    assert.equal(listedClientData.spec.clientType, template.clientType)
     assert.equal(listedClientData.status.clientId, template.name)
   });
 
