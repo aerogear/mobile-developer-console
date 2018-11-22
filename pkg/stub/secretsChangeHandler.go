@@ -87,12 +87,8 @@ func removeService(services []v1alpha1.MobileClientService, index int) []v1alpha
 }
 
 func newMobileServiceFromSecret(secret v1.Secret) v1alpha1.MobileClientService {
-	id := string(secret.Data["id"])
-	if id == "" {
-		id = string(secret.UID)
-	}
 	return v1alpha1.MobileClientService{
-		Id:      id,
+		Id:      string(secret.UID),
 		Name:    string(secret.Data["name"]),
 		Type:    string(secret.Data["type"]),
 		Url:     string(secret.Data["uri"]),
