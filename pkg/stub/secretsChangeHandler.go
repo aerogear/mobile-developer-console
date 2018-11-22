@@ -65,7 +65,8 @@ func getServicesForAppFromSecrets(secrets *v1.SecretList, app v1alpha1.MobileCli
 
 func isValidSecret(secret v1.Secret) bool {
 	labels := secret.GetLabels()
-	if labels["mobile"] != "" && labels["clientId"] != "" && secret.Data["id"] != nil {
+	//it's important that we do check the data of the secret here, as some services will create temporary secrets which will have the same labels, but not the right data (like push)
+	if labels["mobile"] != "" && labels["clientId"] != "" && secret.Data["config"] != nil && secret.Data["uri"] != nil{
 		return true
 	}
 	return false
@@ -87,7 +88,7 @@ func removeService(services []v1alpha1.MobileClientService, index int) []v1alpha
 
 func newMobileServiceFromSecret(secret v1.Secret) v1alpha1.MobileClientService {
 	return v1alpha1.MobileClientService{
-		Id:      string(secret.Data["id"]),
+		Id:      string(secret.UID),
 		Name:    string(secret.Data["name"]),
 		Type:    string(secret.Data["type"]),
 		Url:     string(secret.Data["uri"]),
