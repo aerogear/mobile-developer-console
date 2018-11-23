@@ -14,6 +14,7 @@ import {
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { find } from 'lodash-es';
+import Moment from 'react-moment';
 import ConfigurationView from '../components/configuration/ConfigurationView';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
 import { fetchApp } from '../actions/apps';
@@ -22,10 +23,9 @@ import { fetchBuilds } from '../actions/builds';
 import DataService from '../DataService';
 import DeleteItemButton from './DeleteItemButton';
 import { MobileApp } from '../models';
-
-import './Client.css';
 import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
 import BuildConfigDialog from './BuildConfigDialog';
+import './Client.css';
 
 export const TAB_CONFIGURATION = { key: 1, hash: 'configuration' };
 export const TAB_MOBILE_SERVICES = { key: 2, hash: 'services' };
@@ -104,12 +104,18 @@ export class Client extends Component {
 
   header = mobileApp => {
     const { selectedTab, showBuildConfigDialog = false } = this.state;
+    const { creationTimestamp = null } = mobileApp.metadata.data;
     // passing empty string to build config dialog for now as the client id.
     return (
       <div className="app-header-wrapper">
         <div className="app-header">
           <div>
-            <h1>{mobileApp.getName()}</h1>
+            <h1>
+              {mobileApp.getName()}
+              <span className="creation-timestamp">
+                created <Moment fromNow>{creationTimestamp}</Moment>
+              </span>
+            </h1>
           </div>
         </div>
         <div className="app-actions-dropdown">

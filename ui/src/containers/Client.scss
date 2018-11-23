@@ -11,6 +11,14 @@
     margin-bottom: 10px;
   }
 
+  .creation-timestamp {
+      padding-left:8px;
+      font-size: 11px;
+      color: #757575;
+  }
+  
+  
+
   #basic-tabs-pf {
     flex: 1 100%;
     display: flex;
@@ -55,4 +63,5 @@
     }
   }
 }
+
 
