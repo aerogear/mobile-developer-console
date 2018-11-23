@@ -35,10 +35,10 @@ class CreateBuildConfigDialog extends Component {
 
   renderFormButtons = (onCancel, valid) => (
     <div>
+      <Button onClick={onCancel}>Cancel</Button>
       <Button bsStyle="primary" onClick={this.onSaveBuildConfig} disabled={!valid}>
         Create
       </Button>
-      <Button onClick={onCancel}>Cancel</Button>
     </div>
   );
 
