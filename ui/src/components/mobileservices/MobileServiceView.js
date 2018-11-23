@@ -4,11 +4,8 @@ import { connect } from 'react-redux';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
 import { fetchBindings } from '../../actions/serviceBinding';
-<<<<<<< HEAD
 import DataService from '../../DataService';
-=======
 import './MobileServiceView.css';
->>>>>>> UX: No bound/unbound services message
 
 class MobileServiceView extends Component {
   constructor(props) {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Duration from './Duration';
+import Duration from '../common/Duration';
 
 import './BuildPipelineStage.css';
 

@@ -5,7 +5,7 @@ import MobileClientCardView from './MobileClientCardView';
 
 describe('MobileClientCardView', () => {
   it('test filter by app name', () => {
-    const wrapper = shallow(<MobileClientCardView mobileClients={[]}  />);
+    const wrapper = shallow(<MobileClientCardView mobileClients={[]} />);
     expect(wrapper.find('EmptyState')).toHaveLength(1);
   });
 

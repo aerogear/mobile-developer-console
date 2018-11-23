@@ -3,7 +3,7 @@ import { Col } from 'patternfly-react';
 import Moment from 'react-moment';
 import moment from 'moment';
 import BuildStatus from '../common/BuildStatus';
-import Duration from './Duration';
+import Duration from '../common/Duration';
 import BuildDownload from '../../containers/BuildDownload';
 
 import './MobileClientBuildHistoryList.css';
