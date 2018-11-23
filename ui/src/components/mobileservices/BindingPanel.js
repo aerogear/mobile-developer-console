@@ -9,10 +9,8 @@ import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import { OpenShiftObjectTemplate } from './bindingPanelUtils';
 
-import { AndroidUPSBindingValidator } from './validators/AndroidBindingValidator';
-import { IOSUPSBindingValidator } from './validators/IOSBindingValidator';
-import { CommonFieldsValidator } from './validators/CommonFieldsValidator';
-import { ValidationEngine } from './validators/ValidationEngine';
+import { FormValidator } from './validator/FormValidator';
+import validationConfig from './ValidationRules.json';
 
 export class BindingPanel extends Component {
   constructor(props) {
@@ -133,28 +131,22 @@ export class BindingPanel extends Component {
    */
   validate = (formData, errors) => {
     /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
-    const validationEngine = new ValidationEngine(formData, errors)
-      .with(new CommonFieldsValidator())
-      .with(new AndroidUPSBindingValidator({ platformDetector: () => formData.CLIENT_TYPE }))
-      .with(
-        new IOSUPSBindingValidator({
-          platformDetector: () => formData.CLIENT_TYPE,
-          errorField: 'iosIsProduction',
-          preValidate: null,
-          postValidate: (key, value) => {
-            if (value && key === 'passphrase') {
-              const confirmPasswordFieldId = `${this.form.state.idSchema.passphrase.$id}2`;
-              const confirmPasswordField = document.getElementById(confirmPasswordFieldId);
-              const passwordConfirmation = confirmPasswordField.value;
-              if (value !== passwordConfirmation) {
-                return 'Passphrase does not match.';
-              }
-            }
-            return null;
+    const valid = new FormValidator(validationConfig)
+      .withPostValidation(() => {
+        if (formData.CLIENT_TYPE === 'IOS') {
+          const confirmPasswordFieldId = `${this.form.state.idSchema.passphrase.$id}2`;
+          const confirmPasswordField = document.getElementById(confirmPasswordFieldId);
+          const passwordConfirmation = confirmPasswordField.value;
+          if (formData.passphrase !== passwordConfirmation) {
+            errors.iosIsProduction.addError('Passphrase does not match.');
+            return true;
           }
-        })
-      );
-    if (!validationEngine.validate()) {
+        }
+        return false;
+      })
+      .validate(formData, errors);
+
+    if (valid) {
       // Avdance to final screen if valid
       this.setState({
         activeStepIndex: 2
