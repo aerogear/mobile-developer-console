@@ -21,3 +21,5 @@ export class FieldValueConstraint {
     return formData[this.config.name] === this.config.value;
   }
 }
+
+export const NAME = 'FIELD_VALUE';

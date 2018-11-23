@@ -1,5 +1,5 @@
-import { RequiredRule } from './rules/RequiredRule';
-import { NoopRule } from './rules/NoopRule';
+import { NAME as REQUIRED, RequiredRule } from './RequiredRule';
+import { NoopRule } from './NoopRule';
 
 /**
  * Rules factory.
@@ -9,7 +9,7 @@ export class ValidationRule {
     const { type: ruleType } = ruleConfig;
 
     switch (ruleType) {
-      case 'required': {
+      case REQUIRED: {
         return new RequiredRule(ruleConfig);
       }
       default: {

@@ -21,3 +21,5 @@ export class RequiredRule {
     return { valid: true };
   }
 }
+
+export const NAME = 'required';

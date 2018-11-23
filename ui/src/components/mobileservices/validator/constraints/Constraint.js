@@ -1,4 +1,4 @@
-import { FieldValueConstraint } from './FieldValueConstraint';
+import { NAME as FIELD_VALUE, FieldValueConstraint } from './FieldValueConstraint';
 
 /**
  * Factory for the constraints.
@@ -6,7 +6,7 @@ import { FieldValueConstraint } from './FieldValueConstraint';
 export class Constraint {
   static forConfig(config) {
     switch (config.type) {
-      case 'FIELD_VALUE':
+      case FIELD_VALUE:
         return new FieldValueConstraint(config);
       default:
         return null;

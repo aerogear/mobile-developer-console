@@ -1,4 +1,4 @@
-import { ValidationRule } from './ValidationRule';
+import { ValidationRule } from './rules/ValidationRule';
 import { Constraint } from './constraints/Constraint';
 
 /**
