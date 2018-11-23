@@ -102,7 +102,11 @@ export class UnboundMobileService extends MobileService {
   }
 
   getFormDefinition() {
-    return this.servicePlan.spec.get('externalMetadata.schemas.service_binding.create.openshift_form_definition');
+    const form = this.servicePlan.spec.get('externalMetadata.schemas.service_binding.create.openshift_form_definition');
+    form.filterDisplayGroupBy = JSON.parse(
+      this.servicePlan.spec.get('externalMetadata.mobileclient_bind_parameters_data[0]') || ''
+    ).filterDisplayGroupBy;
+    return form;
   }
 
   getServiceClassExternalName() {

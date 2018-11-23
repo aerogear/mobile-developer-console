@@ -6,6 +6,7 @@ export const OpenShiftObjectTemplate = function({
   uiSchema,
   schema,
   properties,
+  formData,
   idSchema,
   title,
   description
@@ -14,13 +15,15 @@ export const OpenShiftObjectTemplate = function({
   return (
     <div>
       <TitleField title={title} />
-      <div className="row">{form.map(key => getOpenShiftField(key, properties, idSchema, schema))}</div>
+      <div className="row">
+        {form.map(key => getOpenShiftField(key, properties, idSchema, schema, formData, uiSchema))}
+      </div>
       {description}
     </div>
   );
 };
 
-function getOpenShiftField(field, properties, idSchema, schema) {
+function getOpenShiftField(field, properties, idSchema, schema, formData, uiSchema) {
   if (!field.items) {
     const property = properties.find(prop => prop.name === field);
     const id = idSchema[field].$id;
@@ -69,10 +72,10 @@ function getOpenShiftField(field, properties, idSchema, schema) {
     }
     return <div key={property.content.key}>{property.content}</div>;
   }
-  return getFieldSet(field, properties, idSchema, schema);
+  return getFieldSet(field, properties, idSchema, schema, formData, uiSchema);
 }
 
-function getFieldSet(field, properties, idSchema, schema) {
+function getFieldSet(field, properties, idSchema, schema, formData, uiSchema) {
   const { title, items } = field;
 
   const fieldSetItems = items.map(item => {
@@ -123,7 +126,17 @@ function getFieldSet(field, properties, idSchema, schema) {
         return property.content;
     }
   });
-
+  if (uiSchema.form.filterDisplayGroupBy) {
+    if (field.title.toLowerCase().localeCompare(formData[uiSchema.form.filterDisplayGroupBy].toLowerCase()) === 0) {
+      return (
+        <fieldset key={field.title}>
+          <h2>{title}</h2>
+          {fieldSetItems}
+        </fieldset>
+      );
+    }
+    return <div />;
+  }
   return (
     <fieldset key={field.title}>
       <h2>{title}</h2>
