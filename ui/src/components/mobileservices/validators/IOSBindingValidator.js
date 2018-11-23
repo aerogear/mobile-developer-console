@@ -2,8 +2,8 @@
 import { AbstractBindingValidator } from './AbstractBindingValidator';
 
 export class IOSUPSBindingValidator extends AbstractBindingValidator {
-  constructor(customProperties) {
-    super('IOS', customProperties);
+  constructor({ errorField, platformDetector, preValidate, postValidate }) {
+    super({ errorField, platformDetector, preValidate, postValidate, platform: 'IOS' });
   }
 
   validateField(key, value) {

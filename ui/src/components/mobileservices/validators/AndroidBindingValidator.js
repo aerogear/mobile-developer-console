@@ -2,8 +2,8 @@
 import { AbstractBindingValidator } from './AbstractBindingValidator';
 
 export class AndroidUPSBindingValidator extends AbstractBindingValidator {
-  constructor(customProperties) {
-    super('Android', customProperties);
+  constructor({ errorField, platformDetector, preValidate, postValidate }) {
+    super({ errorField, platformDetector, preValidate, postValidate, platform: 'Android' });
   }
 
   validateField(key, value) {
