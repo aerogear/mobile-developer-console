@@ -1,13 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Toolbar,
-  Filter,
-  FormControl,
-  EmptyState,
-  EmptyStateTitle,
-  EmptyStateAction,
-  CardGrid
-} from 'patternfly-react';
+import { Toolbar, Filter, EmptyState, EmptyStateTitle, EmptyStateAction, CardGrid } from 'patternfly-react';
 import DebounceInput from 'react-debounce-input';
 import './MobileClientCardView.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
