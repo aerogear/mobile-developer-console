@@ -30,13 +30,7 @@ describe('MobileClientCardView', () => {
     ];
     const wrapper = shallow(<MobileClientCardView mobileClients={apps} mobileClientBuilds={[]} />);
     expect(wrapper.find('MobileClientCardViewItem')).toHaveLength(2);
-    wrapper.find('FormControl').simulate('change', { target: { value: 'your' } });
-    const e = {
-      key: 'Enter',
-      stopPropagation: () => {},
-      preventDefault: () => {}
-    };
-    wrapper.find('FormControl').simulate('keyPress', e);
+    wrapper.find('DebounceInput').simulate('change', { target: { value: 'your' } });
     expect(wrapper.find('MobileClientCardViewItem')).toHaveLength(1);
   });
 });

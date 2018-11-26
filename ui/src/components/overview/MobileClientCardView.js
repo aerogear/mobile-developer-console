@@ -1,13 +1,6 @@
 import React, { Component } from 'react';
-import {
-  Toolbar,
-  Filter,
-  FormControl,
-  EmptyState,
-  EmptyStateTitle,
-  EmptyStateAction,
-  CardGrid
-} from 'patternfly-react';
+import { Toolbar, Filter, EmptyState, EmptyStateTitle, EmptyStateAction, CardGrid } from 'patternfly-react';
+import DebounceInput from 'react-debounce-input';
 import './MobileClientCardView.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
 import CreateClient from '../../containers/CreateClient';
@@ -49,11 +42,13 @@ class MobileClientCardView extends Component {
   }
 
   removeFilter() {
-    this.setState({ filter: '' });
+    this.setState({ filter: '', currentValue: '' });
   }
 
   updateCurrentValue(event) {
-    this.setState({ currentValue: event.target.value });
+    const { value } = event.target;
+    this.setState({ currentValue: value });
+    this.setFilter(value);
   }
 
   getBuilds = app => {
@@ -125,9 +120,12 @@ class MobileClientCardView extends Component {
       <div className="overview">
         <Toolbar>
           <Filter>
-            <FormControl
+            <DebounceInput
+              minLength={1}
+              debounceTimeout={300}
               type="text"
-              placeholder="Filter by name"
+              placeholder="Filter by Name"
+              className="toolbarFilter"
               value={currentValue}
               onChange={e => this.updateCurrentValue(e)}
               onKeyPress={e => this.onValueKeyPress(e)}

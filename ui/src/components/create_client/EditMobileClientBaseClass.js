@@ -48,6 +48,7 @@ class EditMobileClientBaseClass extends Component {
         value: this.app.getProperty(CREATE_CLIENT_NAME) || '',
         formControl: ({ validationState, ...props }) => <Form.FormControl type="text" {...props} autoFocus />,
         validationState: this._validate(CREATE_CLIENT_NAME),
+        autoComplete: 'off',
         onChange: e => this.props.setFieldValue(CREATE_CLIENT_NAME, e.target.value)
       }
     ];

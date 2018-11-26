@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { EmptyState, Spinner } from 'patternfly-react';
 import { connect } from 'react-redux';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
 import { fetchBindings } from '../../actions/serviceBinding';
 import DataService from '../../DataService';
+import './MobileServiceView.css';
 
 class MobileServiceView extends Component {
   constructor(props) {
@@ -25,28 +27,29 @@ class MobileServiceView extends Component {
   }
 
   boundServiceRows() {
-    const rows = [];
-    if (this.props.boundServices) {
-      rows.push(<h2 key="bound-services">Bound Services</h2>);
-      this.props.boundServices.forEach(service => {
-        rows.push(<BoundServiceRow key={service.getId()} service={service} />);
-      });
-    }
-
-    return rows;
+    return (
+      <React.Fragment>
+        <h2 key="bound-services">Bound Services</h2>
+        {this.props.boundServices && this.props.boundServices.length > 0 ? (
+          this.props.boundServices.map(service => <BoundServiceRow key={service.getId()} service={service} />)
+        ) : (
+          <EmptyState>There are no bound services.</EmptyState>
+        )}
+      </React.Fragment>
+    );
   }
 
   unboundServiceRows() {
-    const rows = [];
-
-    if (this.props.unboundServices) {
-      rows.push(<h2 key="unbound-services">Unbound Services</h2>);
-      this.props.unboundServices.forEach(service => {
-        this.setDefaultBindingProperties(service);
-        rows.push(<UnboundServiceRow key={service.getId()} service={service} />);
-      });
-    }
-    return rows;
+    return (
+      <React.Fragment>
+        <h2 key="unbound-services">Unbound Services</h2>
+        {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
+          this.props.unboundServices.map(service => <UnboundServiceRow key={service.getId()} service={service} />)
+        ) : (
+          <EmptyState>There are no unbound services.</EmptyState>
+        )}
+      </React.Fragment>
+    );
   }
 
   shouldComponentUpdate() {
@@ -59,10 +62,13 @@ class MobileServiceView extends Component {
   }
 
   render() {
+    const { isReading = true } = this.props;
     return (
-      <div>
-        {this.boundServiceRows()}
-        {this.unboundServiceRows()}
+      <div className="mobile-service-view">
+        <Spinner loading={isReading} className="spinner-padding">
+          {this.boundServiceRows()}
+          {this.unboundServiceRows()}
+        </Spinner>
       </div>
     );
   }

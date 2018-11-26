@@ -60,7 +60,7 @@ func newMobileClientServiceFromObject(service *v1alpha1.MobileClientService) (*M
 	return s, nil
 }
 
-func newMoileClientDataFromObject(app *v1alpha1.MobileClient, openshiftMasterURL string) (*MobileClientData, error) {
+func newMobileClientDataFromObject(app *v1alpha1.MobileClient, openshiftMasterURL string) (*MobileClientData, error) {
 	services := make([]MobileClientServiceData, 0)
 	for _, service := range app.Status.Services {
 		s, err := newMobileClientServiceFromObject(&service)
@@ -86,7 +86,7 @@ func newMoileClientDataFromObject(app *v1alpha1.MobileClient, openshiftMasterURL
 func newMobileClientDataListFromObjects(list *v1alpha1.MobileClientList, openshiftMasterURL string) (*MobileClientDataList, error) {
 	items := make([]MobileClientData, 0)
 	for _, app := range list.Items {
-		data, err := newMoileClientDataFromObject(&app, openshiftMasterURL)
+		data, err := newMobileClientDataFromObject(&app, openshiftMasterURL)
 		if err != nil {
 			return nil, err
 		}
@@ -127,7 +127,7 @@ func (h *MobileClientsHandler) Create(c echo.Context) error {
 		c.Logger().Errorf("error creating mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	data, err := newMoileClientDataFromObject(app, h.openshiftMasterURL)
+	data, err := newMobileClientDataFromObject(app, h.openshiftMasterURL)
 	if err != nil {
 		c.Logger().Errorf("error creating mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
@@ -146,7 +146,7 @@ func (h *MobileClientsHandler) Read(c echo.Context) error {
 		c.Logger().Errorf("error reading mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
-	data, err := newMoileClientDataFromObject(app, h.openshiftMasterURL)
+	data, err := newMobileClientDataFromObject(app, h.openshiftMasterURL)
 	if err != nil {
 		c.Logger().Errorf("error reading mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
@@ -198,7 +198,7 @@ func (h *MobileClientsHandler) Update(c echo.Context) error {
 		c.Logger().Errorf("error updating mobile app: %v", uerr)
 		return c.String(http.StatusInternalServerError, uerr.Error())
 	}
-	data, err := newMoileClientDataFromObject(app, h.openshiftMasterURL)
+	data, err := newMobileClientDataFromObject(app, h.openshiftMasterURL)
 	if err != nil {
 		c.Logger().Errorf("error updating mobile app: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())

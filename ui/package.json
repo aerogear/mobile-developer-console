@@ -19,6 +19,7 @@
     "qrcode.react": "^0.8.0",
     "react": "^16.6.0",
     "react-copy-to-clipboard": "^5.0.1",
+    "react-debounce-input": "^3.2.0",
     "react-dom": "^16.6.0",
     "react-jsonschema-form": "^1.0.6",
     "react-moment": "^0.7.9",
