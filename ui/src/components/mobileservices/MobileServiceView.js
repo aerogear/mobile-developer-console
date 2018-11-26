@@ -44,7 +44,10 @@ class MobileServiceView extends Component {
       <React.Fragment>
         <h2 key="unbound-services">Unbound Services</h2>
         {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
-          this.props.unboundServices.map(service => <UnboundServiceRow key={service.getId()} service={service} />)
+          this.props.unboundServices.map(service => {
+            this.setDefaultBindingProperties(service);
+            return <UnboundServiceRow key={service.getId()} service={service} />;
+          })
         ) : (
           <EmptyState>There are no unbound services.</EmptyState>
         )}
