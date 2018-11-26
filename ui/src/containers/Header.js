@@ -27,7 +27,7 @@ class Header extends Component {
     return (
       <NavHeader
         title="Mobile Developer Console"
-        titleHref="/"
+        titleHref="/overview"
         user={user}
         helpDropdownItems={helpDropdowns}
         userDropdownItems={userDropdowns}

@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import './NavHeader.css';
 
 export const _NavHeader = ({ title, user, helpDropdownItems, userDropdownItems, titleHref, history }) => (
-  <Masthead title={title} navToggle={false} onTitleClick={() => history.push(titleHref)}>
+  <Masthead title={title} navToggle={false} href={titleHref}>
     <Masthead.Collapse>
       <Masthead.Dropdown id="app-help-dropdown" noCaret title={<span title="Help" className="pficon pficon-help" />}>
         {helpDropdownItems.map((item, index) => (

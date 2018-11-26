@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Spinner } from 'patternfly-react';
+import { EmptyState, Spinner } from 'patternfly-react';
 import { connect } from 'react-redux';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
@@ -33,7 +33,7 @@ class MobileServiceView extends Component {
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
           this.props.boundServices.map(service => <BoundServiceRow key={service.getId()} service={service} />)
         ) : (
-          <h3>There are no bound services.</h3>
+          <EmptyState>There are no bound services.</EmptyState>
         )}
       </React.Fragment>
     );
@@ -46,7 +46,7 @@ class MobileServiceView extends Component {
         {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
           this.props.unboundServices.map(service => <UnboundServiceRow key={service.getId()} service={service} />)
         ) : (
-          <h3>There are no unbound services.</h3>
+          <EmptyState>There are no unbound services.</EmptyState>
         )}
       </React.Fragment>
     );
