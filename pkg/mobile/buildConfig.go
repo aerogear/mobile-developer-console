@@ -1,10 +1,16 @@
 package mobile
 
 import (
+	"fmt"
+	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	v1 "github.com/openshift/api/build/v1"
 	buildv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
+)
+
+const (
+	BUILD_CONFIG_LABEL_NAME = "mobile-client-id"
 )
 
 type BuildConfigCRUDLImpl struct {
@@ -52,4 +58,21 @@ func (crudl *BuildConfigCRUDLImpl) Watch() func() (watch.Interface, error) {
 		watchOpts := metav1.ListOptions{}
 		return crudl.buildClient.BuildConfigs(crudl.namespace).Watch(watchOpts)
 	}
+}
+
+func (crudl *BuildConfigCRUDLImpl) DeleteAppData(mobileClient *v1alpha1.MobileClient) error {
+	client := crudl.buildClient.BuildConfigs(mobileClient.GetNamespace())
+	listOpts := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("%s=%s", BUILD_CONFIG_LABEL_NAME, mobileClient.GetName()),
+	}
+	list, err := client.List(listOpts)
+	if err != nil {
+		return err
+	}
+
+	for _, bc := range list.Items {
+		client.Delete(bc.GetName(), &metav1.DeleteOptions{})
+	}
+
+	return nil
 }

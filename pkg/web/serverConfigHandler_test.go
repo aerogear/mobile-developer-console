@@ -22,32 +22,32 @@ func setupServerConfigHandler(apiPrefix string, config config.Config) *httptest.
 }
 
 func TestServerConfigEndpoint(t *testing.T) {
-	cases := []struct{
-		Name string
+	cases := []struct {
+		Name               string
 		ExpectedStatusCode int
-		ExpectedContent string
-		Config config.Config
+		ExpectedContent    string
+		Config             config.Config
 	}{
 		{
-			Name: "Test build tabe is enabled",
+			Name:               "Test build tabe is enabled",
 			ExpectedStatusCode: 200,
-			ExpectedContent: "\"ENABLE_BUILD_TAB\":true",
-			Config: config.Config{BuildTabEnabled:true},
+			ExpectedContent:    "\"ENABLE_BUILD_TAB\":true",
+			Config:             config.Config{BuildTabEnabled: true},
 		},
 		{
-			Name: "Test build tabe is disabled",
+			Name:               "Test build tabe is disabled",
 			ExpectedStatusCode: 200,
-			ExpectedContent: "\"ENABLE_BUILD_TAB\":false",
-			Config: config.Config{BuildTabEnabled:false},
+			ExpectedContent:    "\"ENABLE_BUILD_TAB\":false",
+			Config:             config.Config{BuildTabEnabled: false},
 		},
 	}
 
 	apiPrefix = "/api"
 
-	for _,tc := range cases {
+	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
 			server := setupServerConfigHandler(apiPrefix, tc.Config)
-			defer  server.Close()
+			defer server.Close()
 
 			client := &http.Client{}
 			req, _ := http.NewRequest("GET", fmt.Sprintf("%s%s/server_config.js", server.URL, apiPrefix), nil)
@@ -71,4 +71,3 @@ func TestServerConfigEndpoint(t *testing.T) {
 		})
 	}
 }
-

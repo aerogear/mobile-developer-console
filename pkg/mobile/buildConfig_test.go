@@ -2,6 +2,7 @@ package mobile
 
 import (
 	"errors"
+	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	"testing"
 
 	ktesting "k8s.io/client-go/testing"
@@ -61,5 +62,47 @@ func TestListMobileBuildConfigs(t *testing.T) {
 				t.Fatalf("list items size %v does not equal to %v", len(buildConfigList.Items), tc.ExpectedListSize)
 			}
 		})
+	}
+}
+
+func TestDeleteBuildConfigsForApp(t *testing.T) {
+	bc1 := &BuildConfig{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "buildConfig1",
+			Namespace: "test",
+			Labels: map[string]string{
+				BUILD_CONFIG_LABEL_NAME: "testapp",
+			},
+		},
+	}
+
+	bc2 := &BuildConfig{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "buildConfig2",
+			Namespace: "test",
+		},
+	}
+
+	mc := &v1alpha1.MobileClient{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: "test",
+			Name:      "testapp",
+		},
+	}
+
+	client := fake.NewSimpleClientset(bc1, bc2).BuildV1()
+	buildConfigCRUDLImpl := NewBuildConfigCRUDL(client, "test")
+	err := buildConfigCRUDLImpl.DeleteAppData(mc)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	list, err := client.BuildConfigs("test").List(metav1.ListOptions{})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if len(list.Items) != 1 {
+		t.Fatalf(" there should be 1 BuildConfig left in the store")
 	}
 }

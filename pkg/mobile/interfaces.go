@@ -14,11 +14,13 @@ type ServiceInstanceLister interface {
 }
 
 type BindableMobileServiceCRUDL interface {
-	List(namespace string, mobileClientName string) (*BindableMobileServiceList, error)
+	NewBindingObject(data ServiceBindingCreateRequest, client *v1alpha1.MobileClient) *scv1beta1.ServiceBinding
+	List(client *v1alpha1.MobileClient) (*BindableMobileServiceList, error)
 	Delete(namespace string, bindingName string) error
-	Create(namespace string, binding *scv1beta1.ServiceBinding, formData map[string]interface{}) (*scv1beta1.ServiceBinding, error)
-	Watch(namespace string, mobileClientName string) func() (watch.Interface, error)
+	Create(binding *scv1beta1.ServiceBinding, formData map[string]interface{}) (*scv1beta1.ServiceBinding, error)
+	Watch(client *v1alpha1.MobileClient) func() (watch.Interface, error)
 }
+
 type BuildCRUDL interface {
 	List() (*ExtendedBuildList, error)
 	Watch() func() (watch.Interface, error)
@@ -46,4 +48,12 @@ type SecretsCRUDL interface {
 	Create(namespace string, secret *k8v1.Secret) (*k8v1.Secret, error)
 	List(namespace string) (*k8v1.SecretList, error)
 	Watch(namespace string) func() (watch.Interface, error)
+}
+
+type AppDataDeleter interface {
+	DeleteAppData(client *v1alpha1.MobileClient) error
+}
+
+type AppDeleter interface {
+	Delete(mobileClient *v1alpha1.MobileClient) error
 }

@@ -1,6 +1,8 @@
 package mobile
 
 import (
+	"fmt"
+	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
@@ -33,4 +35,22 @@ func (crudl *SecretsCRUDLImpl) Watch(namespace string) func() (watch.Interface, 
 		}
 		return crudl.secretsClient.Secrets(namespace).Watch(watchOpts)
 	}
+}
+
+func (crudl *SecretsCRUDLImpl) DeleteAppData(mobileClient *v1alpha1.MobileClient) error {
+	client := crudl.secretsClient.Secrets(mobileClient.GetNamespace())
+
+	listOpts := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("%s=%s", BUILD_CONFIG_LABEL_NAME, mobileClient.GetName()),
+	}
+	list, err := client.List(listOpts)
+	if err != nil {
+		return err
+	}
+
+	for _, bc := range list.Items {
+		client.Delete(bc.GetName(), &metav1.DeleteOptions{})
+	}
+
+	return nil
 }

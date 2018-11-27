@@ -2,22 +2,24 @@ package web
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
+	"github.com/aerogear/mobile-developer-console/pkg/mobile"
 	"io/ioutil"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"encoding/json"
-	"github.com/aerogear/mobile-developer-console/pkg/mobile"
 )
 
 const (
-	SB_API_PREFIX = "/api"
+	SB_API_PREFIX     = "/api"
 	SB_TEST_NAMESPACE = "sbtest"
 )
 
-func setupServiceBindingServer(store mobile.BindableMobileServiceCRUDL, apiPrefix string) *httptest.Server {
-	h := NewMobileServiceBindingsHandler(store, SB_TEST_NAMESPACE)
+func setupServiceBindingServer(store mobile.BindableMobileServiceCRUDL, mobileClientRepo mobile.MobileClientRepo, apiPrefix string) *httptest.Server {
+	h := NewMobileServiceBindingsHandler(store, mobileClientRepo, SB_TEST_NAMESPACE)
 
 	r := NewRouter("", SB_API_PREFIX)
 	apiRoute := r.Group(SB_API_PREFIX)
@@ -28,8 +30,8 @@ func setupServiceBindingServer(store mobile.BindableMobileServiceCRUDL, apiPrefi
 }
 
 func TestServiceBindingsEndpoints(t *testing.T) {
-	cases := []struct{
-		Name string
+	cases := []struct {
+		Name             string
 		GetResponse      func(server *httptest.Server) (*http.Response, error)
 		ExpectError      bool
 		ExpectStatusCode int
@@ -39,44 +41,71 @@ func TestServiceBindingsEndpoints(t *testing.T) {
 		{
 			Name: "test create a binding",
 			GetResponse: func(server *httptest.Server) (*http.Response, error) {
-				url := fmt.Sprintf("%s%s/bindableservices",  server.URL, SB_API_PREFIX)
+				url := fmt.Sprintf("%s%s/bindableservices", server.URL, SB_API_PREFIX)
 				jsonStr := []byte(`{"serviceInstanceName":"testInstance", "serviceClassExternalName": "testClass", "bindingParametersName": "testBindParameter", "bindingSecretName": "testBindSecretName", "formData":{"CLIENT_ID": "testapp"}}`)
 				return http.Post(url, "application/json", bytes.NewBuffer(jsonStr))
 			},
-			ExpectError: false,
+			ExpectError:      false,
 			ExpectStatusCode: 200,
-			ExpectListSize: 0,
+			ExpectListSize:   0,
+		},
+		{
+			Name: "test create a binding with invalid client id",
+			GetResponse: func(server *httptest.Server) (*http.Response, error) {
+				url := fmt.Sprintf("%s%s/bindableservices", server.URL, SB_API_PREFIX)
+				jsonStr := []byte(`{"serviceInstanceName":"testInstance", "serviceClassExternalName": "testClass", "bindingParametersName": "testBindParameter", "bindingSecretName": "testBindSecretName", "formData":{"CLIENT_ID": "invalidappid"}}`)
+				return http.Post(url, "application/json", bytes.NewBuffer(jsonStr))
+			},
+			ExpectError:      false,
+			ExpectStatusCode: 400,
+			ExpectListSize:   0,
 		},
 		{
 			Name: "test list bindings",
 			GetResponse: func(server *httptest.Server) (*http.Response, error) {
-				url := fmt.Sprintf("%s%s/bindableservices/testapp",  server.URL, SB_API_PREFIX)
+				url := fmt.Sprintf("%s%s/bindableservices/testapp", server.URL, SB_API_PREFIX)
 				return http.Get(url)
 			},
-			ExpectError: false,
+			ExpectError:      false,
 			ExpectStatusCode: 200,
-			ExpectListSize: 1,
+			ExpectListSize:   0,
+		},
+		{
+			Name: "test list bindings with invalid client id",
+			GetResponse: func(server *httptest.Server) (*http.Response, error) {
+				url := fmt.Sprintf("%s%s/bindableservices/invalidappid", server.URL, SB_API_PREFIX)
+				return http.Get(url)
+			},
+			ExpectError:      false,
+			ExpectStatusCode: 400,
+			ExpectListSize:   0,
 		},
 		{
 			Name: "test delete a binding",
 			GetResponse: func(server *httptest.Server) (*http.Response, error) {
 				client := &http.Client{}
-				url := fmt.Sprintf("%s%s/bindableservices/testapp",  server.URL, SB_API_PREFIX)
+				url := fmt.Sprintf("%s%s/bindableservices/bindingname", server.URL, SB_API_PREFIX)
 				req, err := http.NewRequest("DELETE", url, nil)
 				if err != nil {
 					return nil, err
 				}
 				return client.Do(req)
 			},
-			ExpectError: false,
+			ExpectError:      false,
 			ExpectStatusCode: 200,
-			ExpectListSize: 0,
+			ExpectListSize:   0,
 		},
-
 	}
 
 	mockBindableServiceCRULD := mobile.NewMockBindableServices()
-	server := setupServiceBindingServer(mockBindableServiceCRULD, SB_API_PREFIX)
+	mc := &v1alpha1.MobileClient{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "testapp",
+			Namespace: SB_TEST_NAMESPACE,
+		},
+	}
+	mockMobileClientRepo := mobile.NewMockMobileClientRepo(mc)
+	server := setupServiceBindingServer(mockBindableServiceCRULD, mockMobileClientRepo, SB_API_PREFIX)
 	defer server.Close()
 
 	for _, tc := range cases {

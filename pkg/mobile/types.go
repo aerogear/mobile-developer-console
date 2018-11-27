@@ -41,3 +41,10 @@ type BindableMobileService struct {
 type BindableMobileServiceList struct {
 	Items []BindableMobileService `json:"items"`
 }
+type ServiceBindingCreateRequest struct {
+	ServiceInstanceName      string                 `json:"serviceInstanceName" validate:"required"`
+	ServiceClassExternalName string                 `json:"serviceClassExternalName" validate:"required"`
+	BindingParametersKey     string                 `json:"bindingParametersName" validate:"required"`
+	BindingSecretKey         string                 `json:"bindingSecretName" validate:"required"`
+	FormData                 map[string]interface{} `json:"formData" validate:"required"`
+}

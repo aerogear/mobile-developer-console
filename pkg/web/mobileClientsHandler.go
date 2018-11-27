@@ -206,16 +206,6 @@ func (h *MobileClientsHandler) Update(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (h *MobileClientsHandler) Delete(c echo.Context) error {
-	name := c.Param("name")
-	err := h.mobileClientRepo.DeleteByName(name)
-	if err != nil {
-		c.Logger().Errorf("error deleting mobile app: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
-	}
-	return c.NoContent(http.StatusOK)
-}
-
 func (h *MobileClientsHandler) Watch(c echo.Context) error {
 	getWatchInterface := h.mobileClientRepo.Watch()
 
