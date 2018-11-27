@@ -49,7 +49,10 @@ func (crudl *SecretsCRUDLImpl) DeleteAppData(mobileClient *v1alpha1.MobileClient
 	}
 
 	for _, bc := range list.Items {
-		client.Delete(bc.GetName(), &metav1.DeleteOptions{})
+		err := client.Delete(bc.GetName(), &metav1.DeleteOptions{})
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

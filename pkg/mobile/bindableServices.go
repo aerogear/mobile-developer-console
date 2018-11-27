@@ -108,7 +108,10 @@ func (bms *BindableMobileServiceCRUDLImpl) DeleteAppData(mobileClient *v1alpha1.
 	}
 
 	for _, binding := range bindings.Items {
-		bms.Delete(mobileClient.GetNamespace(), binding.GetName())
+		err := bms.Delete(mobileClient.GetNamespace(), binding.GetName())
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
