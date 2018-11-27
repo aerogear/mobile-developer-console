@@ -67,7 +67,7 @@ class UnboundServiceRow extends Component {
     }
     return (
       <div>
-        <Button onClick={() => this.setState({ showModal: true })}>Bind to App</Button>
+        <Button className="bind-button" onClick={() => this.setState({ showModal: true })}>Bind to App</Button>
       </div>
     );
   }
@@ -77,6 +77,7 @@ class UnboundServiceRow extends Component {
       <React.Fragment>
         <ListViewItem
           additionalInfo={[this.renderServiceBadge(), this.renderBindingStatus()]}
+          className="unboundService"
           actions={this.renderBindingButtons()}
         />
         <BindingPanel
