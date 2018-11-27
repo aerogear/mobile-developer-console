@@ -188,14 +188,39 @@ func attachCurrentBindings(lister *BindableMobileServiceCRUDLImpl, mobileClient 
 			for key, jsonString := range serviceConfigurationAnnotations {
 				if strings.Contains(key, "org.aerogear.binding."+serviceInstance.ObjectMeta.Name) {
 					bindableService.Configuration = append(bindableService.Configuration, jsonString)
+				} else if strings.Contains(key, "org.aerogear.binding-ext."+serviceInstance.ObjectMeta.Name){
+					// aerogear extended annotations
+					bindableService.ConfigurationExt = append(bindableService.ConfigurationExt, jsonString)
 				}
 			}
 		}
 	}
 
+	// remove duplicates in the config.
+	// in case of services that can have multiple bindings, we don't want to have duplicate elements.
+	bindableService.Configuration = removeDuplicatesUnordered(bindableService.Configuration)
+	bindableService.ConfigurationExt = removeDuplicatesUnordered(bindableService.ConfigurationExt)
+
 	bindableService.ServiceBinding = serviceBinding
 	return nil
 }
+
+func removeDuplicatesUnordered(elements []string) []string {
+	encountered := map[string]bool{}
+
+	// Create a map of all unique elements.
+	for v:= range elements {
+		encountered[elements[v]] = true
+	}
+
+	// Place all keys from the map into a slice.
+	result := []string{}
+	for key, _ := range encountered {
+		result = append(result, key)
+	}
+	return result
+}
+
 
 func attachServicePlan(bindableService *BindableMobileService, servicePlans *v1beta1.ClusterServicePlanList, csc *v1beta1.ClusterServiceClass) {
 	var servicePlan ServicePlan

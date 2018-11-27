@@ -8,6 +8,7 @@ import { createBinding } from '../../actions/serviceBinding';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import { OpenShiftObjectTemplate } from './bindingPanelUtils';
+import _ from 'lodash';
 
 import { FormValidator } from './validator/FormValidator';
 import validationConfig from './ValidationRules.json';
@@ -20,6 +21,40 @@ export class BindingPanel extends Component {
     this.onBackButtonClick = this.onBackButtonClick.bind(this);
     this.renderPropertiesSchema = this.renderPropertiesSchema.bind(this);
     this.validate = this.validate.bind(this);
+
+    const serviceName = this.props.service.getName();
+    let schema = this.props.service.getBindingSchema();
+    let form = this.props.service.getFormDefinition();
+    const { service } = this.props;
+
+    if(this.isUPSService()){
+      const hasUPSAndroidAnnotation = this.hasUPSAndroidAnnotation();
+      const hasUPSIOSAnnotation = this.hasUPSIOSAnnotation();
+
+      if(hasUPSAndroidAnnotation && !hasUPSIOSAnnotation){ // UPS, there's already an Android variant
+          if (schema.properties.CLIENT_TYPE) {
+              schema.properties.CLIENT_TYPE.default = "IOS";
+              schema.properties.CLIENT_TYPE.enum = ["IOS"];
+          }
+      }
+      else if(!hasUPSAndroidAnnotation && hasUPSIOSAnnotation){ // UPS, there's already an IOS variant
+          if (schema.properties.CLIENT_TYPE) {
+              schema.properties.CLIENT_TYPE.default = "Android";
+              schema.properties.CLIENT_TYPE.enum = ["Android"];
+          }
+      }
+      // we don't care if there are variants for both platforms.
+      // this binding panel shouldn't be shown anyway
+    }
+
+    this.state = {
+        serviceName,
+        schema,
+        form,
+        loading: false,
+        service,
+        activeStepIndex: 0
+    };
   }
 
   onNextButtonClick() {
@@ -46,20 +81,65 @@ export class BindingPanel extends Component {
     this.open();
   }
 
-  componentWillMount() {
-    const serviceName = this.props.service.getName();
-    const schema = this.props.service.getBindingSchema();
-    const form = this.props.service.getFormDefinition();
-    const { service } = this.props;
+  isUPSService(){
+    return this.props.service.serviceClass &&
+        this.props.service.serviceClass.spec &&
+        this.props.service.serviceClass.spec.data &&
+        this.props.service.serviceClass.spec.data.externalName === "ag-unifiedpush-apb";
+  }
 
-    this.setState({
-      serviceName,
-      schema,
-      form,
-      loading: false,
-      service,
-      activeStepIndex: 0
-    });
+  hasUPSAndroidAnnotation(){
+    return this.hasUPSPlatformAnnotation("android");
+  }
+
+  hasUPSIOSAnnotation(){
+    return this.hasUPSPlatformAnnotation("ios");
+  }
+
+  hasUPSPlatformAnnotation(platform){
+      // configExt field example value:
+      // it is an array of annotations that start with org.aerogear.binding-ext
+      // and our annotation's value is also an array
+      /*
+      [
+        [
+          {
+            "type": "android",
+            "typeLabel": "Android",
+            "url": "https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/d6f4836a-11df-42d1-a442-e9cc823715a4",
+            "id": "d6f4836a-11df-42d1-a442-e9cc823715a4"
+          }
+        ]
+      ]
+      */
+      // there won't be any variant annotations if there is no binding yet
+      if(!this.props.service.isBound()){
+        return false;
+      }
+
+      const configExt = this.props.service.getConfigurationExt();
+      
+      if (!configExt || !configExt.length) {
+          return false;
+      }
+
+      for(let configItemStr of configExt){
+          let configExtItem;
+          try{
+              configExtItem = JSON.parse(configItemStr);
+          } catch (err){
+            // not much we can do if the annotation is malformed
+            return false;
+          }
+          if (configExtItem && configExtItem.length && configExtItem.length > 0) {
+              for(let variantInfo of configExtItem){
+                  if(variantInfo.type === platform){
+                      return true;
+                  }
+              }
+          }
+      }
+      return false;
   }
 
   renderPropertiesSchema() {

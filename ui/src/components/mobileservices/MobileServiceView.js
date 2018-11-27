@@ -18,7 +18,10 @@ class MobileServiceView extends Component {
       <React.Fragment>
         <h2 key="bound-services">Bound Services</h2>
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
-          this.props.boundServices.map(service => <BoundServiceRow key={service.getId()} service={service} />)
+          this.props.boundServices.map(service => {
+            this.setDefaultBindingProperties(service);
+            return <BoundServiceRow key={service.getId()} service={service} />
+          })
         ) : (
           <EmptyState>There are no bound services.</EmptyState>
         )}
