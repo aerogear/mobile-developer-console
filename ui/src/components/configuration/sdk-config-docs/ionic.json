@@ -1,6 +1,6 @@
 {
-   "icon":"/img/cordova.png",
-   "title":"Cordova",
+    "icon":"/img/ionic.png",
+    "title":"Ionic",
    "sdkInit": {
     "introduction": "First step is to install the Core AeroGear module, the module manages and binds all services together on the client side.",
      "commands": [

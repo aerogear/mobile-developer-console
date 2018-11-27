@@ -9,7 +9,7 @@ export const ServiceSDKDocs = ({ mobileApp }) => {
   if (mobileApp) {
     const status = mobileApp.getStatus();
     const { services = [] } = { services: status.getServices() };
-    return (
+    return services ? (
       <React.Fragment>
         <ol>
           <ServiceSDKSetup docs={sdkConfigDocs.sdkInit} />
@@ -18,6 +18,8 @@ export const ServiceSDKDocs = ({ mobileApp }) => {
           ))}
         </ol>
       </React.Fragment>
+    ) : (
+      <React.Fragment />
     );
   }
   return <React.Fragment />;

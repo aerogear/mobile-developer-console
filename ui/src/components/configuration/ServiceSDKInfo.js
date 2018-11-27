@@ -10,23 +10,20 @@ export const ServiceSDKInfo = ({ mobileApp }) => {
   if (mobileApp) {
     const status = mobileApp.getStatus();
     const { services = [] } = { services: status.getServices() };
-    return (
+    return services ? (
       <React.Fragment>
         {services.map(({ type }) => {
-          const { serviceDescription, serviceLogoUrl, serviceName, setupText, docsLink } = sdkConfigDocs.services[type];
-          const tooltip = <Tooltip id={serviceName}>{serviceDescription}</Tooltip>;
+          const { serviceLogoUrl, serviceName, setupText, docsLink } = sdkConfigDocs.services[type];
           return (
             <Col md={6} className="service-sdk-info">
-              <OverlayTrigger placement="top" overlay={tooltip}>
-                <Col md={12}>
-                  <img src={serviceLogoUrl} alt="" />
-                  <div className="service-name">
-                    <h4>
-                      <div>{serviceName}</div>
-                    </h4>
-                  </div>
-                </Col>
-              </OverlayTrigger>
+              <Col md={12}>
+                <img src={serviceLogoUrl} alt="" />
+                <div className="service-name">
+                  <h4>
+                    <div>{serviceName}</div>
+                  </h4>
+                </div>
+              </Col>
               <Col md={12}>
                 <div className="service-details">
                   <h5>
@@ -40,6 +37,8 @@ export const ServiceSDKInfo = ({ mobileApp }) => {
           );
         })}
       </React.Fragment>
+    ) : (
+      <React.Fragment />
     );
   }
   return <React.Fragment />;
