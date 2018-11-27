@@ -37,7 +37,8 @@ func addBasicAuthConfig(config *mobile.BuildConfig, secrets []v1.Secret, data Bu
 		ObjectMeta: metav1.ObjectMeta{
 			Name: data.Source.BasicAuth.Name,
 			Labels: map[string]string{
-				"mobile-client-build": "true",
+				"mobile-client-build":          "true",
+				mobile.BUILD_CONFIG_LABEL_NAME: data.ClientID,
 			},
 		},
 		StringData: map[string]string{
@@ -57,7 +58,8 @@ func addSSHAuthConfig(config *mobile.BuildConfig, secrets []v1.Secret, data Buil
 		ObjectMeta: metav1.ObjectMeta{
 			Name: data.Source.SSHAuth.Name,
 			Labels: map[string]string{
-				"mobile-client-build": "true",
+				"mobile-client-build":          "true",
+				mobile.BUILD_CONFIG_LABEL_NAME: data.ClientID,
 			},
 		},
 		StringData: map[string]string{
@@ -100,6 +102,7 @@ func addIOSBuildConfig(config *mobile.BuildConfig, secrets []v1.Secret, data Bui
 			Labels: map[string]string{
 				"mobile-client-build":                  "true",
 				"credential.sync.jenkins.openshift.io": "true",
+				mobile.BUILD_CONFIG_LABEL_NAME:         data.ClientID,
 			},
 		},
 		Data: map[string][]byte{
@@ -125,6 +128,7 @@ func addAndroidBuildConfig(config *mobile.BuildConfig, secrets []v1.Secret, data
 			Labels: map[string]string{
 				"mobile-client-build":                  "true",
 				"credential.sync.jenkins.openshift.io": "true",
+				mobile.BUILD_CONFIG_LABEL_NAME:         data.ClientID,
 			},
 		},
 		Data: map[string][]byte{
@@ -164,7 +168,7 @@ func newBuildConfigObject(data BuildConfigCreateRequest, namespace string) (*mob
 			Labels: map[string]string{
 				"mobile-client-build":          "true",
 				"mobile-client-build-platform": data.Build.Platform,
-				"mobile-client-id":             data.ClientID,
+				mobile.BUILD_CONFIG_LABEL_NAME: data.ClientID,
 				"mobile-client-type":           data.ClientType,
 			},
 		},

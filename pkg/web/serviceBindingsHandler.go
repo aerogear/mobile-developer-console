@@ -1,29 +1,35 @@
 package web
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/aerogear/mobile-developer-console/pkg/mobile"
-	scv1beta1 "github.com/kubernetes-incubator/service-catalog/pkg/apis/servicecatalog/v1beta1"
 	"github.com/labstack/echo"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type BindableMobileServiceHandler struct {
 	namespace            string
 	bindableServiceCRUDL mobile.BindableMobileServiceCRUDL
+	mobileClientRepo     mobile.MobileClientRepo
 }
 
-func NewMobileServiceBindingsHandler(bindableServiceCRUDL mobile.BindableMobileServiceCRUDL, namespace string) *BindableMobileServiceHandler {
+func NewMobileServiceBindingsHandler(bindableServiceCRUDL mobile.BindableMobileServiceCRUDL, mobileClientRepo mobile.MobileClientRepo, namespace string) *BindableMobileServiceHandler {
 	return &BindableMobileServiceHandler{
 		bindableServiceCRUDL: bindableServiceCRUDL,
+		mobileClientRepo:     mobileClientRepo,
 		namespace:            namespace,
 	}
 }
 
 func (msih *BindableMobileServiceHandler) List(c echo.Context) error {
 	mobileClientName := c.Param("name")
-	si, err := msih.bindableServiceCRUDL.List(msih.namespace, mobileClientName)
+	mobileClient, err := msih.mobileClientRepo.ReadByName(mobileClientName)
+	if err != nil {
+		c.Logger().Errorf("can not read app with name %s due to error %v", mobileClientName, err)
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	si, err := msih.bindableServiceCRUDL.List(mobileClient)
 	if err != nil {
 		c.Logger().Errorf("error listing service bindings %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
@@ -34,9 +40,14 @@ func (msih *BindableMobileServiceHandler) List(c echo.Context) error {
 func (msih *BindableMobileServiceHandler) Watch(c echo.Context) error {
 	mobileClientName := c.Param("name")
 
-	getWatchInterface := msih.bindableServiceCRUDL.Watch(msih.namespace, mobileClientName)
+	mobileClient, err := msih.mobileClientRepo.ReadByName(mobileClientName)
+	if err != nil {
+		c.Logger().Errorf("can not read app with name %s due to error %v", mobileClientName, err)
+		return c.String(http.StatusBadRequest, err.Error())
+	}
 
-	err := ServeWS(c, getWatchInterface)
+	getWatchInterface := msih.bindableServiceCRUDL.Watch(mobileClient)
+	err = ServeWS(c, getWatchInterface)
 	if err != nil {
 		c.Logger().Errorf("error watching build configs: %v", err)
 		return c.String(http.StatusInternalServerError, err.Error())
@@ -55,7 +66,7 @@ func (msih *BindableMobileServiceHandler) Delete(c echo.Context) error {
 }
 
 func (msih *BindableMobileServiceHandler) Create(c echo.Context) error {
-	reqData := new(ServiceBindingCreateRequest)
+	reqData := new(mobile.ServiceBindingCreateRequest)
 	if err := c.Bind(&reqData); err != nil {
 		c.Logger().Errorf("Could not bind request to ServiceBindingCreateRequest %v", err)
 		return c.String(http.StatusBadRequest, err.Error())
@@ -66,8 +77,20 @@ func (msih *BindableMobileServiceHandler) Create(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	binding := newMobileBindingObject(*reqData)
-	binding, err := msih.bindableServiceCRUDL.Create(msih.namespace, binding, reqData.FormData)
+	consumerID := reqData.FormData["CLIENT_ID"].(string)
+	if consumerID == "" {
+		err := errors.New("CLIENT_ID is empty")
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	mobileClient, err := msih.mobileClientRepo.ReadByName(consumerID)
+	if err != nil {
+		c.Logger().Errorf("can not read app with name %s due to error %v", consumerID, err)
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	binding := msih.bindableServiceCRUDL.NewBindingObject(*reqData, mobileClient)
+	binding, err = msih.bindableServiceCRUDL.Create(binding, reqData.FormData)
 
 	if err != nil {
 		c.Logger().Errorf("error creating service binding %v", err)
@@ -75,38 +98,4 @@ func (msih *BindableMobileServiceHandler) Create(c echo.Context) error {
 	}
 
 	return c.JSON(200, binding)
-}
-
-func newMobileBindingObject(data ServiceBindingCreateRequest) *scv1beta1.ServiceBinding {
-
-	keyRef := scv1beta1.SecretKeyReference{
-		Key:  "parameters",
-		Name: data.BindingParametersKey,
-	}
-
-	consumerID := data.FormData["CLIENT_ID"].(string)
-
-	return &scv1beta1.ServiceBinding{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "ServiceBinding",
-			APIVersion: "servicecatalog.k8s.io/v1beta1",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			GenerateName: consumerID + "-" + data.ServiceClassExternalName + "-",
-			Annotations: map[string]string{
-				"binding.aerogear.org/consumer": consumerID,
-				"binding.aerogear.org/provider": data.ServiceInstanceName,
-			},
-		},
-		Spec: scv1beta1.ServiceBindingSpec{
-			ServiceInstanceRef: scv1beta1.LocalObjectReference{
-				Name: data.ServiceInstanceName,
-			},
-			SecretName: data.BindingSecretKey,
-			ParametersFrom: []scv1beta1.ParametersFromSource{{
-				SecretKeyRef: &keyRef,
-			},
-			},
-		},
-	}
 }

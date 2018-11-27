@@ -61,10 +61,15 @@ func main() {
 	}
 
 	mobileClientsRepo := mobile.NewMobileClientRepo(namespace)
+	appDataDeleters := make([]mobile.AppDataDeleter, 0)
 	secretsCRUDL := mobile.NewSecretsCRUDL(k8sClient.CoreV1())
+	appDataDeleters = append(appDataDeleters, secretsCRUDL)
 	{
-		sbLister := mobile.NewServiceBindingLister(scClient.ServicecatalogV1beta1(), mobileClientsRepo, secretsCRUDL)
-		mobileServicebindingsHandler := web.NewMobileServiceBindingsHandler(sbLister, namespace)
+		sbLister := mobile.NewServiceBindingLister(scClient.ServicecatalogV1beta1(), secretsCRUDL)
+
+		appDataDeleters = append(appDataDeleters, sbLister)
+
+		mobileServicebindingsHandler := web.NewMobileServiceBindingsHandler(sbLister, mobileClientsRepo, namespace)
 		web.SetupBindableMobileServiceRoute(apiGroup, mobileServicebindingsHandler)
 	}
 	{
@@ -86,6 +91,8 @@ func main() {
 
 		buildConfigCRUDL := mobile.NewBuildConfigCRUDL(buildClient, namespace)
 
+		appDataDeleters = append(appDataDeleters, buildConfigCRUDL)
+
 		mobileBuildConfigsHandler := web.NewMobileBuildConfigsHandler(buildConfigCRUDL, secretsCRUDL, namespace)
 		web.SetupMobileBuildConfigsRoute(apiGroup, mobileBuildConfigsHandler)
 	}
@@ -94,6 +101,10 @@ func main() {
 		mobileClientsHandler := web.NewMobileClientsHandler(mobileClientsRepo, namespace, cfg.Host)
 		web.SetupMoileClientsRoute(apiGroup, mobileClientsHandler)
 	}
+
+	appDeleter := mobile.NewAppDeleter(mobileClientsRepo, appDataDeleters...)
+	deleteMobileClientHandler := web.NewDeleteMobileClientHander(mobileClientsRepo, appDeleter)
+	web.SetupDeleteMobileClientRoute(apiGroup, deleteMobileClientHandler)
 
 	userHandler := web.NewUserHandler()
 	web.SetupUserRouter(apiGroup, userHandler)

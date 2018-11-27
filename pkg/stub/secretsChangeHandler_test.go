@@ -1,15 +1,14 @@
 package stub
 
 import (
-	"github.com/aerogear/mobile-developer-console/pkg/mobile"
-	"testing"
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
+	"github.com/aerogear/mobile-developer-console/pkg/mobile"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
+	"testing"
 
 	k8v1 "k8s.io/api/core/v1"
 )
-
 
 type mockWatchInterface struct{}
 
@@ -71,8 +70,8 @@ func createSecret(clientId string, url string) k8v1.Secret {
 
 func TestHandler(t *testing.T) {
 	cases := []struct {
-		Name    string
-		Secrets []k8v1.Secret
+		Name             string
+		Secrets          []k8v1.Secret
 		ExpectedServices int
 	}{
 		{
@@ -82,7 +81,7 @@ func TestHandler(t *testing.T) {
 				k8v1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Labels: map[string]string{
-							"mobile": "enabled",
+							"mobile":   "enabled",
 							"clientId": "test-app",
 						},
 					},
@@ -92,8 +91,8 @@ func TestHandler(t *testing.T) {
 			ExpectedServices: 1,
 		},
 		{
-			Name:    "test no bindings",
-			Secrets: []k8v1.Secret{},
+			Name:             "test no bindings",
+			Secrets:          []k8v1.Secret{},
 			ExpectedServices: 0,
 		},
 	}

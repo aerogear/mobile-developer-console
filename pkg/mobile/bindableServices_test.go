@@ -26,6 +26,15 @@ func getSecrectClient(objects ...runtime.Object) SecretsCRUDL {
 	return NewSecretsCRUDL(coreClient.CoreV1())
 }
 
+func newTestMobileClient(name string) *v1alpha1.MobileClient {
+	return &v1alpha1.MobileClient{
+		ObjectMeta: v1.ObjectMeta{
+			Name:      "testapp",
+			Namespace: namespace,
+		},
+	}
+}
+
 func TestCreate(t *testing.T) {
 	cases := []struct {
 		Name          string
@@ -45,8 +54,11 @@ func TestCreate(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			scClient := tc.SCClient
 			secretClient := tc.SecrectClient
-			c := NewServiceBindingLister(scClient, nil, secretClient)
+			c := NewServiceBindingLister(scClient, secretClient)
 			binding := &ServiceBinding{
+				ObjectMeta: v1.ObjectMeta{
+					Namespace: namespace,
+				},
 				Spec: sctypes.ServiceBindingSpec{
 					ParametersFrom: []sctypes.ParametersFromSource{
 						{
@@ -58,7 +70,7 @@ func TestCreate(t *testing.T) {
 				},
 			}
 			formData := map[string]interface{}{}
-			sb, err := c.Create(namespace, binding, formData)
+			sb, err := c.Create(binding, formData)
 			if sb == nil {
 				t.Fatalf("failed to create BindableService")
 			}
@@ -98,9 +110,11 @@ func TestWatch(t *testing.T) {
 
 			scClient := tc.SCClient
 			secretClient := tc.SecrectClient
-			crudl := NewServiceBindingLister(scClient, nil, secretClient)
+			crudl := NewServiceBindingLister(scClient, secretClient)
 
-			result, err := crudl.Watch(namespace, "testapp")()
+			mc := newTestMobileClient("testapp")
+
+			result, err := crudl.Watch(mc)()
 			if err != nil {
 				t.Fatalf("error: %v", err)
 			}
@@ -136,7 +150,7 @@ func TestDelete(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
 			scClient := tc.SCClient
-			c := NewServiceBindingLister(scClient, nil, nil)
+			c := NewServiceBindingLister(scClient, nil)
 			bindings, _ := scClient.ServiceBindings(namespace).List(v1.ListOptions{})
 			if len(bindings.Items) != 1 {
 				t.Fatalf("service binding is not created")
@@ -219,13 +233,6 @@ func newSerivceBinding(name string, instanceRef string, status sctypes.Condition
 }
 
 func TestList(t *testing.T) {
-	app := &v1alpha1.MobileClient{
-		ObjectMeta: v1.ObjectMeta{
-			Name:      "testapp",
-			Namespace: namespace,
-		},
-	}
-
 	serviceClass1 := newClusterServiceClass("serviceclass1")
 	servicePlan1 := newClusterServicePlan("serviceplan1", "serviceclass1")
 	serviceInstance1 := newServiceInstance("serviceinstance1", "serviceclass1")
@@ -237,10 +244,9 @@ func TestList(t *testing.T) {
 	serviceBinding2 := newSerivceBinding("serviceBinding2", "serviceinstance2", sctypes.ConditionFalse)
 
 	cases := []struct {
-		Name             string
-		ExpectError      bool
-		SCClient         v1beta1.ServicecatalogV1beta1Interface
-		MobileClientRepo MobileClientRepo
+		Name        string
+		ExpectError bool
+		SCClient    v1beta1.ServicecatalogV1beta1Interface
 	}{
 		{
 			Name:        "List BindableServices for an app",
@@ -254,14 +260,13 @@ func TestList(t *testing.T) {
 				servicePlan2,
 				serviceInstance2,
 				serviceBinding2),
-			MobileClientRepo: NewMockMobileClientRepo(app),
 		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.Name, func(t *testing.T) {
 			scClient := tc.SCClient
-			c := NewServiceBindingLister(scClient, tc.MobileClientRepo, nil)
-			bindableServiceList, err := c.List(namespace, "testapp")
+			c := NewServiceBindingLister(scClient, nil)
+			bindableServiceList, err := c.List(newTestMobileClient("testapp"))
 			if err != nil && !tc.ExpectError {
 				t.Fatalf("unexpected error: %v", err)
 			}
@@ -272,5 +277,73 @@ func TestList(t *testing.T) {
 				t.Fatalf("the isBound status should be different for the 2 BindableServices")
 			}
 		})
+	}
+}
+
+func TestNewBindingObject(t *testing.T) {
+	scClient := getSCClient()
+	secretClient := getSecrectClient()
+	crudl := NewServiceBindingLister(scClient, secretClient)
+
+	mc := newTestMobileClient("testapp")
+	data := ServiceBindingCreateRequest{
+		BindingParametersKey:     "testBindingParameterKey",
+		ServiceClassExternalName: "testServiceClientExternalName",
+		ServiceInstanceName:      "testServiceInstanceName",
+	}
+
+	binding := crudl.NewBindingObject(data, mc)
+	if binding == nil {
+		t.Fatalf("binding object is not returned")
+	}
+	if binding.GetNamespace() == "" {
+		t.Fatalf("namespace is not set")
+	}
+	if binding.GetGenerateName() == "" {
+		t.Fatalf("generatename is not set")
+	}
+	if len(binding.GetAnnotations()) != 2 {
+		t.Fatalf("annotation count is not 2")
+	}
+	if len(binding.Labels) != 1 {
+		t.Fatalf("no labels set")
+	}
+}
+
+func TestDeleteBindingsForApp(t *testing.T) {
+	mc := newTestMobileClient("testapp")
+
+	sb1 := &sctypes.ServiceBinding{
+		ObjectMeta: v1.ObjectMeta{
+			Name:      "testbinding1",
+			Namespace: namespace,
+			Labels: map[string]string{
+				MOBILE_CLIENT_ID_LABEL_NAME: "testapp",
+			},
+		},
+	}
+
+	sb2 := &sctypes.ServiceBinding{
+		ObjectMeta: v1.ObjectMeta{
+			Name:      "testbinding2",
+			Namespace: namespace,
+		},
+	}
+
+	scClient := getSCClient(sb1, sb2)
+	crudl := NewServiceBindingLister(scClient, nil)
+	err := crudl.DeleteAppData(mc)
+
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	list, err := scClient.ServiceBindings(namespace).List(v1.ListOptions{})
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	if len(list.Items) != 1 {
+		t.Fatalf("there should be 1 binding left")
 	}
 }

@@ -228,7 +228,7 @@ func TestMobileClientEndpoints(t *testing.T) {
 				return client.Do(req)
 			},
 			ExpectError:      false,
-			ExpectStatusCode: http.StatusOK,
+			ExpectStatusCode: http.StatusMethodNotAllowed,
 			ExpectListSize:   0,
 		},
 	}

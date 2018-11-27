@@ -2,9 +2,9 @@ package mobile
 
 import (
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
+	errors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
-	errors "k8s.io/apimachinery/pkg/api/errors"
 )
 
 type MockMobileClientRepo struct {
@@ -15,7 +15,7 @@ func NewMockMobileClientRepo(clients ...*v1alpha1.MobileClient) *MockMobileClien
 	repo := &MockMobileClientRepo{}
 	repo.mockStore = make(map[string]*v1alpha1.MobileClient)
 	for _, client := range clients {
-		repo.mockStore[client.Name] = client;
+		repo.mockStore[client.Name] = client
 	}
 	return repo
 }
