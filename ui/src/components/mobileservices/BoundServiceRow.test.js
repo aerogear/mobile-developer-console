@@ -23,7 +23,7 @@ describe('BoundServiceRow', () => {
   it('should display documentation URL in the service row', () => {
     service.getDocumentationUrl = () => 'http://test-url.com';
     const wrapper = shallow(<BoundServiceRow service={service} />);
-    expect(wrapper.find(`a[href="${service.getDocumentationUrl()}"]`).text()).toEqual('SDK Setup');
+    expect(wrapper.find(`a[href="${service.getDocumentationUrl()}"]`).text()).toEqual('SDK Setup ');
   });
 
   it('should display configuration details in the service row', () => {
