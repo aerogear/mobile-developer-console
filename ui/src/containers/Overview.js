@@ -3,17 +3,14 @@ import { connect } from 'react-redux';
 
 import MobileClientCardView from '../components/overview/MobileClientCardView';
 import { fetchApps } from '../actions/apps';
-import { fetchServices } from '../actions/services';
 import { fetchBuilds } from '../actions/builds';
 import DataService from '../DataService';
 
 export class Overview extends Component {
   componentDidMount() {
     this.props.fetchApps();
-    this.props.fetchServices();
 
     this.wsApps = DataService.watchApps(this.props.fetchApps);
-    this.wsServices = DataService.watchServices(this.props.fetchServices);
 
     if (this.props.buildTabEnabled) {
       this.props.fetchBuilds();
@@ -22,11 +19,8 @@ export class Overview extends Component {
   }
 
   componentWillUnmount() {
-    this.wsApps.close();
-    this.wsServices.close();
-    if (this.wsBuilds) {
-      this.wsBuilds.close();
-    }
+    this.wsApps && this.wsApps.close();
+    this.wsBuilds && this.wsBuilds.close();
   }
 
   render() {
@@ -54,7 +48,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   fetchApps,
-  fetchServices,
   fetchBuilds
 };
 
