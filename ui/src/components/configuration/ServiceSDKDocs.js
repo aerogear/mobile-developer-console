@@ -2,20 +2,19 @@ import React from 'react';
 import './ServiceSDKDocs.css';
 import { ServiceSDKSetup } from './ServiceSDKSetup';
 
-// TODO Cordova is hard-coded now, remove in future
-const sdkConfigDocs = require('./sdk-config-docs/cordova.json');
-
-export const ServiceSDKDocs = ({ mobileApp }) => {
+export const ServiceSDKDocs = ({ framework, mobileApp }) => {
   if (mobileApp) {
     const status = mobileApp.getStatus();
     const { services = [] } = { services: status.getServices() };
     return services ? (
       <React.Fragment>
         <ol>
-          <ServiceSDKSetup docs={sdkConfigDocs.sdkInit} />
-          {services.map(({ type }) => (
-            <ServiceSDKSetup key={type} docs={sdkConfigDocs.services[type]} />
+          {framework.steps.map(docs => (
+            <ServiceSDKSetup docs={docs} />
           ))}
+          {services.map(({ type }) =>
+            framework.services[type].steps.map(docs => <ServiceSDKSetup key={type} docs={docs} />)
+          )}
         </ol>
       </React.Fragment>
     ) : (

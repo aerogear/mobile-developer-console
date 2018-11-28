@@ -1,5 +1,5 @@
-import cordova from './cordova.json';
-import ionic from './ionic.json';
+import cordova from './cordova';
+import ionic from './ionic';
 
 const frameworks = {
   cordova,

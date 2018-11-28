@@ -3,17 +3,14 @@ import { Col } from 'patternfly-react';
 
 import './ServiceSDKInfo.css';
 
-// TODO Cordova is hard-coded now, remove in future
-const sdkConfigDocs = require('./sdk-config-docs/cordova.json');
-
-export const ServiceSDKInfo = ({ mobileApp }) => {
+export const ServiceSDKInfo = ({ framework, mobileApp }) => {
   if (mobileApp) {
     const status = mobileApp.getStatus();
     const { services = [] } = { services: status.getServices() };
     return services ? (
       <React.Fragment>
         {services.map(({ type }) => {
-          const { serviceLogoUrl, serviceName, setupText, docsLink } = sdkConfigDocs.services[type];
+          const { serviceLogoUrl, serviceName, setupText, docsLink } = framework.services[type];
           return (
             <Col md={6} className="service-sdk-info">
               <Col md={12}>
