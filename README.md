@@ -84,15 +84,11 @@ See [Minishift](https://docs.okd.io/latest/minishift/getting-started/index.html)
 > :information_source: Supported version is OpenShift 3.11
 
 1. `oc login` to your cluster as user with **cluster-admin** privileges
-2. Export the name of `ansible-service-broker` project in your OpenShift instance (usually it's called `ansible-service-broker`, `openshift-ansible-service-broker` or `openshift-automation-service-broker`), i.e 
-```
-export ASB_PROJECT_NAME='openshift-automation-service-broker'
-```
-3. Run the script
+2. Run the script
 ```
 ./scripts/post_install.sh
 ```
-4. Wait couple of minutes until Ansible Service Broker is running again
+3. Wait couple of minutes until Ansible Service Broker is running again
 
 ## Development
 
