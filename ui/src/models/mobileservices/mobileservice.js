@@ -114,9 +114,9 @@ export class BoundMobileService extends MobileService {
     return this.data.configuration;
   }
 
-    getConfigurationExt() {
-        return this.data.configurationExt;
-    }
+  getConfigurationExt() {
+    return this.data.configurationExt;
+  }
 
   getDocumentationUrl() {
     return this.serviceClass.spec.get('externalMetadata.documentationUrl');
