@@ -3,8 +3,6 @@ import { EmptyState, Spinner } from 'patternfly-react';
 import { connect } from 'react-redux';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
-import { fetchBindings } from '../../actions/serviceBinding';
-import DataService from '../../DataService';
 import './MobileServiceView.css';
 
 class MobileServiceView extends Component {
@@ -13,17 +11,6 @@ class MobileServiceView extends Component {
     this.boundServiceRows = this.boundServiceRows.bind(this);
     this.unboundServiceRows = this.unboundServiceRows.bind(this);
     this.setDefaultBindingProperties = this.setDefaultBindingProperties.bind(this);
-  }
-
-  componentDidMount() {
-    this.props.fetchBindings(this.props.appName);
-    this.wsBindings = DataService.watchBindableServices(this.props.appName, () => {
-      this.props.fetchBindings(this.props.appName);
-    });
-  }
-
-  componentWillUnmount() {
-    this.wsServices && this.wsServices.close();
   }
 
   boundServiceRows() {
@@ -65,10 +52,13 @@ class MobileServiceView extends Component {
   }
 
   render() {
-    const { isReading = true } = this.props;
+    const { isReading = true, boundServices, unboundServices } = this.props;
     return (
       <div className="mobile-service-view">
-        <Spinner loading={isReading} className="spinner-padding">
+        <Spinner
+          loading={isReading && boundServices.length === 0 && unboundServices.length === 0}
+          className="spinner-padding"
+        >
           {this.boundServiceRows()}
           {this.unboundServiceRows()}
         </Spinner>
@@ -81,11 +71,4 @@ function mapStateToProps(state) {
   return state.serviceBindings;
 }
 
-const mapDispatchToProps = {
-  fetchBindings
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MobileServiceView);
+export default connect(mapStateToProps)(MobileServiceView);

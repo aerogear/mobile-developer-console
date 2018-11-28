@@ -10,6 +10,8 @@ describe('Client', () => {
     const mockFetchApp = jest.fn();
     const mockFetchBuilds = jest.fn();
     const mockFetchBuildConfigs = jest.fn();
+    const mockFetchBindings = jest.fn();
+    const mockFetchServices = jest.fn();
 
     const props = {
       location: { hash: '' },
@@ -18,6 +20,8 @@ describe('Client', () => {
       buildTabEnabled: true,
       fetchBuildConfigs: mockFetchBuildConfigs,
       fetchBuilds: mockFetchBuilds,
+      fetchBindings: mockFetchBindings,
+      fetchServices: mockFetchServices,
       apps: { items: [{ metadata: { name: 'testapp' }, spec: { name: 'testapp' } }] },
       buildConfigs: { items: [] }
     };
@@ -26,6 +30,8 @@ describe('Client', () => {
     expect(mockFetchApp).toBeCalled();
     expect(mockFetchBuilds).toBeCalled();
     expect(mockFetchBuildConfigs).toBeCalled();
+    expect(mockFetchBindings).toBeCalled();
+    expect(mockFetchServices).toBeCalled();
     expect(wrapper.find(TabContainer).prop('activeKey')).toEqual(TAB_CONFIGURATION.key);
     expect(wrapper.find(NavItem)).toHaveLength(3);
   });
@@ -34,6 +40,8 @@ describe('Client', () => {
     const mockFetchApp = jest.fn();
     const mockFetchBuilds = jest.fn();
     const mockFetchBuildConfigs = jest.fn();
+    const mockFetchBindings = jest.fn();
+    const mockFetchServices = jest.fn();
 
     const props = {
       location: { hash: '' },
@@ -42,6 +50,8 @@ describe('Client', () => {
       buildTabEnabled: false,
       fetchBuildConfigs: mockFetchBuildConfigs,
       fetchBuilds: mockFetchBuilds,
+      fetchBindings: mockFetchBindings,
+      fetchServices: mockFetchServices,
       apps: { items: [{ metadata: { name: 'testapp' }, spec: { name: 'testapp' } }] },
       buildConfigs: { items: [] }
     };
@@ -50,6 +60,8 @@ describe('Client', () => {
     expect(mockFetchApp).toBeCalled();
     expect(mockFetchBuilds).not.toBeCalled();
     expect(mockFetchBuildConfigs).not.toBeCalled();
+    expect(mockFetchBindings).toBeCalled();
+    expect(mockFetchServices).toBeCalled();
     expect(wrapper.find(NavItem)).toHaveLength(2);
   });
 
@@ -57,6 +69,8 @@ describe('Client', () => {
     const mockFetchApp = jest.fn();
     const mockFetchBuilds = jest.fn();
     const mockFetchBuildConfigs = jest.fn();
+    const mockFetchBindings = jest.fn();
+    const mockFetchServices = jest.fn();
 
     const props = {
       location: { hash: `#${TAB_MOBILE_SERVICES.hash}` },
@@ -65,6 +79,8 @@ describe('Client', () => {
       buildTabEnabled: true,
       fetchBuildConfigs: mockFetchBuildConfigs,
       fetchBuilds: mockFetchBuilds,
+      fetchBindings: mockFetchBindings,
+      fetchServices: mockFetchServices,
       apps: { items: [{ metadata: { name: 'testapp' }, spec: { name: 'testapp' } }] },
       buildConfigs: { items: [] }
     };
@@ -73,6 +89,8 @@ describe('Client', () => {
     expect(mockFetchApp).toBeCalled();
     expect(mockFetchBuilds).toBeCalled();
     expect(mockFetchBuildConfigs).toBeCalled();
+    expect(mockFetchBindings).toBeCalled();
+    expect(mockFetchServices).toBeCalled();
     expect(wrapper.find(TabContainer).prop('activeKey')).toEqual(TAB_MOBILE_SERVICES.key);
     expect(wrapper.find(NavItem)).toHaveLength(3);
   });
