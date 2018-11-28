@@ -82,10 +82,7 @@ export class BindingPanel extends Component {
   }
 
   isUPSService(){
-    return this.props.service.serviceClass &&
-        this.props.service.serviceClass.spec &&
-        this.props.service.serviceClass.spec.data &&
-        this.props.service.serviceClass.spec.data.externalName === "ag-unifiedpush-apb";
+    return this.props.service.getServiceClassExternalName() === "ups";
   }
 
   hasUPSAndroidAnnotation(){
