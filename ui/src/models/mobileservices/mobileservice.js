@@ -127,6 +127,17 @@ export class BoundMobileService extends MobileService {
   }
 
   /**
+   * This method returns a new instance of BoundMobileService, with a status of 'Binding in progress'
+   * @returns {BoundMobileService}
+   */
+  markBindInProgress() {
+    return new BoundMobileService({
+      ...this.data,
+      serviceBinding: { status: { currentOperation: 'Binding', conditions: [{ type: 'Ready', status: 'False' }] } }
+    });
+  }
+
+  /**
    * This method returns an instance of 'UnboundMobileService' with a state of 'Unbinding in progress'
    * @returns {UnboundMobileService}
    */

@@ -66,23 +66,48 @@ const serviceBindingsReducer = (state = defaultState, action) => {
       };
     case SERVICE_BINDING_CREATE_SUCCESS: {
       const { serviceInstanceName } = action.result;
-      const index = findIndex(
+      const indexOfUnboundService = findIndex(
         state.unboundServices,
         binding => binding.getServiceInstanceName() === serviceInstanceName
       );
 
-      const newState = {
-        ...state,
-        isCreating: false,
-        unboundServices: [
-          ...state.unboundServices.slice(0, index),
-          state.unboundServices[index].bind(), // TODO: what about multiple binding support?
-          ...state.unboundServices.slice(index + 1)
-        ],
-        errors: getErrors(null, 'create', state.errors)
-      };
+      // we support multiple bindings to a service
+      // so, we need to check if the service that the "create binding" request is sent is a
+      // bound one already or an unbound one.
+      // our target is to mark the service as "binding in progress"
 
-      return newState;
+      if (indexOfUnboundService >= 0) {
+        const newState = {
+          ...state,
+          isCreating: false,
+          unboundServices: [
+            ...state.unboundServices.slice(0, indexOfUnboundService),
+            state.unboundServices[indexOfUnboundService].bind(),
+            ...state.unboundServices.slice(indexOfUnboundService + 1)
+          ],
+          errors: getErrors(null, 'create', state.errors)
+        };
+
+        return newState;
+      } else {
+        const indexOfBoundService = findIndex(
+          state.boundServices,
+          binding => binding.getServiceInstanceName() === serviceInstanceName
+        );
+
+        const newState = {
+          ...state,
+          isCreating: false,
+          boundServices: [
+            ...state.boundServices.slice(0, indexOfBoundService),
+            state.boundServices[indexOfBoundService].markBindInProgress(),
+            ...state.boundServices.slice(indexOfBoundService + 1)
+          ],
+          errors: getErrors(null, 'create', state.errors)
+        };
+
+        return newState;
+      }
     }
     case SERVICE_BINDING_CREATE_FAILURE:
       return {
