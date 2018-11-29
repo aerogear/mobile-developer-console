@@ -76,7 +76,7 @@ const serviceBindingsReducer = (state = defaultState, action) => {
         isCreating: false,
         unboundServices: [
           ...state.unboundServices.slice(0, index),
-          state.unboundServices[index].bind(),
+          state.unboundServices[index].bind(), // TODO: what about multiple binding support?
           ...state.unboundServices.slice(index + 1)
         ],
         errors: getErrors(null, 'create', state.errors)
@@ -101,8 +101,8 @@ const serviceBindingsReducer = (state = defaultState, action) => {
       return {
         ...state,
         isDeleting: false,
-        boundServices: [...state.boundServices.slice(0, index), ...state.boundServices.slice(index + 1)],
-        unboundServices: [...state.unboundServices, state.boundServices[index].unbind()],
+        boundServices: [...state.boundServices.slice(0, index), ...state.boundServices.slice(index + 1)], // TODO: what about multiple binding support?
+        unboundServices: [...state.unboundServices, state.boundServices[index].unbind()], // TODO: what about multiple binding support?
         errors: getErrors(null, 'delete', state.errors)
       };
     }

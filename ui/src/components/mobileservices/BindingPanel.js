@@ -26,7 +26,7 @@ export class BindingPanel extends Component {
     const form = this.props.service.getFormDefinition();
     const { service } = this.props;
 
-    if (this.isUPSService()) {
+    if (this.props.service.isUPSService()) {
       const hasUPSAndroidAnnotation = this.hasUPSAndroidAnnotation();
       const hasUPSIOSAnnotation = this.hasUPSIOSAnnotation();
 
@@ -79,10 +79,6 @@ export class BindingPanel extends Component {
   show() {
     this.stepChanged(0);
     this.open();
-  }
-
-  isUPSService() {
-    return this.props.service.getServiceClassExternalName() === 'ups';
   }
 
   hasUPSAndroidAnnotation() {

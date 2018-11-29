@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { ListView, ListViewItem, Row, Col, Button, Icon, DropdownKebab } from 'patternfly-react';
+import { ListViewItem, Row, Col, Button, DropdownKebab } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import DeleteItemButton from '../../containers/DeleteItemButton';
 import BindingPanel from './BindingPanel';
+import BindingStatus from './BindingStatus';
 
 function configurationView(configuration) {
   if (configuration.type === 'href') {
@@ -99,31 +100,16 @@ class BoundServiceRow extends Component {
     // check if the service is UPS.
     // binding status is not shown for other services in the BoundServiceRow view.
     // binding status is normally shown in UnboundServiceRow views.
-    if (!this.isUPSService()) {
+    if (!this.props.service.isUPSService()) {
       return null;
     }
 
-    return (
-      <ListView.InfoItem key="bind-status">
-        {this.props.service.isBindingOperationInProgress() && (
-          <React.Fragment>
-            <Icon name="spinner" spin size="lg" />
-            {this.props.service.getBindingOperation()} In Progress
-          </React.Fragment>
-        )}
-        {this.props.service.isBindingOperationFailed() && (
-          <React.Fragment>
-            <Icon type="pf" name="error-circle-o" />
-            Operation Failed. Please Try Again Later.
-          </React.Fragment>
-        )}
-      </ListView.InfoItem>
-    );
+    return <BindingStatus key={`${this.props.service.getId()}binding status`} service={this.props.service} />;
   }
 
   renderBindingButtons() {
     // check if the service is UPS. we only allow multiple bindings in case of UPS
-    if (!this.isUPSService()) {
+    if (!this.props.service.isUPSService()) {
       return null;
     }
     if (this.props.service.isBindingOperationInProgress()) {
@@ -151,10 +137,6 @@ class BoundServiceRow extends Component {
     );
   }
 
-  isUPSService() {
-    return this.props.service.getServiceClassExternalName() === 'ups';
-  }
-
   render() {
     return (
       <React.Fragment>
@@ -173,7 +155,7 @@ class BoundServiceRow extends Component {
         >
           {this.renderServiceDetails()}
         </ListViewItem>
-        {this.isUPSService() && (
+        {this.props.service.isUPSService() && (
           <BindingPanel
             service={this.props.service}
             showModal={this.state.showModal}

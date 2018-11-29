@@ -93,6 +93,10 @@ export class MobileService {
     return this.serviceClass.spec.get('externalMetadata.serviceName');
   }
 
+  isUPSService() {
+    return this.getServiceClassExternalName() === 'ups';
+  }
+
   toJSON() {
     return {
       ...this.data,
