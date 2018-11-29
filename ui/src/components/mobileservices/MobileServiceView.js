@@ -20,7 +20,7 @@ class MobileServiceView extends Component {
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
           this.props.boundServices.map(service => {
             this.setDefaultBindingProperties(service);
-            return <BoundServiceRow key={service.getId()} service={service} />
+            return <BoundServiceRow key={service.getId()} service={service} />;
           })
         ) : (
           <EmptyState>There are no bound services.</EmptyState>

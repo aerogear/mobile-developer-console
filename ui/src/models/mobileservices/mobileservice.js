@@ -54,24 +54,24 @@ export class MobileService {
   }
 
   isBindingOperationInProgress() {
-      const conditions = this.serviceBinding.status.get('conditions');
-      // the bind operation could be in-flight. In this case, the operation is neither ready, or failed.
-      if (conditions && find(conditions, { type: 'Ready', status: 'False' }) && !this.isBindingOperationFailed()) {
-          return true;
-      }
-      return false;
+    const conditions = this.serviceBinding.status.get('conditions');
+    // the bind operation could be in-flight. In this case, the operation is neither ready, or failed.
+    if (conditions && find(conditions, { type: 'Ready', status: 'False' }) && !this.isBindingOperationFailed()) {
+      return true;
+    }
+    return false;
   }
 
   getBindingOperation() {
-      return this.serviceBinding.status.get('currentOperation');
+    return this.serviceBinding.status.get('currentOperation');
   }
 
   isBindingOperationFailed() {
-      const conditions = this.serviceBinding.status.get('conditions');
-      if (conditions && find(conditions, { type: 'Failed', status: 'True' })) {
-          return true;
-      }
-      return false;
+    const conditions = this.serviceBinding.status.get('conditions');
+    if (conditions && find(conditions, { type: 'Failed', status: 'True' })) {
+      return true;
+    }
+    return false;
   }
 
   getFormDefinition() {

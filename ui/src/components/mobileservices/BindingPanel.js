@@ -8,7 +8,6 @@ import { createBinding } from '../../actions/serviceBinding';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import { OpenShiftObjectTemplate } from './bindingPanelUtils';
-import _ from 'lodash';
 
 import { FormValidator } from './validator/FormValidator';
 import validationConfig from './ValidationRules.json';
@@ -23,37 +22,38 @@ export class BindingPanel extends Component {
     this.validate = this.validate.bind(this);
 
     const serviceName = this.props.service.getName();
-    let schema = this.props.service.getBindingSchema();
-    let form = this.props.service.getFormDefinition();
+    const schema = this.props.service.getBindingSchema();
+    const form = this.props.service.getFormDefinition();
     const { service } = this.props;
 
-    if(this.isUPSService()){
+    if (this.isUPSService()) {
       const hasUPSAndroidAnnotation = this.hasUPSAndroidAnnotation();
       const hasUPSIOSAnnotation = this.hasUPSIOSAnnotation();
 
-      if(hasUPSAndroidAnnotation && !hasUPSIOSAnnotation){ // UPS, there's already an Android variant
-          if (schema.properties.CLIENT_TYPE) {
-              schema.properties.CLIENT_TYPE.default = "IOS";
-              schema.properties.CLIENT_TYPE.enum = ["IOS"];
-          }
-      }
-      else if(!hasUPSAndroidAnnotation && hasUPSIOSAnnotation){ // UPS, there's already an IOS variant
-          if (schema.properties.CLIENT_TYPE) {
-              schema.properties.CLIENT_TYPE.default = "Android";
-              schema.properties.CLIENT_TYPE.enum = ["Android"];
-          }
+      if (hasUPSAndroidAnnotation && !hasUPSIOSAnnotation) {
+        // UPS, there's already an Android variant
+        if (schema.properties.CLIENT_TYPE) {
+          schema.properties.CLIENT_TYPE.default = 'IOS';
+          schema.properties.CLIENT_TYPE.enum = ['IOS'];
+        }
+      } else if (!hasUPSAndroidAnnotation && hasUPSIOSAnnotation) {
+        // UPS, there's already an IOS variant
+        if (schema.properties.CLIENT_TYPE) {
+          schema.properties.CLIENT_TYPE.default = 'Android';
+          schema.properties.CLIENT_TYPE.enum = ['Android'];
+        }
       }
       // we don't care if there are variants for both platforms.
       // this binding panel shouldn't be shown anyway
     }
 
     this.state = {
-        serviceName,
-        schema,
-        form,
-        loading: false,
-        service,
-        activeStepIndex: 0
+      serviceName,
+      schema,
+      form,
+      loading: false,
+      service,
+      activeStepIndex: 0
     };
   }
 
@@ -81,23 +81,23 @@ export class BindingPanel extends Component {
     this.open();
   }
 
-  isUPSService(){
-    return this.props.service.getServiceClassExternalName() === "ups";
+  isUPSService() {
+    return this.props.service.getServiceClassExternalName() === 'ups';
   }
 
-  hasUPSAndroidAnnotation(){
-    return this.hasUPSPlatformAnnotation("android");
+  hasUPSAndroidAnnotation() {
+    return this.hasUPSPlatformAnnotation('android');
   }
 
-  hasUPSIOSAnnotation(){
-    return this.hasUPSPlatformAnnotation("ios");
+  hasUPSIOSAnnotation() {
+    return this.hasUPSPlatformAnnotation('ios');
   }
 
-  hasUPSPlatformAnnotation(platform){
-      // configExt field example value:
-      // it is an array of annotations that start with org.aerogear.binding-ext
-      // and our annotation's value is also an array
-      /*
+  hasUPSPlatformAnnotation(platform) {
+    // configExt field example value:
+    // it is an array of annotations that start with org.aerogear.binding-ext
+    // and our annotation's value is also an array
+    /*
       [
         [
           {
@@ -109,34 +109,34 @@ export class BindingPanel extends Component {
         ]
       ]
       */
-      // there won't be any variant annotations if there is no binding yet
-      if(!this.props.service.isBound()){
+    // there won't be any variant annotations if there is no binding yet
+    if (!this.props.service.isBound()) {
+      return false;
+    }
+
+    const configExt = this.props.service.getConfigurationExt();
+
+    if (!configExt || !configExt.length) {
+      return false;
+    }
+
+    for (const configItemStr of configExt) {
+      let configExtItem;
+      try {
+        configExtItem = JSON.parse(configItemStr);
+      } catch (err) {
+        // not much we can do if the annotation is malformed
         return false;
       }
-
-      const configExt = this.props.service.getConfigurationExt();
-      
-      if (!configExt || !configExt.length) {
-          return false;
-      }
-
-      for(let configItemStr of configExt){
-          let configExtItem;
-          try{
-              configExtItem = JSON.parse(configItemStr);
-          } catch (err){
-            // not much we can do if the annotation is malformed
-            return false;
+      if (configExtItem && configExtItem.length && configExtItem.length > 0) {
+        for (const variantInfo of configExtItem) {
+          if (variantInfo.type === platform) {
+            return true;
           }
-          if (configExtItem && configExtItem.length && configExtItem.length > 0) {
-              for(let variantInfo of configExtItem){
-                  if(variantInfo.type === platform){
-                      return true;
-                  }
-              }
-          }
+        }
       }
-      return false;
+    }
+    return false;
   }
 
   renderPropertiesSchema() {
