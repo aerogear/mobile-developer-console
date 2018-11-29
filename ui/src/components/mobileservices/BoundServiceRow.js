@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { ListViewItem, Row, Col, Button, DropdownKebab } from 'patternfly-react';
+import { ListViewItem, Row, Col, DropdownKebab } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import DeleteItemButton from '../../containers/DeleteItemButton';
 import BindingPanel from './BindingPanel';
 import BindingStatus from './BindingStatus';
+import BindButton from './BindButton';
 
 function configurationView(configuration) {
   if (configuration.type === 'href') {
@@ -112,9 +113,6 @@ class BoundServiceRow extends Component {
     if (!this.props.service.isUPSService()) {
       return null;
     }
-    if (this.props.service.isBindingOperationInProgress()) {
-      return null;
-    }
     const configurationExt = this.props.service.getConfigurationExt();
     // sample value for configurationExt
     /*
@@ -130,10 +128,9 @@ class BoundServiceRow extends Component {
         return null;
       }
     }
+    
     return (
-      <Button className="bind-button" onClick={() => this.setState({ showModal: true })}>
-        Bind to App
-      </Button>
+      <BindButton service={this.props.service} onClick={() => this.setState({ showModal: true })} />
     );
   }
 

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { ListViewItem, Col, Button } from 'patternfly-react';
+import { ListViewItem, Col } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import BindingPanel from './BindingPanel';
 import BindingStatus from './BindingStatus';
+import BindButton from './BindButton';
 
 class UnboundServiceRow extends Component {
   constructor(props) {
@@ -48,14 +49,9 @@ class UnboundServiceRow extends Component {
   }
 
   renderBindingButtons() {
-    if (this.props.service.isBindingOperationInProgress()) {
-      return null;
-    }
     return (
       <div>
-        <Button className="bind-button" onClick={() => this.setState({ showModal: true })}>
-          Bind to App
-        </Button>
+        <BindButton service={this.props.service} onClick={() => this.setState({ showModal: true })} />
       </div>
     );
   }
