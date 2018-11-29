@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { ListView, ListViewItem, Col, Button, Icon } from 'patternfly-react';
+import { ListViewItem, Col, Button } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import BindingPanel from './BindingPanel';
+import BindingStatus from './BindingStatus';
 
 class UnboundServiceRow extends Component {
   constructor(props) {
@@ -43,22 +44,7 @@ class UnboundServiceRow extends Component {
   }
 
   renderBindingStatus() {
-    return (
-      <ListView.InfoItem key="bind-status">
-        {this.props.service.isBindingOperationInProgress() && (
-          <React.Fragment>
-            <Icon name="spinner" spin size="lg" />
-            {this.props.service.getBindingOperation()} In Progress
-          </React.Fragment>
-        )}
-        {this.props.service.isBindingOperationFailed() && (
-          <React.Fragment>
-            <Icon type="pf" name="error-circle-o" />
-            Operation Failed. Please Try Again Later.
-          </React.Fragment>
-        )}
-      </ListView.InfoItem>
-    );
+    return <BindingStatus key={`${this.props.service.getId()}binding status`} service={this.props.service} />;
   }
 
   renderBindingButtons() {
