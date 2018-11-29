@@ -10,7 +10,7 @@ class MobileServiceView extends Component {
     super(props);
     this.boundServiceRows = this.boundServiceRows.bind(this);
     this.unboundServiceRows = this.unboundServiceRows.bind(this);
-    this.setDefaultBindingProperties = this.setDefaultBindingProperties.bind(this);
+    this.addDefaultBindingProperty = this.addDefaultBindingProperty.bind(this);
   }
 
   boundServiceRows() {
@@ -19,7 +19,7 @@ class MobileServiceView extends Component {
         <h2 key="bound-services">Bound Services</h2>
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
           this.props.boundServices.map(service => {
-            this.setDefaultBindingProperties(service);
+            this.addDefaultBindingProperty(service);
             return <BoundServiceRow key={service.getId()} service={service} />;
           })
         ) : (
@@ -35,7 +35,7 @@ class MobileServiceView extends Component {
         <h2 key="unbound-services">Unbound Services</h2>
         {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
           this.props.unboundServices.map(service => {
-            this.setDefaultBindingProperties(service);
+            this.addDefaultBindingProperty(service);
             return <UnboundServiceRow key={service.getId()} service={service} />;
           })
         ) : (
@@ -50,7 +50,7 @@ class MobileServiceView extends Component {
   }
 
   // This makes the field in the binding form set to the mobile client name
-  setDefaultBindingProperties(service) {
+  addDefaultBindingProperty(service) {
     service.setBindingSchemaDefaultValues('CLIENT_ID', this.props.appName);
   }
 
