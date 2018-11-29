@@ -18,7 +18,7 @@ class BoundServiceRow extends Component {
     super(props);
 
     this.state = {
-        showModal: false
+      showModal: false
     };
 
     this.renderServiceBadge = this.renderServiceBadge.bind(this);
@@ -99,32 +99,32 @@ class BoundServiceRow extends Component {
     // check if the service is UPS.
     // binding status is not shown for other services in the BoundServiceRow view.
     // binding status is normally shown in UnboundServiceRow views.
-    if(!this.isUPSService()) {
-        return null;
+    if (!this.isUPSService()) {
+      return null;
     }
 
     return (
-        <ListView.InfoItem key="bind-status">
-            {this.props.service.isBindingOperationInProgress() && (
-                <React.Fragment>
-                    <Icon name="spinner" spin size="lg" />
-                    {this.props.service.getBindingOperation()} In Progress
-                </React.Fragment>
-            )}
-            {this.props.service.isBindingOperationFailed() && (
-                <React.Fragment>
-                    <Icon type="pf" name="error-circle-o" />
-                    Operation Failed. Please Try Again Later.
-                </React.Fragment>
-            )}
-        </ListView.InfoItem>
+      <ListView.InfoItem key="bind-status">
+        {this.props.service.isBindingOperationInProgress() && (
+          <React.Fragment>
+            <Icon name="spinner" spin size="lg" />
+            {this.props.service.getBindingOperation()} In Progress
+          </React.Fragment>
+        )}
+        {this.props.service.isBindingOperationFailed() && (
+          <React.Fragment>
+            <Icon type="pf" name="error-circle-o" />
+            Operation Failed. Please Try Again Later.
+          </React.Fragment>
+        )}
+      </ListView.InfoItem>
     );
   }
 
   renderBindingButtons() {
     // check if the service is UPS. we only allow multiple bindings in case of UPS
-    if(!this.isUPSService()) {
-        return null;
+    if (!this.isUPSService()) {
+      return null;
     }
     if (this.props.service.isBindingOperationInProgress()) {
       return null;
@@ -137,7 +137,7 @@ class BoundServiceRow extends Component {
         {"type":"android","typeLabel":"Android","url":"https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/2d76d1eb-65ef-471c-8d21-75f80c3f370f","id":"2d76d1eb-65ef-471c-8d21-75f80c3f370f"}
       ]"
     */
-    if(configurationExt){
+    if (configurationExt) {
       const configExtArray = JSON.parse(configurationExt);
       // there are 2 variants already. can't create another variant.
       if (configExtArray && configExtArray.length && configExtArray.length >= 2) {
@@ -145,42 +145,44 @@ class BoundServiceRow extends Component {
       }
     }
     return (
-      <Button className="bind-button" onClick={() => this.setState({ showModal: true })}>Bind to App</Button>
+      <Button className="bind-button" onClick={() => this.setState({ showModal: true })}>
+        Bind to App
+      </Button>
     );
   }
 
-  isUPSService(){
-    return this.props.service.getServiceClassExternalName() === "ups";
+  isUPSService() {
+    return this.props.service.getServiceClassExternalName() === 'ups';
   }
 
   render() {
     return (
       <React.Fragment>
-      <ListViewItem
-        additionalInfo={[this.renderServiceBadge(), this.renderBindingStatus()]}
-        className="boundService"
-        actions={
-          <div>
-            {this.renderBindingButtons()}
-            <DropdownKebab id={`delete-${this.props.service.getBindingName()}`} pullRight>
-              <DeleteItemButton itemType="serviceBinding" itemName={this.props.service.getBindingName()} />
-            </DropdownKebab>
-          </div>
-        }
-        hideCloseIcon
-      >
-        {this.renderServiceDetails()}
-      </ListViewItem>
-          {this.isUPSService() &&
-            <BindingPanel
-                service={this.props.service}
-                showModal={this.state.showModal}
-                close={() => {
-                    this.setState({ showModal: false });
-                }}
-            />
+        <ListViewItem
+          additionalInfo={[this.renderServiceBadge(), this.renderBindingStatus()]}
+          className="boundService"
+          actions={
+            <div>
+              {this.renderBindingButtons()}
+              <DropdownKebab id={`delete-${this.props.service.getBindingName()}`} pullRight>
+                <DeleteItemButton itemType="serviceBinding" itemName={this.props.service.getBindingName()} />
+              </DropdownKebab>
+            </div>
           }
-    </React.Fragment>
+          hideCloseIcon
+        >
+          {this.renderServiceDetails()}
+        </ListViewItem>
+        {this.isUPSService() && (
+          <BindingPanel
+            service={this.props.service}
+            showModal={this.state.showModal}
+            close={() => {
+              this.setState({ showModal: false });
+            }}
+          />
+        )}
+      </React.Fragment>
     );
   }
 }
