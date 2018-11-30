@@ -8,12 +8,14 @@ import BoundServiceRow from './BoundServiceRow';
 describe('BoundServiceRow', () => {
   const service = {
     getConfiguration: () => undefined,
+    getConfigurationExt: () => undefined,
     getDocumentationUrl: () => undefined,
     getBindingName: () => 'test-data-sync-r66b9',
     getIconClass: () => 'fa fa-refresh',
     getId: () => 'Data Sync',
     getLogoUrl: () => undefined,
-    getName: () => 'Data Sync'
+    getName: () => 'Data Sync',
+    isUPSService: () => false
   };
   it('should render the row with bound service', () => {
     const wrapper = shallow(<BoundServiceRow service={service} />);

@@ -129,6 +129,24 @@ describe('Create Binding', () => {
     expect(unboundService.getBindingOperation()).toBe('Binding');
   });
 
+  it('test create success in case of multiple bindings', () => {
+    const initialState = {
+      ...getInitialState(),
+      boundServices: [createTestBoundService('test-instance')]
+    };
+
+    const newState = serviceBindingReducer(initialState, {
+      type: SERVICE_BINDING_CREATE_SUCCESS,
+      result: { serviceInstanceName: 'test-instance' }
+    });
+    expect(newState.isCreating).toBe(false);
+    expect(newState.unboundServices).toHaveLength(0);
+    expect(newState.boundServices).toHaveLength(1);
+    const unboundService = newState.boundServices[0];
+    expect(unboundService.isBindingOperationInProgress()).toBe(true);
+    expect(unboundService.getBindingOperation()).toBe('Binding');
+  });
+
   it('test create failure', () => {
     const initialState = {
       ...getInitialState(),
@@ -141,6 +159,23 @@ describe('Create Binding', () => {
     });
     expect(newState.isCreating).toBe(false);
     expect(newState.unboundServices).toHaveLength(1);
+    expect(newState.errors).toHaveLength(1);
+    expect(newState.errors[0]).toEqual({ error: 'service binding test error', type: 'create' });
+  });
+
+  it('test create failure  in case of multiple bindings', () => {
+    const initialState = {
+      ...getInitialState(),
+      boundServices: [createTestBoundService('test-instance')]
+    };
+
+    const newState = serviceBindingReducer(initialState, {
+      type: SERVICE_BINDING_CREATE_FAILURE,
+      error: 'service binding test error'
+    });
+    expect(newState.isCreating).toBe(false);
+    expect(newState.unboundServices).toHaveLength(0);
+    expect(newState.boundServices).toHaveLength(1);
     expect(newState.errors).toHaveLength(1);
     expect(newState.errors[0]).toEqual({ error: 'service binding test error', type: 'create' });
   });
