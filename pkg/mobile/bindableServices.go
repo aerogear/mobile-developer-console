@@ -166,7 +166,6 @@ func (lister *BindableMobileServiceCRUDLImpl) List(mobileClient *v1alpha1.Mobile
 }
 
 func attachCurrentBindings(lister *BindableMobileServiceCRUDLImpl, mobileClient *v1alpha1.MobileClient, bindableService *BindableMobileService, serviceInstance ServiceInstance) error {
-	var serviceBinding ServiceBinding
 	listOpts := v1.ListOptions{}
 
 	serviceBindings, err := lister.scClient.ServiceBindings(mobileClient.GetNamespace()).List(listOpts)
@@ -177,7 +176,6 @@ func attachCurrentBindings(lister *BindableMobileServiceCRUDLImpl, mobileClient 
 	for _, sb := range serviceBindings.Items {
 		if sb.Spec.ServiceInstanceRef.Name == serviceInstance.ObjectMeta.Name &&
 			sb.ObjectMeta.Annotations["binding.aerogear.org/consumer"] == mobileClient.GetName() {
-			serviceBinding = sb
 			if serviceBindingIsReady(sb) {
 				bindableService.IsBound = true
 			}
@@ -188,7 +186,7 @@ func attachCurrentBindings(lister *BindableMobileServiceCRUDLImpl, mobileClient 
 			for key, jsonString := range serviceConfigurationAnnotations {
 				if strings.Contains(key, "org.aerogear.binding."+serviceInstance.ObjectMeta.Name) {
 					bindableService.Configuration = append(bindableService.Configuration, jsonString)
-				} else if strings.Contains(key, "org.aerogear.binding-ext."+serviceInstance.ObjectMeta.Name){
+				} else if strings.Contains(key, "org.aerogear.binding-ext."+serviceInstance.ObjectMeta.Name) {
 					// aerogear extended annotations
 					bindableService.ConfigurationExt = append(bindableService.ConfigurationExt, jsonString)
 				}
@@ -200,8 +198,7 @@ func attachCurrentBindings(lister *BindableMobileServiceCRUDLImpl, mobileClient 
 	// in case of services that can have multiple bindings, we don't want to have duplicate elements.
 	bindableService.Configuration = removeDuplicatesUnordered(bindableService.Configuration)
 	bindableService.ConfigurationExt = removeDuplicatesUnordered(bindableService.ConfigurationExt)
-
-	bindableService.ServiceBinding = serviceBinding
+	bindableService.ServiceBindings = serviceBindings.Items
 	return nil
 }
 
@@ -209,7 +206,7 @@ func removeDuplicatesUnordered(elements []string) []string {
 	encountered := map[string]bool{}
 
 	// Create a map of all unique elements.
-	for v:= range elements {
+	for v := range elements {
 		encountered[elements[v]] = true
 	}
 
@@ -220,7 +217,6 @@ func removeDuplicatesUnordered(elements []string) []string {
 	}
 	return result
 }
-
 
 func attachServicePlan(bindableService *BindableMobileService, servicePlans *v1beta1.ClusterServicePlanList, csc *v1beta1.ClusterServiceClass) {
 	var servicePlan ServicePlan
