@@ -1,5 +1,6 @@
 import { Row, Col, ListView } from 'patternfly-react';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Header from './Header';
 import CopyToClipboardMultiline from '../common/CopyToClipboardMultiline';
 
@@ -16,7 +17,7 @@ class ConfigurationView extends Component {
           <Col xs={6}>
             <ListView>
               {Object.keys(frameworks).map(key => (
-                <FrameworkSDKDocs framework={frameworks[key]} mobileApp={this.props.app} />
+                <FrameworkSDKDocs framework={frameworks[key](this.props.docsVersion)} mobileApp={this.props.app} />
               ))}
             </ListView>
           </Col>
@@ -32,4 +33,10 @@ class ConfigurationView extends Component {
   }
 }
 
-export default ConfigurationView;
+function mapStateToProps(state) {
+  return {
+    docsVersion: state.config.docsVersion
+  };
+}
+
+export default connect(mapStateToProps)(ConfigurationView);

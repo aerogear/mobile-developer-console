@@ -12,7 +12,7 @@ export const ServiceSDKInfo = ({ framework, mobileApp }) => {
         {services.map(({ type }) => {
           const { serviceLogoUrl, serviceName, setupText, docsLink } = framework.services[type];
           return (
-            <Col md={6} className="service-sdk-info">
+            <Col md={6} className="service-sdk-info" key={`sdk-info-${serviceName}`}>
               <Col md={12}>
                 <img src={serviceLogoUrl} alt="" />
                 <div className="service-name">
@@ -22,7 +22,7 @@ export const ServiceSDKInfo = ({ framework, mobileApp }) => {
                 </div>
               </Col>
               <Col md={12}>
-                <div className="service-details">
+                <div className="service-details" key={`sdk-details-${serviceName}`}>
                   <h5>
                     <a href={docsLink} target="_blank" rel="noopener noreferrer">
                       {setupText}

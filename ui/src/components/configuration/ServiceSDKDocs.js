@@ -9,11 +9,11 @@ export const ServiceSDKDocs = ({ framework, mobileApp }) => {
     return services ? (
       <React.Fragment>
         <ol>
-          {framework.steps.map(docs => (
-            <ServiceSDKSetup docs={docs} />
+          {framework.steps.map((docs, index) => (
+            <ServiceSDKSetup docs={docs} key={`docs-${index}`} />
           ))}
-          {services.map(({ type }) =>
-            framework.services[type].steps.map(docs => <ServiceSDKSetup key={type} docs={docs} />)
+          {services.map(({ type }, index) =>
+            framework.services[type].steps.map(docs => <ServiceSDKSetup key={`sdk-setup-${index}`} docs={docs} />)
           )}
         </ol>
       </React.Fragment>

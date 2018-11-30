@@ -72,6 +72,7 @@ export class Client extends Component {
     this.props.fetchServices();
     this.wsServices = DataService.watchServices(this.props.fetchServices);
   }
+
   componentWillUnmount() {
     this.wsApps && this.wsApps.close();
     this.wsBuildConfigs && this.wsBuildConfigs.close();

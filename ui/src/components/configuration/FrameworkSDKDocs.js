@@ -11,16 +11,19 @@ const FrameworkSDKDocs = ({ framework, mobileApp }) => {
     <ListView.Item
       id={`framework-${framework}`}
       heading={framework.title}
+      stacked
       leftContent={<img alt={framework.title} src={framework.icon} className="icon" />}
     >
       <Header>SDK Configuration</Header>
       <ServiceSDKDocs framework={framework} mobileApp={mobileApp} />
 
-      <h4>Service specific documentation</h4>
+      <h3>Service specific documentation</h3>
       {services && services.length > 0 ? (
         <ServiceSDKInfo framework={framework} mobileApp={mobileApp} />
       ) : (
-        <ul><li>There are no services bound to this client to show the documentation for.</li></ul>
+        <ul>
+          <li>There are no services bound to this client to show the documentation for.</li>
+        </ul>
       )}
     </ListView.Item>
   );

@@ -13,14 +13,20 @@ export const ServiceSDKSetup = ({ docs = {} }) => {
   const { introduction, commands } = docs;
   return (
     <li>
-      {introduction ? <h4>{introduction}</h4> : <React.Fragment />}
+      {introduction ? (
+        <h4>
+          <ReactMarkdown>{introduction}</ReactMarkdown>
+        </h4>
+      ) : (
+        <React.Fragment />
+      )}
       <ul>
         {commands ? (
           commands.map((commandHelp, index) => {
             const simpleString = typeof commandHelp === 'string';
             const command = simpleString ? '' : commandHelp[1];
             return (
-              <li>
+              <li key={`cmd-${index}`}>
                 {simpleString ? commandHelp : commandHelp[0]}
                 <ReactMarkdown source={command} escapeHtml={false} astPlugins={[parseHtml]} />
               </li>

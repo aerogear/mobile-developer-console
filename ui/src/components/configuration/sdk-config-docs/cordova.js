@@ -1,4 +1,4 @@
-const framework = {
+const framework = docsVersion => ({
   icon: '/img/cordova.png',
   title: 'Cordova',
   steps: [
@@ -20,15 +20,19 @@ const framework = {
         init(aerogearConfig);`
         ]
       ]
+    },
+    {
+      introduction:
+        'Copy `mobile-services.json` content and copy it to the location `src/mobile-services.json` in your application project.'
     }
   ],
   services: {
     keycloak: {
-      serviceLogoUrl: 'https://pbs.twimg.com/profile_images/702119821979344897/oAC05cEB_400x400.png',
+      serviceLogoUrl: '/img/keycloak.png',
       serviceName: 'Identity Management',
       serviceDescription: 'Identity Management - Identity and Access Management',
       setupText: 'Identity Management SDK setup',
-      docsLink: 'https://docs.aerogear.org/aerogear/latest/identity-management.html#setup',
+      docsLink: `https://docs.aerogear.org/aerogear/${docsVersion}/identity-management.html#setup`,
       steps: [
         {
           introduction:
@@ -38,31 +42,34 @@ const framework = {
       ]
     },
     push: {
-      serviceLogoUrl: 'https://avatars1.githubusercontent.com/u/3380462?s=200&v=4',
+      serviceLogoUrl: '/img/push.png',
       serviceName: 'Push Notifications',
       serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
       setupText: 'Push SDK setup',
-      docsLink: 'https://docs.aerogear.org/aerogear/latest/push-notifications.html#setup',
+      docsLink: `https://docs.aerogear.org/aerogear/${docsVersion}/push-notifications.html#setup`,
       steps: [
         {
           introduction:
             'Execute following commands in your project directory to install all necessary NPM packages needed for the Push Notifications service:',
-          'commands:': [
+          commands: [
             [
               'Install Cordova plugin `cordova-plugin-aerogear-push` for push',
-              'cordova plugin add @aerogear/cordova-plugin-aerogear-push'
+              '```cordova plugin add @aerogear/cordova-plugin-aerogear-push```'
             ],
-            ['Install Unified Push Server package needed for Device registration', '```npm install --save @aerogear/push```']
+            [
+              'Install Unified Push Server package needed for Device registration',
+              '```npm install --save @aerogear/push```'
+            ]
           ]
         }
       ]
     },
     metrics: {
-      serviceLogoUrl: 'https://avatars1.githubusercontent.com/u/3380462?s=200&v=4',
+      serviceLogoUrl: '/img/metrics.png',
       serviceName: 'Mobile Metrics',
       serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
       setupText: 'Mobile Metrics SDK setup',
-      docsLink: 'https://docs.aerogear.org/aerogear/latest/mobile-metrics.html#setup',
+      docsLink: `https://docs.aerogear.org/aerogear/${docsVersion}/mobile-metrics.html#setup`,
       steps: [
         {
           introduction:
@@ -77,15 +84,24 @@ const framework = {
       ]
     },
     sync: {
-      serviceLogoUrl: 'https://avatars1.githubusercontent.com/u/3380462?s=200&v=4',
+      serviceLogoUrl: '/img/sync.svg',
       serviceName: 'Sync',
       serviceDescription: 'Sync service blabla',
       setupText: 'Sync SDK setup',
-      docsLink: 'https://docs.aerogear.org/aerogear/latest/mobile-metrics.html#setup',
-      introduction:
-        'Execute following commands in your project directory to install all necessary NPM packages needed for the Sync service:',
-      steps: [{ introduction: 'Some intro for sync' }]
+      docsLink: `https://docs.aerogear.org/aerogear/${docsVersion}/data-sync.html#setup`,
+
+      steps: [
+        {
+          introduction:
+            'Execute following commands in your project directory to install all necessary NPM packages needed for the Sync service:',
+          commands: [
+            [
+              // TODO this needs to be updated after releasing Sync for JS Cordova
+            ]
+          ]
+        }
+      ]
     }
   }
-};
+});
 export default framework;
