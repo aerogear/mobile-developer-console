@@ -3,6 +3,7 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 import { BindingPanel } from './BindingPanel';
+import { wrap } from 'module';
 
 describe('BindingPanel', () => {
   const service = {
@@ -13,6 +14,8 @@ describe('BindingPanel', () => {
   };
   it('should render the Wizard for binding the service', () => {
     const wrapper = shallow(<BindingPanel service={service} />);
+    console.log(wrapper.debug());
+    
     expect(wrapper.find('WizardPattern')).toHaveLength(1);
   });
 });
