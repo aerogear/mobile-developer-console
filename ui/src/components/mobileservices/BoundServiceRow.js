@@ -128,10 +128,8 @@ class BoundServiceRow extends Component {
         return null;
       }
     }
-    
-    return (
-      <BindButton service={this.props.service} onClick={() => this.setState({ showModal: true })} />
-    );
+
+    return <BindButton service={this.props.service} onClick={() => this.setState({ showModal: true })} />;
   }
 
   render() {
