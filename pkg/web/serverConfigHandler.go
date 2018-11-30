@@ -16,7 +16,7 @@ type ServerConfigHandler struct {
 }
 
 const tmpl = `
-window.SERVER_DATA='{"ENABLE_BUILD_TAB":{{.BuildTabEnabled}}}';
+window.SERVER_DATA='{"ENABLE_BUILD_TAB":{{.BuildTabEnabled}},"AEROGEAR_DOCS_VERSION":{{.DocsVersion}}}';
 `
 
 func NewServerConfigHandler(config config.Config) *ServerConfigHandler {
