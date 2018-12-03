@@ -203,27 +203,27 @@ func (mbch *MobileBuildConfigsHandler) Create(c echo.Context) error {
 	reqData := new(BuildConfigCreateRequest)
 	if err := c.Bind(reqData); err != nil {
 		c.Logger().Errorf("error creating build config: %v", err)
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, getErrorMessage(err))
 	}
 	if err := c.Validate(reqData); err != nil {
 		c.Logger().Errorf("error creating build config: %v", err)
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, getErrorMessage(err))
 	}
 	config, secrets, err := newBuildConfigObject(*reqData, mbch.namespace)
 	if err != nil {
 		c.Logger().Errorf("error creating build config: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	config, err = mbch.buildConfigsCRUDL.Create(config)
 	if err != nil {
 		c.Logger().Errorf("error creating build config: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	for _, element := range secrets {
 		_, err := mbch.secretsCRUDL.Create(mbch.namespace, &element)
 		if err != nil {
 			c.Logger().Errorf("error creating build config: %v", err)
-			return c.String(http.StatusInternalServerError, err.Error())
+			return c.String(http.StatusInternalServerError, getErrorMessage(err))
 		}
 	}
 	return c.JSON(http.StatusOK, config)
@@ -234,7 +234,7 @@ func (mbch *MobileBuildConfigsHandler) Delete(c echo.Context) error {
 	err := mbch.buildConfigsCRUDL.DeleteByName(name)
 	if err != nil {
 		c.Logger().Errorf("error deleting build config: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return c.NoContent(http.StatusOK)
 }
@@ -243,7 +243,7 @@ func (mbch *MobileBuildConfigsHandler) List(c echo.Context) error {
 	buildConfigs, err := mbch.buildConfigsCRUDL.List()
 	if err != nil {
 		c.Logger().Errorf("error listing build configs: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return c.JSON(http.StatusOK, buildConfigs)
 }
@@ -253,7 +253,7 @@ func (mbch *MobileBuildConfigsHandler) Instantiate(c echo.Context) error {
 	build, err := mbch.buildConfigsCRUDL.Instantiate(name)
 	if err != nil {
 		c.Logger().Errorf("error instantiating build: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return c.JSON(http.StatusOK, build)
 }
@@ -264,7 +264,7 @@ func (mbch *MobileBuildConfigsHandler) Watch(c echo.Context) error {
 	err := ServeWS(c, getWatchInterface)
 	if err != nil {
 		c.Logger().Errorf("error watching build configs: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return nil
 }

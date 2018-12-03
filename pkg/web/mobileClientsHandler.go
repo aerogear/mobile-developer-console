@@ -2,14 +2,13 @@ package web
 
 import (
 	"encoding/json"
-	"net/http"
-
 	"github.com/aerogear/mobile-developer-console/pkg/apis/aerogear/v1alpha1"
 	"github.com/aerogear/mobile-developer-console/pkg/mobile"
 	"github.com/labstack/echo"
 	"github.com/satori/go.uuid"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"net/http"
 )
 
 type MobileClientsHandler struct {
@@ -115,22 +114,22 @@ func (h *MobileClientsHandler) Create(c echo.Context) error {
 	reqData := new(MobileAppCreateRequest)
 	if err := c.Bind(reqData); err != nil {
 		c.Logger().Errorf("error creating mobile app: %v", err)
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, getErrorMessage(err))
 	}
 	if err := c.Validate(reqData); err != nil {
 		c.Logger().Errorf("error creating mobile app: %v", err)
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, getErrorMessage(err))
 	}
 	app := newMobileClientObject(*reqData, h.namespace)
 	err := h.mobileClientRepo.Create(app)
 	if err != nil {
 		c.Logger().Errorf("error creating mobile app: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	data, err := newMobileClientDataFromObject(app, h.openshiftMasterURL)
 	if err != nil {
 		c.Logger().Errorf("error creating mobile app: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return c.JSON(http.StatusOK, data)
 }
@@ -141,15 +140,15 @@ func (h *MobileClientsHandler) Read(c echo.Context) error {
 	if err != nil {
 		if isNotFoundError(err) {
 			c.Logger().Errorf("error reading mobile app: %v", err)
-			return c.String(http.StatusNotFound, err.Error())
+			return c.String(http.StatusNotFound, getErrorMessage(err))
 		}
 		c.Logger().Errorf("error reading mobile app: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	data, err := newMobileClientDataFromObject(app, h.openshiftMasterURL)
 	if err != nil {
 		c.Logger().Errorf("error reading mobile app: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return c.JSON(http.StatusOK, data)
 }
@@ -158,12 +157,12 @@ func (h *MobileClientsHandler) List(c echo.Context) error {
 	apps, err := h.mobileClientRepo.List()
 	if err != nil {
 		c.Logger().Errorf("error listing mobile apps: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	data, err := newMobileClientDataListFromObjects(apps, h.openshiftMasterURL)
 	if err != nil {
 		c.Logger().Errorf("error listing mobile apps: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return c.JSON(http.StatusOK, data)
 }
@@ -173,20 +172,20 @@ func (h *MobileClientsHandler) Update(c echo.Context) error {
 	reqData := new(MobileAppUpdateRequest)
 	if err := c.Bind(reqData); err != nil {
 		c.Logger().Errorf("error updating mobile app: %v", err)
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, getErrorMessage(err))
 	}
 	if err := c.Validate(reqData); err != nil {
 		c.Logger().Errorf("error updating mobile app: %v", err)
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, getErrorMessage(err))
 	}
 	app, err := h.mobileClientRepo.ReadByName(name)
 	if err != nil {
 		if isNotFoundError(err) {
 			c.Logger().Errorf("error updating mobile app: %v", err)
-			return c.String(http.StatusNotFound, err.Error())
+			return c.String(http.StatusNotFound, getErrorMessage(err))
 		}
 		c.Logger().Errorf("error updating mobile app: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 
 	if reqData.Name != "" {
@@ -196,12 +195,12 @@ func (h *MobileClientsHandler) Update(c echo.Context) error {
 	uerr := h.mobileClientRepo.Update(app)
 	if uerr != nil {
 		c.Logger().Errorf("error updating mobile app: %v", uerr)
-		return c.String(http.StatusInternalServerError, uerr.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(uerr))
 	}
 	data, err := newMobileClientDataFromObject(app, h.openshiftMasterURL)
 	if err != nil {
 		c.Logger().Errorf("error updating mobile app: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return c.JSON(http.StatusOK, data)
 }
@@ -212,7 +211,7 @@ func (h *MobileClientsHandler) Watch(c echo.Context) error {
 	err := ServeWS(c, getWatchInterface)
 	if err != nil {
 		c.Logger().Errorf("error watching mobile apps: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return nil
 }
