@@ -290,6 +290,9 @@ func TestNewBindingObject(t *testing.T) {
 		BindingParametersKey:     "testBindingParameterKey",
 		ServiceClassExternalName: "testServiceClientExternalName",
 		ServiceInstanceName:      "testServiceInstanceName",
+		FormData: map[string]interface{}{
+			"CLIENT_TYPE": "ios",
+		},
 	}
 
 	binding := crudl.NewBindingObject(data, mc)
@@ -302,8 +305,8 @@ func TestNewBindingObject(t *testing.T) {
 	if binding.GetGenerateName() == "" {
 		t.Fatalf("generatename is not set")
 	}
-	if len(binding.GetAnnotations()) != 2 {
-		t.Fatalf("annotation count is not 2")
+	if len(binding.GetAnnotations()) != 3 {
+		t.Fatalf("annotation count is not 3")
 	}
 	if len(binding.Labels) != 1 {
 		t.Fatalf("no labels set")
