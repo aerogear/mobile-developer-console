@@ -273,9 +273,6 @@ func TestList(t *testing.T) {
 			if len(bindableServiceList.Items) != 2 {
 				t.Fatalf("there should be 2 bindable services returned")
 			}
-			if bindableServiceList.Items[0].IsBound == bindableServiceList.Items[1].IsBound {
-				t.Fatalf("the isBound status should be different for the 2 BindableServices")
-			}
 		})
 	}
 }

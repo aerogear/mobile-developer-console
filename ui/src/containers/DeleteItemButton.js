@@ -53,14 +53,14 @@ class DeleteItemButton extends Component {
   }
 
   render() {
-    const { itemType } = this.props;
+    const { itemType, title = 'Delete' } = this.props;
     const itemName = this.getItemName();
 
     return (
       <Route
         render={props => (
           <React.Fragment>
-            <MenuItem onClick={this.openDialog}>Delete</MenuItem>
+            <MenuItem onClick={this.openDialog}>{title}</MenuItem>
             <MessageDialog
               show={this.state.showModal}
               onHide={this.handleDialogClose}
