@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { EmptyState, Spinner } from 'patternfly-react';
 import { connect } from 'react-redux';
+import { partition } from 'lodash-es';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
 import './MobileServiceView.css';
@@ -71,7 +72,8 @@ class MobileServiceView extends Component {
 }
 
 function mapStateToProps(state) {
-  return state.serviceBindings;
+  const filteredServices = partition(state.serviceBindings.services, service => service.isBound());
+  return { ...state.serviceBindings, boundServices: filteredServices[0], unboundServices: filteredServices[1] };
 }
 
 export default connect(mapStateToProps)(MobileServiceView);

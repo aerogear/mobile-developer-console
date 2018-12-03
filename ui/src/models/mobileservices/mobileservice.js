@@ -1,5 +1,6 @@
 import { find } from 'lodash-es';
 import Resource from '../k8s/resource';
+import { ServiceBinding } from './servicebinding';
 
 export class MobileService {
   constructor(json = {}) {
@@ -11,7 +12,7 @@ export class MobileService {
     this.serviceBindings = [];
     if (this.data.serviceBindings) {
       for (const binding of this.data.serviceBindings) {
-        this.serviceBindings.push(new Resource(binding));
+        this.serviceBindings.push(new ServiceBinding(binding));
       }
     }
     this.serviceClass = new Resource(this.data.serviceClass);
@@ -39,14 +40,8 @@ export class MobileService {
   }
 
   isBound() {
-    return this.data.isBound;
-  }
-
-  getBindingName(index = 0) {
-    if (this.serviceBindings[index]) {
-      return this.serviceBindings[index].metadata.get('name');
-    }
-    return undefined;
+    const boundBinding = find(this.serviceBindings, binding => binding.isReady());
+    return boundBinding != null;
   }
 
   getServiceInstanceName() {
@@ -62,36 +57,21 @@ export class MobileService {
   }
 
   isBindingOperationInProgress() {
-    for (const binding of this.serviceBindings) {
-      const conditions = binding.status.get('conditions');
-      // the bind operation could be in-flight. In this case, the operation is neither ready, or failed.
-      if (
-        conditions &&
-        find(conditions, { type: 'Ready', status: 'False' }) &&
-        !this.isBindingOperationFailed(binding)
-      ) {
-        return true;
-      }
-    }
-    return false;
+    const inprogressBinding = find(this.serviceBindings, binding => binding.isInProgress());
+    return inprogressBinding != null;
   }
 
-  getBindingOperation(index = 0) {
-    const binding = this.serviceBindings[index];
-    if (binding) {
-      return binding.status.get('currentOperation');
+  getBindingOperation() {
+    const currentBinding = find(this.serviceBindings, binding => binding.isInProgress());
+    if (currentBinding) {
+      return currentBinding.getCurrentOperation();
     }
     return undefined;
   }
 
-  isBindingOperationFailed(binding) {
-    if (binding) {
-      const conditions = binding.status.get('conditions');
-      if (conditions && find(conditions, { type: 'Failed', status: 'True' })) {
-        return true;
-      }
-    }
-    return false;
+  isBindingOperationFailed() {
+    const failedBinding = find(this.serviceBindings, binding => binding.isFailed());
+    return failedBinding != null;
   }
 
   getFormDefinition() {
@@ -115,23 +95,6 @@ export class MobileService {
 
   isUPSService() {
     return this.getServiceClassExternalName() === 'ups';
-  }
-
-  toJSON() {
-    return {
-      ...this.data,
-      configuration: this.configuration,
-      configurationExt: this.configurationExt,
-      serviceInstance: this.serviceInstance.toJSON(),
-      serviceBindings: this.serviceBindings.toJSON(),
-      serviceClass: this.serviceClass.toJSON()
-    };
-  }
-}
-
-export class BoundMobileService extends MobileService {
-  constructor(json = {}) {
-    super(json);
   }
 
   getConfiguration() {
@@ -182,51 +145,18 @@ export class BoundMobileService extends MobileService {
     return this.serviceClass.spec.get('externalMetadata.documentationUrl');
   }
 
-  /**
-   * This method returns a new instance of BoundMobileService, with a status of 'Binding in progress'
-   * @returns {BoundMobileService}
-   */
-  markBindInProgress() {
-    return new BoundMobileService({
-      ...this.data,
-      serviceBindings: [{ status: { currentOperation: 'Binding', conditions: [{ type: 'Ready', status: 'False' }] } }]
-    });
-  }
-
-  /**
-   * This method returns an instance of 'UnboundMobileService' with a state of 'Unbinding in progress'
-   * @returns {UnboundMobileService}
-   */
-  unbind() {
-    return new UnboundMobileService({
-      ...this.data,
-      isBound: false,
-      serviceBinding: { status: { currentOperation: 'Unbinding', conditions: [{ type: 'Ready', status: 'False' }] } }
-    });
-  }
-}
-
-export class UnboundMobileService extends MobileService {
-  constructor(json = {}) {
-    super(json);
-  }
-
-  /**
-   * This method returns a new instance of UnboundMobileService, with a status of 'Binding in progress'
-   * @returns {UnboundMobileService}
-   */
-  bind() {
-    return new UnboundMobileService({
-      ...this.data,
-      isBound: false,
-      serviceBinding: { status: { currentOperation: 'Binding', conditions: [{ type: 'Ready', status: 'False' }] } }
-    });
+  findBinding(bindingName) {
+    return find(this.serviceBindings, binding => binding.getName() === bindingName);
   }
 
   toJSON() {
     return {
-      ...super.toJSON(),
-      servicePlan: this.servicePlan.toJSON()
+      ...this.data,
+      configuration: this.configuration,
+      configurationExt: this.configurationExt,
+      serviceInstance: this.serviceInstance.toJSON(),
+      serviceBindings: this.serviceBindings.toJSON(),
+      serviceClass: this.serviceClass.toJSON()
     };
   }
 }

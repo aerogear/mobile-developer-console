@@ -1,5 +1,3 @@
-import { BoundMobileService, UnboundMobileService } from './models';
-
 const getWSUrl = () => {
   const loc = window.location;
   let newUrl;
@@ -105,21 +103,7 @@ const dataService = {
   generateDownloadURL: name => request(`builds/${name}/gendownloadurl`, 'POST'),
   fetchUser: () => request('user', 'GET'),
   watchBindableServices: (mobileClientName, action) => webSocket(action, `/bindableservices/${mobileClientName}/watch`),
-  bindableServices: async mobileClientName => {
-    const unboundServices = [];
-    const boundServices = [];
-
-    const instances = await fetchItems(`bindableservices/${mobileClientName}`);
-    instances.forEach(instance => {
-      if (instance.isBound) {
-        boundServices.push(new BoundMobileService(instance));
-      } else {
-        unboundServices.push(new UnboundMobileService(instance));
-      }
-    });
-
-    return { boundServices, unboundServices };
-  },
+  bindableServices: mobileClientName => fetchItems(`bindableservices/${mobileClientName}`),
   createBinding: async (
     mobileClientName,
     serviceInstanceName,

@@ -25,7 +25,6 @@ type BuildConfigList = buildV1.BuildConfigList
 
 //BindableMobileService is the type that backs services on the Mobile Services page
 type BindableMobileService struct {
-	IsBound          bool                          `json:"isBound" validate:"required"`
 	Name             string                        `json:"name" validate:"required"`
 	ImageURL         string                        `json:"imageUrl,omitempty"`
 	IconClass        string                        `json:"iconClass,omitempty"`

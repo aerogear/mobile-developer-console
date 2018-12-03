@@ -131,6 +131,22 @@ class BoundServiceRow extends Component {
     return <BindButton service={this.props.service} onClick={() => this.setState({ showModal: true })} />;
   }
 
+  renderDeleteBindingDropdowns() {
+    const bindings = this.props.service.serviceBindings;
+    return (
+      <DropdownKebab id={`delete-binding}`} pullRight>
+        {bindings.map(binding => (
+          <DeleteItemButton
+            key={`delete-binding-${binding.getName()}`}
+            title={binding.getPlatform() ? `Delete ${binding.getPlatform()} Binding` : undefined}
+            itemType="serviceBinding"
+            itemName={binding.getName()}
+          />
+        ))}
+      </DropdownKebab>
+    );
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -140,9 +156,7 @@ class BoundServiceRow extends Component {
           actions={
             <div>
               {this.renderBindingButtons()}
-              <DropdownKebab id={`delete-${this.props.service.getBindingName()}`} pullRight>
-                <DeleteItemButton itemType="serviceBinding" itemName={this.props.service.getBindingName()} />
-              </DropdownKebab>
+              {this.renderDeleteBindingDropdowns()}
             </div>
           }
           hideCloseIcon
