@@ -17,7 +17,11 @@ class ConfigurationView extends Component {
           <Col xs={6}>
             <ListView>
               {Object.keys(frameworks).map(key => (
-                <FrameworkSDKDocs framework={frameworks[key](this.props.docsVersion)} mobileApp={this.props.app} />
+                <FrameworkSDKDocs
+                  key={key}
+                  framework={frameworks[key](this.props.docsVersion)}
+                  mobileApp={this.props.app}
+                />
               ))}
             </ListView>
           </Col>

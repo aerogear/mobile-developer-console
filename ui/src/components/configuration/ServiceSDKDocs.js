@@ -7,16 +7,14 @@ export const ServiceSDKDocs = ({ framework, mobileApp }) => {
     const status = mobileApp.getStatus();
     const { services = [] } = { services: status.getServices() };
     return services ? (
-      <React.Fragment>
-        <ol>
-          {framework.steps.map((docs, index) => (
-            <ServiceSDKSetup docs={docs} key={`docs-${index}`} />
-          ))}
-          {services.map(({ type }, index) =>
-            framework.services[type].steps.map(docs => <ServiceSDKSetup key={`sdk-setup-${index}`} docs={docs} />)
-          )}
-        </ol>
-      </React.Fragment>
+      <ol>
+        {framework.steps.map((docs, index) => (
+          <ServiceSDKSetup docs={docs} key={`docs-${index}`} />
+        ))}
+        {services.map(({ type }, index) =>
+          framework.services[type].steps.map(docs => <ServiceSDKSetup key={`sdk-setup-${index}`} docs={docs} />)
+        )}
+      </ol>
     ) : (
       <React.Fragment />
     );

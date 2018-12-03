@@ -15,7 +15,7 @@ export const ServiceSDKSetup = ({ docs = {} }) => {
     <li>
       {introduction ? (
         <h4>
-          <ReactMarkdown>{introduction}</ReactMarkdown>
+          <ReactMarkdown source={introduction} />
         </h4>
       ) : (
         <React.Fragment />
@@ -27,7 +27,7 @@ export const ServiceSDKSetup = ({ docs = {} }) => {
             const command = simpleString ? '' : commandHelp[1];
             return (
               <li key={`cmd-${index}`}>
-                {simpleString ? commandHelp : commandHelp[0]}
+                <span>{simpleString ? commandHelp : commandHelp[0]}</span>
                 <ReactMarkdown source={command} escapeHtml={false} astPlugins={[parseHtml]} />
               </li>
             );
