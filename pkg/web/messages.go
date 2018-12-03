@@ -41,9 +41,17 @@ func getErrorMessage(e error) string {
 	case *errors.StatusError:
 		switch reason := errors.ReasonForError(e); reason {
 		case metav1.StatusReasonAlreadyExists:
-			return fmt.Sprintf("Item identified by '%s' already exists", t.ErrStatus.Details.Name)
+			if t.ErrStatus.Details != nil {
+				return fmt.Sprintf("Item identified by '%s' already exists", t.ErrStatus.Details.Name)
+			} else {
+				return "Requested item already exists"
+			}
 		case metav1.StatusReasonNotFound:
-			return fmt.Sprintf("Can't find item identified by '%s'", t.ErrStatus.Details.Name)
+			if t.ErrStatus.Details != nil {
+				return fmt.Sprintf("Can't find item identified by '%s'", t.ErrStatus.Details.Name)
+			} else {
+				return "Can't find requested item"
+			}
 		default:
 			return fmt.Sprintf("An error has occurred performing the requested operation: %s", statusToString(t))
 		}

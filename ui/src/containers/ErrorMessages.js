@@ -15,22 +15,12 @@ export class ErrorMessages extends Component {
     this.unlisten();
   }
 
-  // AlreadyExists
-  getErrorMessage(errorCode) {
-    switch (errorCode) {
-      case 'AlreadyExists':
-        return 'stoca';
-      default:
-        return errorCode;
-    }
-  }
-
   render() {
     const { errors, dismissError } = this.props;
     wsError.message && errors.push({ error: { message: wsError.message } });
     return (
       <ToastNotificationList>
-        {[...new Set(errors.map(error => this.getErrorMessage(error.error.message)))].map((error, index) => (
+        {[...new Set(errors.map(error => error.error.message))].map((error, index) => (
           <ToastNotification key={index} onDismiss={() => dismissError(error)}>
             <span>{error}</span>
           </ToastNotification>
