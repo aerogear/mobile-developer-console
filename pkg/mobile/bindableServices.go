@@ -33,6 +33,17 @@ func (bms *BindableMobileServiceCRUDLImpl) NewBindingObject(data ServiceBindingC
 		Name: data.BindingParametersKey,
 	}
 
+	annotations := map[string]string{
+		"binding.aerogear.org/consumer": mobileClient.GetName(),
+		"binding.aerogear.org/provider": data.ServiceInstanceName,
+	}
+
+	//adding extra annotations for platforms. This should be only set by push for now
+	clientType := data.FormData["CLIENT_TYPE"]
+	if clientType != nil && (strings.EqualFold(clientType.(string), "ios") || strings.EqualFold(clientType.(string), "android")) {
+		annotations["mobile.aerogear.org/platform"] = strings.ToLower(clientType.(string))
+	}
+
 	return &v1beta1.ServiceBinding{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "ServiceBinding",
@@ -41,11 +52,8 @@ func (bms *BindableMobileServiceCRUDLImpl) NewBindingObject(data ServiceBindingC
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace:    mobileClient.GetNamespace(),
 			GenerateName: mobileClient.GetName() + "-" + data.ServiceClassExternalName + "-",
-			Annotations: map[string]string{
-				"binding.aerogear.org/consumer": mobileClient.GetName(),
-				"binding.aerogear.org/provider": data.ServiceInstanceName,
-			},
-			Labels: getLabelKeyForMobileClient(mobileClient),
+			Annotations:  annotations,
+			Labels:       getLabelKeyForMobileClient(mobileClient),
 		},
 		Spec: v1beta1.ServiceBindingSpec{
 			ServiceInstanceRef: v1beta1.LocalObjectReference{
