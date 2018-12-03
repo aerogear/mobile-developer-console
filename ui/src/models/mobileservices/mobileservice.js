@@ -8,7 +8,12 @@ export class MobileService {
     this.configurationExt = this.data.configurationExt || [];
     this.setupText = '';
     this.serviceInstance = new Resource(this.data.serviceInstance);
-    this.serviceBinding = new Resource(this.data.serviceBinding);
+    this.serviceBindings = [];
+    if (this.data.serviceBindings) {
+      for (const binding of this.data.serviceBindings) {
+        this.serviceBindings.push(new Resource(binding));
+      }
+    }
     this.serviceClass = new Resource(this.data.serviceClass);
     this.servicePlan = new Resource(this.data.servicePlan);
   }
@@ -37,8 +42,11 @@ export class MobileService {
     return this.data.isBound;
   }
 
-  getBindingName() {
-    return this.serviceBinding.metadata.get('name');
+  getBindingName(index = 0) {
+    if (this.serviceBindings[index]) {
+      return this.serviceBindings[index].metadata.get('name');
+    }
+    return undefined;
   }
 
   getServiceInstanceName() {
@@ -54,22 +62,34 @@ export class MobileService {
   }
 
   isBindingOperationInProgress() {
-    const conditions = this.serviceBinding.status.get('conditions');
-    // the bind operation could be in-flight. In this case, the operation is neither ready, or failed.
-    if (conditions && find(conditions, { type: 'Ready', status: 'False' }) && !this.isBindingOperationFailed()) {
-      return true;
+    for (const binding of this.serviceBindings) {
+      const conditions = binding.status.get('conditions');
+      // the bind operation could be in-flight. In this case, the operation is neither ready, or failed.
+      if (
+        conditions &&
+        find(conditions, { type: 'Ready', status: 'False' }) &&
+        !this.isBindingOperationFailed(binding)
+      ) {
+        return true;
+      }
     }
     return false;
   }
 
-  getBindingOperation() {
-    return this.serviceBinding.status.get('currentOperation');
+  getBindingOperation(index = 0) {
+    const binding = this.serviceBindings[index];
+    if (binding) {
+      return binding.status.get('currentOperation');
+    }
+    return undefined;
   }
 
-  isBindingOperationFailed() {
-    const conditions = this.serviceBinding.status.get('conditions');
-    if (conditions && find(conditions, { type: 'Failed', status: 'True' })) {
-      return true;
+  isBindingOperationFailed(binding) {
+    if (binding) {
+      const conditions = binding.status.get('conditions');
+      if (conditions && find(conditions, { type: 'Failed', status: 'True' })) {
+        return true;
+      }
     }
     return false;
   }
@@ -103,7 +123,7 @@ export class MobileService {
       configuration: this.configuration,
       configurationExt: this.configurationExt,
       serviceInstance: this.serviceInstance.toJSON(),
-      serviceBinding: this.serviceBinding.toJSON(),
+      serviceBindings: this.serviceBindings.toJSON(),
       serviceClass: this.serviceClass.toJSON()
     };
   }
@@ -133,7 +153,7 @@ export class BoundMobileService extends MobileService {
   markBindInProgress() {
     return new BoundMobileService({
       ...this.data,
-      serviceBinding: { status: { currentOperation: 'Binding', conditions: [{ type: 'Ready', status: 'False' }] } }
+      serviceBindings: [{ status: { currentOperation: 'Binding', conditions: [{ type: 'Ready', status: 'False' }] } }]
     });
   }
 
