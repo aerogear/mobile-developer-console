@@ -2,9 +2,13 @@ import { find } from 'lodash-es';
 import Resource from '../k8s/resource';
 import Status from '../k8s/status';
 
-export default class ServiceBinding extends Resource {
+export class ServiceBinding extends Resource {
   constructor(data = {}) {
     super(data);
+  }
+
+  getName() {
+    return this.metadata.get('name');
   }
 
   isReady() {
@@ -32,15 +36,6 @@ export default class ServiceBinding extends Resource {
     return false;
   }
 
-  markInProgress() {
-    const newStatus = {
-      ...this.status.toJSON(),
-      currentOperation: 'Binding',
-      conditions: [{ type: 'Ready', status: 'False' }]
-    };
-    this.status = new Status(newStatus);
-  }
-
   unbind() {
     const newStatus = {
       ...this.status.toJSON(),
@@ -59,9 +54,15 @@ export default class ServiceBinding extends Resource {
     this.status = new Status(newStatus);
   }
 
-  currentOperation() {
+  getCurrentOperation() {
     return this.status.get('currentOperation');
   }
 
-
+  getPlatform() {
+    const annotations = this.metadata.get('annotations');
+    if (annotations) {
+      return annotations['mobile.aerogear.org/platform'];
+    }
+    return undefined;
+  }
 }

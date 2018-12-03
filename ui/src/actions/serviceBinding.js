@@ -42,5 +42,5 @@ export const SERVICE_BINDING_DELETE_FAILURE = 'SERVICE_BINDING_DELETE_FAILURE';
 export const deleteBinding = name =>
   fetchAction(
     [SERVICE_BINDING_DELETE_REQUEST, SERVICE_BINDING_DELETE_SUCCESS, SERVICE_BINDING_DELETE_FAILURE],
-    async () => DataService.deleteBinding(name)
+    async () => DataService.deleteBinding(name).then(resp => ({ resp, name }))
   )();

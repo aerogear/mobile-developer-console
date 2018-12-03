@@ -1,4 +1,5 @@
-import { findIndex } from 'lodash-es';
+import { findIndex, map } from 'lodash-es';
+import { MobileService, ServiceBinding } from '../models';
 
 import {
   SERVICE_BINDINGS_REQUEST,
@@ -14,8 +15,7 @@ import {
 
 const defaultState = {
   isFetching: false,
-  boundServices: [],
-  unboundServices: [],
+  services: [],
   errors: [],
   isCreating: false,
   isDeleting: false,
@@ -45,12 +45,12 @@ const serviceBindingsReducer = (state = defaultState, action) => {
         isReading: true
       };
     case SERVICE_BINDINGS_SUCCESS: {
+      const services = map(action.result, data => new MobileService(data));
       return {
         ...state,
         isReading: false,
         errors: getErrors(null, 'read', state.errors),
-        boundServices: action.result.boundServices,
-        unboundServices: action.result.unboundServices
+        services
       };
     }
     case SERVICE_BINDINGS_FAILURE:
@@ -66,48 +66,26 @@ const serviceBindingsReducer = (state = defaultState, action) => {
       };
     case SERVICE_BINDING_CREATE_SUCCESS: {
       const { serviceInstanceName } = action.result;
-      const indexOfUnboundService = findIndex(
-        state.unboundServices,
-        binding => binding.getServiceInstanceName() === serviceInstanceName
+      const serviceIndex = findIndex(
+        state.services,
+        service => service.getServiceInstanceName() === serviceInstanceName
       );
+      if (serviceIndex > -1) {
+        const service = state.services[serviceIndex];
+        const newBinding = new ServiceBinding();
+        newBinding.bind();
+        service.serviceBindings.push(newBinding);
 
-      // we support multiple bindings to a service
-      // so, we need to check if the service that the "create binding" request is sent is a
-      // bound one already or an unbound one.
-      // our target is to mark the service as "binding in progress"
-
-      if (indexOfUnboundService >= 0) {
         const newState = {
           ...state,
           isCreating: false,
-          unboundServices: [
-            ...state.unboundServices.slice(0, indexOfUnboundService),
-            state.unboundServices[indexOfUnboundService].bind(),
-            ...state.unboundServices.slice(indexOfUnboundService + 1)
-          ],
+          services: [...state.services.slice(0, serviceIndex), service, ...state.services.slice(serviceIndex + 1)],
           errors: getErrors(null, 'create', state.errors)
         };
 
         return newState;
       }
-
-      const indexOfBoundService = findIndex(
-        state.boundServices,
-        binding => binding.getServiceInstanceName() === serviceInstanceName
-      );
-
-      const newState = {
-        ...state,
-        isCreating: false,
-        boundServices: [
-          ...state.boundServices.slice(0, indexOfBoundService),
-          state.boundServices[indexOfBoundService].markBindInProgress(),
-          ...state.boundServices.slice(indexOfBoundService + 1)
-        ],
-        errors: getErrors(null, 'create', state.errors)
-      };
-
-      return newState;
+      return state;
     }
     case SERVICE_BINDING_CREATE_FAILURE:
       return {
@@ -121,15 +99,19 @@ const serviceBindingsReducer = (state = defaultState, action) => {
         isDeleting: true
       };
     case SERVICE_BINDING_DELETE_SUCCESS: {
-      const deletedBindingName = action.result;
-      const index = findIndex(state.boundServices, item => item.getBindingName() === deletedBindingName);
-      return {
-        ...state,
-        isDeleting: false,
-        boundServices: [...state.boundServices.slice(0, index), ...state.boundServices.slice(index + 1)], // TODO: what about multiple binding support?
-        unboundServices: [...state.unboundServices, state.boundServices[index].unbind()], // TODO: what about multiple binding support?
-        errors: getErrors(null, 'delete', state.errors)
-      };
+      const { name } = action.result;
+      const serviceIndex = findIndex(state.services, item => item.findBinding(name) != null);
+      if (serviceIndex > -1) {
+        const service = state.services[serviceIndex];
+        const binding = service.findBinding(name);
+        binding.unbind();
+        return {
+          ...state,
+          isDeleting: false,
+          services: [...state.services.slice(0, serviceIndex), service, ...state.services.slice(serviceIndex + 1)]
+        };
+      }
+      return state;
     }
     case SERVICE_BINDING_DELETE_FAILURE:
       return {

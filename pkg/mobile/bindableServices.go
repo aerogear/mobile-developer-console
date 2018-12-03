@@ -177,6 +177,7 @@ func attachCurrentBindings(lister *BindableMobileServiceCRUDLImpl, mobileClient 
 	listOpts := v1.ListOptions{}
 
 	serviceBindings, err := lister.scClient.ServiceBindings(mobileClient.GetNamespace()).List(listOpts)
+	bindingsForApp := make([]ServiceBinding, 0)
 
 	if err != nil {
 		return err
@@ -184,9 +185,7 @@ func attachCurrentBindings(lister *BindableMobileServiceCRUDLImpl, mobileClient 
 	for _, sb := range serviceBindings.Items {
 		if sb.Spec.ServiceInstanceRef.Name == serviceInstance.ObjectMeta.Name &&
 			sb.ObjectMeta.Annotations["binding.aerogear.org/consumer"] == mobileClient.GetName() {
-			if serviceBindingIsReady(sb) {
-				bindableService.IsBound = true
-			}
+			bindingsForApp = append(bindingsForApp, sb)
 
 			bindableService.MobileClient = *mobileClient
 
@@ -206,7 +205,7 @@ func attachCurrentBindings(lister *BindableMobileServiceCRUDLImpl, mobileClient 
 	// in case of services that can have multiple bindings, we don't want to have duplicate elements.
 	bindableService.Configuration = removeDuplicatesUnordered(bindableService.Configuration)
 	bindableService.ConfigurationExt = removeDuplicatesUnordered(bindableService.ConfigurationExt)
-	bindableService.ServiceBindings = serviceBindings.Items
+	bindableService.ServiceBindings = bindingsForApp
 	return nil
 }
 
@@ -299,15 +298,4 @@ func makeParametersSecret(binding *ServiceBinding, binding2 *ServiceBinding, for
 		Type:       "Opaque",
 		StringData: map[string]string{"parameters": string(jsonStringData)},
 	}
-}
-
-func serviceBindingIsReady(binding ServiceBinding) bool {
-	ready := false
-	for _, condition := range binding.Status.Conditions {
-		if condition.Type == v1beta1.ServiceBindingConditionReady && condition.Status == v1beta1.ConditionTrue {
-			ready = true
-			break
-		}
-	}
-	return ready
 }
