@@ -32,7 +32,7 @@ func (msih *BindableMobileServiceHandler) List(c echo.Context) error {
 	si, err := msih.bindableServiceCRUDL.List(mobileClient)
 	if err != nil {
 		c.Logger().Errorf("error listing service bindings %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return c.JSON(http.StatusOK, si)
 }
@@ -43,14 +43,14 @@ func (msih *BindableMobileServiceHandler) Watch(c echo.Context) error {
 	mobileClient, err := msih.mobileClientRepo.ReadByName(mobileClientName)
 	if err != nil {
 		c.Logger().Errorf("can not read app with name %s due to error %v", mobileClientName, err)
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, getErrorMessage(err))
 	}
 
 	getWatchInterface := msih.bindableServiceCRUDL.Watch(mobileClient)
 	err = ServeWS(c, getWatchInterface)
 	if err != nil {
 		c.Logger().Errorf("error watching build configs: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return nil
 }
@@ -60,7 +60,7 @@ func (msih *BindableMobileServiceHandler) Delete(c echo.Context) error {
 	err := msih.bindableServiceCRUDL.Delete(msih.namespace, name)
 	if err != nil {
 		c.Logger().Errorf("error deleting service binding %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return c.NoContent(http.StatusOK)
 }
@@ -69,24 +69,24 @@ func (msih *BindableMobileServiceHandler) Create(c echo.Context) error {
 	reqData := new(mobile.ServiceBindingCreateRequest)
 	if err := c.Bind(&reqData); err != nil {
 		c.Logger().Errorf("Could not bind request to ServiceBindingCreateRequest %v", err)
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, getErrorMessage(err))
 	}
 
 	if err := c.Validate(reqData); err != nil {
 		c.Logger().Errorf("Binding Creation failed validation %v", err)
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, getErrorMessage(err))
 	}
 
 	consumerID := reqData.FormData["CLIENT_ID"].(string)
 	if consumerID == "" {
 		err := errors.New("CLIENT_ID is empty")
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, getErrorMessage(err))
 	}
 
 	mobileClient, err := msih.mobileClientRepo.ReadByName(consumerID)
 	if err != nil {
 		c.Logger().Errorf("can not read app with name %s due to error %v", consumerID, err)
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusBadRequest, getErrorMessage(err))
 	}
 
 	binding := msih.bindableServiceCRUDL.NewBindingObject(*reqData, mobileClient)
@@ -94,7 +94,7 @@ func (msih *BindableMobileServiceHandler) Create(c echo.Context) error {
 
 	if err != nil {
 		c.Logger().Errorf("error creating service binding %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 
 	return c.JSON(200, binding)

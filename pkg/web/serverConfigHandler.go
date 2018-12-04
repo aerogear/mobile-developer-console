@@ -36,7 +36,7 @@ func (handler *ServerConfigHandler) Handle(c echo.Context) error {
 	err := handler.template.Execute(&writer, handler.config)
 	if err != nil {
 		c.Logger().Errorf("error server config: %v", err)
-		return c.String(http.StatusInternalServerError, err.Error())
+		return c.String(http.StatusInternalServerError, getErrorMessage(err))
 	}
 	return c.Blob(http.StatusOK, echo.MIMEApplicationJavaScript, (&writer).Bytes())
 }
