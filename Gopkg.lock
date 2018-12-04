@@ -340,6 +340,14 @@
   revision = "fa4ea1863be25bdba7da06220eb7a32d8978d58f"
 
 [[projects]]
+  digest = "1:7365acd48986e205ccb8652cc746f09c8b7876030d53710ea6ef7d0bd0dcd7ca"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = ""
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
   digest = "1:4142d94383572e74b42352273652c62afec5b23f325222ed09198f46009022d1"
   name = "github.com/prometheus/client_golang"
   packages = [
@@ -789,6 +797,7 @@
     "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1",
     "github.com/operator-framework/operator-sdk/pkg/sdk",
     "github.com/operator-framework/operator-sdk/pkg/util/k8sutil",
+    "github.com/pkg/errors",
     "github.com/satori/go.uuid",
     "github.com/sirupsen/logrus",
     "gopkg.in/go-playground/validator.v9",

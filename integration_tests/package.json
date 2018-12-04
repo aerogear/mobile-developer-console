@@ -8,5 +8,8 @@
   "devDependencies": {
     "axios": "^0.18.0",
     "mocha": "^5.2.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11"
   }
 }
