@@ -13,16 +13,10 @@ describe('ServiceSDKSetup', () => {
     docs.commands.forEach(command => {
       expect(
         wrapper
-          .find('li > ul > li > span')
-          .at(i)
-          .text()
-      ).toEqual(typeof command === 'string' ? command : command[0]);
-      expect(
-        wrapper
           .find('li > ul > li > ReactMarkdown')
           .at(i)
           .prop('source')
-      ).toEqual(typeof command === 'string' ? '' : command[1]);
+      ).toEqual(typeof command === 'string' ? command : `${command[0]}\n\n${command[1]}`);
       i++;
     });
   });

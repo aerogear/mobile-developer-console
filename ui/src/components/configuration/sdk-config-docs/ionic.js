@@ -15,7 +15,7 @@ const framework = docsVersion => ({
       ]
     },
     {
-      introduction: '',
+      introduction: 'Initialize AeroGear Core module',
       commands: [
         [
           'To init, load the content from `mobile-services.json` file, and pass it to init:',
@@ -53,10 +53,7 @@ const framework = docsVersion => ({
           introduction:
             'Execute following commands in your project directory to install all necessary NPM packages needed for the Push Notifications service:',
           commands: [
-            [
-              'Install Cordova plugin `cordova-plugin-aerogear-push` for push',
-              '```cordova plugin add @aerogear/cordova-plugin-aerogear-push```'
-            ],
+            ['Install Cordova plugin for push', '```cordova plugin add @aerogear/cordova-plugin-aerogear-push```'],
             [
               'Ionic Apps require an additional dependency, the [Ionic Native Push Library](https://ionicframework.com/docs/native/push/)',
               '```npm install --save @ionic-native/push```'
@@ -80,10 +77,7 @@ const framework = docsVersion => ({
           introduction:
             "Metrics is included in all SDK modules, if you already use a component from the AeroGear SDK in your app. You'll need only to install this NPM package to enable it:",
           commands: [
-            [
-              'Install `cordova-plugin-aerogear-metrics` Cordova plugin',
-              '```cordova plugin add @aerogear/cordova-plugin-aerogear-metrics```'
-            ]
+            ['Install Metrics Cordova plugin', '```cordova plugin add @aerogear/cordova-plugin-aerogear-metrics```']
           ]
         }
       ]

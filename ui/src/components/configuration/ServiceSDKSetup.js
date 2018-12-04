@@ -17,10 +17,9 @@ export const ServiceSDKSetup = ({ docs = {} }) => {
         {commands ? (
           commands.map((commandHelp, index) => {
             const simpleString = typeof commandHelp === 'string';
-            const command = simpleString ? '' : commandHelp[1];
+            const command = simpleString ? commandHelp : `${commandHelp[0]}\n\n${commandHelp[1]}`;
             return (
               <li key={`cmd-${index}`}>
-                <span>{simpleString ? commandHelp : commandHelp[0]}</span>
                 <ReactMarkdown source={command} skipHtml escapeHtml renderers={{ code: CodeBlock }} />
               </li>
             );
