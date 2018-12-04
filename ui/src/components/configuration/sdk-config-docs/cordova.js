@@ -4,26 +4,27 @@ const framework = docsVersion => ({
   steps: [
     {
       introduction:
-        'First step is to install the Core AeroGear module, the module manages and binds all services together on the client side.',
-      commands: [
-        'Open a terminal and navigate to your appplication project root folder.',
-        ['Install AeroGear Core package, from terminal execute', '```npm install @aerogear/app```'],
-        [
-          'In your application, import and call the "init" method:',
-          `
-        import { init } from "@aerogear/app";
-
-        const aerogearConfig = {
-            // Replace with your own configuration
-        };
-        
-        init(aerogearConfig);`
-        ]
-      ]
+        "Create file `mobile-services.json` in your app's source folder and copy contents from the right panel into it."
     },
     {
       introduction:
-        'Copy `mobile-services.json` content and copy it to the location `src/mobile-services.json` in your application project.'
+        'Install the Core AeroGear module, the module manages and binds all services together on the client side.',
+      commands: [
+        'Open a terminal and navigate to your appplication project root folder.',
+        ['Install AeroGear Core package, from the terminal, execute:', '```npm install @aerogear/app```']
+      ]
+    },
+    {
+      introduction: '',
+      commands: [
+        [
+          'To init, load the content from `mobile-services.json` file, and pass it to init:',
+          `\`\`\`js 
+          import { init } from "@aerogear/app";
+          const appConfig = require("./mobile-services.json");
+          init(appConfig);`
+        ]
+      ]
     }
   ],
   services: {
