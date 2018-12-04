@@ -1,13 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import htmlParser from 'react-markdown/plugins/html-parser';
-
-const parseHtml = htmlParser({
-  isValidNode: node => node.type !== 'script',
-  processingInstructions: [
-    /* ... */
-  ]
-});
+import CodeBlock from '../common/CodeBlock';
 
 export const ServiceSDKSetup = ({ docs = {} }) => {
   const { introduction, commands } = docs;
@@ -15,7 +8,7 @@ export const ServiceSDKSetup = ({ docs = {} }) => {
     <li>
       {introduction ? (
         <h4>
-          <ReactMarkdown source={introduction} />
+          <ReactMarkdown source={introduction} renderers={{ code: CodeBlock }} />
         </h4>
       ) : (
         <React.Fragment />
@@ -28,7 +21,7 @@ export const ServiceSDKSetup = ({ docs = {} }) => {
             return (
               <li key={`cmd-${index}`}>
                 <span>{simpleString ? commandHelp : commandHelp[0]}</span>
-                <ReactMarkdown source={command} escapeHtml={false} astPlugins={[parseHtml]} />
+                <ReactMarkdown source={command} skipHtml escapeHtml renderers={{ code: CodeBlock }} />
               </li>
             );
           })
