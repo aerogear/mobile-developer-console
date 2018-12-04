@@ -1,32 +1,12 @@
-import { Row, Col } from 'patternfly-react';
+import { Row, Col, ListView } from 'patternfly-react';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Header from './Header';
-import { ServiceSDKInfo } from './ServiceSDKInfo';
-import { ServiceSDKDocs } from './ServiceSDKDocs';
 import CopyToClipboardMultiline from '../common/CopyToClipboardMultiline';
 
 import './ConfigurationView.css';
-
-// TODO remove mock values
-
-const serviceSDKInfo = [
-  {
-    serviceLogoUrl: 'https://pbs.twimg.com/profile_images/702119821979344897/oAC05cEB_400x400.png',
-    serviceName: 'Identity Management',
-    serviceId: 'dh-keycloak-apb-h7k9j',
-    serviceDescription: 'Identity Management - Identity and Access Management',
-    setupText: 'Identity Management SDK setup',
-    docsLink: 'https://docs.aerogear.org/aerogear/latest/identity-management.html#setup'
-  },
-  {
-    serviceLogoUrl: 'https://avatars1.githubusercontent.com/u/3380462?s=200&v=4',
-    serviceName: 'Mobile Metrics',
-    serviceId: 'dh-metrics-apb-wqm5c',
-    serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
-    setupText: 'Mobile Metrics SDK setups',
-    docsLink: 'https://docs.aerogear.org/aerogear/latest/mobile-metrics.html#setup'
-  }
-];
+import FrameworkSDKDocs from './FrameworkSDKDocs';
+import frameworks from './sdk-config-docs/frameworks';
 
 class ConfigurationView extends Component {
   render() {
@@ -35,21 +15,15 @@ class ConfigurationView extends Component {
       <React.Fragment>
         <Row className="configurationView">
           <Col xs={6}>
-            <Header>SDK Configuration</Header>
-            <ServiceSDKDocs />
-
-            <h4>Service specific configuration steps</h4>
-            {serviceSDKInfo.map((info, index) => (
-              <ServiceSDKInfo
-                serviceLogoUrl={info.serviceLogoUrl}
-                serviceName={info.serviceName}
-                serviceId={info.serviceId}
-                serviceDescription={info.serviceDescription}
-                setupText={info.setupText}
-                docsLink={info.docsLink}
-                key={index}
-              />
-            ))}
+            <ListView>
+              {Object.keys(frameworks).map(key => (
+                <FrameworkSDKDocs
+                  key={key}
+                  framework={frameworks[key](this.props.docsVersion)}
+                  mobileApp={this.props.app}
+                />
+              ))}
+            </ListView>
           </Col>
           <Col xs={6}>
             <Header>mobile-services.json</Header>
@@ -63,4 +37,10 @@ class ConfigurationView extends Component {
   }
 }
 
-export default ConfigurationView;
+function mapStateToProps(state) {
+  return {
+    docsVersion: state.config.docsVersion
+  };
+}
+
+export default connect(mapStateToProps)(ConfigurationView);

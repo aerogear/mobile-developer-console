@@ -1,9 +1,11 @@
 let buildTabEnabled = false;
+let docsVersion = 'latest';
 
 if (window && window.SERVER_DATA) {
   try {
     const serverConfig = JSON.parse(window.SERVER_DATA);
     buildTabEnabled = serverConfig.ENABLE_BUILD_TAB;
+    docsVersion = serverConfig.AEROGEAR_DOCS_VERSION;
   } catch (e) {
     console.error('failed to parse the server config data', e);
   }
@@ -12,7 +14,8 @@ if (window && window.SERVER_DATA) {
 }
 
 const defaultState = {
-  buildTabEnabled
+  buildTabEnabled,
+  docsVersion
 };
 
 const r = (state = defaultState) =>
