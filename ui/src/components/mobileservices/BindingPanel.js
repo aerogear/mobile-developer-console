@@ -90,45 +90,20 @@ export class BindingPanel extends Component {
   }
 
   hasUPSPlatformAnnotation(platform) {
-    // configExt field example value:
-    // it is an array of annotations that start with org.aerogear.binding-ext
-    // and our annotation's value is also an array
-    /*
-      [
-        [
-          {
-            "type": "android",
-            "typeLabel": "Android",
-            "url": "https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/d6f4836a-11df-42d1-a442-e9cc823715a4",
-            "id": "d6f4836a-11df-42d1-a442-e9cc823715a4"
-          }
-        ]
-      ]
-      */
     // there won't be any variant annotations if there is no binding yet
     if (!this.props.service.isBound()) {
       return false;
     }
 
-    const configExt = this.props.service.getConfigurationExt();
-
-    if (!configExt || !configExt.length) {
+    const configExtItems = this.props.service.getConfigurationExtAsJSON();
+    if (!configExtItems || !configExtItems.length) {
       return false;
     }
 
-    for (const configItemStr of configExt) {
-      let configExtItem;
-      try {
-        configExtItem = JSON.parse(configItemStr);
-      } catch (err) {
-        // not much we can do if the annotation is malformed
-        return false;
-      }
-      if (configExtItem && configExtItem.length && configExtItem.length > 0) {
-        for (const variantInfo of configExtItem) {
-          if (variantInfo.type === platform) {
-            return true;
-          }
+    for (const configExtItem of configExtItems) {
+      for (const variantInfo of configExtItem) {
+        if (variantInfo.type === platform) {
+          return true;
         }
       }
     }

@@ -113,18 +113,17 @@ class BoundServiceRow extends Component {
     if (!this.props.service.isUPSService()) {
       return null;
     }
-    const configurationExt = this.props.service.getConfigurationExt();
+    const configurationExt = this.props.service.getConfigurationExtAsJSON();
     // sample value for configurationExt
     /*
-      "[
+      [
         {"type":"ios","typeLabel":"iOS","url":"https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/c8d70b96-bd52-499c-845b-756089e06d36","id":"c8d70b96-bd52-499c-845b-756089e06d36"},
         {"type":"android","typeLabel":"Android","url":"https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/2d76d1eb-65ef-471c-8d21-75f80c3f370f","id":"2d76d1eb-65ef-471c-8d21-75f80c3f370f"}
-      ]"
+      ]
     */
-    if (configurationExt) {
-      const configExtArray = JSON.parse(configurationExt);
-      // there are 2 variants already. can't create another variant.
-      if (configExtArray && configExtArray.length && configExtArray.length >= 2) {
+    if (configurationExt && configurationExt.length) {
+      if (configurationExt[0] && configurationExt[0].length && configurationExt[0].length >= 2) {
+        // there are 2 variants already. can't create another variant.
         return null;
       }
     }

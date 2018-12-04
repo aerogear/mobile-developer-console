@@ -122,6 +122,42 @@ export class BoundMobileService extends MobileService {
     return this.data.configurationExt;
   }
 
+  getConfigurationExtAsJSON() {
+    // configExt field example value:
+    // it is an array of annotations that start with org.aerogear.binding-ext
+    // and our annotation's value is also an array
+    /*
+      [
+        [
+          {
+            "type": "android",
+            "typeLabel": "Android",
+            "url": "https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/d6f4836a-11df-42d1-a442-e9cc823715a4",
+            "id": "d6f4836a-11df-42d1-a442-e9cc823715a4"
+          }
+        ]
+      ]
+      */
+    if (!this.data.configurationExt || !this.data.configurationExt.length) {
+      return undefined;
+    }
+
+    const configExtItems = [];
+
+    for (const configItemStr of this.data.configurationExt) {
+      let configExtItem;
+      try {
+        configExtItem = JSON.parse(configItemStr);
+        configExtItems.push(configExtItem);
+      } catch (err) {
+        // not much we can do if the annotation is malformed
+        console.warn('ConfigurationExt item is malformed', configItemStr);
+      }
+    }
+
+    return configExtItems;
+  }
+
   getDocumentationUrl() {
     return this.serviceClass.spec.get('externalMetadata.documentationUrl');
   }
