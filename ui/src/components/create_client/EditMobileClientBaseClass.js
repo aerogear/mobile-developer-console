@@ -49,7 +49,12 @@ class EditMobileClientBaseClass extends Component {
         formControl: ({ validationState, ...props }) => <Form.FormControl type="text" {...props} autoFocus />,
         validationState: this._validate(CREATE_CLIENT_NAME),
         autoComplete: 'off',
-        onChange: e => this.props.setFieldValue(CREATE_CLIENT_NAME, e.target.value)
+        onChange: e => this.props.setFieldValue(CREATE_CLIENT_NAME, e.target.value),
+        onKeyPress: event => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+          }
+        }
       }
     ];
   }
