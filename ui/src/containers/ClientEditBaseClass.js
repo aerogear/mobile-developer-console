@@ -39,7 +39,10 @@ class ClientEditBaseClass extends Component {
     });
   };
 
-  createClient() {
+  createClient(e) {
+    if (e) {
+      e.preventDefault();
+    }
     this.setState({ loading: true });
     const newApp = this.getMobileAppToEdit();
     if (this.state.editingMode) {
@@ -80,7 +83,7 @@ class ClientEditBaseClass extends Component {
               {this.state.error}
             </Alert>
           )}
-          <FormGroup>
+          <FormGroup onSubmit={this.createClient}>
             <CreateClient editing={this.state.editingMode} />
           </FormGroup>
         </Modal.Body>
