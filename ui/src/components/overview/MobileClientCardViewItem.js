@@ -42,7 +42,20 @@ const MobileClientCardViewItem = props => {
               <h1>{app.spec.name}</h1>
             </div>
 
-            <CardTitle>
+            <CardTitle />
+          </CardHeading>
+
+          <CardBody>
+            <div className="card-icons">
+              {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}
+            </div>
+          </CardBody>
+          <CardFooter>
+            <div className="creation-timestamp">CREATED</div>
+            <span className="creation-timestamp">
+              <span className="fa fa-globe" /> <Moment format="DD/MM/YYYY">{app.metadata.creationTimestamp}</Moment>
+            </span>
+            <span className="builds">
               {buildTabEnabled && builds.numFailedBuilds > 0 ? (
                 <span>
                   <span className="pficon pficon-error-circle-o" />
@@ -56,18 +69,6 @@ const MobileClientCardViewItem = props => {
                 </span>
               ) : null}
               {!buildTabEnabled || (builds.numFailedBuilds === 0 && builds.numInProgressBuilds === 0) ? <span /> : null}
-            </CardTitle>
-          </CardHeading>
-
-          <CardBody>
-            <div className="card-icons">
-              {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}
-            </div>
-          </CardBody>
-          <CardFooter>
-            <div className="creation-timestamp">CREATED</div>
-            <span className="creation-timestamp">
-              <span className="fa fa-globe" /> <Moment format="DD/MM/YYYY">{app.metadata.creationTimestamp}</Moment>
             </span>
           </CardFooter>
         </Card>

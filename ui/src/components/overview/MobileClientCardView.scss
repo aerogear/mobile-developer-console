@@ -104,7 +104,9 @@
       }
     }
 
-    
+    .builds {
+      float:right
+    }
   }
 }
 
@@ -133,3 +135,4 @@
 .toolbarFilter::placeholder {
   font-style: italic;
 }
+
