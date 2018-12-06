@@ -3,8 +3,15 @@ registry:
     name: ag
     url: https://registry.hub.docker.com
     org: aerogearcatalog
-    tag: latest
+    tag: 1.0.0
     white_list:
       - '.*-apb$'
     black_list:
-      - '.*-app-apb$'
+      - '.*mobile-developer-console-apb$'
+  - type: dockerhub
+    name: ag-mdc
+    org: aerogearcatalog
+    tag: 1.0.0-alpha
+    url: https://registry.hub.docker.com
+    white_list:
+    - '.*mobile-developer-console-apb$'
