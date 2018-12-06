@@ -1,3 +1,4 @@
+import Moment from 'react-moment';
 import React from 'react';
 import { Card, CardHeading, CardTitle, CardBody, CardFooter, DropdownKebab } from 'patternfly-react';
 import { Link } from 'react-router-dom';
@@ -30,42 +31,48 @@ const MobileClientCardViewItem = props => {
   } = props;
   return (
     <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      <Card matchHeight /* accented */ className="mobile-client-card">
-        <CardHeading>
-          <DropdownKebab id={app.metadata.name} pullRight className="card-dropdown-kebab">
-            <EditItemButton item={app} />
-            <DeleteItemButton itemType="app" itemName={appName} item={app} />
-          </DropdownKebab>
-          <CardTitle>
-            {buildTabEnabled && builds.numFailedBuilds > 0 ? (
-              <span>
-                <span className="pficon pficon-error-circle-o" />
-                {builds.numFailedBuilds}
-              </span>
-            ) : null}
-            {buildTabEnabled && builds.numInProgressBuilds > 0 ? (
-              <span>
-                <span className="pficon fa fa-refresh fa-spin fa-fw" />
-                {builds.numInProgressBuilds}
-              </span>
-            ) : null}
-            {!buildTabEnabled || (builds.numFailedBuilds === 0 && builds.numInProgressBuilds === 0) ? <span /> : null}
-          </CardTitle>
-        </CardHeading>
-
-        <Link to={`/mobileclient/${app.metadata.name}`}>
-          <CardBody>
-            <div className="card-body-title">
+      <Link to={`/mobileclient/${app.metadata.name}`}>
+        <Card matchHeight /* accented */ className="mobile-client-card">
+          <CardHeading>
+            <DropdownKebab id={app.metadata.name} pullRight className="card-dropdown-kebab">
+              <EditItemButton item={app} />
+              <DeleteItemButton itemType="app" itemName={appName} item={app} />
+            </DropdownKebab>
+            <div className="card-pf-title">
               <h1>{app.spec.name}</h1>
+            </div>
+
+            <CardTitle />
+          </CardHeading>
+
+          <CardBody>
+            <div className="card-icons">
+              {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}
             </div>
           </CardBody>
           <CardFooter>
-            <div className="card-footer-icons">
-              {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}
-            </div>
+            <div className="creation-timestamp">CREATED</div>
+            <span className="creation-timestamp">
+              <span className="fa fa-globe" /> <Moment format="DD/MM/YYYY">{app.metadata.creationTimestamp}</Moment>
+            </span>
+            <span className="builds">
+              {buildTabEnabled && builds.numFailedBuilds > 0 ? (
+                <span>
+                  <span className="pficon pficon-error-circle-o" />
+                  {builds.numFailedBuilds}
+                </span>
+              ) : null}
+              {buildTabEnabled && builds.numInProgressBuilds > 0 ? (
+                <span>
+                  <span className="pficon fa fa-refresh fa-spin fa-fw" />
+                  {builds.numInProgressBuilds}
+                </span>
+              ) : null}
+              {!buildTabEnabled || (builds.numFailedBuilds === 0 && builds.numInProgressBuilds === 0) ? <span /> : null}
+            </span>
           </CardFooter>
-        </Link>
-      </Card>
+        </Card>
+      </Link>
     </div>
   );
 };
