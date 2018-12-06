@@ -56,6 +56,10 @@
   .card-pf-body {
     text-align: center;
 
+      .card-icons {
+          min-height: 30px;
+      }
+
       .card-icons img {
           padding: 2px;
           position: relative;
