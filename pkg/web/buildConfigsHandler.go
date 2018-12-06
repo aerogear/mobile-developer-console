@@ -169,7 +169,6 @@ func newBuildConfigObject(data BuildConfigCreateRequest, namespace string) (*mob
 				"mobile-client-build":          "true",
 				"mobile-client-build-platform": data.Build.Platform,
 				mobile.BUILD_CONFIG_LABEL_NAME: data.ClientID,
-				"mobile-client-type":           data.ClientType,
 			},
 		},
 		Spec: buildV1.BuildConfigSpec{

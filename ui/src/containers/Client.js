@@ -138,7 +138,7 @@ export class Client extends Component {
                 <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
                 <BuildConfigDialog
                   update={false}
-                  clientInfo={{ clientId: '' }}
+                  clientInfo={{ clientId: mobileApp.getName() }}
                   show={showBuildConfigDialog}
                   onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
                 />
@@ -155,7 +155,7 @@ export class Client extends Component {
 
   render() {
     const mobileApp = this.getMobileApp();
-    const clientInfo = { clientId: '' };
+    const clientInfo = { clientId: mobileApp.getName() };
     const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
     return mobileApp ? (

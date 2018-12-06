@@ -94,7 +94,6 @@ type BuildConfig struct {
 type BuildConfigCreateRequest struct {
 	Name                 string          `json:"name" validate:"required"`
 	ClientID             string          `json:"clientId" validate:"required"`
-	ClientType           string          `json:"clientType" validate:"required,oneof=android iOS cordova xamarin"`
 	Source               SourceConfig    `json:"source" validate:"required"`
 	Build                BuildConfig     `json:"build" validate:"required"`
 	EnvironmentVariables []corev1.EnvVar `json:"envVars"`
