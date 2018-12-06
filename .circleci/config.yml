@@ -92,6 +92,6 @@ workflows:
             - build_ui
           filters:
             tags:
-              only: /\d\.\d\.\d/
+              only: /\d\.\d\.\d(.*?)/
             branches:
               ignore: /.*/
