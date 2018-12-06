@@ -162,10 +162,12 @@ make test
 ```
 
 ### Backend integration tests
+
 1. Build the API Server: `make build`
 2. Follow [these instructions](#Run-locally) to target existing OpenShift project (**Note:** the project must not contain existing mobile clients)
-3. Install dependencies: `cd integration_tests && npm install`
-4. Run the tests: `npm test`
+3. Provision Metrics service in the OpenShift project that you target
+4. Install dependencies: `cd integration_tests && npm install`
+5. Run the tests: `npm test`
 
 
 ## Generate the API definition for the CRD
