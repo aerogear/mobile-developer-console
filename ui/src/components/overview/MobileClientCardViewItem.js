@@ -31,20 +31,21 @@ const MobileClientCardViewItem = props => {
   } = props;
   return (
     <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      <Link to={`/mobileclient/${app.metadata.name}`}>
-        <Card matchHeight /* accented */ className="mobile-client-card">
-          <CardHeading>
-            <DropdownKebab id={app.metadata.name} pullRight className="card-dropdown-kebab">
-              <EditItemButton item={app} />
-              <DeleteItemButton itemType="app" itemName={appName} item={app} />
-            </DropdownKebab>
+      <Card matchHeight /* accented */ className="mobile-client-card">
+        <CardHeading>
+          <DropdownKebab id={app.metadata.name} pullRight className="card-dropdown-kebab">
+            <EditItemButton item={app} />
+            <DeleteItemButton itemType="app" itemName={appName} item={app} />
+          </DropdownKebab>
+          <Link to={`/mobileclient/${app.metadata.name}`}>
             <div className="card-pf-title">
               <h1>{app.spec.name}</h1>
             </div>
+          </Link>
 
-            <CardTitle />
-          </CardHeading>
-
+          <CardTitle />
+        </CardHeading>
+        <Link to={`/mobileclient/${app.metadata.name}`}>
           <CardBody>
             <div className="card-icons">
               {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}
@@ -71,8 +72,8 @@ const MobileClientCardViewItem = props => {
               {!buildTabEnabled || (builds.numFailedBuilds === 0 && builds.numInProgressBuilds === 0) ? <span /> : null}
             </span>
           </CardFooter>
-        </Card>
-      </Link>
+        </Link>
+      </Card>
     </div>
   );
 };
