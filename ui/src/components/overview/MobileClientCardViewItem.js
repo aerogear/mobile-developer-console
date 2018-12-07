@@ -1,6 +1,6 @@
 import Moment from 'react-moment';
 import React from 'react';
-import { Card, CardHeading, CardTitle, CardBody, CardFooter, DropdownKebab } from 'patternfly-react';
+import { Card, CardHeading, CardBody, CardFooter, DropdownKebab } from 'patternfly-react';
 import { Link } from 'react-router-dom';
 import DeleteItemButton from '../../containers/DeleteItemButton';
 import EditItemButton from '../../containers/EditItemButton';
@@ -42,8 +42,6 @@ const MobileClientCardViewItem = props => {
               <h1>{app.spec.name}</h1>
             </div>
           </Link>
-
-          <CardTitle />
         </CardHeading>
         <Link to={`/mobileclient/${app.metadata.name}`}>
           <CardBody>
