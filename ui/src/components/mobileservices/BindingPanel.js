@@ -211,7 +211,7 @@ export class BindingPanel extends Component {
         onHide={this.props.close}
         onExited={this.props.close}
         show={this.props.showModal}
-        title="Create mobile client"
+        title="Create a new service binding"
         steps={this.renderWizardSteps()}
         loadingTitle="Creating mobile binding..."
         loadingMessage="This may take a while. You can close this wizard."
