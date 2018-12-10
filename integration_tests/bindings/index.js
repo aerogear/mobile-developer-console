@@ -24,8 +24,8 @@ const deleteBinding = async (appName, bindingName) => {
   const deleteRes = await sendRequest('DELETE', `bindableservices/${bindingName}`);
   assert.equal(deleteRes.status, 200, 'request for binding deletion should be successful');
 
-  bindingRes = null
-  timeout = 6 * 60 * 1000;
+  let bindingRes = null
+  let timeout = 6 * 60 * 1000;
   while ((!bindingRes || bindingUtils.isServiceBindingInProgress(bindingRes.data.items[0])) && timeout > 0) {
     await new Promise(resolve => setTimeout(resolve, 5000));
     timeout -= 5000;
@@ -63,7 +63,7 @@ describe('binding creation/deletion', function() {
     assert.equal(res.status, 200);
   });
 
-  it('should succeed and update mobile-services.json correctly', async function() {
+  it('should update mobile-services.json correctly', async function() {
     const bindingName = await createBinding(clientTemplate.name, bindingTemplate);
 
     const clientRes = await sendRequest('GET', `mobileclients/${clientTemplate.name}`);
@@ -129,5 +129,42 @@ describe('bindings for different apps', function() {
     res = await sendRequest('GET', `bindableservices/${clientTemplate1.name}`);
     assert.equal(res.status, 200, 'request for bindable services for app1 should be successful');
     assert.equal(res.data.items[0].serviceBindings[0].metadata.name, bindingName1, 'binding for app1 should stay');
+  });
+});
+
+describe('delete app', function() {
+  this.timeout(0);
+
+  const clientTemplate = {
+    name: 'test3'
+  };
+
+  let bindingTemplate;
+  let bindingName;
+
+  before('create app', async function() {
+    const res = await sendRequest('POST', 'mobileclients', clientTemplate);
+    assert.equal(res.status, 200);
+  });
+
+  before('create binding', async function() {
+    let res = await sendRequest('GET', `bindableservices/${clientTemplate.name}`);
+    assert.equal(res.status, 200, 'request for bindable services for app should be successful');
+    bindingTemplate = bindingUtils.getMetricsBindingTemplate(clientTemplate.name, res.data.items[0]);
+    bindingName = await createBinding(clientTemplate.name, bindingTemplate);
+  });
+
+  it('should delete also binding when deleting app', async function() {
+    let res = await sendRequest('DELETE', `mobileclients/${clientTemplate.name}`);
+    assert.equal(res.status, 200);
+
+    let deleteRes = null
+    let timeout = 6 * 60 * 1000;
+    while ((!deleteRes || deleteRes.status !== 500) && timeout > 0) {
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      timeout -= 5000;
+      deleteRes = await sendRequest('DELETE', `bindableservices/${bindingName}`);
+    }
+    assert.equal(deleteRes.status, 500, 'binding should already be deleted');
   });
 });
