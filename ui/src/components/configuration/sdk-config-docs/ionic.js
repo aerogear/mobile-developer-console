@@ -3,8 +3,11 @@ const framework = docsVersion => ({
   title: 'Ionic',
   steps: [
     {
-      introduction:
-        "Create file `mobile-services.json` in your app's source folder and copy contents from the right panel into it."
+      introduction: 'Create the `mobile-services.json` file.',
+      commands: [
+        'Create a file called `mobile-services.json` in the `src` directory of your Ionic project',
+        'Copy the contents from the panel on the right and paste them into this new file'
+      ]
     },
     {
       introduction:
@@ -18,10 +21,12 @@ const framework = docsVersion => ({
       introduction: 'Initialize AeroGear Core module',
       commands: [
         [
-          'To init, load the content from `mobile-services.json` file, and pass it to init:',
+          'To init, add the following code in the `src/app/main.ts` file of your project',
           `\`\`\`js 
           import { init } from "@aerogear/app";
-          const appConfig = require("./mobile-services.json");
+          declare var require: any;
+          // tslint:disable-next-line:no-var-requires
+          const appConfig = require("../mobile-services.json");
           init(appConfig);`
         ]
       ]
