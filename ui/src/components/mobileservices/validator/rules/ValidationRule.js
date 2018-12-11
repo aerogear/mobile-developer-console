@@ -1,4 +1,5 @@
 import { NAME as REQUIRED, RequiredRule } from './RequiredRule';
+import { NAME as SAMEVALUEOF, SameValueOfRule } from './SameValueOfRule';
 import { NoopRule } from './NoopRule';
 
 /**
@@ -11,6 +12,9 @@ export class ValidationRule {
     switch (ruleType) {
       case REQUIRED: {
         return new RequiredRule(ruleConfig);
+      }
+      case SAMEVALUEOF: {
+        return new SameValueOfRule(ruleConfig);
       }
       default: {
         return new NoopRule();

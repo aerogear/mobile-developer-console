@@ -11,8 +11,9 @@ export class RequiredRule {
     this.config = config;
   }
 
-  validate(key, value) {
-    if (!value) {
+  validate(formData, key) {
+    const value = formData[key];
+    if (!value || !value.trim()) {
       return {
         valid: false,
         error: this.config.error || `${key} is a required field.`
