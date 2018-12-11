@@ -159,7 +159,8 @@ export class BindingPanel extends Component {
             {
               type: SAMEVALUEOF,
               error: 'Passphrase does not match.',
-              target: () => { // value is not a field inside formdata. we need to provide a function returning the confirmation value.
+              target: () => {
+                // value is not a field inside formdata. we need to provide a function returning the confirmation value.
                 const confirmPasswordFieldId = `${this.form.state.idSchema.passphrase.$id}2`;
                 const confirmPasswordField = document.getElementById(confirmPasswordFieldId);
                 return confirmPasswordField.value;

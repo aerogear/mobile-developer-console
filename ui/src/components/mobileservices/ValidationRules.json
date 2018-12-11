@@ -37,6 +37,11 @@
             {
               "type": "required",
               "error": "APNS requires a certificate."
+            },
+            {
+              "type": "P12VALIDATOR",
+              "error": "P12 error",
+              "password_field": "passphrase"
             }
           ]
         },

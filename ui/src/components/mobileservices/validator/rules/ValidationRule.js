@@ -1,5 +1,6 @@
 import { NAME as REQUIRED, RequiredRule } from './RequiredRule';
 import { NAME as SAMEVALUEOF, SameValueOfRule } from './SameValueOfRule';
+import { NAME as P12VALIDATOR, P12ValidationRule } from './P12ValidatorRule';
 import { NoopRule } from './NoopRule';
 
 /**
@@ -15,6 +16,9 @@ export class ValidationRule {
       }
       case SAMEVALUEOF: {
         return new SameValueOfRule(ruleConfig);
+      }
+      case P12VALIDATOR: {
+        return new P12ValidationRule(ruleConfig);
       }
       default: {
         return new NoopRule();
