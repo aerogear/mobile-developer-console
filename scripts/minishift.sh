@@ -2,6 +2,18 @@
 
 cd "$(dirname "$0")"
 
+# If docker isn't running we'll run into issues later using "yq"
+# Checking the version is a simple way to determine if the daemon is running
+docker version &> /dev/null
+
+docker_status=$?
+
+if [ $docker_status -ne 0 ]
+then
+    echo "Error: verify docker is installed and active";
+    exit 1
+fi
+
 minishift delete -f
 
 MINISHIFT_ENABLE_EXPERIMENTAL=y minishift start --openshift-version v3.11.0 \
