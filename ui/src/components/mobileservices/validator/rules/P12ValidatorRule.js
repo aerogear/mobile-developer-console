@@ -7,9 +7,11 @@ import { ValidationRuleBaseClass } from './ValidationRuleBaseClass';
  *
  * The configuration for this rule must be as follows:
  * {
- *   "type": "P12VALIDATOR",  // this must be exactly 'required'
- *   "error": "Your error message" // Optional. If not specified a default message is used.
- *   "password_field": "passwordFieldName" // Optional. The name of the field containing the PKCS#12 password
+ *   "type": "P12VALIDATOR",                // this must be exactly 'required'
+ *   "error": "Your error message"          // Optional. The custom error message.
+ *                                          // This can be a string, a dictionary or a function (signature: (key, message) => {})
+ *                                          // If not specified, a standard error message is returned.
+ *   "password_field": "passwordFieldName"  // Optional. The name of the field containing the PKCS#12 password
  * }
  */
 export class P12ValidationRule extends ValidationRuleBaseClass {
