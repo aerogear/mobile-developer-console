@@ -40,7 +40,7 @@
             },
             {
               "type": "P12VALIDATOR",
-              "error": "P12 error",
+              "error": "Invalid PKCS#12 data or bad password",
               "password_field": "passphrase"
             }
           ]
