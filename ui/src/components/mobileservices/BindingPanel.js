@@ -11,7 +11,6 @@ import './ServiceRow.css';
 import { OpenShiftObjectTemplate } from './bindingPanelUtils';
 
 import { FormValidator } from './validator/FormValidator';
-import { NAME as SAMEVALUEOF } from './validator/rules/SameValueOfRule';
 import validationConfig from './ValidationRules.json';
 
 export class BindingPanel extends Component {
@@ -149,29 +148,9 @@ export class BindingPanel extends Component {
   validate = (formData, errors) => {
     /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
 
-    const valid = new FormValidator(validationConfig)
-      // password confirmation field is not inside formData. Moreover,
-      // its name known only at runtime. For this reason, the validation rule must be added by code.
-      .withRule('IOS_UPS_BINDING', {
-        passphrase: {
-          errors_key: 'iosIsProduction',
-          validation_rules: [
-            {
-              type: SAMEVALUEOF,
-              error: 'Passphrase does not match.',
-              target: () => {
-                // value is not a field inside formdata. we need to provide a function returning the confirmation value.
-                const confirmPasswordFieldId = `${this.form.state.idSchema.passphrase.$id}2`;
-                const confirmPasswordField = document.getElementById(confirmPasswordFieldId);
-                return confirmPasswordField.value;
-              }
-            }
-          ]
-        }
-      })
-      .validate(formData, (key, message) => {
-        errors[key].addError(message);
-      });
+    const valid = new FormValidator(validationConfig).validate(formData, (key, message) => {
+      errors[key].addError(message);
+    });
 
     if (valid) {
       // Avdance to final screen if valid
