@@ -6,24 +6,24 @@ process.env.KUBERNETES_CONFIG = process.env.KUBERNETES_CONFIG || `${process.env.
 let goOutput
 
 // Spin up backend server on port 4000
-before( function(done) {
-  this.timeout(30000)
-  goOutput = exec('../mobile-developer-console')
-  goOutput.stdout.on('data', data => {
-    console.log(data.toString())
-  })
-  goOutput.stderr.on('data', data => {
-    const message = data.toString()
-    console.log(message)
-    if (message.indexOf("Starting application") > -1) {
-      done()
-    }
-  })
-});
+// before( function(done) {
+//   this.timeout(30000)
+//   goOutput = exec('../mobile-developer-console')
+//   goOutput.stdout.on('data', data => {
+//     console.log(data.toString())
+//   })
+//   goOutput.stderr.on('data', data => {
+//     const message = data.toString()
+//     console.log(message)
+//     if (message.indexOf("Starting application") > -1) {
+//       done()
+//     }
+//   })
+// });
 
-after(() => {
-  goOutput.kill("SIGINT")
-})
+// after(() => {
+//   goOutput.kill("SIGINT")
+// })
 
 describe('Mobile Clients', () => {
   require('./mobile_clients')
@@ -31,4 +31,8 @@ describe('Mobile Clients', () => {
 
 describe('Service Bindings', () => {
   require('./bindings');
+});
+
+describe('Websocket updates', () => {
+  require('./websockets');
 });

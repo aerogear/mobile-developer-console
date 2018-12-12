@@ -3,11 +3,13 @@
   "description": "Integration tests for MDC",
   "version": "0.0.1",
   "scripts": {
-    "test": "mocha ."
+    "test": "mocha .",
+    "test-debug": "mocha . --inspect-brk"
   },
   "devDependencies": {
     "axios": "^0.18.0",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "websocket": "^1.0.28"
   },
   "dependencies": {
     "lodash": "^4.17.11"
