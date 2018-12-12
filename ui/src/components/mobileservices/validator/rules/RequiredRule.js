@@ -1,3 +1,5 @@
+import { ValidationRuleBaseClass } from './ValidationRuleBaseClass';
+
 /**
  * This is a very simple rule. Checks that the configured field has a value.
  * It must be configured inside the JSON file as follows:
@@ -6,17 +8,13 @@
  *   "error": "Your error message" // Optional. The error to be returned if the field has no value. If not specified a default message is used.
  * }
  */
-export class RequiredRule {
-  constructor(config) {
-    this.config = config;
-  }
-
+export class RequiredRule extends ValidationRuleBaseClass {
   validate(formData, key) {
     const value = formData[key];
     if (!value || !value.trim()) {
       return {
         valid: false,
-        error: this.config.error || `${key} is a required field.`
+        error: this.getErrorMessage({ key, message: `${key} is a required field.` })
       };
     }
     return { valid: true };

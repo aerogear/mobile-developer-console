@@ -5,10 +5,11 @@
 // }
 
 import { isFunction } from 'lodash-es';
+import { ValidationRuleBaseClass } from './ValidationRuleBaseClass';
 
-export class SameValueOfRule {
+export class SameValueOfRule extends ValidationRuleBaseClass {
   constructor(config) {
-    this.config = config;
+    super(config);
     this.target = config.target;
   }
 
@@ -18,7 +19,7 @@ export class SameValueOfRule {
     if (value !== targetValue) {
       return {
         valid: false,
-        error: this.config.error
+        error: this.getErrorMessage(key, `Value of field ${key} does not match the required value`)
       };
     }
     return { valid: true };

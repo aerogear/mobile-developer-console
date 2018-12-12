@@ -50,9 +50,8 @@ export class RuleSetValidator {
       return false;
     }
     let hasErrors = false;
-    for (const key in formData) {
-      if (formData.hasOwnProperty(key)) {
-        // const value = formData[key];
+    for (const key in this.fields) {
+      if (this.fields.hasOwnProperty(key)) {
         const validationResult = this.validateField(formData, key);
         if (!validationResult.valid) {
           this.notifyError(errorsCb, key, validationResult.error);

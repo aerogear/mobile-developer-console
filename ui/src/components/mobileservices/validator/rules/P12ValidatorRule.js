@@ -1,10 +1,5 @@
-// {
-//   "type": "P12VALIDATOR",
-//   "error": "APNS certificate passphrase is required."
-//   "password_field": "fieldname"
-// }
-
 import forge from 'node-forge';
+import { ValidationRuleBaseClass } from './ValidationRuleBaseClass';
 
 /**
  * This rule is used to verify that the provided Base64 string is a valid PKCS#12 file.
@@ -17,9 +12,9 @@ import forge from 'node-forge';
  *   "password_field": "passwordFieldName" // Optional. The name of the field containing the PKCS#12 password
  * }
  */
-export class P12ValidationRule {
+export class P12ValidationRule extends ValidationRuleBaseClass {
   constructor(config) {
-    this.config = config;
+    super(config);
     this.passwordField = config.password_field;
   }
 
@@ -29,7 +24,6 @@ export class P12ValidationRule {
       try {
         const p12Der = forge.util.decode64(p12b64);
         const p12Asn1 = forge.asn1.fromDer(p12Der);
-
         if (this.passwordField) {
           const password = data[this.passwordField];
           forge.pkcs12.pkcs12FromAsn1(p12Asn1, password);
@@ -37,7 +31,7 @@ export class P12ValidationRule {
       } catch (error) {
         return {
           valid: false,
-          error: this.config.error || error.message
+          error: this.getErrorMessage({ key: error.message, message: error.message })
         };
       }
     }
