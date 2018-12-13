@@ -54,15 +54,19 @@ const isServiceBound = service => {
   return boundBinding != null;
 };
 
-const getMetricsBindingTemplate = (appName, service) => {
+const isUPSFullyBound = service => {
+  return _.every(service.serviceBindings, binding => isBindingReady(binding));
+};
+
+const getBindingTemplate = (appName, service, serviceName, formData) => {
   const template = {
     bindingParametersName: null,
     bindingSecretName: null,
     formData: {
       CLIENT_ID: appName,
-      CLIENT_TYPE: 'public'
+      ...formData
     },
-    serviceClassExternalName: 'metrics',
+    serviceClassExternalName: serviceName,
     serviceInstanceName: null
   };
   const credentialSecretName = createSecretName(
@@ -81,9 +85,10 @@ module.exports = {
   createSecretName,
   isBindingFailed,
   isBindingInProgress,
-  getMetricsBindingTemplate,
+  getBindingTemplate,
   isBindingReady,
   isServiceBindingFailed,
   isServiceBindingInProgress,
-  isServiceBound
+  isServiceBound,
+  isUPSFullyBound
 };
