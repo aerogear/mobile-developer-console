@@ -1,6 +1,7 @@
-const assert = require('assert');
-const sendRequest = require('../util/sendRequest');
-const bindingUtils = require('../util/bindingUtils');
+const assert = require("assert");
+const sendRequest = require("../util/sendRequest");
+const bindingUtils = require("../util/bindingUtils");
+const timeout = require("../util/awaitTimeout");
 
 const createBinding = async (appName, template, serviceName, isBound = bindingUtils.isServiceBound) => {
   const res = await sendRequest('POST', 'bindableservices', template)
@@ -40,18 +41,19 @@ const deleteBinding = async (appName, bindingName, serviceName, boundCheck = tru
   assert(!bindingUtils.isServiceBindingInProgress(service), 'binding operation should not be in progress');
 };
 
-describe('binding creation/deletion', function() {
+describe("binding creation/deletion", function() {
   this.timeout(0);
 
   const clientTemplate = {
-    name: 'test'
+    name: "test"
   };
-  
+
   let bindingTemplate;
 
-  before('create mobile app', async function() {
-    const res = await sendRequest('POST', 'mobileclients', clientTemplate);
+  before("create mobile app", async function() {
+    const res = await sendRequest("POST", "mobileclients", clientTemplate);
     assert.equal(res.status, 200);
+    await timeout(1000);
   });
 
   before('get bindable service', async function() {
@@ -74,8 +76,8 @@ describe('binding creation/deletion', function() {
     assert.equal(clientRes.status, 200, 'request for app should be successful');
     assert.equal(
       clientRes.data.status.services[0].type,
-      'metrics',
-      'mobile-services.json should contain config for bound service'
+      "metrics",
+      "mobile-services.json should contain config for bound service"
     );
 
     await deleteBinding(clientTemplate.name, bindingName, 'Mobile Metrics');
@@ -88,13 +90,21 @@ describe('binding creation/deletion', function() {
       'mobile-services.json should not contain any bound services'
     );
   });
+
+  after("delete mobile app", async function() {
+    const res = await sendRequest(
+      "DELETE",
+      `mobileclients/${clientTemplate.name}`
+    );
+    assert.equal(res.status, 200);
+  });
 });
 
-describe('bindings for different apps', function() {
+describe("bindings for different apps", function() {
   this.timeout(0);
 
-  const clientTemplate1 = { name: 'test1' };
-  const clientTemplate2 = { name: 'test2' };
+  const clientTemplate1 = { name: "test1" };
+  const clientTemplate2 = { name: "test2" };
 
   let bindingTemplate1;
   let bindingTemplate2;
@@ -102,10 +112,10 @@ describe('bindings for different apps', function() {
   let bindingName1;
   let bindingName2;
 
-  before('create 2 apps', async function() {
-    const res1 = await sendRequest('POST', 'mobileclients', clientTemplate1);
+  before("create 2 apps", async function() {
+    const res1 = await sendRequest("POST", "mobileclients", clientTemplate1);
     assert.equal(res1.status, 200);
-    const res2 = await sendRequest('POST', 'mobileclients', clientTemplate2);
+    const res2 = await sendRequest("POST", "mobileclients", clientTemplate2);
     assert.equal(res2.status, 200);
   });
 
@@ -123,10 +133,13 @@ describe('bindings for different apps', function() {
     bindingName2 = await createBinding(clientTemplate2.name, bindingTemplate2, 'Mobile Metrics');
   });
 
-  after('delete apps', async function() {
-    let res = await sendRequest('DELETE', `mobileclients/${clientTemplate1.name}`);
+  after("delete apps", async function() {
+    let res = await sendRequest(
+      "DELETE",
+      `mobileclients/${clientTemplate1.name}`
+    );
     assert.equal(res.status, 200);
-    res = await sendRequest('DELETE', `mobileclients/${clientTemplate2.name}`);
+    res = await sendRequest("DELETE", `mobileclients/${clientTemplate2.name}`);
     assert.equal(res.status, 200);
   });
 

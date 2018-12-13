@@ -1,3 +1,7 @@
-const timeout = () => new Promise(resolve => setTimeout(resolve, 5000));
+function timeout(timeoutDelay = 5000) {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeoutDelay);
+  });
+}
 
 module.exports = timeout;

@@ -1,6 +1,10 @@
 const WebSocketClient = require("websocket").client;
 const assert = require("assert");
 const client = new WebSocketClient();
+const { connect, watchForWebSocketMessage } = require("../util/websockets");
+const { createBinding, deleteBinding } = require("../bindings");
+const bindingUtils = require("../util/bindingUtils");
+
 const paths = {
   builds: "/builds/watch",
   apps: "/mobileclients/watch",
@@ -11,53 +15,15 @@ const paths = {
 };
 
 const sendRequest = require("../util/sendRequest");
-const timeout = require("../util/awaitTimeout");
 
 const template = {
   name: "integration-websocket-test-client"
 };
 
-function onMessage(connection, messageBody) {
-  return Promise.race([
-    new Promise(resolve => {
-      connection.on("message", message => {
-        if (message.utf8Data === messageBody) resolve(message);
-        else
-          console.info(
-            `not catching message "${
-              message.utf8Data
-            }" required "${messageBody}"`
-          );
-      });
-    }),
-    timeout(5000)
-  ]);
-}
-
-function watchForWebSocketMessage(connection, messageBody, done) {
-  onMessage(connection, messageBody)
-    .then(message => {
-      assert.notEqual(
-        message,
-        undefined,
-        `Proper message "${messageBody}" not received while timeout`
-      );
-    })
-    .then(done, done);
-}
-
-/**
- *
- * @param {String} client
- * @param {String} path
- * @returns {}
- */
-async function connect(client, path) {
-  client.connect(`ws://localhost:3000/api${path}`);
-  return await new Promise((resolve, reject) => {
-    client.on("connect", resolve);
-    client.on("connectFailed", reject);
-  });
+async function deleteAndClose(connection, template) {
+  res = await sendRequest("DELETE", `mobileclients/${template.name}`);
+  assert.equal(res.status, 200);
+  if (connection) connection.close();
 }
 
 describe("apps websocket watch", async () => {
@@ -68,14 +34,55 @@ describe("apps websocket watch", async () => {
       paths.apps
     );
   });
-  it("should create new client and watch for changes", done => {
+  it("should create new client and receive the changes", done => {
     assert.equal(connection.connected, true);
+    watchForWebSocketMessage(connection, "MobileAppsEvent").then(done, done);
     sendRequest("POST", "mobileclients", template);
-    watchForWebSocketMessage(connection, "MobileAppsEvent", done);
   });
-  after(async () => {
-    res = await sendRequest("DELETE", `mobileclients/${template.name}`);
-    assert.equal(res.status, 200);
-    connection.close();
+  after("deletes client and closes websocket connection", async () => {
+    deleteAndClose(connection, template);
+  });
+});
+
+describe("bindings  websocket watch", async () => {
+  let connection, bindingTemplate, bindingNameForDeletion;
+  before("create client", async () => {
+    await sendRequest("POST", "mobileclients", template);
+    connection = await connect(
+      client,
+      paths.bindableservices(template.name)
+    );
+  });
+  before("prepare binding template", async () => {
+    let res = await sendRequest("GET", `bindableservices/${template.name}`);
+    assert.equal(
+      res.status,
+      200,
+      `"request for bindable services for "${
+        template.name
+      }" should be successful`
+    );
+    bindingTemplate = bindingUtils.getMetricsBindingTemplate(
+      template.name,
+      res.data.items[0]
+    );
+  });
+  it("create binding and receive the changes", done => {
+    assert.equal(connection.connected, true);
+    createBinding(template.name, bindingTemplate)
+      .then(bindingName => {
+        bindingNameForDeletion = bindingName;
+      })
+      .then(watchForWebSocketMessage(connection, "ADDED"))
+      .then(done, done);
+  });
+  it("delete binding and receive the changes", done => {
+    assert.equal(connection.connected, true);
+    deleteBinding(template.name, bindingNameForDeletion)
+      .then(watchForWebSocketMessage(connection, "DELETED"))
+      .then(done, done);
+  });
+  after("deletes client and closes websocket connection", async () => {
+    deleteAndClose(connection, template);
   });
 });
