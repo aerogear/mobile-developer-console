@@ -128,8 +128,6 @@ describe('BoundServiceRow - UPS - 1 binding', () => {
     expect(wrapper.find('BindButton')).toHaveLength(1);
     expect(wrapper.find('BindingStatus')).toHaveLength(1);
     expect(wrapper.find('DeleteItemButton')).toHaveLength(1);
-    expect(bindingSchema.properties.CLIENT_TYPE.default).toEqual('IOS');
-    expect(bindingSchema.properties.CLIENT_TYPE.enum).toEqual(['IOS']);
   });
 });
 
