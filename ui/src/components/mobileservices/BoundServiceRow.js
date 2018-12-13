@@ -3,7 +3,6 @@ import { ListViewItem, Row, Col, DropdownKebab } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import DeleteItemButton from '../../containers/DeleteItemButton';
-import BindingPanel from './BindingPanel';
 import BindingStatus from './BindingStatus';
 import BindButton from './BindButton';
 
@@ -18,10 +17,6 @@ function configurationView(configuration) {
 class BoundServiceRow extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      showModal: false
-    };
 
     this.renderServiceBadge = this.renderServiceBadge.bind(this);
     this.renderServiceDetails = this.renderServiceDetails.bind(this);
@@ -128,7 +123,7 @@ class BoundServiceRow extends Component {
       }
     }
 
-    return <BindButton service={this.props.service} onClick={() => this.setState({ showModal: true })} />;
+    return <BindButton service={this.props.service} onClick={this.props.onCreateBinding} />;
   }
 
   renderDeleteBindingDropdowns() {
@@ -149,30 +144,19 @@ class BoundServiceRow extends Component {
 
   render() {
     return (
-      <React.Fragment>
-        <ListViewItem
-          additionalInfo={[this.renderServiceBadge(), this.renderBindingStatus()]}
-          className="boundService"
-          actions={
-            <div>
-              {this.renderBindingButtons()}
-              {this.renderDeleteBindingDropdowns()}
-            </div>
-          }
-          hideCloseIcon
-        >
-          {this.renderServiceDetails()}
-        </ListViewItem>
-        {this.props.service.isUPSService() && (
-          <BindingPanel
-            service={this.props.service}
-            showModal={this.state.showModal}
-            close={() => {
-              this.setState({ showModal: false });
-            }}
-          />
-        )}
-      </React.Fragment>
+      <ListViewItem
+        additionalInfo={[this.renderServiceBadge(), this.renderBindingStatus()]}
+        className="boundService"
+        actions={
+          <div>
+            {this.renderBindingButtons()}
+            {this.renderDeleteBindingDropdowns()}
+          </div>
+        }
+        hideCloseIcon
+      >
+        {this.renderServiceDetails()}
+      </ListViewItem>
     );
   }
 }
