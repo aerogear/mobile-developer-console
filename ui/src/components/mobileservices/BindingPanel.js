@@ -1,3 +1,4 @@
+import { partition, find } from 'lodash-es';
 import React, { Component } from 'react';
 import { Wizard } from 'patternfly-react';
 import { connect } from 'react-redux';
@@ -20,32 +21,10 @@ export class BindingPanel extends Component {
     this.onBackButtonClick = this.onBackButtonClick.bind(this);
     this.renderPropertiesSchema = this.renderPropertiesSchema.bind(this);
     this.validate = this.validate.bind(this);
-
     const serviceName = this.props.service.getName();
     const schema = this.props.service.getBindingSchema();
     const form = this.props.service.getFormDefinition();
     const { service } = this.props;
-
-    if (this.props.service.isUPSService()) {
-      const hasUPSAndroidAnnotation = this.hasUPSAndroidAnnotation();
-      const hasUPSIOSAnnotation = this.hasUPSIOSAnnotation();
-
-      if (hasUPSAndroidAnnotation && !hasUPSIOSAnnotation) {
-        // UPS, there's already an Android variant
-        if (schema.properties.CLIENT_TYPE) {
-          schema.properties.CLIENT_TYPE.default = 'IOS';
-          schema.properties.CLIENT_TYPE.enum = ['IOS'];
-        }
-      } else if (!hasUPSAndroidAnnotation && hasUPSIOSAnnotation) {
-        // UPS, there's already an IOS variant
-        if (schema.properties.CLIENT_TYPE) {
-          schema.properties.CLIENT_TYPE.default = 'Android';
-          schema.properties.CLIENT_TYPE.enum = ['Android'];
-        }
-      }
-      // we don't care if there are variants for both platforms.
-      // this binding panel shouldn't be shown anyway
-    }
 
     this.state = {
       serviceName,
@@ -81,33 +60,22 @@ export class BindingPanel extends Component {
     this.open();
   }
 
-  hasUPSAndroidAnnotation() {
-    return this.hasUPSPlatformAnnotation('android');
+  hasUPSIOSBoundService() {
+    return this.hasUPSBoundServiceForPlatform('ios');
   }
 
-  hasUPSIOSAnnotation() {
-    return this.hasUPSPlatformAnnotation('ios');
+  hasUPSAndroidBoundService() {
+    return this.hasUPSBoundServiceForPlatform('android');
   }
 
-  hasUPSPlatformAnnotation(platform) {
-    // there won't be any variant annotations if there is no binding yet
-    if (!this.props.service.isBound()) {
-      return false;
-    }
-
-    const configExtItems = this.props.service.getConfigurationExtAsJSON();
-    if (!configExtItems || !configExtItems.length) {
-      return false;
-    }
-
-    for (const configExtItem of configExtItems) {
-      for (const variantInfo of configExtItem) {
-        if (variantInfo.type === platform) {
-          return true;
-        }
-      }
-    }
-    return false;
+  hasUPSBoundServiceForPlatform(platform) {
+    return find(
+      this.getBoundServices(),
+      service =>
+        service.isUPSService() &&
+        service.serviceBindings &&
+        find(service.serviceBindings, serviceBinding => serviceBinding.getPlatform() === platform)
+    );
   }
 
   renderPropertiesSchema() {
@@ -205,7 +173,42 @@ export class BindingPanel extends Component {
     return errors;
   };
 
+  filterPlatforms() {
+    if (this.props.service.isUPSService()) {
+      const hasIOS = this.hasUPSIOSBoundService();
+      const hasAndroid = this.hasUPSAndroidBoundService();
+      const { schema } = this.state;
+      if (!hasAndroid && !hasIOS) {
+        if (schema.properties.CLIENT_TYPE) {
+          schema.properties.CLIENT_TYPE.default = 'Android';
+          schema.properties.CLIENT_TYPE.enum = ['Android', 'IOS'];
+        }
+      } else if (hasAndroid && !hasIOS) {
+        // UPS, there's already an Android variant
+        if (schema.properties.CLIENT_TYPE) {
+          schema.properties.CLIENT_TYPE.default = 'IOS';
+          schema.properties.CLIENT_TYPE.enum = ['IOS'];
+        }
+      } else if (!hasAndroid && hasIOS) {
+        // UPS, there's already an IOS variant
+        if (schema.properties.CLIENT_TYPE) {
+          schema.properties.CLIENT_TYPE.default = 'Android';
+          schema.properties.CLIENT_TYPE.enum = ['Android'];
+        }
+      } else if (hasAndroid && hasIOS) {
+        // UPS, there's already an IOS variant
+        if (schema.properties.CLIENT_TYPE) {
+          schema.properties.CLIENT_TYPE.default = '';
+          schema.properties.CLIENT_TYPE.enum = [];
+        }
+      }
+      // we don't care if there are variants for both platforms.
+      // this binding panel shouldn't be shown anyway
+    }
+  }
+
   render() {
+    this.filterPlatforms();
     return (
       <Wizard.Pattern
         onHide={this.props.close}
@@ -224,13 +227,29 @@ export class BindingPanel extends Component {
       />
     );
   }
+
+  getBoundServices() {
+    const filteredServices = partition(this.props.serviceBindings.services, service => service.isBound());
+    return filteredServices[0];
+  }
+
+  getUnboundServices() {
+    const filteredServices = partition(this.props.serviceBindings.services, service => service.isBound());
+    return filteredServices[1];
+  }
 }
 
 const mapDispatchToProps = {
   createBinding
 };
 
+function mapStateToProps(state) {
+  return {
+    serviceBindings: state.serviceBindings
+  };
+}
+
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(BindingPanel);
