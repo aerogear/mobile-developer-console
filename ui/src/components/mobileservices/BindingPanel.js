@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { Wizard } from 'patternfly-react';
 import { connect } from 'react-redux';
 import Form from 'react-jsonschema-form';
-import debounce from 'lodash/debounce';
 import { createSecretName } from '../bindingUtils';
 import { createBinding } from '../../actions/serviceBinding';
 import '../configuration/ServiceSDKInfo.css';
@@ -89,7 +88,7 @@ export class BindingPanel extends Component {
         validate={this.validate}
         showErrorList={false}
         ObjectFieldTemplate={OpenShiftObjectTemplate}
-        onChange={debounce(e => (this.formData = e.formData), 150)} // eslint-disable-line no-return-assign
+        onChange={e => (this.formData = e.formData)} // eslint-disable-line no-return-assign
       >
         <div />
       </Form>
