@@ -32,8 +32,9 @@ async function deleteClient(template) {
   assert.equal(res.status, 200);
 }
 
-describe("apps websocket watch", done => {
+describe("apps websocket watch", function() {
   let ws;
+  this.timeout(0);
   before(async () => {
     ws = await connect(paths.apps);
   });
@@ -50,8 +51,9 @@ describe("apps websocket watch", done => {
   });
 });
 
-describe("bindings  websocket watch", async () => {
+describe("bindings  websocket watch", function() {
   let ws, bindingTemplate, bindingNameForDeletion;
+  this.timeout(0);
   before("create client", async () => {
     await createClient(template);
   });
@@ -80,7 +82,11 @@ describe("bindings  websocket watch", async () => {
       createBinding(template.name, bindingTemplate, "Mobile Metrics")
     ]);
     bindingNameForDeletion = result[1];
-    assert.equal(typeof(bindingNameForDeletion),'string','Name of binding template should be returned.');
+    assert.equal(
+      typeof bindingNameForDeletion,
+      "string",
+      "Name of binding template should be returned."
+    );
   });
   it("delete binding and receive the changes", async () => {
     assert.equal(ws.readyState, WebSocket.OPEN);
@@ -93,6 +99,7 @@ describe("bindings  websocket watch", async () => {
     if (ws) ws.close();
   });
   after("deletes client", async () => {
+    console.info("deleteing client");
     await deleteClient(template);
   });
 });
