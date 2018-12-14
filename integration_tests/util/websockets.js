@@ -1,8 +1,8 @@
 const timeout = require("./awaitTimeout");
 const assert = require("assert");
 
-function waitOnMessage(connection, messageBody, timeoutDelay = 5000) {
-  return Promise.race([
+async function waitOnMessage(connection, messageBody, timeoutDelay = 5000) {
+  return await Promise.race([
     new Promise(resolve => {
       connection.on("message", message => {
         if (message.utf8Data === messageBody) resolve(message);
@@ -24,18 +24,18 @@ function waitOnMessage(connection, messageBody, timeoutDelay = 5000) {
  * @param {String} messageBody what is watched
  * @returns {promise}
  */
-function watchForWebSocketMessage(
+async function watchForWebSocketMessage(
   connection,
   messageBody,
   timeoutDelay = 5000
 ) {
-  return waitOnMessage(connection, messageBody, timeoutDelay).then(message => {
-    assert.notEqual(
-      message,
-      undefined,
-      `Proper message "${messageBody}" not received while timeout`
-    );
-  });
+  const message = await waitOnMessage(connection, messageBody, timeoutDelay);
+  assert.notEqual(
+    message,
+    undefined,
+    `Proper message "${messageBody}" not received while timeout`
+  );
+  console.info(`Message "${message}" received`);
 }
 
 /**
@@ -45,7 +45,7 @@ function watchForWebSocketMessage(
  * @returns {WebSocketConnection} connection
  */
 async function connect(client, path) {
-  client.connect(`ws://localhost:3000/api${path}`);
+  client.connect(`ws://localhost:4000/api${path}`);
   return await new Promise((resolve, reject) => {
     client.on("connect", resolve);
     client.on("connectFailed", reject);

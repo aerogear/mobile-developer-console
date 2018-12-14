@@ -4,6 +4,7 @@ const client = new WebSocketClient();
 const { connect, watchForWebSocketMessage } = require("../util/websockets");
 const { createBinding, deleteBinding } = require("../bindings");
 const bindingUtils = require("../util/bindingUtils");
+const timeout = require("../util/awaitTimeout");
 
 const paths = {
   builds: "/builds/watch",
@@ -34,10 +35,10 @@ describe("apps websocket watch", async () => {
       paths.apps
     );
   });
-  it("should create new client and receive the changes", done => {
+  it("should create new client and receive the changes", async () => {
     assert.equal(connection.connected, true);
-    watchForWebSocketMessage(connection, "MobileAppsEvent").then(done, done);
     sendRequest("POST", "mobileclients", template);
+    await watchForWebSocketMessage(connection, "MobileAppsEvent");
   });
   after("deletes client and closes websocket connection", async () => {
     deleteAndClose(connection, template);
@@ -67,20 +68,23 @@ describe("bindings  websocket watch", async () => {
       res.data.items[0]
     );
   });
-  it("create binding and receive the changes", done => {
+  it("create binding and receive the changes", async () => {
     assert.equal(connection.connected, true);
-    createBinding(template.name, bindingTemplate)
-      .then(bindingName => {
-        bindingNameForDeletion = bindingName;
-      })
-      .then(watchForWebSocketMessage(connection, "ADDED"))
-      .then(done, done);
+    await Promise.all([
+      watchForWebSocketMessage(connection, "ADDED", 60000),
+      async () => {
+        await timeout(1000);
+        bindingNameForDeletion = await createBinding(
+          template.name,
+          bindingTemplate
+        );
+      }
+    ]);
   });
-  it("delete binding and receive the changes", done => {
+  it("delete binding and receive the changes", async () => {
     assert.equal(connection.connected, true);
-    deleteBinding(template.name, bindingNameForDeletion)
-      .then(watchForWebSocketMessage(connection, "DELETED"))
-      .then(done, done);
+    await deleteBinding(template.name, bindingNameForDeletion);
+    await watchForWebSocketMessage(connection, "DELETED", 60000);
   });
   after("deletes client and closes websocket connection", async () => {
     deleteAndClose(connection, template);
