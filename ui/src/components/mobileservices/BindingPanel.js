@@ -36,28 +36,6 @@ export class BindingPanel extends Component {
     };
   }
 
-  reinitState() {
-    const serviceName = this.props.service.getName();
-    const schema = this.props.service.getBindingSchema();
-    const form = this.props.service.getFormDefinition();
-    const { service } = this.props;
-
-    this.setState({
-      serviceName,
-      schema,
-      form,
-      loading: false,
-      service,
-      activeStepIndex: 0
-    });
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    if (nextProps.showModal === false) {
-      this.reinitState();
-    }
-  }
-
   onNextButtonClick() {
     const { activeStepIndex } = this.state;
     if (activeStepIndex === 1) {
@@ -78,20 +56,19 @@ export class BindingPanel extends Component {
   }
 
   show() {
-    this.reinitState();
     this.stepChanged(0);
     this.open();
   }
 
   hasUPSIOSBoundService() {
-    return this.hasUPSIOSBoundServiceForPlatform('ios');
+    return this.hasUPSBoundServiceForPlatform('ios');
   }
 
   hasUPSAndroidBoundService() {
-    return this.hasUPSIOSBoundServiceForPlatform('android');
+    return this.hasUPSBoundServiceForPlatform('android');
   }
 
-  hasUPSIOSBoundServiceForPlatform(platform) {
+  hasUPSBoundServiceForPlatform(platform) {
     return find(
       this.getBoundServices(),
       service =>
