@@ -1,10 +1,13 @@
-const WebSocketClient = require("websocket").client;
+const WebSocket = require("ws");
 const assert = require("assert");
-const client = new WebSocketClient();
 const { connect, watchForWebSocketMessage } = require("../util/websockets");
-const { createBinding, deleteBinding } = require("../bindings");
-const bindingUtils = require("../util/bindingUtils");
+const {
+  createBinding,
+  deleteBinding,
+  getBindingTemplate
+} = require("../util/bindingUtils");
 const timeout = require("../util/awaitTimeout");
+const sendRequest = require("../util/sendRequest");
 
 const paths = {
   builds: "/builds/watch",
@@ -15,44 +18,42 @@ const paths = {
     `/bindableservices/${mobileClientName}/watch`
 };
 
-const sendRequest = require("../util/sendRequest");
-
 const template = {
   name: "integration-websocket-test-client"
 };
 
-async function deleteAndClose(connection, template) {
-  res = await sendRequest("DELETE", `mobileclients/${template.name}`);
-  assert.equal(res.status, 200);
-  if (connection) connection.close();
+async function createClient(template) {
+  const response = await sendRequest("POST", "mobileclients", template);
+  assert.equal(response.status, 200, "client wasn't created successfully");
 }
 
-describe("apps websocket watch", async () => {
-  let connection;
+async function deleteClient(template) {
+  res = await sendRequest("DELETE", `mobileclients/${template.name}`);
+  assert.equal(res.status, 200);
+}
+
+describe("apps websocket watch", done => {
+  let ws;
   before(async () => {
-    connection = await connect(
-      client,
-      paths.apps
-    );
+    ws = await connect(paths.apps);
   });
   it("should create new client and receive the changes", async () => {
-    assert.equal(connection.connected, true);
-    sendRequest("POST", "mobileclients", template);
-    await watchForWebSocketMessage(connection, "MobileAppsEvent");
+    assert.equal(ws.readyState, WebSocket.OPEN);
+    await Promise.all([
+      watchForWebSocketMessage(ws, "MobileAppsEvent", 50000),
+      createClient(template)
+    ]);
   });
   after("deletes client and closes websocket connection", async () => {
-    deleteAndClose(connection, template);
+    ws.close();
+    await deleteClient(template);
   });
 });
 
 describe("bindings  websocket watch", async () => {
-  let connection, bindingTemplate, bindingNameForDeletion;
+  let ws, bindingTemplate, bindingNameForDeletion;
   before("create client", async () => {
-    await sendRequest("POST", "mobileclients", template);
-    connection = await connect(
-      client,
-      paths.bindableservices(template.name)
-    );
+    await createClient(template);
   });
   before("prepare binding template", async () => {
     let res = await sendRequest("GET", `bindableservices/${template.name}`);
@@ -63,30 +64,35 @@ describe("bindings  websocket watch", async () => {
         template.name
       }" should be successful`
     );
-    bindingTemplate = bindingUtils.getMetricsBindingTemplate(
-      template.name,
-      res.data.items[0]
-    );
+    const service = res.data.items.find(i => i.name === "Mobile Metrics");
+    assert.ok(service, "expected Metrics service");
+    bindingTemplate = getBindingTemplate(template.name, service, "metrics", {
+      CLIENT_TYPE: "public"
+    });
+  });
+  beforeEach("connect websocket", async () => {
+    ws = await connect(paths.bindableservices(template.name));
   });
   it("create binding and receive the changes", async () => {
-    assert.equal(connection.connected, true);
-    await Promise.all([
-      watchForWebSocketMessage(connection, "ADDED", 60000),
-      async () => {
-        await timeout(1000);
-        bindingNameForDeletion = await createBinding(
-          template.name,
-          bindingTemplate
-        );
-      }
+    assert.equal(ws.readyState, WebSocket.OPEN);
+    const result = await Promise.all([
+      watchForWebSocketMessage(ws, "ADDED", 60000),
+      createBinding(template.name, bindingTemplate, "Mobile Metrics")
     ]);
+    bindingNameForDeletion = result[1];
+    assert.equal(typeof(bindingNameForDeletion),'string','Name of binding template should be returned.');
   });
   it("delete binding and receive the changes", async () => {
-    assert.equal(connection.connected, true);
-    await deleteBinding(template.name, bindingNameForDeletion);
-    await watchForWebSocketMessage(connection, "DELETED", 60000);
+    assert.equal(ws.readyState, WebSocket.OPEN);
+    await Promise.all([
+      watchForWebSocketMessage(ws, "DELETED", 60000),
+      deleteBinding(template.name, bindingNameForDeletion, "Mobile Metrics")
+    ]);
   });
-  after("deletes client and closes websocket connection", async () => {
-    deleteAndClose(connection, template);
+  afterEach("disconnect websocket", async () => {
+    if (ws) ws.close();
+  });
+  after("deletes client", async () => {
+    await deleteClient(template);
   });
 });

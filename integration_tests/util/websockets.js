@@ -1,17 +1,23 @@
 const timeout = require("./awaitTimeout");
 const assert = require("assert");
+const WebSocket = require("ws");
 
-async function waitOnMessage(connection, messageBody, timeoutDelay = 5000) {
+async function waitOnMessage(ws, messageBody, timeoutDelay = 5000) {
   return await Promise.race([
     new Promise(resolve => {
-      connection.on("message", message => {
-        if (message.utf8Data === messageBody) resolve(message);
-        else
+      const startTime = new Date().getTime();
+      ws.on("message", message => {
+        const dieTime = new Date().getTime() - startTime;
+        if (message === messageBody) {
+          resolve(message);
+        } else if (dieTime > timeoutDelay) resolve();
+        else {
           console.info(
             `not catching message "${
-              message.utf8Data
-            }" required "${messageBody}"`
+              message
+            }" required "${messageBody}" timeToDie=${timeoutDelay - dieTime}`
           );
+        }
       });
     }),
     timeout(timeoutDelay)
@@ -20,16 +26,16 @@ async function waitOnMessage(connection, messageBody, timeoutDelay = 5000) {
 
 /**
  * Watches for the WebSocket message with specified content.
- * @param {WebSocketConnection} connection websocket connection
+ * @param {WebSocket} ws websocket 
  * @param {String} messageBody what is watched
  * @returns {promise}
  */
 async function watchForWebSocketMessage(
-  connection,
+  ws,
   messageBody,
   timeoutDelay = 5000
 ) {
-  const message = await waitOnMessage(connection, messageBody, timeoutDelay);
+  const message = await waitOnMessage(ws, messageBody, timeoutDelay);
   assert.notEqual(
     message,
     undefined,
@@ -40,15 +46,14 @@ async function watchForWebSocketMessage(
 
 /**
  * Connects to the websocket.
- * @param {WebSocketClient} client websocket client
  * @param {String} path server path for the API
- * @returns {WebSocketConnection} connection
+ * @returns {WebSocket} connected websocket or error
  */
-async function connect(client, path) {
-  client.connect(`ws://localhost:4000/api${path}`);
+async function connect(path) {
+  const ws = new WebSocket(`ws://localhost:4000/api${path}`);
   return await new Promise((resolve, reject) => {
-    client.on("connect", resolve);
-    client.on("connectFailed", reject);
+    ws.on("open", () => resolve(ws));
+    ws.on("error", reject);
   });
 }
 

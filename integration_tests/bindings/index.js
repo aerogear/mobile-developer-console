@@ -3,44 +3,6 @@ const sendRequest = require("../util/sendRequest");
 const bindingUtils = require("../util/bindingUtils");
 const timeout = require("../util/awaitTimeout");
 
-const createBinding = async (appName, template, serviceName, isBound = bindingUtils.isServiceBound) => {
-  const res = await sendRequest('POST', 'bindableservices', template)
-  assert.equal(res.status, 200, 'request for new binding should be successful');
-  const bindingName = res.data.metadata.name;
-  
-  let service;
-  let timeout = 6 * 60 * 1000;
-  while ((!service || !isBound(service)) && timeout > 0) {
-    await new Promise(resolve => setTimeout(resolve, 5000));
-    timeout -= 5000;
-    const bindingRes = await sendRequest('GET', `bindableservices/${appName}`);
-    assert.equal(bindingRes.status, 200, 'request for list of bindings should be successful');
-    service = bindingRes.data.items.find(i => i.name === serviceName);
-  }
-  assert(isBound(service), 'service should be bound in less than 3 minutes');
-
-  return bindingName;
-};
-
-const deleteBinding = async (appName, bindingName, serviceName, boundCheck = true) => {
-  const deleteRes = await sendRequest('DELETE', `bindableservices/${bindingName}`);
-  assert.equal(deleteRes.status, 200, 'request for binding deletion should be successful');
-
-  let service;
-  let timeout = 6 * 60 * 1000;
-  while ((!service || bindingUtils.isServiceBindingInProgress(service)) && timeout > 0) {
-    await new Promise(resolve => setTimeout(resolve, 5000));
-    timeout -= 5000;
-    const bindingRes = await sendRequest('GET', `bindableservices/${appName}`);
-    assert.equal(bindingRes.status, 200, 'request for list of bindings should be successful');
-    service = bindingRes.data.items.find(i => i.name === serviceName);
-  }
-  if (boundCheck) {
-    assert(!bindingUtils.isServiceBound(service), 'service should be unbound in less than 3 minutes');
-  }
-  assert(!bindingUtils.isServiceBindingInProgress(service), 'binding operation should not be in progress');
-};
-
 describe("binding creation/deletion", function() {
   this.timeout(0);
 
@@ -70,7 +32,7 @@ describe("binding creation/deletion", function() {
   });
 
   it('should update mobile-services.json correctly', async function() {
-    const bindingName = await createBinding(clientTemplate.name, bindingTemplate, 'Mobile Metrics');
+    const bindingName = await bindingUtils.createBinding(clientTemplate.name, bindingTemplate, 'Mobile Metrics');
 
     let clientRes = await sendRequest('GET', `mobileclients/${clientTemplate.name}`);
     assert.equal(clientRes.status, 200, 'request for app should be successful');
@@ -80,7 +42,7 @@ describe("binding creation/deletion", function() {
       "mobile-services.json should contain config for bound service"
     );
 
-    await deleteBinding(clientTemplate.name, bindingName, 'Mobile Metrics');
+    await bindingUtils.deleteBinding(clientTemplate.name, bindingName, 'Mobile Metrics');
 
     clientRes = await sendRequest('GET', `mobileclients/${clientTemplate.name}`);
     assert.equal(clientRes.status, 200, 'request for app should be successful');
@@ -124,13 +86,13 @@ describe("bindings for different apps", function() {
     assert.equal(res.status, 200, 'request for bindable services for app1 should be successful');
     let service = res.data.items.find(i => i.name === 'Mobile Metrics');
     bindingTemplate1 = bindingUtils.getBindingTemplate(clientTemplate1.name, service, 'metrics', { CLIENT_TYPE: 'public' });
-    bindingName1 = await createBinding(clientTemplate1.name, bindingTemplate1, 'Mobile Metrics');
+    bindingName1 = await bindingUtils.createBinding(clientTemplate1.name, bindingTemplate1, 'Mobile Metrics');
 
     res = await sendRequest('GET', `bindableservices/${clientTemplate2.name}`);
     assert.equal(res.status, 200, 'request for bindable services for app2 should be successful');
     service = res.data.items.find(i => i.name === 'Mobile Metrics');
     bindingTemplate2 = bindingUtils.getBindingTemplate(clientTemplate2.name, service, 'metrics', { CLIENT_TYPE: 'public' });
-    bindingName2 = await createBinding(clientTemplate2.name, bindingTemplate2, 'Mobile Metrics');
+    bindingName2 = await bindingUtils.createBinding(clientTemplate2.name, bindingTemplate2, 'Mobile Metrics');
   });
 
   after("delete apps", async function() {
@@ -154,7 +116,7 @@ describe("bindings for different apps", function() {
     service = res.data.items.find(i => i.name === 'Mobile Metrics');
     assert.equal(service.serviceBindings[0].metadata.name, bindingName2, 'should be correct binding for app2');
 
-    await deleteBinding(clientTemplate2.name, bindingName2, 'Mobile Metrics');
+    await bindingUtils.deleteBinding(clientTemplate2.name, bindingName2, 'Mobile Metrics');
     res = await sendRequest('GET', `bindableservices/${clientTemplate1.name}`);
     assert.equal(res.status, 200, 'request for bindable services for app1 should be successful');
     service = res.data.items.find(i => i.name === 'Mobile Metrics');
@@ -182,7 +144,7 @@ describe('delete app', function() {
     assert.equal(res.status, 200, 'request for bindable services for app should be successful');
     const service = res.data.items.find(i => i.name === 'Mobile Metrics');
     bindingTemplate = bindingUtils.getBindingTemplate(clientTemplate.name, service, 'metrics', { CLIENT_TYPE: 'public' });
-    bindingName = await createBinding(clientTemplate.name, bindingTemplate, 'Mobile Metrics');
+    bindingName = await bindingUtils.createBinding(clientTemplate.name, bindingTemplate, 'Mobile Metrics');
   });
 
   it('should delete also binding when deleting app', async function() {
@@ -249,7 +211,7 @@ describe('UPS bindings', function() {
   });
 
   it('should be possible to create for both Android and iOS', async function() {
-    const bindingNameAndroid = await createBinding(clientTemplate.name, bindingTemplateAndroid, 'Push Notifications');
+    const bindingNameAndroid = await bindingUtils.createBinding(clientTemplate.name, bindingTemplateAndroid, 'Push Notifications');
 
     let clientRes = await sendRequest('GET', `mobileclients/${clientTemplate.name}`);
     assert.equal(clientRes.status, 200, 'request for app should be successful');
@@ -263,7 +225,7 @@ describe('UPS bindings', function() {
       'mobile-services.json should contain config for android'
     );
 
-    const bindingNameIOS = await createBinding(clientTemplate.name, bindingTemplateIOS, 'Push Notifications', bindingUtils.isUPSFullyBound);
+    const bindingNameIOS = await bindingUtils.createBinding(clientTemplate.name, bindingTemplateIOS, 'Push Notifications', bindingUtils.isUPSFullyBound);
 
     clientRes = await sendRequest('GET', `mobileclients/${clientTemplate.name}`);
     assert.equal(clientRes.status, 200, 'request for app should be successful');
@@ -277,7 +239,7 @@ describe('UPS bindings', function() {
       'mobile-services.json should contain config for ios'
     );
 
-    await deleteBinding(clientTemplate.name, bindingNameAndroid, 'Push Notifications', false);
+    await bindingUtils.deleteBinding(clientTemplate.name, bindingNameAndroid, 'Push Notifications', false);
 
     clientRes = await sendRequest('GET', `mobileclients/${clientTemplate.name}`);
     assert.equal(clientRes.status, 200, 'request for app should be successful');
@@ -290,7 +252,7 @@ describe('UPS bindings', function() {
       'mobile-services.json should not contain config for android'
     );
 
-    await deleteBinding(clientTemplate.name, bindingNameIOS, 'Push Notifications');
+    await bindingUtils.deleteBinding(clientTemplate.name, bindingNameIOS, 'Push Notifications');
 
     clientRes = await sendRequest('GET', `mobileclients/${clientTemplate.name}`);
     assert.equal(clientRes.status, 200, 'request for app should be successful');
