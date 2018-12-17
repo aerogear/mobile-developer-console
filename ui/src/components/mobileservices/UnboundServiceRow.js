@@ -40,7 +40,13 @@ class UnboundServiceRow extends Component {
   }
 
   renderBindingStatus() {
-    return <BindingStatus key={`${this.props.service.getId()}binding status`} service={this.props.service} />;
+    return (
+      <BindingStatus
+        key={`${this.props.service.getId()}binding status`}
+        service={this.props.service}
+        onFinished={this.props.onFinished}
+      />
+    );
   }
 
   renderBindingButtons() {
