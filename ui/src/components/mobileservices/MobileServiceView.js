@@ -20,6 +20,7 @@ class MobileServiceView extends Component {
     this.boundServiceRows = this.boundServiceRows.bind(this);
     this.unboundServiceRows = this.unboundServiceRows.bind(this);
     this.addDefaultBindingProperty = this.addDefaultBindingProperty.bind(this);
+    this.hideBindingPanel = this.hideBindingPanel.bind(this);
   }
 
   componentDidMount() {
@@ -45,6 +46,7 @@ class MobileServiceView extends Component {
                 key={service.getId()}
                 service={service}
                 onCreateBinding={() => this.showBindingPanel(service)}
+                onFinished={this.hideBindingPanel}
               />
             );
           })
@@ -67,6 +69,7 @@ class MobileServiceView extends Component {
                 key={service.getId()}
                 service={service}
                 onCreateBinding={() => this.showBindingPanel(service)}
+                onFinished={this.hideBindingPanel}
               />
             );
           })
@@ -93,9 +96,11 @@ class MobileServiceView extends Component {
   };
 
   hideBindingPanel = () => {
-    this.setState({
-      bindingPanelService: null
-    });
+    if (this.state.bindingPanelService) {
+      this.setState({
+        bindingPanelService: null
+      });
+    }
   };
 
   render() {
