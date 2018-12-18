@@ -32,3 +32,7 @@ describe('Mobile Clients', () => {
 describe('Service Bindings', () => {
   require('./bindings');
 });
+
+describe('Websocket updates', () => {
+  require('./websockets');
+});
