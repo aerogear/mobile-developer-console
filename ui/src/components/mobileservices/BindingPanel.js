@@ -147,9 +147,13 @@ export class BindingPanel extends Component {
   validate = (formData, errors) => {
     /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
 
-    const valid = new FormValidator(validationConfig).validate(formData, (key, message) => {
-      errors[key].addError(message);
-    });
+    const valid = new FormValidator(validationConfig).validate(
+      { ...formData, SERVICE_TYPE: this.props.service.getServiceClassExternalName() },
+      (key, message) => {
+        console.log('error:', message, ' for key ', key, ' errors[key]', errors[key]);
+        errors[key].addError(message);
+      }
+    );
 
     if (valid) {
       // Avdance to final screen if valid
