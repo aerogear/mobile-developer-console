@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { Wizard } from 'patternfly-react';
 import { connect } from 'react-redux';
 import Form from 'react-jsonschema-form';
-import debounce from 'lodash/debounce';
 import { createSecretName } from '../bindingUtils';
 import { createBinding } from '../../actions/serviceBinding';
 import '../configuration/ServiceSDKInfo.css';
@@ -89,7 +88,7 @@ export class BindingPanel extends Component {
         validate={this.validate}
         showErrorList={false}
         ObjectFieldTemplate={OpenShiftObjectTemplate}
-        onChange={debounce(e => (this.formData = e.formData), 150)} // eslint-disable-line no-return-assign
+        onChange={e => (this.formData = e.formData)} // eslint-disable-line no-return-assign
       >
         <div />
       </Form>
@@ -147,20 +146,14 @@ export class BindingPanel extends Component {
    */
   validate = (formData, errors) => {
     /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
-    const valid = new FormValidator(validationConfig)
-      .withPostValidation(() => {
-        if (formData.CLIENT_TYPE === 'IOS') {
-          const confirmPasswordFieldId = `${this.form.state.idSchema.passphrase.$id}2`;
-          const confirmPasswordField = document.getElementById(confirmPasswordFieldId);
-          const passwordConfirmation = confirmPasswordField.value;
-          if (formData.passphrase !== passwordConfirmation) {
-            errors.iosIsProduction.addError('Passphrase does not match.');
-            return true;
-          }
-        }
-        return false;
-      })
-      .validate(formData, errors);
+
+    const valid = new FormValidator(validationConfig).validate(
+      { ...formData, SERVICE_TYPE: this.props.service.getServiceClassExternalName() },
+      (key, message) => {
+        console.log('error:', message, ' for key ', key, ' errors[key]', errors[key]);
+        errors[key].addError(message);
+      }
+    );
 
     if (valid) {
       // Avdance to final screen if valid

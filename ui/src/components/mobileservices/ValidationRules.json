@@ -1,7 +1,15 @@
 {
   "rulesets": {
-    "COMMON": {
-      "comment": "This set of rules is always executed. It is used to validate common fields.",
+    "UPSCOMMON": {
+      "comment": "This set of rules is always executed when service is UPS. It is used to validate common fields.",
+      "executionConstraints": [
+        {
+          "comment": "Execute this ruleset only when the field named 'SERVICE_TYPE' has value 'ups'",
+          "type": "FIELD_VALUE",
+          "name": "SERVICE_TYPE",
+          "value": "ups"
+        }
+      ],
       "fields": {
         "CLIENT_ID": {
           "validation_rules": [
@@ -37,6 +45,11 @@
             {
               "type": "required",
               "error": "APNS requires a certificate."
+            },
+            {
+              "type": "P12VALIDATOR",
+              "error": "Invalid PKCS#12 data or bad password",
+              "password_field": "passphrase"
             }
           ]
         },
