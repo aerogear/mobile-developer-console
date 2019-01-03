@@ -2,17 +2,12 @@ import React, { Component } from 'react';
 import { ListViewItem, Col } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
-import BindingPanel from './BindingPanel';
 import BindingStatus from './BindingStatus';
 import BindButton from './BindButton';
 
 class UnboundServiceRow extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      showModal: false
-    };
 
     this.renderServiceBadge = this.renderServiceBadge.bind(this);
     this.renderBindingStatus = this.renderBindingStatus.bind(this);
@@ -45,33 +40,30 @@ class UnboundServiceRow extends Component {
   }
 
   renderBindingStatus() {
-    return <BindingStatus key={`${this.props.service.getId()}binding status`} service={this.props.service} />;
+    return (
+      <BindingStatus
+        key={`${this.props.service.getId()}binding status`}
+        service={this.props.service}
+        onFinished={this.props.onFinished}
+      />
+    );
   }
 
   renderBindingButtons() {
     return (
       <div>
-        <BindButton service={this.props.service} onClick={() => this.setState({ showModal: true })} />
+        <BindButton service={this.props.service} onClick={this.props.onCreateBinding} />
       </div>
     );
   }
 
   render() {
     return (
-      <React.Fragment>
-        <ListViewItem
-          additionalInfo={[this.renderServiceBadge(), this.renderBindingStatus()]}
-          className="unboundService"
-          actions={this.renderBindingButtons()}
-        />
-        <BindingPanel
-          service={this.props.service}
-          showModal={this.state.showModal}
-          close={() => {
-            this.setState({ showModal: false });
-          }}
-        />
-      </React.Fragment>
+      <ListViewItem
+        additionalInfo={[this.renderServiceBadge(), this.renderBindingStatus()]}
+        className="unboundService"
+        actions={this.renderBindingButtons()}
+      />
     );
   }
 }

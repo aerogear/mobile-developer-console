@@ -26,46 +26,38 @@ import { RuleSetValidator } from './RuleSetValidator';
  * }
  */
 export class FormValidator {
-  constructor(config) {
-    this.ruleSets = [];
-    this.postValidation = [];
+  constructor(config = {}) {
+    this.ruleSets = {};
     for (const [rulesetName, rulesetDefinition] of Object.entries(config.rulesets)) {
-      this.ruleSets.push(new RuleSetValidator(rulesetName, rulesetDefinition));
+      this.ruleSets[rulesetName] = new RuleSetValidator(rulesetName, rulesetDefinition);
     }
   }
 
   /**
    * Validates the form
    * @param formData for to be validated
-   * @param errors container for the errors
+   * @param {Function} errorsCb(key, message) a callback used to notify the caller about validation errors. key is the
+   * key identifying the error group, while message is the message error.
    * @returns {boolean} true if the form is valid
    */
-  validate(formData, errors) {
+  validate(formData, errorsCb) {
     let hasErrors = false;
-    for (let i = 0; i < this.ruleSets.length; i++) {
-      if (this.ruleSets[i].validate(formData, errors)) {
-        hasErrors = true;
-      }
-    }
 
-    if (!hasErrors) {
-      for (let i = 0; i < this.postValidation.length; i++) {
-        if (this.postValidation[i](formData, errors)) {
-          hasErrors = true;
-        }
+    for (const rulesetName in this.ruleSets) {
+      if (this.ruleSets.hasOwnProperty(rulesetName) && this.ruleSets[rulesetName].validate(formData, errorsCb)) {
+        hasErrors = true;
       }
     }
     return !hasErrors;
   }
 
-  /**
-   * Custom form validation to be executed after the configured validation has been successful (optional).
-   * More than one function can be passed by invoking this method more than one time.
-   * @param postValidateFunction
-   * @returns {FormValidator}
-   */
-  withPostValidation(postValidateFunction) {
-    this.postValidation.push(postValidateFunction);
+  withRule(ruleSetName, rule) {
+    let ruleSet = this.ruleSets[ruleSetName];
+    if (!ruleSet) {
+      ruleSet = new RuleSetValidator(ruleSetName);
+      this.ruleSets[ruleSetName] = ruleSet;
+    }
+    ruleSet.addRule(rule);
     return this;
   }
 }

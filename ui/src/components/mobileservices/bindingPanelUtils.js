@@ -75,6 +75,39 @@ function getOpenShiftField(field, properties, idSchema, schema, formData, uiSche
   return getFieldSet(field, properties, idSchema, schema, formData, uiSchema);
 }
 
+function getPasswordField(property, item, idSchema, schema, confirmation) {
+  const id = idSchema[item.key].$id;
+
+  const passwordField = (
+    <div key={`${property.content.key}`}>
+      <label className="control-label" htmlFor={id}>
+        {schema.properties[item.key].title}
+      </label>
+      <input
+        className="form-control"
+        type="password"
+        id={id}
+        onBlur={event => property.content.props.onChange(event.target.value)}
+      />
+    </div>
+  );
+
+  if (confirmation) {
+    return (
+      <div key={`${property.content.key}-parent`}>
+        {passwordField}
+        <div key={`${property.content.key}-confirm`}>
+          <label className="control-label" htmlFor={`${id}2`}>
+            {'Confirm Password'}
+          </label>
+          <input className="form-control" type="password" id={`${id}2`} />
+        </div>
+      </div>
+    );
+  }
+  return passwordField;
+}
+
 function getFieldSet(field, properties, idSchema, schema, formData, uiSchema) {
   const { title, items } = field;
 
@@ -101,27 +134,7 @@ function getFieldSet(field, properties, idSchema, schema, formData, uiSchema) {
           </div>
         );
       case 'password':
-        return (
-          <div key={`${property.content.key}-parent`}>
-            <div key={`${property.content.key}`}>
-              <label className="control-label" htmlFor={id}>
-                {schema.properties[item.key].title}
-              </label>
-              <input
-                className="form-control"
-                type="password"
-                id={id}
-                onBlur={event => property.content.props.onChange(event.target.value)}
-              />
-            </div>
-            <div key={`${property.content.key}-confirm`}>
-              <label className="control-label" htmlFor={`${id}2`}>
-                {'Confirm Password'}
-              </label>
-              <input className="form-control" type="password" id={`${id}2`} />
-            </div>
-          </div>
-        );
+        return getPasswordField(property, item, idSchema, schema);
       default:
         return property.content;
     }

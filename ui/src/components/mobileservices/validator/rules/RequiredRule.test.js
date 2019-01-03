@@ -23,13 +23,13 @@ describe('RequiredRule', () => {
       name: TEST_FIELD
     };
     const rule = ValidationRule.forRule(testConfig);
-    const result = rule.validate(TEST_FIELD, null);
+    const result = rule.validate({}, TEST_FIELD);
     expect(result).toEqual({ valid: false, error: STANDARD_ERROR_MSG });
   });
 
   it('should return valid', () => {
     const rule = ValidationRule.forRule(config);
-    const result = rule.validate(TEST_FIELD, 'somevalue');
+    const result = rule.validate({ [TEST_FIELD]: 'somevalue' }, TEST_FIELD);
     expect(result).toEqual({ valid: true });
   });
 });

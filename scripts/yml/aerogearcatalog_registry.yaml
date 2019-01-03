@@ -11,7 +11,7 @@ registry:
   - type: dockerhub
     name: ag-mdc
     org: aerogearcatalog
-    tag: 1.0.0-alpha
+    tag: 1.0.0
     url: https://registry.hub.docker.com
     white_list:
     - '.*mobile-developer-console-apb$'

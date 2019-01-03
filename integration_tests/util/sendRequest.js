@@ -7,12 +7,16 @@ const sendRequest = async (method, path, data) => {
   if (method === "POST") {
     headers = {'Content-Type': 'application/json'}
   }
-  return await axios({
-    url: `${api}/${path}`,
-    method,
-    data,
-    headers
-  })
+  try {
+    return await axios({
+      url: `${api}/${path}`,
+      method,
+      data,
+      headers
+    })
+  } catch (error) {
+    return error.response;
+  }
 }
 
 module.exports = sendRequest

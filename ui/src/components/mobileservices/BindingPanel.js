@@ -1,8 +1,8 @@
+import { partition, find } from 'lodash-es';
 import React, { Component } from 'react';
 import { Wizard } from 'patternfly-react';
 import { connect } from 'react-redux';
 import Form from 'react-jsonschema-form';
-import debounce from 'lodash/debounce';
 import { createSecretName } from '../bindingUtils';
 import { createBinding } from '../../actions/serviceBinding';
 import '../configuration/ServiceSDKInfo.css';
@@ -20,32 +20,10 @@ export class BindingPanel extends Component {
     this.onBackButtonClick = this.onBackButtonClick.bind(this);
     this.renderPropertiesSchema = this.renderPropertiesSchema.bind(this);
     this.validate = this.validate.bind(this);
-
     const serviceName = this.props.service.getName();
     const schema = this.props.service.getBindingSchema();
     const form = this.props.service.getFormDefinition();
     const { service } = this.props;
-
-    if (this.props.service.isUPSService()) {
-      const hasUPSAndroidAnnotation = this.hasUPSAndroidAnnotation();
-      const hasUPSIOSAnnotation = this.hasUPSIOSAnnotation();
-
-      if (hasUPSAndroidAnnotation && !hasUPSIOSAnnotation) {
-        // UPS, there's already an Android variant
-        if (schema.properties.CLIENT_TYPE) {
-          schema.properties.CLIENT_TYPE.default = 'IOS';
-          schema.properties.CLIENT_TYPE.enum = ['IOS'];
-        }
-      } else if (!hasUPSAndroidAnnotation && hasUPSIOSAnnotation) {
-        // UPS, there's already an IOS variant
-        if (schema.properties.CLIENT_TYPE) {
-          schema.properties.CLIENT_TYPE.default = 'Android';
-          schema.properties.CLIENT_TYPE.enum = ['Android'];
-        }
-      }
-      // we don't care if there are variants for both platforms.
-      // this binding panel shouldn't be shown anyway
-    }
 
     this.state = {
       serviceName,
@@ -81,33 +59,22 @@ export class BindingPanel extends Component {
     this.open();
   }
 
-  hasUPSAndroidAnnotation() {
-    return this.hasUPSPlatformAnnotation('android');
+  hasUPSIOSBoundService() {
+    return this.hasUPSBoundServiceForPlatform('ios');
   }
 
-  hasUPSIOSAnnotation() {
-    return this.hasUPSPlatformAnnotation('ios');
+  hasUPSAndroidBoundService() {
+    return this.hasUPSBoundServiceForPlatform('android');
   }
 
-  hasUPSPlatformAnnotation(platform) {
-    // there won't be any variant annotations if there is no binding yet
-    if (!this.props.service.isBound()) {
-      return false;
-    }
-
-    const configExtItems = this.props.service.getConfigurationExtAsJSON();
-    if (!configExtItems || !configExtItems.length) {
-      return false;
-    }
-
-    for (const configExtItem of configExtItems) {
-      for (const variantInfo of configExtItem) {
-        if (variantInfo.type === platform) {
-          return true;
-        }
-      }
-    }
-    return false;
+  hasUPSBoundServiceForPlatform(platform) {
+    return find(
+      this.getBoundServices(),
+      service =>
+        service.isUPSService() &&
+        service.serviceBindings &&
+        find(service.serviceBindings, serviceBinding => serviceBinding.getPlatform() === platform)
+    );
   }
 
   renderPropertiesSchema() {
@@ -121,7 +88,7 @@ export class BindingPanel extends Component {
         validate={this.validate}
         showErrorList={false}
         ObjectFieldTemplate={OpenShiftObjectTemplate}
-        onChange={debounce(e => (this.formData = e.formData), 150)} // eslint-disable-line no-return-assign
+        onChange={e => (this.formData = e.formData)} // eslint-disable-line no-return-assign
       >
         <div />
       </Form>
@@ -179,20 +146,14 @@ export class BindingPanel extends Component {
    */
   validate = (formData, errors) => {
     /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
-    const valid = new FormValidator(validationConfig)
-      .withPostValidation(() => {
-        if (formData.CLIENT_TYPE === 'IOS') {
-          const confirmPasswordFieldId = `${this.form.state.idSchema.passphrase.$id}2`;
-          const confirmPasswordField = document.getElementById(confirmPasswordFieldId);
-          const passwordConfirmation = confirmPasswordField.value;
-          if (formData.passphrase !== passwordConfirmation) {
-            errors.iosIsProduction.addError('Passphrase does not match.');
-            return true;
-          }
-        }
-        return false;
-      })
-      .validate(formData, errors);
+
+    const valid = new FormValidator(validationConfig).validate(
+      { ...formData, SERVICE_TYPE: this.props.service.getServiceClassExternalName() },
+      (key, message) => {
+        console.log('error:', message, ' for key ', key, ' errors[key]', errors[key]);
+        errors[key].addError(message);
+      }
+    );
 
     if (valid) {
       // Avdance to final screen if valid
@@ -205,7 +166,42 @@ export class BindingPanel extends Component {
     return errors;
   };
 
+  filterPlatforms() {
+    if (this.props.service.isUPSService()) {
+      const hasIOS = this.hasUPSIOSBoundService();
+      const hasAndroid = this.hasUPSAndroidBoundService();
+      const { schema } = this.state;
+      if (!hasAndroid && !hasIOS) {
+        if (schema.properties.CLIENT_TYPE) {
+          schema.properties.CLIENT_TYPE.default = 'Android';
+          schema.properties.CLIENT_TYPE.enum = ['Android', 'IOS'];
+        }
+      } else if (hasAndroid && !hasIOS) {
+        // UPS, there's already an Android variant
+        if (schema.properties.CLIENT_TYPE) {
+          schema.properties.CLIENT_TYPE.default = 'IOS';
+          schema.properties.CLIENT_TYPE.enum = ['IOS'];
+        }
+      } else if (!hasAndroid && hasIOS) {
+        // UPS, there's already an IOS variant
+        if (schema.properties.CLIENT_TYPE) {
+          schema.properties.CLIENT_TYPE.default = 'Android';
+          schema.properties.CLIENT_TYPE.enum = ['Android'];
+        }
+      } else if (hasAndroid && hasIOS) {
+        // UPS, there's already an IOS variant
+        if (schema.properties.CLIENT_TYPE) {
+          schema.properties.CLIENT_TYPE.default = '';
+          schema.properties.CLIENT_TYPE.enum = [];
+        }
+      }
+      // we don't care if there are variants for both platforms.
+      // this binding panel shouldn't be shown anyway
+    }
+  }
+
   render() {
+    this.filterPlatforms();
     return (
       <Wizard.Pattern
         onHide={this.props.close}
@@ -224,13 +220,29 @@ export class BindingPanel extends Component {
       />
     );
   }
+
+  getBoundServices() {
+    const filteredServices = partition(this.props.serviceBindings.services, service => service.isBound());
+    return filteredServices[0];
+  }
+
+  getUnboundServices() {
+    const filteredServices = partition(this.props.serviceBindings.services, service => service.isBound());
+    return filteredServices[1];
+  }
 }
 
 const mapDispatchToProps = {
   createBinding
 };
 
+function mapStateToProps(state) {
+  return {
+    serviceBindings: state.serviceBindings
+  };
+}
+
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(BindingPanel);

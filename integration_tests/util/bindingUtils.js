@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const sendRequest = require("./sendRequest");
+const assert = require("assert");
 
 const DNS1123_SUBDOMAIN_VALIDATION = {
   pattern: /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/,
@@ -54,15 +56,19 @@ const isServiceBound = service => {
   return boundBinding != null;
 };
 
-const getMetricsBindingTemplate = (appName, service) => {
+const isUPSFullyBound = service => {
+  return _.every(service.serviceBindings, binding => isBindingReady(binding));
+};
+
+const getBindingTemplate = (appName, service, serviceName, formData) => {
   const template = {
     bindingParametersName: null,
     bindingSecretName: null,
     formData: {
       CLIENT_ID: appName,
-      CLIENT_TYPE: 'public'
+      ...formData
     },
-    serviceClassExternalName: 'metrics',
+    serviceClassExternalName: serviceName,
     serviceInstanceName: null
   };
   const credentialSecretName = createSecretName(
@@ -77,13 +83,54 @@ const getMetricsBindingTemplate = (appName, service) => {
   return template;
 };
 
+const createBinding = async (appName, template, serviceName, isBound = isServiceBound) => {
+  const res = await sendRequest('POST', 'bindableservices', template)
+  assert.equal(res.status, 200, 'request for new binding should be successful');
+  const bindingName = res.data.metadata.name;
+  
+  let service;
+  let timeout = 6 * 60 * 1000;
+  while ((!service || !isBound(service)) && timeout > 0) {
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    timeout -= 5000;
+    const bindingRes = await sendRequest('GET', `bindableservices/${appName}`);
+    assert.equal(bindingRes.status, 200, 'request for list of bindings should be successful');
+    service = bindingRes.data.items.find(i => i.name === serviceName);
+  }
+  assert(isBound(service), 'service should be bound in less than 3 minutes');
+
+  return bindingName;
+};
+
+const deleteBinding = async (appName, bindingName, serviceName, boundCheck = true) => {
+  const deleteRes = await sendRequest('DELETE', `bindableservices/${bindingName}`);
+  assert.equal(deleteRes.status, 200, 'request for binding deletion should be successful');
+
+  let service;
+  let timeout = 6 * 60 * 1000;
+  while ((!service || isServiceBindingInProgress(service)) && timeout > 0) {
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    timeout -= 5000;
+    const bindingRes = await sendRequest('GET', `bindableservices/${appName}`);
+    assert.equal(bindingRes.status, 200, 'request for list of bindings should be successful');
+    service = bindingRes.data.items.find(i => i.name === serviceName);
+  }
+  if (boundCheck) {
+    assert(!isServiceBound(service), 'service should be unbound in less than 3 minutes');
+  }
+  assert(!isServiceBindingInProgress(service), 'binding operation should not be in progress');
+};
+
 module.exports = {
   createSecretName,
   isBindingFailed,
   isBindingInProgress,
-  getMetricsBindingTemplate,
+  getBindingTemplate,
   isBindingReady,
   isServiceBindingFailed,
   isServiceBindingInProgress,
-  isServiceBound
+  isServiceBound,
+  isUPSFullyBound,
+  createBinding,
+  deleteBinding
 };

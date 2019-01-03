@@ -2,7 +2,34 @@ import React, { Component } from 'react';
 import { ListView, Icon } from 'patternfly-react';
 
 class BindingStatus extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hasStarted: false
+    };
+    this.updateState = this.updateState.bind(this);
+  }
+
+  updateState() {
+    if (this.props.service.isBindingOperationInProgress() && !this.state.hasStarted) {
+      this.setState({
+        hasStarted: true
+      });
+    }
+    if (this.state.hasStarted && !this.props.service.isBindingOperationInProgress()) {
+      this.props.onFinished();
+      this.setState({
+        hasStarted: false
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.onFinished();
+  }
+
   render() {
+    this.updateState();
     return (
       <ListView.InfoItem key="bind-status">
         {this.props.service.isBindingOperationInProgress() && (

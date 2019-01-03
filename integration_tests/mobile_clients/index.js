@@ -5,6 +5,14 @@ const template = {
   name: "integration-test-client"
 }
 
+before('remove all mobile apps', async function() {
+  const res = await sendRequest('GET', 'mobileclients');
+  assert.equal(res.status, 200);
+  for (const app of res.data.items) {
+    await sendRequest('DELETE', `mobileclients/${app.metadata.name}`)
+  }
+});
+
 describe('initially', () => {
   it('should have no mobile clients present', async () => {
     const res = await sendRequest('GET', 'mobileclients')
