@@ -38,8 +38,12 @@ build: setup
 ui-npm-install:
 	cd ui && npm install
 
+.PHONY:
+ui-npm-ci:
+	cd ui && npm ci
+
 .PHONY: ui
-ui: ui-npm-install
+ui: ui-npm-ci
 	cd ui && npm run build
 
 .PHONY: ui-check-code-style
@@ -47,7 +51,7 @@ ui-check-code-style: ui
 	node ui/node_modules/eslint/bin/eslint ui/src/
 
 .PHONY: ui-test-cover
-ui-test-cover: ui-npm-install
+ui-test-cover: ui-npm-ci
 	cd ui && npm run build-css && npm run coverage
 
 .PHONY: serve
