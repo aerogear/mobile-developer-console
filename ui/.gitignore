@@ -22,3 +22,6 @@ yarn-error.log*
 
 # .css files are generated from scss but are not checked in.
 *.css
+node/
+npm-cache/
+target/
