@@ -1,0 +1,31 @@
+FROM openshift/origin-release:golang-1.10 as builder
+
+WORKDIR /go/src/github.com/aerogear/mobile-developer-console
+COPY . .
+RUN go build -o mobile-developer-console ./cmd/api-server/main.go
+
+RUN tar xvfz artifacts/org/aerogear/mobile-developer-console-ui/0.1.0.redhat-1/mobile-developer-console-ui-0.1.0.redhat-1.tar.gz && \
+    mv mobile-developer-console-ui-*/ mobile-developer-console-ui/
+
+FROM rhel7:latest
+
+COPY --from=builder /go/src/github.com/aerogear/mobile-developer-console/mobile-developer-console /usr/bin/
+COPY --from=builder /go/src/github.com/aerogear/mobile-developer-console/mobile-developer-console-ui/ /opt/mobile-developer-console/ui/
+
+USER 1001
+
+ENV STATIC_FILES_DIR /opt/mobile-developer-console/ui
+
+EXPOSE 4000
+ENTRYPOINT ["/usr/bin/mobile-developer-console"]
+
+LABEL com.redhat.component="mobile-developer-console-container" \
+      io.openshift.tags="mobile" \
+      io.k8s.display-name="Mobile Developer Console" \
+      io.k8s.description="The Mobile Developer Console allows you to create Mobile App representations in OpenShift, and bind those to Mobile Services, and get a mobile-services.json config for the AeroGear SDK" \
+      description="The Mobile Developer Console allows you to create Mobile App representations in OpenShift, and bind those to Mobile Services, and get a mobile-services.json config for the AeroGear SDK" \
+      summary="The Mobile Developer Console allows you to create Mobile App representations in OpenShift, and bind those to Mobile Services, and get a mobile-services.json config for the AeroGear SDK" \
+      usage="This image is intended to be used on OpenShift to work with mobile apps and cloud services" \
+      name="mobile/mobile-developer-console" \
+      maintainer="Red Hat Mobile team" \
+      version="1.0.0"
