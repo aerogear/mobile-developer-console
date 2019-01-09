@@ -9,8 +9,28 @@ then
 fi
 oc project "$ASB_PROJECT_NAME" || exit 1
 
-# Command-line YAML processor: http://mikefarah.github.io/yq
-yq="docker run -v ${PWD}:/workdir mikefarah/yq yq"
+# Test for presence of yq (command-line YAML processor): http://mikefarah.github.io/yq
+yq="yq"
+
+$yq -h &> /dev/null
+yq_status=$?
+
+if [ $yq_status -ne 0 ]
+then
+    docker ps &> /dev/null
+    docker_status=$?
+
+    if [ $docker_status -ne 0 ]
+    then
+        echo "Docker is not running. Downloading and installing yq binary."
+        ./install_yq.sh
+    else
+        # Use Docker to run the yq
+        yq="docker run -v ${PWD}:/workdir mikefarah/yq yq"
+    fi
+fi
+
+
 # Variables
 UPDATE_INSTRUCTIONS="yml/update_instructions.yaml"
 AEROGEARCATALOG_REGISTRY="yml/aerogearcatalog_registry.yaml"
