@@ -38,6 +38,10 @@ You can follow the docs [here](https://github.com/aerogear/mobile-core)
 
 **(OpenShift 3.11) Use `oc cluster up` or `minishift`**
 
+> **Note**
+>
+> The following scripts are using [yq](https://github.com/mikefarah/yq) YAML processor to modify the default Service Broker configuration. By default, the `yq` utility is run with Docker. If you don't have Docker running locally, the script will try to download the `yq` binary from the [release page](https://github.com/mikefarah/yq/releases) and run it from the MDC folder.
+
 :penguin: Linux
 
 You may need to configure your firewall first:

@@ -24,6 +24,7 @@ then
     then
         echo "Docker is not running. Downloading and installing yq binary."
         ./install_yq.sh
+        yq="./yq"
     else
         # Use Docker to run the yq
         yq="docker run -v ${PWD}:/workdir mikefarah/yq yq"

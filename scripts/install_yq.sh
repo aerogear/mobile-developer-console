@@ -18,5 +18,4 @@ fi
 
 wget $source -O yq
 chmod +x ./yq
-sudo mv ./yq /usr/local/bin/
-echo "yq binary downloaded and moved to /usr/local/bin/"
+echo "yq binary is downloaded"
