@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")" || exit 1
 
 # If docker isn't running we'll run into issues later using "yq"
 # Checking the version is a simple way to determine if the daemon is running
