@@ -8,6 +8,7 @@ registry:
       - '.*-apb$'
     black_list:
       - '.*mobile-developer-console-apb$'
+      - '.*data-sync-apb$'
   - type: dockerhub
     name: ag-mdc
     org: aerogearcatalog
