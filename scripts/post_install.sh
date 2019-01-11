@@ -58,4 +58,7 @@ if ! $yq r $ASB_TEMPLATE_FILENAME registry.*.org | grep aerogearcatalog &>/dev/n
     sed -i.bak -e "s/\"/'/g" $ASB_TEMPLATE_FILENAME
     oc patch configmap broker-config -p "{\"data\":{\"broker-config\": \"$(awk '{printf "%s\\n", $0}' ${ASB_TEMPLATE_FILENAME})\"}}" -n "$ASB_PROJECT_NAME"
     oc rollout latest "$ASB_DC_NAME" -n "$ASB_PROJECT_NAME"
+    oc get clusterservicebroker ansible-service-broker -o=json > /tmp/broker.json
+    oc delete clusterservicebroker ansible-service-broker
+    oc create -f /tmp/broker.json
 fi
