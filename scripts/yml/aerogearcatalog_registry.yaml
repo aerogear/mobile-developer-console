@@ -15,10 +15,3 @@ registry:
     url: https://registry.hub.docker.com
     white_list:
     - '.*mobile-developer-console-apb$'
-  - type: dockerhub
-    name: ag-sync
-    org: aerogear
-    tag: dev
-    url: https://registry.hub.docker.com
-    white_list:
-    - '.*sync-app-apb$'
