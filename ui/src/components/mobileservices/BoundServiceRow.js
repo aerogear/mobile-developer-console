@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ListViewItem, Row, Col, DropdownKebab } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
+import { get as _get } from 'lodash-es';
 import DeleteItemButton from '../../containers/DeleteItemButton';
 import BindingStatus from './BindingStatus';
 import BindButton from './BindButton';
@@ -29,6 +30,13 @@ class BoundServiceRow extends Component {
     } else {
       icon = <img src={this.props.service.getLogoUrl()} alt="" />;
     }
+
+    let serviceDetailName = this.props.service.getId();
+    let mdcDisplayName = _get(this.props.service, "serviceInstance.metadata.data.labels.mdcName");
+    if (mdcDisplayName) {
+      serviceDetailName = mdcDisplayName;
+    }
+
     return (
       <Col key={this.props.service.getId()} md={3} className="service-sdk-info">
         <Col md={12}>
@@ -37,7 +45,7 @@ class BoundServiceRow extends Component {
             <h4>
               <div>{this.props.service.getName()}</div>
               <div>
-                <small>{this.props.service.getId()}</small>
+                <small>{serviceDetailName}</small>
               </div>
             </h4>
           </div>

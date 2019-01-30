@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ListViewItem, Col } from 'patternfly-react';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
+import { get as _get } from 'lodash-es';
 import BindingStatus from './BindingStatus';
 import BindButton from './BindButton';
 
@@ -14,6 +15,13 @@ class UnboundServiceRow extends Component {
   }
 
   renderServiceBadge() {
+
+    let serviceDetailName = this.props.service.getId();
+    let mdcDisplayName = _get(this.props.service, "serviceInstance.metadata.data.labels.mdcName");
+    if (mdcDisplayName) {
+      serviceDetailName = mdcDisplayName;
+    }
+
     let icon = <div />;
     if (this.props.service.getIconClass() != null && this.props.service.getIconClass().length > 0) {
       icon = <span className={`${this.props.service.getIconClass()} logo`} />;
@@ -30,7 +38,7 @@ class UnboundServiceRow extends Component {
                 <a href={`#${this.props.service.getId()}`}>{this.props.service.getName()}</a>
               </div>
               <div>
-                <small>{this.props.service.getId()}</small>
+                <small>{serviceDetailName}</small>
               </div>
             </h4>
           </div>
