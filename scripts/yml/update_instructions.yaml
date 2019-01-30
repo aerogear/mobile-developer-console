@@ -1,3 +1,0 @@
-openshift.image_pull_policy: Always
-openshift.sandbox_role: admin
-broker.launch_apb_on_bind: true
