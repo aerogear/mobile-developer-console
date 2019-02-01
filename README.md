@@ -8,91 +8,9 @@
 
 ## Try it out
 
-### oc cluster up
-
-(To check the UI and try out basic operations - creating/deleting Mobile Clients/Apps)
-
-1. Clone this repo 
-
-```
-git clone https://github.com/aerogear/mobile-developer-console && cd mobile-developer-console
-```
-2. Run the script
-```
-./scripts/mdc-oc-cluster-up.sh
-```
-3. Navigate to `https://127.0.0.1:8443/console/project/myproject/overview`
-4. Log in with user `developer` (developer/123)
-5. Follow the link to mobile-developer-console
-
-### Full experience
-
-#### Spin up OpenShift cluster locally
-
-**(OpenShift 3.9) Use mobile-core installer**
-
-1. Use [Mobile Core installer](https://github.com/aerogear/mobile-core) to run `oc cluster up` with
-all required configuration to deploy the mobile-developer-console from APB.
-You can follow the docs [here](https://github.com/aerogear/mobile-core)
-2. Follow the [steps below](#Provision-Mobile-Services)
-
-**(OpenShift 3.11) Use `oc cluster up` or `minishift`**
-
-> **Note**
->
-> The following scripts are using [yq](https://github.com/mikefarah/yq) YAML processor to modify the default Service Broker configuration. By default, the `yq` utility is run with Docker. If you don't have Docker running locally, the script will try to download the `yq` binary from the [release page](https://github.com/mikefarah/yq/releases) and run it from the MDC folder.
-
-:penguin: Linux
-
-You may need to configure your firewall first:
-
-```
-sudo firewall-cmd --permanent --add-port=8443/tcp
-sudo firewall-cmd --permanent --add-port=8053/tcp
-sudo firewall-cmd --permanent --add-port=53/udp
-sudo firewall-cmd --permanent --add-port=443/tcp
-sudo firewall-cmd --permanent --add-port=80/tcp
-sudo firewall-cmd --reload
-```
-
-Download [archive with oc client binary](https://github.com/openshift/origin/releases/tag/v3.11.0), extract it, add it to your `$PATH` and run:
-
-```
-./scripts/oc-cluster-up.sh
-```
-
-See [OpenShift documentation](https://github.com/openshift/origin/blob/master/docs/cluster_up_down.md) for more details.
-
-:apple: Mac
-
-Since `oc cluster up` is causing problems for users using Mac OS (since OpenShift version 3.10), it is advised to use Minishift as an alternative.
-
-To spin up OpenShift 3.11 cluster locally, run:
-
-```
-./scripts/minishift.sh
-```
-
-Once the setup is complete, it is possible to stop the cluster with `minishift stop` and then run it again with `minishift start`.
-
-See [Minishift](https://docs.okd.io/latest/minishift/getting-started/index.html) documentation for more details.
-
-#### Provision Mobile Services
-1. Navigate to your project in OpenShift console and search for `Mobile Developer Console` in the catalog (if it's not available, try to refresh the page and check that Ansible Service Broker is running)
-2. Follow the wizard to provision Mobile Developer Console APB to your project
-3. Repeat steps 2 & 3 for `Mobile CI/CD` APB 
-4. Once both APBs are provisioned (provisioning of `Mobile CI/CD` will take couple of minutes), navigate the link to mobile-developer-console and log in as `developer`
-
-#### Target existing OpenShift instance
-
-> :information_source: Supported version is OpenShift 3.11
-
-1. `oc login` to your cluster as user with **cluster-admin** privileges
-2. Run the script
-```
-./scripts/post_install.sh
-```
-3. Wait couple of minutes until Ansible Service Broker is running again
+1. Navigate to [Mobile Services Installer repository](https://github.com/aerogear/mobile-services-installer) and follow the instructions for installation of Mobile Services (including Mobile Developer Console) to [existing OpenShift cluster](https://github.com/aerogear/mobile-services-installer#prerequisites) or [to local instance of OpenShift](https://github.com/aerogear/mobile-services-installer#local-development).
+2. After installation is finished, navigate to OpenShift Service Catalog and **Mobile** tab, select **Mobile Developer Console** and follow the wizard to provision the Service to your project.
+3. When provision is finished, navigate to Mobile Developer Console's URL and login with your OpenShift credentials.
 
 ## Development
 
@@ -127,12 +45,10 @@ make ui
 ```
 
 ### Run locally
-If you don't have OpenShift running
-```bash
-./scripts/mdc-oc-cluster-up.yml development
-```
 
-Create a new target project
+If you don't have OpenShift running, navigate to [Mobile Services Installer repository](https://github.com/aerogear/mobile-services-installer#local-development) and follow the instructions to spin up local instance of OpenShift.
+
+After your local OpenShift instance is ready, create a new target project
 ```bash
 oc new-project <target-project>
 ```
