@@ -12,7 +12,6 @@
 
 .vscode
 
-vendor
 mobile-developer-console
 dist
 gin-bin
