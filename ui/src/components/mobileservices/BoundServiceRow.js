@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { ListViewItem, Row, Col, DropdownKebab } from 'patternfly-react';
+import { get as _get } from 'lodash-es';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
-import { get as _get } from 'lodash-es';
 import DeleteItemButton from '../../containers/DeleteItemButton';
 import BindingStatus from './BindingStatus';
 import BindButton from './BindButton';
@@ -32,7 +32,7 @@ class BoundServiceRow extends Component {
     }
 
     let serviceDetailName = this.props.service.getId();
-    let mdcDisplayName = _get(this.props.service, "serviceInstance.metadata.data.labels.mdcName");
+    const mdcDisplayName = _get(this.props.service, 'serviceInstance.metadata.data.labels.mdcName');
     if (mdcDisplayName) {
       serviceDetailName = mdcDisplayName;
     }
