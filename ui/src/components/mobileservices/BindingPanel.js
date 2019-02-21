@@ -150,7 +150,6 @@ export class BindingPanel extends Component {
     const valid = new FormValidator(validationConfig).validate(
       { ...formData, SERVICE_TYPE: this.props.service.getServiceClassExternalName() },
       (key, message) => {
-        console.log('error:', message, ' for key ', key, ' errors[key]', errors[key]);
         errors[key].addError(message);
       }
     );

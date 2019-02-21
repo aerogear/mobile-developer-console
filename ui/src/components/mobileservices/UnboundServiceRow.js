@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { ListViewItem, Col } from 'patternfly-react';
-import '../configuration/ServiceSDKInfo.css';
-import './ServiceRow.css';
 import { get as _get } from 'lodash-es';
 import BindingStatus from './BindingStatus';
 import BindButton from './BindButton';
+import '../configuration/ServiceSDKInfo.css';
+import './ServiceRow.css';
 
 class UnboundServiceRow extends Component {
   constructor(props) {
@@ -15,9 +15,8 @@ class UnboundServiceRow extends Component {
   }
 
   renderServiceBadge() {
-
     let serviceDetailName = this.props.service.getId();
-    let mdcDisplayName = _get(this.props.service, "serviceInstance.metadata.data.labels.mdcName");
+    const mdcDisplayName = _get(this.props.service, 'serviceInstance.metadata.data.labels.mdcName');
     if (mdcDisplayName) {
       serviceDetailName = mdcDisplayName;
     }
