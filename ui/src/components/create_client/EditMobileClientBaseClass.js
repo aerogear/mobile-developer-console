@@ -1,9 +1,9 @@
 /* eslint guard-for-in: 0 */
 import React, { Component } from 'react';
-import { Grid, Form } from 'patternfly-react';
+import { Grid, Form, Row, Col } from 'patternfly-react';
+import { MobileApp } from '../../models';
 import { CREATE_CLIENT_NAME } from './Constants';
 import { VerticalFormField } from './VerticalFormField';
-import { MobileApp } from '../../models';
 
 export const LABEL_APPNAME = '* App Name';
 export const EXAMPLE_APPNAME = 'myapp';
@@ -62,6 +62,26 @@ class EditMobileClientBaseClass extends Component {
         <Grid bsClass="create-client-form">
           <Form vertical="true">{generatedFields}</Form>
         </Grid>
+        <p>JavaScript-based mobile apps can be configured for a variety of mobile platforms.</p>
+        <p>Our JavaScript SDK supports the following frameworks:</p>
+        <Row className="show-grid container">
+          <Col md={1} className="text-center">
+            <img src="/img/react.jpg" width="25" height="25" alt="React logo" />
+            <p>React</p>
+          </Col>
+          <Col md={1} className="text-center">
+            <img src="/img/ionic.jpg" width="25" height="25" alt="Ionic logo" />
+            <p>Ionic</p>
+          </Col>
+          <Col md={1} className="text-center">
+            <img src="/img/angular.jpg" width="25" height="25" alt="Angular logo" />
+            <p>Angular</p>
+          </Col>
+          <Col md={1} className="text-center">
+            <img src="/img/vue.jpg" width="25" height="25" alt="Vue logo" />
+            <p>Vue</p>
+          </Col>
+        </Row>
       </div>
     );
   }

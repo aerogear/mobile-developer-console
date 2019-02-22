@@ -134,7 +134,6 @@ export class MobileService {
         configExtItems.push(configExtItem);
       } catch (err) {
         // not much we can do if the annotation is malformed
-        console.warn('ConfigurationExt item is malformed', configItemStr);
       }
     }
 
