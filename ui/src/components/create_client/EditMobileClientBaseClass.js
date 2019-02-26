@@ -66,6 +66,10 @@ class EditMobileClientBaseClass extends Component {
         <p>Our JavaScript SDK supports the following frameworks:</p>
         <Row className="show-grid container">
           <Col md={1} className="text-center">
+            <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />
+            <p>Cordova</p>
+          </Col>
+          <Col md={1} className="text-center">
             <img src="/img/react.jpg" width="25" height="25" alt="React logo" />
             <p>React</p>
           </Col>
