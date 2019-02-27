@@ -15,7 +15,8 @@ jobs:
       - run: go get -u github.com/golang/dep/cmd/dep
       - run: make build
       - run: make test_cover
-      - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
+# Disable goveralls to make build work when merging from forks
+#      - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
 
   build_ui:
     working_directory: ~/mobile-developer-console
