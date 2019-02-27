@@ -21,7 +21,7 @@ describe('ServiceSDKDocs', () => {
       ).toEqual(frameworkDocs.steps[i]);
     }
     services.forEach(({ type }) => {
-      for (let i = 0; i < frameworkDocs.services[type].steps.length; i++) {
+      for (let i = 0; frameworkDocs.services[type] && i < frameworkDocs.services[type].steps.length; i++) {
         expect(wrapper.find(ServiceSDKSetup).map(node => node.prop('docs'))).toContain(
           frameworkDocs.services[type].steps[i]
         );
