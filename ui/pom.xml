@@ -132,6 +132,10 @@
 
         <configuration>
           <workingDirectory>./</workingDirectory>
+          <environmentVariables>
+            <SASS_BINARY_PATH>${project.basedir}/node_modules/node-sass/build/Release/binding.node</SASS_BINARY_PATH>
+            <npm_config_dist_url>${nodeDownloadRoot}</npm_config_dist_url>
+          </environmentVariables>
         </configuration>
 
         <executions>
@@ -153,7 +157,7 @@
             </goals>
             <phase>generate-resources</phase>
             <configuration>
-              <arguments>ci --cache npm-cache</arguments>
+              <arguments>install --cache npm-cache</arguments>
             </configuration>
           </execution>
 
