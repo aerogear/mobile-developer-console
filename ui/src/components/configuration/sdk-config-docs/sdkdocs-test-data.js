@@ -40,6 +40,13 @@ export const appJSON = {
         config: {}
       },
       {
+        id: '787d9e34-f41d-11e8-b76d-0af08791569c',
+        name: 'badservice',
+        type: 'bad-service-type',
+        url: 'https://data-sync-server-myproject.comm2.skunkhenry.com/graphql',
+        config: {}
+      },
+      {
         id: '93cdd27e-f41d-11e8-b76d-0af08791569c',
         name: 'ups',
         type: 'push',

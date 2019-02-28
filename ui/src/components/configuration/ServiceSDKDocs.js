@@ -11,9 +11,15 @@ export const ServiceSDKDocs = ({ framework, mobileApp }) => {
         {framework.steps.map((docs, index) => (
           <ServiceSDKSetup docs={docs} key={`docs-${index}`} />
         ))}
-        {services.map(({ type }, index) =>
-          framework.services[type].steps.map(docs => <ServiceSDKSetup key={`sdk-setup-${index}`} docs={docs} />)
-        )}
+        {services.map(({ type }, index) => {
+          if (framework.services[type]) {
+            return framework.services[type].steps.map(docs => (
+              <ServiceSDKSetup key={`sdk-setup-${index}`} docs={docs} />
+            ));
+          }
+          console.error(`Bad service type found '${type}'`);
+          return null;
+        })}
       </ol>
     ) : (
       <React.Fragment />
