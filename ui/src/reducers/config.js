@@ -1,15 +1,15 @@
 let buildTabEnabled = false;
-let docsVersion = 'latest';
+let docsPrefix = 'https://docs.aerogear.org/aerogear/latest';
 
 if (window && window.SERVER_DATA) {
   const serverConfig = JSON.parse(window.SERVER_DATA);
   buildTabEnabled = serverConfig.ENABLE_BUILD_TAB;
-  docsVersion = serverConfig.AEROGEAR_DOCS_VERSION;
+  docsPrefix = serverConfig.DOCS_PREFIX;
 }
 
 const defaultState = {
   buildTabEnabled,
-  docsVersion
+  docsPrefix
 };
 
 const r = (state = defaultState) =>

@@ -19,7 +19,7 @@ class ConfigurationView extends Component {
               {Object.keys(frameworks).map(key => (
                 <FrameworkSDKDocs
                   key={key}
-                  framework={frameworks[key](this.props.docsVersion)}
+                  framework={frameworks[key](this.props.docsPrefix)}
                   mobileApp={this.props.app}
                 />
               ))}
@@ -39,7 +39,7 @@ class ConfigurationView extends Component {
 
 function mapStateToProps(state) {
   return {
-    docsVersion: state.config.docsVersion
+    docsPrefix: state.config.docsPrefix
   };
 }
 

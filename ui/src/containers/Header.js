@@ -9,12 +9,12 @@ class Header extends Component {
   }
 
   render() {
-    const { user } = this.props;
+    const { user, docsPrefix } = this.props;
     const helpDropdowns = [
       {
         text: 'Documentation',
         // TODO: once there is a documentation for MDC, this link should point straight to it
-        href: 'http://docs.aerogear.org/'
+        href: `${docsPrefix}/getting-started.html`
       }
     ];
     const userDropdowns = [
@@ -38,7 +38,8 @@ class Header extends Component {
 
 function mapStateToProps(state) {
   return {
-    user: state.user.currentUser
+    user: state.user.currentUser,
+    docsPrefix: state.config.docsPrefix
   };
 }
 

@@ -1,4 +1,4 @@
-const framework = docsVersion => {
+const framework = docsPrefix => {
   const ret = {
     icon: '/img/ionic.svg',
     title: 'Ionic',
@@ -39,7 +39,7 @@ const framework = docsVersion => {
         serviceName: 'Identity Management',
         serviceDescription: 'Identity Management - Identity and Access Management',
         setupText: 'Identity Management SDK setup',
-        docsLink: `https://docs.aerogear.org/aerogear/${docsVersion}/identity-management.html#setup`,
+        docsLink: `${docsPrefix}/identity-management.html`,
         steps: [
           {
             introduction:
@@ -53,7 +53,7 @@ const framework = docsVersion => {
         serviceName: 'Push Notifications',
         serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
         setupText: 'Push SDK setup',
-        docsLink: `https://docs.aerogear.org/aerogear/${docsVersion}/push-notifications.html#setup`,
+        docsLink: `${docsPrefix}/push-notifications.html`,
         steps: [
           {
             introduction:
@@ -77,7 +77,7 @@ const framework = docsVersion => {
         serviceName: 'Mobile Metrics',
         serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
         setupText: 'Mobile Metrics SDK setup',
-        docsLink: `https://docs.aerogear.org/aerogear/${docsVersion}/mobile-metrics.html#setup`,
+        docsLink: `${docsPrefix}/mobile-metrics.html`,
         steps: [
           {
             introduction:
@@ -93,7 +93,7 @@ const framework = docsVersion => {
         serviceName: 'Sync',
         serviceDescription: 'Installs Sync service based on Voyager Server',
         setupText: 'Sync SDK setup',
-        docsLink: `https://docs.aerogear.org/aerogear/${docsVersion}/data-sync.html#setup`,
+        docsLink: `${docsPrefix}/data-sync.html`,
 
         steps: [
           {
