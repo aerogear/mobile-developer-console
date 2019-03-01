@@ -63,7 +63,7 @@ export const appJSON = {
   }
 };
 
-export const framework = docsVersion => ({
+export const framework = docsPrefix => ({
   icon: '/img/xx.png',
   title: 'TestFramework',
   steps: [
@@ -82,7 +82,7 @@ export const framework = docsVersion => ({
       serviceName: 'Identity Management',
       serviceDescription: 'Identity Management - Identity and Access Management',
       setupText: 'Identity Management SDK setup',
-      docsLink: `https://docs.aerogear.org/aerogear/${docsVersion}/identity-management.html#setup`,
+      docsLink: `${docsPrefix}/identity-management.html`,
       steps: [
         {
           introduction:
@@ -96,7 +96,7 @@ export const framework = docsVersion => ({
       serviceName: 'Push Notifications',
       serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
       setupText: 'Push SDK setup',
-      docsLink: `https://docs.aerogear.org/aerogear/${docsVersion}/push-notifications.html#setup`,
+      docsLink: `${docsPrefix}/push-notifications.html`,
       steps: [
         {
           introduction:
@@ -119,7 +119,7 @@ export const framework = docsVersion => ({
       serviceName: 'Mobile Metrics',
       serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
       setupText: 'Mobile Metrics SDK setup',
-      docsLink: `https://docs.aerogear.org/aerogear/${docsVersion}/mobile-metrics.html#setup`,
+      docsLink: `${docsPrefix}/mobile-metrics.html`,
       steps: [
         {
           introduction:
@@ -138,7 +138,7 @@ export const framework = docsVersion => ({
       serviceName: 'Sync',
       serviceDescription: 'Sync service blabla',
       setupText: 'Sync SDK setup',
-      docsLink: `https://docs.aerogear.org/aerogear/${docsVersion}/data-sync.html#setup`,
+      docsLink: `${docsPrefix}/data-sync.html#setup`,
 
       steps: [
         {

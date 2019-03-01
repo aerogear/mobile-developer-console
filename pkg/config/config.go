@@ -16,7 +16,7 @@ type Config struct {
 	WsWriteWait     int
 	WsPongWait      int
 	BuildTabEnabled bool
-	DocsVersion     string
+	DocsPrefix      string
 }
 
 func GetConfig() Config {
@@ -30,7 +30,7 @@ func GetConfig() Config {
 		WsWriteWait:     getEnvAsInt("WS_WRITE_WAIT", 10),
 		WsPongWait:      getEnvAsInt("WS_PONG_WAIT", 60),
 		BuildTabEnabled: getEnvAsBool("ENABLE_BUILD_TAB", false),
-		DocsVersion:     getEnv("AEROGEAR_DOCS_VERSION", "latest"),
+		DocsPrefix:      getEnv("DOCS_PREFIX", "https://docs.aerogear.org/aerogear/latest"),
 	}
 }
 
