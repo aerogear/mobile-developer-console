@@ -7,10 +7,11 @@ import EditItemButton from '../../containers/EditItemButton';
 
 const getServiceIcons = services => {
   const icons = {
-    metrics: <img alt="Metrics" className="icon" src="/img/metrics.png" />,
-    keycloak: <img alt="Keycloak" className="icon" src="/img/keycloak.png" />,
-    push: <img alt="Push" className="icon" src="/img/push.png" />,
-    sync: <img alt="Sync" className="icon" src="/img/sync.svg" />
+    metrics: <img alt="Metrics" className="icon" src="/img/metrics.svg" />,
+    keycloak: <img alt="Keycloak" className="icon" src="/img/keycloak.svg" />,
+    push: <img alt="Push" className="icon" src="/img/push.svg" />,
+    sync: <img alt="Sync" className="icon" src="/img/sync.svg" />,
+    'sync-app': <img alt="Sync" className="icon" src="/img/sync.svg" />
   };
   return services.map((service, i) => (
     <span className="service-icon" key={i}>
