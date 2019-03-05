@@ -4,7 +4,7 @@
     ":pinVersions"
   ],
   "includePaths": [
-    "ui"
+    "ui/"
   ],
   "groupName": "mdc"
 }
