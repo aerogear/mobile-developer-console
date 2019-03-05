@@ -11,5 +11,9 @@
     "**/integration_tests/**",
     "**/vendor/**"
   ],
+  "packageRules": [{
+    "packageNames": ["react-redux"],
+    "allowedVersions": "<6.0"
+  }],
   "groupName": "mdc"
 }
