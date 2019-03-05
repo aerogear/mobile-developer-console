@@ -5,9 +5,11 @@
     ":ignoreModulesAndTests"
   ],
   "ignorePaths": [
+    "**/.circleci/**",
     "Dockerfile",
     "**/e2e_tests/**",
-    "**/integration_tests/**"
+    "**/integration_tests/**",
+    "**/vendor/**"
   ],
   "groupName": "mdc"
 }
