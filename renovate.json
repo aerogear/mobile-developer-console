@@ -3,12 +3,8 @@
     "config:base",
     ":pinVersions"
   ],
-  "ignorePaths": [
-    ".circleci/config.yml", 
-    "vendor/github.com/prometheus/procfs/.circleci/config.yml", 
-    "Dockerfile",
-    "e2e_tests",
-    "integration_tests"
+  "includePaths": [
+    "ui"
   ],
   "groupName": "mdc"
 }
