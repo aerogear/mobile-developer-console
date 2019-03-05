@@ -3,7 +3,7 @@
     "config:base",
     ":pinVersions"
   ],
-  "ignorePath": [
+  "ignorePaths": [
     ".circleci/config.yml", 
     "vendor/github.com/prometheus/procfs/.circleci/config.yml", 
     "Dockerfile",
