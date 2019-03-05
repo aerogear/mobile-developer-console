@@ -9,5 +9,6 @@
     "Dockerfile",
     "e2e_tests",
     "integration_tests"
-  ]
+  ],
+  "groupName": "mdc"
 }
