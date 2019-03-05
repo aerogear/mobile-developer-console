@@ -1,10 +1,13 @@
 {
   "extends": [
     "config:base",
-    ":pinVersions"
+    ":pinVersions",
+    ":ignoreModulesAndTests"
   ],
-  "includePaths": [
-    "ui/"
+  "ignorePaths": [
+    "Dockerfile",
+    "e2e_tests",
+    "integration_tests"
   ],
   "groupName": "mdc"
 }
