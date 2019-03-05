@@ -53,7 +53,7 @@
     "enzyme-adapter-react-16": "1.10.0",
     "eslint": "5.15.1",
     "eslint-plugin-patternfly-react": "0.2.2",
-    "eslint-plugin-prettier": "2.7.0",
+    "eslint-plugin-prettier": "3.0.1",
     "fetch-mock": "7.3.1",
     "jest": "24.1.0",
     "prettier": "1.16.4",
