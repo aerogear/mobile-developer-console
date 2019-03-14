@@ -23,14 +23,14 @@
     <version.maven-antrun-plugin>1.8</version.maven-antrun-plugin>
     <version.maven-clean-plugin>2.5</version.maven-clean-plugin>
     <version.maven-assembly-plugin>2.5</version.maven-assembly-plugin>
-    <version.maven-enforcer-plugin>1.4.1</version.maven-enforcer-plugin>
+    <version.maven-enforcer-plugin>1.4</version.maven-enforcer-plugin>
 
     <!-- Version of Ant dependencies -->
     <version.ant-nodeps>1.8.1</version.ant-nodeps>
     <version.ant-contrib>1.0b3</version.ant-contrib>
 
     <!-- Version of frontend-maven-plugin -->
-    <version.frontend-maven-plugin>1.7.5</version.frontend-maven-plugin>
+    <version.frontend-maven-plugin>1.6</version.frontend-maven-plugin>
 
     <!-- Version of Node to install -->
     <version.nodeVersion>v8.15.0</version.nodeVersion>
