@@ -28,4 +28,4 @@ LABEL com.redhat.component="mobile-developer-console-container" \
       usage="This image is intended to be used on OpenShift to work with mobile apps and cloud services" \
       name="mobile-1-tech-preview/mobile-developer-console" \
       maintainer="Red Hat Mobile team" \
-      version="1.0.1"
+      version="1.0.3"
