@@ -11,7 +11,7 @@
     "**/integration_tests/**",
     "**/vendor/**"
   ],
-  "ignoreDeps":["com.github.eirslett:frontend-maven-plugin", "org.apache.maven.plugins:maven-enforcer-plugin"]
+  "ignoreDeps":["com.github.eirslett:frontend-maven-plugin", "org.apache.maven.plugins:maven-enforcer-plugin"],
   "packageRules": [{
     "packageNames": ["react-redux"],
     "allowedVersions": "<6.0"
