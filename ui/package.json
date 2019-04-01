@@ -55,7 +55,7 @@
     "eslint-plugin-patternfly-react": "0.3.0",
     "eslint-plugin-prettier": "3.0.1",
     "fetch-mock": "7.3.1",
-    "jest": "24.5.0",
+    "jest": "24.6.0",
     "prettier": "1.16.4",
     "redux-mock-store": "1.5.3"
   },
