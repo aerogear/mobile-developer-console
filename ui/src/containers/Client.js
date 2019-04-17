@@ -17,7 +17,7 @@ import { find } from 'lodash-es';
 import Moment from 'react-moment';
 import ConfigurationView from '../components/configuration/ConfigurationView';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
-import { fetchApp } from '../actions/apps';
+import { fetchApp, watchApps } from '../actions/apps';
 import { fetchBuildConfigs } from '../actions/buildConfigs';
 import { fetchBuilds } from '../actions/builds';
 import DataService from '../DataService';
@@ -54,7 +54,7 @@ export class Client extends Component {
     const appName = this.props.match.params.id;
 
     this.props.fetchApp(appName);
-    this.wsApps = DataService.watchApps(() => this.props.fetchApp(appName));
+    this.props.watchApps(() => this.props.fetchApp(appName));
 
     if (this.props.buildTabEnabled) {
       this.props.fetchBuildConfigs();
@@ -74,7 +74,6 @@ export class Client extends Component {
   }
 
   componentWillUnmount() {
-    this.wsApps && this.wsApps.close();
     this.wsBuildConfigs && this.wsBuildConfigs.close();
     this.wsBuilds && this.wsBuilds.close();
     this.wsBindings && this.wsBindings.close();
@@ -226,7 +225,8 @@ const mapDispatchToProps = {
   fetchBuildConfigs,
   fetchBuilds,
   fetchBindings,
-  fetchServices
+  fetchServices,
+  watchApps
 };
 
 export default connect(
