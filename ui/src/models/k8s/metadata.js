@@ -10,19 +10,19 @@ export default class Metadata {
   }
 
   getName() {
-    return this.get('name');
+    return get(this.data, 'name');
   }
 
   getNamespace() {
-    return this.get('namespace');
+    return get(this.data, 'namespace');
   }
 
   getSelfLink() {
-    return this.get('selfLink');
+    return get(this.data, 'selfLink');
   }
 
   getUID() {
-    return this.get('uid');
+    return get(this.data, 'uid');
   }
 
   get(path) {
