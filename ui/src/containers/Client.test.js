@@ -8,6 +8,7 @@ jest.mock('../DataService');
 describe('Client', () => {
   it('test render all tabs', () => {
     const mockFetchApp = jest.fn();
+    const mockWatchApps = jest.fn();
     const mockFetchBuilds = jest.fn();
     const mockFetchBuildConfigs = jest.fn();
     const mockFetchBindings = jest.fn();
@@ -23,7 +24,8 @@ describe('Client', () => {
       fetchBindings: mockFetchBindings,
       fetchServices: mockFetchServices,
       apps: { items: [{ metadata: { name: 'testapp' }, spec: { name: 'testapp' } }] },
-      buildConfigs: { items: [] }
+      buildConfigs: { items: [] },
+      watchApps: mockWatchApps
     };
 
     const wrapper = shallow(<Client {...props} />);
@@ -42,6 +44,7 @@ describe('Client', () => {
     const mockFetchBuildConfigs = jest.fn();
     const mockFetchBindings = jest.fn();
     const mockFetchServices = jest.fn();
+    const mockWatchApps = jest.fn();
 
     const props = {
       location: { hash: '' },
@@ -53,7 +56,8 @@ describe('Client', () => {
       fetchBindings: mockFetchBindings,
       fetchServices: mockFetchServices,
       apps: { items: [{ metadata: { name: 'testapp' }, spec: { name: 'testapp' } }] },
-      buildConfigs: { items: [] }
+      buildConfigs: { items: [] },
+      watchApps: mockWatchApps
     };
 
     const wrapper = shallow(<Client {...props} />);
@@ -71,6 +75,7 @@ describe('Client', () => {
     const mockFetchBuildConfigs = jest.fn();
     const mockFetchBindings = jest.fn();
     const mockFetchServices = jest.fn();
+    const mockWatchApps = jest.fn();
 
     const props = {
       location: { hash: `#${TAB_MOBILE_SERVICES.hash}` },
@@ -82,7 +87,8 @@ describe('Client', () => {
       fetchBindings: mockFetchBindings,
       fetchServices: mockFetchServices,
       apps: { items: [{ metadata: { name: 'testapp' }, spec: { name: 'testapp' } }] },
-      buildConfigs: { items: [] }
+      buildConfigs: { items: [] },
+      watchApps: mockWatchApps
     };
 
     const wrapper = shallow(<Client {...props} />);
