@@ -13,6 +13,7 @@ export default class MobileApp {
     this.spec = new AppSpec(this.app.spec);
     this.metadata = new Metadata(this.app.metadata);
     this.status = new AppStatus(this.app.status);
+    this.isNew = !this.metadata.getUID();
   }
 
   getID() {
@@ -63,7 +64,12 @@ export default class MobileApp {
   }
 
   toJSON() {
-    return { ...this.app, spec: this.spec.toJSON(), metadata: this.metadata.toJSON(), status: this.status.toJSON() };
+    const spec = this.spec.toJSON();
+    const metadata = this.metadata.toJSON();
+    if (this.isNew) {
+      metadata.name = spec.name;
+    }
+    return { ...this.app, spec, metadata, status: this.status.toJSON() };
   }
 
   /**

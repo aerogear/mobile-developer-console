@@ -1,0 +1,37 @@
+.build-status-container {
+  text-align: center;
+  flex: 0 0 125px;
+  flex-direction: column;
+  justify-content: center;
+  position: relative; }
+  .build-status-container .col-md-2 {
+    width: 0; }
+
+.build-status-container .build-status.timestamp {
+  color: #757575;
+  padding-left: 5px;
+  font-size: 10px; }
+
+.build-status-container a {
+  cursor: pointer; }
+
+.build-summary-container {
+  display: flex;
+  width: 10em;
+  flex: 0 0 125px;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  text-align: center; }
+
+.build-timestamp {
+  font-size: 91%;
+  color: #757575; }
+
+.build-phase {
+  padding: 0 10px; }
+
+.build-links {
+  padding: 0 10px;
+  font-size: 91%; }

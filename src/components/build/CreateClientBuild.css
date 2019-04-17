@@ -1,0 +1,32 @@
+.surface-shaded {
+  background-color: #ededed;
+  min-height: 100%; }
+
+.help-block {
+  margin-bottom: 0px;
+  display: block;
+  margin-top: 5px;
+  color: #767676; }
+
+.required:before {
+  content: '*';
+  position: absolute;
+  left: 10px; }
+
+.with-divider {
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  padding-top: 21px;
+  padding-bottom: 10px;
+  margin-top: 10px; }
+
+.name-field {
+  margin-bottom: 35px; }
+
+.section {
+  padding-bottom: 5px; }
+
+.gutter-top-bottom {
+  padding: 20px 0; }
+
+.gutter-top-bottom button {
+  margin-right: 10px; }

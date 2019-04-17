@@ -1,18 +1,18 @@
-import DataService from '../DataService';
+import { appsService } from '../services/appsService';
 import fetchAction from './fetch';
 
 export const APPS_REQUEST = 'APPS_REQUEST';
 export const APPS_SUCCESS = 'APPS_SUCCESS';
 export const APPS_FAILURE = 'APPS_FAILURE';
 
-export const fetchApps = fetchAction([APPS_REQUEST, APPS_SUCCESS, APPS_FAILURE], DataService.mobileClients);
+export const fetchApps = fetchAction([APPS_REQUEST, APPS_SUCCESS, APPS_FAILURE], appsService.list.bind(appsService));
 
 export const APP_REQUEST = 'APP_REQUEST';
 export const APP_SUCCESS = 'APP_SUCCESS';
 export const APP_FAILURE = 'APP_FAILURE';
 
 export const fetchApp = appName =>
-  fetchAction([APP_REQUEST, APP_SUCCESS, APP_FAILURE], async () => DataService.mobileApp(appName))();
+  fetchAction([APP_REQUEST, APP_SUCCESS, APP_FAILURE], async () => appsService.get(appName))();
 
 export const APP_CREATE_REQUEST = 'APP_CREATE_REQUEST';
 export const APP_CREATE_SUCCESS = 'APP_CREATE_SUCCESS';
@@ -20,7 +20,7 @@ export const APP_CREATE_FAILURE = 'APP_CREATE_FAILURE';
 
 export const createApp = app =>
   fetchAction([APP_CREATE_REQUEST, APP_CREATE_SUCCESS, APP_CREATE_FAILURE], async () =>
-    DataService.createApp(app.getSpec().toJSON())
+    appsService.create(app.toJSON())
   )();
 
 export const APP_UPDATE_REQUEST = 'APP_UPDATE_REQUEST';
@@ -29,7 +29,7 @@ export const APP_UPDATE_FAILURE = 'APP_UPDATE_FAILURE';
 
 export const updateApp = app =>
   fetchAction([APP_UPDATE_REQUEST, APP_UPDATE_SUCCESS, APP_UPDATE_FAILURE], async () =>
-    DataService.updateApp(app.getID(), app.getSpec().toJSON())
+    appsService.update(app.toJSON())
   )();
 
 export const APP_DELETE_REQUEST = 'APP_DELETE_REQUEST';
@@ -37,7 +37,16 @@ export const APP_DELETE_SUCCESS = 'APP_DELETE_SUCCESS';
 export const APP_DELETE_FAILURE = 'APP_DELETE_FAILURE';
 
 export const deleteApp = name =>
-  fetchAction([APP_DELETE_REQUEST, APP_DELETE_SUCCESS, APP_DELETE_FAILURE], async () => DataService.deleteApp(name))();
+  fetchAction([APP_DELETE_REQUEST, APP_DELETE_SUCCESS, APP_DELETE_FAILURE], async () => appsService.remove(name))();
+
+export const APP_WS_FAILURE = 'APP_WS_FAILURE';
+
+// TODO: take advantage of the event types and dispatch the appropriate actions, rather than just do anothe fetch again
+export const watchApps = action => async dispatch => {
+  appsService.watch(action, err => {
+    dispatch({ type: APP_WS_FAILURE, error: err });
+  });
+};
 
 // CREATE CLIENT APP DIALOG ACTIONS
 export const APP_FORM_RESET = 'FORM_RESET';

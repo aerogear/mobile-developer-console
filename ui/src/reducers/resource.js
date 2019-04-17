@@ -1,5 +1,4 @@
 import { DISMISS_ERROR, DISMISS_ALL_ERRORS } from '../actions/errors';
-import { wsError } from '../DataService';
 
 const defaultState = {
   isFetching: false,
@@ -31,9 +30,6 @@ const resourceReducer = actions => (state = defaultState, action) => {
   let errors;
   switch (action.type) {
     case DISMISS_ERROR:
-      if (action.errorMessage === wsError.message) {
-        delete wsError.message;
-      }
       errorsToDismiss = state.errors.filter(e => e.error.message === action.errorMessage);
       errors = [...state.errors];
       errorsToDismiss.forEach(e => {
@@ -45,7 +41,6 @@ const resourceReducer = actions => (state = defaultState, action) => {
         errors
       };
     case DISMISS_ALL_ERRORS:
-      delete wsError.message;
       return {
         ...state,
         errors: []
@@ -59,7 +54,7 @@ const resourceReducer = actions => (state = defaultState, action) => {
       return {
         ...state,
         isFetching: false,
-        items: action.result,
+        items: action.result.items,
         errors: getErrors(null, 'list', state.errors)
       };
     case actions.listFailure:
@@ -139,7 +134,7 @@ const resourceReducer = actions => (state = defaultState, action) => {
         isDeleting: true
       };
     case actions.deleteSuccess:
-      index = state.items.findIndex(item => item.metadata.name === action.result);
+      index = state.items.findIndex(item => item.metadata.name === action.result.details.name);
       return {
         ...state,
         isDeleting: false,
@@ -168,6 +163,11 @@ const resourceReducer = actions => (state = defaultState, action) => {
         ...state,
         isActioning: false,
         errors: getErrors(action.error, 'action', state.errors)
+      };
+    case actions.websocketFailure:
+      return {
+        ...state,
+        errors: getErrors(action.error, 'websocket', state.errors)
       };
     default:
       return state;

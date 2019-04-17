@@ -1,0 +1,9 @@
+html, body, #root, .App {
+  height: 100%; }
+
+.App {
+  display: flex;
+  flex-flow: column; }
+
+.App > .navbar {
+  flex: 0 0 60px; }
