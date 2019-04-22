@@ -26,7 +26,6 @@ import { MobileApp } from '../models';
 import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
 import BuildConfigDialog from './BuildConfigDialog';
 import './Client.css';
-import { fetchBindings } from '../actions/serviceBinding';
 import { fetchServices } from '../actions/services';
 
 export const TAB_CONFIGURATION = { key: 1, hash: 'configuration' };
@@ -64,20 +63,12 @@ export class Client extends Component {
       this.wsBuilds = DataService.watchBuilds(this.props.fetchBuilds);
     }
 
-    this.props.fetchBindings(appName);
-    this.wsBindings = DataService.watchBindableServices(appName, () => {
-      this.props.fetchBindings(appName);
-    });
-
-    this.props.fetchServices();
-    this.wsServices = DataService.watchServices(this.props.fetchServices);
+    this.props.fetchServices(appName);
   }
 
   componentWillUnmount() {
     this.wsBuildConfigs && this.wsBuildConfigs.close();
     this.wsBuilds && this.wsBuilds.close();
-    this.wsBindings && this.wsBindings.close();
-    this.wsServices && this.wsServices.close();
   }
 
   getMobileApp() {
@@ -224,7 +215,6 @@ const mapDispatchToProps = {
   fetchApp,
   fetchBuildConfigs,
   fetchBuilds,
-  fetchBindings,
   fetchServices,
   watchApps
 };

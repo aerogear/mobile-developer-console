@@ -28,11 +28,11 @@ export class MobileService {
   }
 
   getDescription() {
-    return this.serviceClass.spec.get('description');
+    return this.data.description;
   }
 
   getLogoUrl() {
-    return this.data.imageUrl;
+    return this.data.icon;
   }
 
   getIconClass() {
@@ -40,8 +40,7 @@ export class MobileService {
   }
 
   isBound() {
-    const boundBinding = find(this.serviceBindings, binding => binding.isReady());
-    return boundBinding != null;
+    return this.data.customResources.length > 0;
   }
 
   getServiceInstanceName() {

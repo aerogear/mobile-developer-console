@@ -1,10 +1,7 @@
-import { findIndex, map } from 'lodash-es';
-import { MobileService, ServiceBinding } from '../models';
+import { findIndex } from 'lodash-es';
+import { ServiceBinding } from '../models';
 
 import {
-  SERVICE_BINDINGS_REQUEST,
-  SERVICE_BINDINGS_SUCCESS,
-  SERVICE_BINDINGS_FAILURE,
   SERVICE_BINDING_CREATE_REQUEST,
   SERVICE_BINDING_CREATE_SUCCESS,
   SERVICE_BINDING_CREATE_FAILURE,
@@ -39,26 +36,6 @@ const getErrors = (error, type, errors) => {
 
 const serviceBindingsReducer = (state = defaultState, action) => {
   switch (action.type) {
-    case SERVICE_BINDINGS_REQUEST:
-      return {
-        ...state,
-        isReading: true
-      };
-    case SERVICE_BINDINGS_SUCCESS: {
-      const services = map(action.result, data => new MobileService(data));
-      return {
-        ...state,
-        isReading: false,
-        errors: getErrors(null, 'read', state.errors),
-        services
-      };
-    }
-    case SERVICE_BINDINGS_FAILURE:
-      return {
-        ...state,
-        isReading: false,
-        errors: getErrors(action.error, 'read', state.errors)
-      };
     case SERVICE_BINDING_CREATE_REQUEST:
       return {
         ...state,

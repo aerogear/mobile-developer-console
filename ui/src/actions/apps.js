@@ -1,4 +1,4 @@
-import { appsService } from '../services/appsService';
+import { appsService } from '../services/apps';
 import fetchAction from './fetch';
 
 export const APPS_REQUEST = 'APPS_REQUEST';

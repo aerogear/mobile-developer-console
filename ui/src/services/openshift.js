@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { map } from 'lodash-es';
 
 const OpenShiftWatchEvents = Object.freeze({
   MODIFIED: 'MODIFIED',
@@ -140,6 +141,21 @@ const watch = res =>
     return Promise.resolve(new OpenShiftWatchEventListener(socket).init());
   });
 
+const listWithLabels = (res, labels) => {
+  let reqUrl = _buildRequestUrl(res);
+  if (labels) {
+    reqUrl = `${reqUrl}?labelSelector=${_labelsToQuery(labels)}`;
+  }
+  return getUser().then(user => {
+    axios({
+      url: reqUrl,
+      headers: {
+        authorization: `Bearer ${user.accessToken}`
+      }
+    }).then(response => response.data);
+  });
+};
+
 const _buildOpenshiftApiUrl = (baseUrl, res) => (res.group ? `${baseUrl}/apis/${res.group}` : `${baseUrl}/api`);
 
 const _buildOpenShiftUrl = (baseUrl, res) => {
@@ -154,4 +170,9 @@ const _buildRequestUrl = res => `${_buildOpenShiftUrl(window.OPENSHIFT_CONFIG.ma
 
 const _buildWatchUrl = res => `${_buildOpenShiftUrl(window.OPENSHIFT_CONFIG.wssMasterUri, res)}?watch=true`;
 
-export { get, create, list, watch, update, remove, OpenShiftWatchEvents, getUser };
+const _labelsToQuery = labels => {
+  const labelsArr = map(labels, (value, name) => `${name}%3D${value}`);
+  return labelsArr.join(',');
+};
+
+export { get, create, list, watch, update, remove, OpenShiftWatchEvents, getUser, listWithLabels };
