@@ -5,9 +5,9 @@ import { partition } from 'lodash-es';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
 import './MobileServiceView.css';
-import DataService from '../../DataService';
-import { fetchBindings } from '../../actions/serviceBinding';
+import { fetchServices } from '../../actions/services';
 import BindingPanel from './BindingPanel';
+import { MobileService } from '../../models/';
 
 class MobileServiceView extends Component {
   constructor(props) {
@@ -25,13 +25,7 @@ class MobileServiceView extends Component {
 
   componentDidMount() {
     const { appName } = this.props;
-    this.wsServices = DataService.watchServices(() => {
-      this.props.fetchBindings(appName);
-    });
-  }
-
-  componentWillUnmount() {
-    this.wsServices && this.wsServices.close();
+    this.props.fetchServices(appName);
   }
 
   boundServiceRows() {
@@ -123,12 +117,13 @@ class MobileServiceView extends Component {
 }
 
 function mapStateToProps(state) {
-  const filteredServices = partition(state.serviceBindings.services, service => service.isBound());
-  return { ...state.serviceBindings, boundServices: filteredServices[0], unboundServices: filteredServices[1] };
+  const services = state.services.items.map(item => new MobileService(item));
+  const filteredServices = partition(services, service => service.isBound());
+  return { ...state.services, boundServices: filteredServices[0], unboundServices: filteredServices[1] };
 }
 
 const mapDispatchToProps = {
-  fetchBindings
+  fetchServices
 };
 
 export default connect(

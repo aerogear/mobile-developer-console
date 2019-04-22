@@ -1,7 +1,4 @@
 import {
-  SERVICE_BINDINGS_REQUEST,
-  SERVICE_BINDINGS_SUCCESS,
-  SERVICE_BINDINGS_FAILURE,
   SERVICE_BINDING_CREATE_REQUEST,
   SERVICE_BINDING_CREATE_SUCCESS,
   SERVICE_BINDING_CREATE_FAILURE,
@@ -54,37 +51,6 @@ function createService(serviceInstanceName, bindingName) {
   }
   return new MobileService(json);
 }
-
-describe('Fetch Bindings', () => {
-  it('test service bindings request', () => {
-    const initialState = { ...getInitialState() };
-    const newState = serviceBindingReducer(initialState, { type: SERVICE_BINDINGS_REQUEST });
-    expect(newState).toEqual({ ...initialState, isReading: true });
-    expect(initialState).toEqual(defaultState);
-  });
-
-  it('test service bindings success', () => {
-    const initialState = { ...getInitialState() };
-    const newState = serviceBindingReducer(initialState, {
-      type: SERVICE_BINDINGS_SUCCESS,
-      result: [createService('test-instance', 'test-binding1'), createService('test-instance1', 'test-binding2')]
-    });
-    expect(newState.isReading).toBe(false);
-    expect(newState.services).toHaveLength(2);
-  });
-
-  it('test service bindings failure', () => {
-    const initialState = { ...getInitialState() };
-
-    const newState = serviceBindingReducer(initialState, {
-      type: SERVICE_BINDINGS_FAILURE,
-      error: 'service binding test fetching error'
-    });
-    expect(newState.isReading).toBe(false);
-    expect(newState.errors).toHaveLength(1);
-    expect(newState.errors[0]).toEqual({ error: 'service binding test fetching error', type: 'read' });
-  });
-});
 
 describe('Create Binding', () => {
   it('test create request', () => {

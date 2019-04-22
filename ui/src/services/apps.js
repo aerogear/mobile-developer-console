@@ -1,5 +1,5 @@
 import { mobileAppDef } from '../models/k8s/definitions';
-import { list, get, create, update, remove, watch, OpenShiftWatchEvents } from './openshiftService';
+import { list, get, create, update, remove, watch, OpenShiftWatchEvents } from './openshift';
 
 class AppsService {
   constructor(namespace) {

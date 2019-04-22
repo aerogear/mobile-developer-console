@@ -63,7 +63,6 @@ const webSocket = (action, url) => {
 };
 
 const dataService = {
-  serviceInstances: () => fetchItems('serviceinstances'),
   builds: () => fetchItems('builds'),
   buildConfigs: () => fetchItems('buildconfigs'),
   triggerBuild: name => request(`buildconfigs/${name}/instantiate`, 'POST'),
@@ -78,10 +77,7 @@ const dataService = {
   },
   watchBuilds: action => webSocket(action, '/builds/watch'),
   watchBuildConfigs: action => webSocket(action, '/buildconfigs/watch'),
-  watchServices: action => webSocket(action, '/serviceinstances/watch'),
   generateDownloadURL: name => request(`builds/${name}/gendownloadurl`, 'POST'),
-  watchBindableServices: (mobileClientName, action) => webSocket(action, `/bindableservices/${mobileClientName}/watch`),
-  bindableServices: mobileClientName => fetchItems(`bindableservices/${mobileClientName}`),
   createBinding: async (
     mobileClientName,
     serviceInstanceName,
