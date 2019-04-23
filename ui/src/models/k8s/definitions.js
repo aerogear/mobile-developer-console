@@ -12,7 +12,7 @@ const keycloakRealmDef = namespace => ({
   kind: 'KeycloakRealm',
   namespace
 });
-//TODO: use the right type definition
+// TODO: use the right type definition
 const pushVariantDef = namespace => ({
   name: 'pushvariant',
   version: 'v1alpha1',
@@ -20,7 +20,7 @@ const pushVariantDef = namespace => ({
   kind: 'PushVariant',
   namespace
 });
-//TODO: use the right type definition
+// TODO: use the right type definition
 const metricsApp = namespace => ({
   name: 'metricsApp',
   version: 'v1alpha1',
