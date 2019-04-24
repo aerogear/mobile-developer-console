@@ -139,8 +139,8 @@ function getFieldSet(field, properties, idSchema, schema, formData, uiSchema) {
         return property.content;
     }
   });
-  if (uiSchema.form.filterDisplayGroupBy) {
-    if (field.title.toLowerCase().localeCompare(formData[uiSchema.form.filterDisplayGroupBy].toLowerCase()) === 0) {
+  if (field.filterDisplayGroupBy) {
+    if (field.title.toLowerCase().localeCompare(formData[field.filterDisplayGroupBy].toLowerCase()) === 0) {
       return (
         <fieldset key={field.title}>
           <h2>{title}</h2>
@@ -148,7 +148,7 @@ function getFieldSet(field, properties, idSchema, schema, formData, uiSchema) {
         </fieldset>
       );
     }
-    return <div />;
+    return <div key={field.title} />;
   }
   return (
     <fieldset key={field.title}>

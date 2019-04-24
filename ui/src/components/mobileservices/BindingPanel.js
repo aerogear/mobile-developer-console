@@ -11,6 +11,7 @@ import { OpenShiftObjectTemplate } from './bindingPanelUtils';
 
 import { FormValidator } from './validator/FormValidator';
 import validationConfig from './ValidationRules.json';
+import { MobileService } from '../../models/mobileservices/mobileservice';
 
 export class BindingPanel extends Component {
   constructor(props) {
@@ -72,8 +73,8 @@ export class BindingPanel extends Component {
       this.getBoundServices(),
       service =>
         service.isUPSService() &&
-        service.serviceBindings &&
-        find(service.serviceBindings, serviceBinding => serviceBinding.getPlatform() === platform)
+        service.customResources &&
+        find(service.customResources, cr => typeof cr.getPlatform === 'function' && cr.getPlatform() === platform)
     );
   }
 
@@ -108,7 +109,7 @@ export class BindingPanel extends Component {
                 </h3>
               </label>
               <span className="help-block">
-                Bindings create a secret containing the necessary information for an application to use this service.
+                Bindings create a custom resource containing the necessary information for an application to use this service.
               </span>
             </div>
           </form>
@@ -221,12 +222,12 @@ export class BindingPanel extends Component {
   }
 
   getBoundServices() {
-    const filteredServices = partition(this.props.serviceBindings.services, service => service.isBound());
+    const filteredServices = partition(this.props.services, service => service.isBound());
     return filteredServices[0];
   }
 
   getUnboundServices() {
-    const filteredServices = partition(this.props.serviceBindings.services, service => service.isBound());
+    const filteredServices = partition(this.props.services, service => service.isBound());
     return filteredServices[1];
   }
 }
@@ -237,7 +238,7 @@ const mapDispatchToProps = {
 
 function mapStateToProps(state) {
   return {
-    serviceBindings: state.serviceBindings
+    services: state.services.items.map(service => new MobileService(service))
   };
 }
 

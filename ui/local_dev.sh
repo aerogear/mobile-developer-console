@@ -2,7 +2,7 @@
 MINISHIFT_IP=`minishift ip`
 USER_TOKEN=`oc whoami -t`
 
-if [ -z "$MINISHIFT_IP"]; then
+if [ -z "$MINISHIFT_IP" ]; then
   echo "minishift is not running"
   exit 1
 fi

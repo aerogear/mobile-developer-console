@@ -1,6 +1,7 @@
-import { find } from 'lodash-es';
+import { find, get } from 'lodash-es';
 import Resource from '../k8s/resource';
 import { ServiceBinding } from './servicebinding';
+import { newCustomResource } from './customresourcefactory';
 
 export class MobileService {
   constructor(json = {}) {
@@ -8,7 +9,6 @@ export class MobileService {
     this.configuration = this.data.configuration || [];
     this.configurationExt = this.data.configurationExt || [];
     this.setupText = '';
-    this.serviceInstance = new Resource(this.data.serviceInstance);
     this.serviceBindings = [];
     if (this.data.serviceBindings) {
       for (const binding of this.data.serviceBindings) {
@@ -16,7 +16,13 @@ export class MobileService {
       }
     }
     this.serviceClass = new Resource(this.data.serviceClass);
-    this.servicePlan = new Resource(this.data.servicePlan);
+
+    this.customResources = [];
+    if (this.data.customResources) {
+      for (const customResource of this.data.customResources) {
+        this.customResources.push(newCustomResource(customResource));
+      }
+    }
   }
 
   getName() {
@@ -40,11 +46,11 @@ export class MobileService {
   }
 
   isBound() {
-    return this.data.customResources.length > 0;
+    return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady());
   }
 
   getServiceInstanceName() {
-    return this.serviceInstance.metadata.get('name');
+    return this.data.name;
   }
 
   getSetupText() {
@@ -52,33 +58,29 @@ export class MobileService {
   }
 
   getBindingSchema() {
-    return this.servicePlan.spec.get('serviceBindingCreateParameterSchema');
+    return get(this.data, 'bindForm.schema');
   }
 
   isBindingOperationInProgress() {
-    const inprogressBinding = find(this.serviceBindings, binding => binding.isInProgress());
-    return inprogressBinding != null;
+    const inprogressCR = find(this.customResources, cr => cr.isInProgress());
+    return inprogressCR != null;
   }
 
   getBindingOperation() {
-    const currentBinding = find(this.serviceBindings, binding => binding.isInProgress());
-    if (currentBinding) {
-      return currentBinding.getCurrentOperation();
+    const inprogressCR = find(this.customResources, cr => cr.isInProgress());
+    if (inprogressCR) {
+      return inprogressCR.getCurrentOperation();
     }
     return undefined;
   }
 
   isBindingOperationFailed() {
-    const failedBinding = find(this.serviceBindings, binding => binding.isFailed());
-    return failedBinding != null;
+    const failedCR = find(this.customResources, cr => cr.isFailed());
+    return failedCR != null;
   }
 
   getFormDefinition() {
-    const form = this.servicePlan.spec.get('externalMetadata.schemas.service_binding.create.openshift_form_definition');
-    form.filterDisplayGroupBy = JSON.parse(
-      this.servicePlan.spec.get('externalMetadata.mobileclient_bind_parameters_data[0]') || ''
-    ).filterDisplayGroupBy;
-    return form;
+    return get(this.data, 'bindForm.definition');
   }
 
   setBindingSchemaDefaultValues(name, value) {
@@ -93,7 +95,7 @@ export class MobileService {
   }
 
   isUPSService() {
-    return this.getServiceClassExternalName() === 'ups';
+    return this.data.type === 'push';
   }
 
   getConfiguration() {
@@ -152,7 +154,6 @@ export class MobileService {
       ...this.data,
       configuration: this.configuration,
       configurationExt: this.configurationExt,
-      serviceInstance: this.serviceInstance.toJSON(),
       serviceBindings: this.serviceBindings.toJSON(),
       serviceClass: this.serviceClass.toJSON()
     };
