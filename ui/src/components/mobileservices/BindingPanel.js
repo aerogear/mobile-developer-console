@@ -109,7 +109,8 @@ export class BindingPanel extends Component {
                 </h3>
               </label>
               <span className="help-block">
-                Bindings create a custom resource containing the necessary information for an application to use this service.
+                Bindings create a custom resource containing the necessary information for an application to use this
+                service.
               </span>
             </div>
           </form>
