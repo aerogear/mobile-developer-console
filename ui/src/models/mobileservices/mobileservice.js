@@ -1,7 +1,7 @@
-import { find, get } from 'lodash-es';
+import { find } from 'lodash-es';
 import Resource from '../k8s/resource';
 import { ServiceBinding } from './servicebinding';
-import { newCustomResource } from './customresourcefactory';
+import { newCustomResource, newCustomResourceClass } from './customresourcefactory';
 
 export class MobileService {
   constructor(json = {}) {
@@ -16,6 +16,10 @@ export class MobileService {
       }
     }
     this.serviceClass = new Resource(this.data.serviceClass);
+
+    if (this.data.bindCustomResource) {
+      this.customResourceClass = newCustomResourceClass(this.data.bindCustomResource.kind);
+    }
 
     this.customResources = [];
     if (this.data.customResources) {
@@ -57,8 +61,8 @@ export class MobileService {
     return this.setupText;
   }
 
-  getBindingSchema() {
-    return get(this.data, 'bindForm.schema');
+  getBindingForm(params) {
+    return this.customResourceClass.bindForm(params);
   }
 
   isBindingOperationInProgress() {
@@ -79,23 +83,16 @@ export class MobileService {
     return failedCR != null;
   }
 
-  getFormDefinition() {
-    return get(this.data, 'bindForm.definition');
-  }
-
-  setBindingSchemaDefaultValues(name, value) {
-    const bindingSchema = this.getBindingSchema();
-    if (bindingSchema && bindingSchema.properties && bindingSchema.properties[name]) {
-      bindingSchema.properties[name].default = value;
-    }
-  }
-
-  getServiceClassExternalName() {
-    return this.serviceClass.spec.get('externalMetadata.serviceName');
-  }
-
   isUPSService() {
     return this.data.type === 'push';
+  }
+
+  customResourceDef() {
+    return this.data.bindCustomResource;
+  }
+
+  newCustomResource(formdata) {
+    return this.customResourceClass.newInstance(formdata);
   }
 
   getConfiguration() {

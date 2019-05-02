@@ -7,7 +7,7 @@ import { Constraint } from './constraints/Constraint';
 export class RuleSetValidator {
   constructor(name, config = {}) {
     this.name = name;
-    this.fields = config.fields || {};
+    this.fields = flatKeys(config.fields) || {};
     const { executionConstraints } = config;
     if (executionConstraints) {
       this.executionConstraints = executionConstraints.map(constraintConfig => Constraint.forConfig(constraintConfig));
@@ -92,4 +92,45 @@ export class RuleSetValidator {
       }
     }
   }
+}
+
+/**
+ * A small utility function to flatten a nested object that has rules.
+ * For example, it will convert this object:
+ * {
+ *   a: {
+ *     b: {
+ *        validation_rules: [],
+ *        errors_key: ''
+ *     }
+ *   },
+ *   c: {
+ *     validation_rules: []
+ *   }
+ * }
+ * to this:
+ * {
+ *   'a.b' : {validation_rules: [], errors_key: ''},
+ *   'c': {
+ *     validation_rules: []
+ *   }
+ * }
+ * @param {object} object input object
+ * @param {array} path paths so far
+ * @param {object} out object to return
+ */
+function flatKeys(object, path, out) {
+  const p = path || [];
+  const result = out || {};
+  for (const key in object) {
+    if (object.hasOwnProperty(key)) {
+      const parent = p.concat([key]);
+      if (object[key].errors_key || object[key].validation_rules) {
+        result[parent.join('.')] = object[key];
+      } else {
+        flatKeys(object[key], parent, result);
+      }
+    }
+  }
+  return result;
 }

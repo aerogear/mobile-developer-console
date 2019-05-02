@@ -1,4 +1,5 @@
 import forge from 'node-forge';
+import { get } from 'lodash-es';
 import { ValidationRuleBaseClass } from './ValidationRuleBaseClass';
 
 /**
@@ -21,13 +22,13 @@ export class P12ValidationRule extends ValidationRuleBaseClass {
   }
 
   validate(data, key) {
-    const p12b64 = data[key];
+    const p12b64 = get(data, key);
     if (p12b64) {
       try {
         const p12Der = forge.util.decode64(p12b64);
         const p12Asn1 = forge.asn1.fromDer(p12Der);
         if (this.passwordField) {
-          const password = data[this.passwordField];
+          const password = get(data, this.passwordField);
           forge.pkcs12.pkcs12FromAsn1(p12Asn1, password);
         }
       } catch (error) {

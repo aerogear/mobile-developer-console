@@ -1,16 +1,13 @@
-import { partition, find } from 'lodash-es';
+import { partition, get } from 'lodash-es';
 import React, { Component } from 'react';
 import { Wizard } from 'patternfly-react';
 import { connect } from 'react-redux';
 import Form from 'react-jsonschema-form';
-import { createSecretName } from '../bindingUtils';
-import { createBinding } from '../../actions/serviceBinding';
+import { createCustomResourceForService } from '../../actions/services';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
-import { OpenShiftObjectTemplate } from './bindingPanelUtils';
 
 import { FormValidator } from './validator/FormValidator';
-import validationConfig from './ValidationRules.json';
 import { MobileService } from '../../models/mobileservices/mobileservice';
 
 export class BindingPanel extends Component {
@@ -21,18 +18,22 @@ export class BindingPanel extends Component {
     this.onBackButtonClick = this.onBackButtonClick.bind(this);
     this.renderPropertiesSchema = this.renderPropertiesSchema.bind(this);
     this.validate = this.validate.bind(this);
+    this.onFormChange = this.onFormChange.bind(this);
     const serviceName = this.props.service.getName();
-    const schema = this.props.service.getBindingSchema();
-    const form = this.props.service.getFormDefinition();
+    const p = { appName: this.props.appName, service: this.props.service };
+    const bindingFormConfig = this.props.service.getBindingForm(p);
+    const { schema, uiSchema, validationRules, onChangeHandler } = bindingFormConfig;
     const { service } = this.props;
 
     this.state = {
       serviceName,
       schema,
-      form,
+      uiSchema,
       loading: false,
       service,
-      activeStepIndex: 0
+      activeStepIndex: 0,
+      validationRules,
+      onChangeHandler
     };
   }
 
@@ -60,36 +61,29 @@ export class BindingPanel extends Component {
     this.open();
   }
 
-  hasUPSIOSBoundService() {
-    return this.hasUPSBoundServiceForPlatform('ios');
-  }
-
-  hasUPSAndroidBoundService() {
-    return this.hasUPSBoundServiceForPlatform('android');
-  }
-
-  hasUPSBoundServiceForPlatform(platform) {
-    return find(
-      this.getBoundServices(),
-      service =>
-        service.isUPSService() &&
-        service.customResources &&
-        find(service.customResources, cr => typeof cr.getPlatform === 'function' && cr.getPlatform() === platform)
-    );
+  onFormChange(data) {
+    const { formData } = data;
+    if (this.state.onChangeHandler) {
+      const newSchema = this.state.onChangeHandler(formData, this.state.schema);
+      return this.setState({
+        formData,
+        schema: newSchema
+      });
+    }
+    return this.setState({ formData });
   }
 
   renderPropertiesSchema() {
     return (
       <Form
         schema={this.state.schema}
-        uiSchema={{ form: this.state.form }}
+        uiSchema={this.state.uiSchema}
         ref={form => {
           this.form = form;
         }}
         validate={this.validate}
         showErrorList={false}
-        ObjectFieldTemplate={OpenShiftObjectTemplate}
-        onChange={e => (this.formData = e.formData)} // eslint-disable-line no-return-assign
+        onChange={this.onFormChange} // eslint-disable-line no-return-assign
       >
         <div />
       </Form>
@@ -130,16 +124,7 @@ export class BindingPanel extends Component {
   stepChanged = step => {
     if (step === 2) {
       this.setState({ loading: true });
-      const credentialSecretName = createSecretName(`${this.state.service.getServiceInstanceName()}-credentials`);
-      const parametersSecretName = createSecretName(`${this.state.service.getServiceInstanceName()}-bind-parameters`);
-      this.props.createBinding(
-        this.props.appName,
-        this.state.service.getServiceInstanceName(),
-        credentialSecretName,
-        parametersSecretName,
-        this.state.service.getServiceClassExternalName(),
-        this.formData
-      );
+      this.props.createCustomResourceForService(this.state.service, this.state.formData);
     }
   };
 
@@ -148,13 +133,9 @@ export class BindingPanel extends Component {
    */
   validate = (formData, errors) => {
     /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
-
-    const valid = new FormValidator(validationConfig).validate(
-      { ...formData, SERVICE_TYPE: this.props.service.getServiceClassExternalName() },
-      (key, message) => {
-        errors[key].addError(message);
-      }
-    );
+    const valid = new FormValidator(this.state.validationRules).validate(formData, (key, message) => {
+      get(errors, key).addError(message);
+    });
 
     if (valid) {
       // Avdance to final screen if valid
@@ -167,42 +148,7 @@ export class BindingPanel extends Component {
     return errors;
   };
 
-  filterPlatforms() {
-    if (this.props.service.isUPSService()) {
-      const hasIOS = this.hasUPSIOSBoundService();
-      const hasAndroid = this.hasUPSAndroidBoundService();
-      const { schema } = this.state;
-      if (!hasAndroid && !hasIOS) {
-        if (schema.properties.CLIENT_TYPE) {
-          schema.properties.CLIENT_TYPE.default = 'Android';
-          schema.properties.CLIENT_TYPE.enum = ['Android', 'IOS'];
-        }
-      } else if (hasAndroid && !hasIOS) {
-        // UPS, there's already an Android variant
-        if (schema.properties.CLIENT_TYPE) {
-          schema.properties.CLIENT_TYPE.default = 'IOS';
-          schema.properties.CLIENT_TYPE.enum = ['IOS'];
-        }
-      } else if (!hasAndroid && hasIOS) {
-        // UPS, there's already an IOS variant
-        if (schema.properties.CLIENT_TYPE) {
-          schema.properties.CLIENT_TYPE.default = 'Android';
-          schema.properties.CLIENT_TYPE.enum = ['Android'];
-        }
-      } else if (hasAndroid && hasIOS) {
-        // UPS, there's already an IOS variant
-        if (schema.properties.CLIENT_TYPE) {
-          schema.properties.CLIENT_TYPE.default = '';
-          schema.properties.CLIENT_TYPE.enum = [];
-        }
-      }
-      // we don't care if there are variants for both platforms.
-      // this binding panel shouldn't be shown anyway
-    }
-  }
-
   render() {
-    this.filterPlatforms();
     return (
       <Wizard.Pattern
         onHide={this.props.close}
@@ -234,7 +180,7 @@ export class BindingPanel extends Component {
 }
 
 const mapDispatchToProps = {
-  createBinding
+  createCustomResourceForService
 };
 
 function mapStateToProps(state) {

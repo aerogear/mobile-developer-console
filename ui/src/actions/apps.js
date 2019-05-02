@@ -1,5 +1,6 @@
 import { appsService } from '../services/apps';
 import fetchAction from './fetch';
+import { errorCreator } from './errors';
 
 export const APPS_REQUEST = 'APPS_REQUEST';
 export const APPS_SUCCESS = 'APPS_SUCCESS';
@@ -39,12 +40,10 @@ export const APP_DELETE_FAILURE = 'APP_DELETE_FAILURE';
 export const deleteApp = name =>
   fetchAction([APP_DELETE_REQUEST, APP_DELETE_SUCCESS, APP_DELETE_FAILURE], async () => appsService.remove(name))();
 
-export const APP_WS_FAILURE = 'APP_WS_FAILURE';
-
 // TODO: take advantage of the event types and dispatch the appropriate actions, rather than just do anothe fetch again
 export const watchApps = action => async dispatch => {
   appsService.watch(action, err => {
-    dispatch({ type: APP_WS_FAILURE, error: err });
+    dispatch(errorCreator(err));
   });
 };
 

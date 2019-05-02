@@ -1,4 +1,4 @@
-import { isFunction } from 'lodash-es';
+import { get, isFunction } from 'lodash-es';
 import { ValidationRuleBaseClass } from './ValidationRuleBaseClass';
 
 /**
@@ -21,8 +21,8 @@ export class SameValueOfRule extends ValidationRuleBaseClass {
   }
 
   validate(data, key) {
-    const value = data[key];
-    const targetValue = isFunction(this.target) ? this.target() : data[this.target];
+    const value = get(data, key);
+    const targetValue = isFunction(this.target) ? this.target() : get(data, this.target);
     if (value !== targetValue) {
       return {
         valid: false,

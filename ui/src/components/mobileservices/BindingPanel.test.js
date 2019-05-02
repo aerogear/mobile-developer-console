@@ -7,8 +7,16 @@ import { BindingPanel } from './BindingPanel';
 describe('BindingPanel', () => {
   const service = {
     getName: () => 'Data Sync',
-    getBindingSchema: () => 'http://json-schema.org/draft-04/schema',
-    getFormDefinition: () => 'CLIENT_ID',
+    getBindingForm: () => ({
+      schema: {
+        type: 'object',
+        properties: {
+          test: {
+            type: 'string'
+          }
+        }
+      }
+    }),
     isUPSService: () => false
   };
   it('should render the Wizard for binding the service', () => {

@@ -1,3 +1,5 @@
+import { errorCreator } from './errors';
+
 const requestAction = type => ({
   type
 });
@@ -19,6 +21,7 @@ const fetchAction = ([request, success, failure], doFetch) => () => async dispat
     dispatch(successAction(success, result));
   } catch (error) {
     dispatch(failureAction(failure, error));
+    dispatch(errorCreator(error));
   }
 };
 

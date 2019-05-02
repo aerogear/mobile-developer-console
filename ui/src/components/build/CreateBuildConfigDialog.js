@@ -53,7 +53,7 @@ class CreateBuildConfigDialog extends Component {
           <Modal.CloseButton onClick={onCancel} />
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="modalBody">
+        <Modal.Body className="modalBody buildConfigModal">
           <Grid fluid>
             <Row>
               <Col md={12}>

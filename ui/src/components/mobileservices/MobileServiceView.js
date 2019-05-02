@@ -19,13 +19,11 @@ class MobileServiceView extends Component {
 
     this.boundServiceRows = this.boundServiceRows.bind(this);
     this.unboundServiceRows = this.unboundServiceRows.bind(this);
-    this.addDefaultBindingProperty = this.addDefaultBindingProperty.bind(this);
     this.hideBindingPanel = this.hideBindingPanel.bind(this);
   }
 
   componentDidMount() {
-    const { appName } = this.props;
-    this.props.fetchServices(appName);
+    this.props.fetchServices();
   }
 
   boundServiceRows() {
@@ -33,17 +31,14 @@ class MobileServiceView extends Component {
       <React.Fragment>
         <h2 key="bound-services">Bound Services</h2>
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
-          this.props.boundServices.map(service => {
-            this.addDefaultBindingProperty(service);
-            return (
-              <BoundServiceRow
-                key={service.getId()}
-                service={service}
-                onCreateBinding={() => this.showBindingPanel(service)}
-                onFinished={this.hideBindingPanel}
-              />
-            );
-          })
+          this.props.boundServices.map(service => (
+            <BoundServiceRow
+              key={service.getId()}
+              service={service}
+              onCreateBinding={() => this.showBindingPanel(service)}
+              onFinished={this.hideBindingPanel}
+            />
+          ))
         ) : (
           <EmptyState>There are no bound services.</EmptyState>
         )}
@@ -56,17 +51,14 @@ class MobileServiceView extends Component {
       <React.Fragment>
         <h2 key="unbound-services">Unbound Services</h2>
         {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
-          this.props.unboundServices.map(service => {
-            this.addDefaultBindingProperty(service);
-            return (
-              <UnboundServiceRow
-                key={service.getId()}
-                service={service}
-                onCreateBinding={() => this.showBindingPanel(service)}
-                onFinished={this.hideBindingPanel}
-              />
-            );
-          })
+          this.props.unboundServices.map(service => (
+            <UnboundServiceRow
+              key={service.getId()}
+              service={service}
+              onCreateBinding={() => this.showBindingPanel(service)}
+              onFinished={this.hideBindingPanel}
+            />
+          ))
         ) : (
           <EmptyState>There are no unbound services.</EmptyState>
         )}
@@ -76,11 +68,6 @@ class MobileServiceView extends Component {
 
   shouldComponentUpdate() {
     return true;
-  }
-
-  // This makes the field in the binding form set to the mobile client name
-  addDefaultBindingProperty(service) {
-    service.setBindingSchemaDefaultValues('CLIENT_ID', this.props.appName);
   }
 
   showBindingPanel = service => {
@@ -109,7 +96,12 @@ class MobileServiceView extends Component {
           {this.unboundServiceRows()}
         </Spinner>
         {this.state.bindingPanelService && (
-          <BindingPanel service={this.state.bindingPanelService} showModal close={this.hideBindingPanel} />
+          <BindingPanel
+            appName={this.props.appName}
+            service={this.state.bindingPanelService}
+            showModal
+            close={this.hideBindingPanel}
+          />
         )}
       </div>
     );
