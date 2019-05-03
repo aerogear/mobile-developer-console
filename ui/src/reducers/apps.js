@@ -13,8 +13,7 @@ import {
   APP_DELETE_FAILURE,
   APP_UPDATE_REQUEST,
   APP_UPDATE_SUCCESS,
-  APP_UPDATE_FAILURE,
-  APP_WS_FAILURE
+  APP_UPDATE_FAILURE
 } from '../actions/apps';
 import resourceReducer from './resource';
 
@@ -33,8 +32,7 @@ const apps = resourceReducer({
   updateFailure: APP_UPDATE_FAILURE,
   deleteRequest: APP_DELETE_REQUEST,
   deleteSuccess: APP_DELETE_SUCCESS,
-  deleteFailure: APP_DELETE_FAILURE,
-  websocketFailure: APP_WS_FAILURE
+  deleteFailure: APP_DELETE_FAILURE
 });
 
 export default apps;

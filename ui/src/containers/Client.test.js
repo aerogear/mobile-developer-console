@@ -20,10 +20,10 @@ describe('Client', () => {
       buildTabEnabled: true,
       fetchBuildConfigs: mockFetchBuildConfigs,
       fetchBuilds: mockFetchBuilds,
-      fetchServices: mockFetchServices,
+      fetchAndWatchServices: mockFetchServices,
       apps: { items: [{ metadata: { name: 'testapp' }, spec: { name: 'testapp' } }] },
       buildConfigs: { items: [] },
-      watchApps: mockWatchApps
+      fetchAndWatchApps: mockWatchApps
     };
 
     const wrapper = shallow(<Client {...props} />);
@@ -49,10 +49,10 @@ describe('Client', () => {
       buildTabEnabled: false,
       fetchBuildConfigs: mockFetchBuildConfigs,
       fetchBuilds: mockFetchBuilds,
-      fetchServices: mockFetchServices,
+      fetchAndWatchServices: mockFetchServices,
       apps: { items: [{ metadata: { name: 'testapp' }, spec: { name: 'testapp' } }] },
       buildConfigs: { items: [] },
-      watchApps: mockWatchApps
+      fetchAndWatchApps: mockWatchApps
     };
 
     const wrapper = shallow(<Client {...props} />);
@@ -77,10 +77,10 @@ describe('Client', () => {
       buildTabEnabled: true,
       fetchBuildConfigs: mockFetchBuildConfigs,
       fetchBuilds: mockFetchBuilds,
-      fetchServices: mockFetchServices,
+      fetchAndWatchServices: mockFetchServices,
       apps: { items: [{ metadata: { name: 'testapp' }, spec: { name: 'testapp' } }] },
       buildConfigs: { items: [] },
-      watchApps: mockWatchApps
+      fetchAndWatchApps: mockWatchApps
     };
 
     const wrapper = shallow(<Client {...props} />);

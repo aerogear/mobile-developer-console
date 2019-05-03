@@ -1,5 +1,5 @@
 import DataService from '../DataService';
-import fetchAction from './fetch';
+import { fetchAction } from './fetch';
 
 export const BUILDS_REQUEST = 'BUILDS_REQUEST';
 export const BUILDS_SUCCESS = 'BUILDS_SUCCESS';

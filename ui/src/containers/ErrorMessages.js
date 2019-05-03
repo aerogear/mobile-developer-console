@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { ToastNotificationList, ToastNotification } from 'patternfly-react';
 import { withRouter } from 'react-router-dom';
 import { dismiss, dismissAll } from '../actions/errors';
-import { wsError } from '../DataService';
 
 export class ErrorMessages extends Component {
   componentWillMount() {
@@ -17,10 +16,9 @@ export class ErrorMessages extends Component {
 
   render() {
     const { errors, dismissError } = this.props;
-    wsError.message && errors.push({ error: { message: wsError.message } });
     return (
       <ToastNotificationList>
-        {[...new Set(errors.map(error => error.error.message))].map((error, index) => (
+        {[...new Set(errors.map(error => error.message))].map((error, index) => (
           <ToastNotification key={index} onDismiss={() => dismissError(error)}>
             <span>{error}</span>
           </ToastNotification>
@@ -31,7 +29,7 @@ export class ErrorMessages extends Component {
 }
 
 const mapStateToProps = state => ({
-  errors: [...state.apps.errors, ...state.buildConfigs.errors, ...state.builds.errors, ...state.services.errors]
+  errors: [...state.errors.errors]
 });
 
 const mapDispatchToProps = {

@@ -1,5 +1,5 @@
 import DataService from '../DataService';
-import fetchAction from './fetch';
+import { fetchAction } from './fetch';
 
 export const BUILD_CONFIGS_REQUEST = 'BUILD_CONFIGS_REQUEST';
 export const BUILD_CONFIGS_SUCCESS = 'BUILD_CONFIGS_SUCCESS';

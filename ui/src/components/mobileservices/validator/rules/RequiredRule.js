@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import { ValidationRuleBaseClass } from './ValidationRuleBaseClass';
 
 /**
@@ -12,7 +13,7 @@ import { ValidationRuleBaseClass } from './ValidationRuleBaseClass';
  */
 export class RequiredRule extends ValidationRuleBaseClass {
   validate(formData, key) {
-    const value = formData[key];
+    const value = get(formData, key);
     if (!value || !value.trim()) {
       return {
         valid: false,

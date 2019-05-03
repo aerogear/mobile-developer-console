@@ -6,11 +6,9 @@ describe('Overview', () => {
   it('test render', () => {
     const mockFetchApps = jest.fn();
     const mockFetchBuilds = jest.fn();
-    const mockWatchApps = jest.fn();
 
     const props = {
-      fetchApps: mockFetchApps,
-      watchApps: mockWatchApps,
+      fetchAndWatchApps: mockFetchApps,
       fetchBuilds: mockFetchBuilds,
       buildTabEnabled: true,
       apps: { items: [] },
@@ -21,7 +19,6 @@ describe('Overview', () => {
     const wrapper = shallow(<Overview {...props} />);
     expect(mockFetchApps).toBeCalled();
     expect(mockFetchBuilds).toBeCalled();
-    expect(mockWatchApps).toBeCalled();
     expect(wrapper.find('MobileClientCardView')).toHaveLength(1);
   });
 });

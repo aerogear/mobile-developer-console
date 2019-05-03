@@ -9,7 +9,11 @@ import BindButton from './BindButton';
 
 function configurationView(configuration) {
   if (configuration.type === 'href') {
-    return <a href={configuration.value}>{configuration.value}</a>;
+    return (
+      <a href={configuration.value} target="_blank" rel="noreferrer noopener">
+        {configuration.value}
+      </a>
+    );
   }
 
   return configuration.value;
@@ -58,14 +62,17 @@ class BoundServiceRow extends Component {
     let documentationFragment;
     let propertyFragment;
 
-    if (this.props.service.getDocumentationUrl()) {
+    const docUrl = this.props.service.getDocumentationUrl();
+    const serviceConfigurations = this.props.service.getConfiguration(this.props.appName);
+
+    if (docUrl) {
       documentationFragment = (
         <Row>
           <Col md={2} className="detailsKey">
             Documentation:
           </Col>
           <Col md={10} className="detailsValue">
-            <a href={this.props.service.getDocumentationUrl()}>
+            <a href={docUrl} target="_blank" rel="noreferrer noopener">
               SDK Setup <i className="fa fa-external-link" aria-hidden="true" />
             </a>
           </Col>
@@ -73,21 +80,17 @@ class BoundServiceRow extends Component {
       );
     }
 
-    if (this.props.service.getConfiguration()) {
-      propertyFragment = this.props.service.getConfiguration().map(configuration => {
-        configuration = JSON.parse(configuration);
-
-        return (
-          <Row key={configuration.label}>
-            <Col md={2} className="detailsKey">
-              {configuration.label}:
-            </Col>
-            <Col md={10} className="detailsValue">
-              {configurationView(configuration)}
-            </Col>
-          </Row>
-        );
-      });
+    if (serviceConfigurations) {
+      propertyFragment = serviceConfigurations.map(configuration => (
+        <Row key={configuration.label}>
+          <Col md={2} className="detailsKey">
+            {configuration.label}:
+          </Col>
+          <Col md={10} className="detailsValue">
+            {configurationView(configuration)}
+          </Col>
+        </Row>
+      ));
     } else {
       propertyFragment = <div>No configuration data to show for this service.</div>;
     }
@@ -141,15 +144,16 @@ class BoundServiceRow extends Component {
   }
 
   renderDeleteBindingDropdowns() {
-    const bindings = this.props.service.serviceBindings;
+    const crs = this.props.service.getCustomResourcesForApp(this.props.appName);
     return (
       <DropdownKebab id={`delete-binding}`} pullRight>
-        {bindings.map(binding => (
+        {crs.map(cr => (
           <DeleteItemButton
-            key={`delete-binding-${binding.getName()}`}
-            title={binding.getPlatform() ? `Delete ${binding.getPlatform()} Binding` : undefined}
-            itemType="serviceBinding"
-            itemName={binding.getName()}
+            key={`delete-cr-${cr.getName()}`}
+            title={cr.getPlatform ? `Delete ${cr.getPlatform()}` : undefined}
+            itemType="config"
+            itemName={cr.getName()}
+            onDelete={() => this.props.onDeleteBinding(cr)}
           />
         ))}
       </DropdownKebab>

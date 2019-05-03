@@ -35,7 +35,7 @@ class BindingStatus extends Component {
         {this.props.service.isBindingOperationInProgress() && (
           <React.Fragment>
             <Icon name="spinner" spin size="lg" />
-            {this.props.service.getBindingOperation()} In Progress
+            {this.props.service.getBindingOperation()}
           </React.Fragment>
         )}
         {this.props.service.isBindingOperationFailed() && (
