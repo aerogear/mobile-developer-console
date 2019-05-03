@@ -5,7 +5,7 @@ import { partition } from 'lodash-es';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
 import './MobileServiceView.css';
-import { fetchServices, deleteCustomResource } from '../../actions/services';
+import { fetchAndWatchServices, deleteCustomResource } from '../../actions/services';
 import BindingPanel from './BindingPanel';
 import { MobileService } from '../../models/';
 
@@ -23,7 +23,7 @@ class MobileServiceView extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchServices();
+    this.props.fetchAndWatchServices();
   }
 
   boundServiceRows() {
@@ -117,7 +117,7 @@ function mapStateToProps(state, oldProp) {
 }
 
 const mapDispatchToProps = {
-  fetchServices,
+  fetchAndWatchServices,
   deleteCustomResource
 };
 

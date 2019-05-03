@@ -56,10 +56,11 @@ const resourceReducer = actions => (state = defaultState, action) => {
         isCreating: true
       };
     case actions.createSuccess:
+      index = state.items.findIndex(item => item.metadata.name === action.result.metadata.name);
       return {
         ...state,
         isCreating: false,
-        items: [...state.items, action.result]
+        items: index >= 0 ? state.items : [...state.items, action.result]
       };
     case actions.createFailure:
       return {
@@ -92,7 +93,7 @@ const resourceReducer = actions => (state = defaultState, action) => {
         isDeleting: true
       };
     case actions.deleteSuccess:
-      index = state.items.findIndex(item => item.metadata.name === action.result.details.name);
+      index = state.items.findIndex(item => item.metadata.name === action.result.metadata.name);
       return {
         ...state,
         isDeleting: false,

@@ -1,6 +1,6 @@
 import { compact } from 'lodash-es';
 import { mobileServices } from '../services/mobileservices';
-import { list, watch, create, OpenShiftWatchEvents, remove } from '../services/openshift';
+import { list, watch, create, OpenShiftWatchEvents, remove, getNamespace } from '../services/openshift';
 import { errorCreator } from './errors';
 
 export const SERVICES_REQUEST = 'SERVICES_REQUEST';
@@ -14,15 +14,42 @@ export const CUSTOM_RESOURCE_ADDED_SUCCESS = 'CUSTOM_RESOURCE_ADDED_SUCCESS';
 export const CUSTOM_RESOURCE_MODIFIED_SUCCESS = 'CUSTOM_RESOURCE_MODIFIED_SUCCESS';
 export const CUSTOM_RESOURCE_DELETED_SUCCESS = 'CUSTOM_RESOURCE_DELETED_SUCCESS';
 
-export const fetchServices = () => async dispatch => {
+const watchStatus = {};
+
+// the services are unlikely to change because they should be pre-provisioned, so we can just use the data from the store if it's available already.
+async function getServiceItemsFromStoreOrRemote(dispatch, getState) {
+  const currentItems = getState().services;
+  if (currentItems && currentItems.items.length > 0) {
+    return currentItems.items;
+  }
   dispatch({ type: SERVICES_REQUEST });
+  const serviceItems = await mobileServices.list();
+  dispatch({ type: SERVICES_SUCCESS, result: serviceItems });
+  return serviceItems;
+}
+
+function listCustomResourceForServiceIfRequired(dispatch, service) {
+  const custRes = service.bindCustomResource;
+  // If there is already a list of custom resources available and we are still watching them, then the store is up to date and there is no need to list again
+  if (service.customResources && service.customResources.length > 0 && watchStatus[custRes.kind]) {
+    return Promise.resolve();
+  }
+  return listCustomResourceForService(dispatch, service);
+}
+
+function listAndWatchResourceIfRequired(dispatch, service) {
+  return listCustomResourceForServiceIfRequired(dispatch, service).then(() =>
+    watchCustomResourceIfRequired(dispatch, service)
+  );
+}
+
+export const fetchAndWatchServices = () => async (dispatch, getState) => {
   try {
-    const serviceItems = await mobileServices.list();
-    dispatch({ type: SERVICES_SUCCESS, result: serviceItems });
+    const serviceItems = await getServiceItemsFromStoreOrRemote(dispatch, getState);
     const promises = compact(
       serviceItems.items.map(service => {
         if (service.bindCustomResource) {
-          return listCustomResourceForService(dispatch, service).then(() => watchCustomResource(dispatch, service));
+          return listAndWatchResourceIfRequired(dispatch, service);
         }
         return undefined;
       })
@@ -52,7 +79,7 @@ export const deleteCustomResource = (service, cr) => async dispatch => {
 
 function listCustomResourceForService(dispatch, service) {
   const custRes = service.bindCustomResource;
-  custRes.namespace = window.OPENSHIFT_CONFIG.mdcNamespace;
+  custRes.namespace = getNamespace();
   return list(custRes)
     .then(resList => {
       const { items } = resList;
@@ -66,23 +93,33 @@ function listCustomResourceForService(dispatch, service) {
     });
 }
 
+function watchCustomResourceIfRequired(dispatch, service) {
+  const custRes = service.bindCustomResource;
+  if (watchStatus[custRes.kind]) {
+    return Promise.resolve();
+  }
+  return watchCustomResource(dispatch, service);
+}
+
 function watchCustomResource(dispatch, service) {
   const custRes = service.bindCustomResource;
-  custRes.namespace = window.OPENSHIFT_CONFIG.mdcNamespace;
+  custRes.namespace = getNamespace();
+  watchStatus[custRes.kind] = true;
   // TODO: add label selectors to the watch url
   return watch(custRes).then(handler => {
     handler.onEvent(event => {
-      if (event.type === OpenShiftWatchEvents.ADDED) {
+      if (event.type === OpenShiftWatchEvents.CLOSED) {
+        watchStatus[custRes.kind] = false;
+      } else if (event.type === OpenShiftWatchEvents.ADDED) {
         dispatch({ type: CUSTOM_RESOURCE_ADDED_SUCCESS, service, resource: custRes, result: event.payload });
-      }
-      if (event.type === OpenShiftWatchEvents.MODIFIED) {
+      } else if (event.type === OpenShiftWatchEvents.MODIFIED) {
         dispatch({ type: CUSTOM_RESOURCE_MODIFIED_SUCCESS, service, resource: custRes, result: event.payload });
-      }
-      if (event.type === OpenShiftWatchEvents.DELETED) {
+      } else if (event.type === OpenShiftWatchEvents.DELETED) {
         dispatch({ type: CUSTOM_RESOURCE_DELETED_SUCCESS, service, resource: custRes, result: event.payload });
       }
     });
     handler.catch(error => {
+      watchStatus[custRes.kind] = false;
       dispatch({ type: CUSTOM_RESOURCE_WS_ERROR, service, resource: custRes, error });
       dispatch(errorCreator(error));
     });

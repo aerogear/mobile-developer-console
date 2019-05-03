@@ -17,7 +17,7 @@ import { find } from 'lodash-es';
 import Moment from 'react-moment';
 import ConfigurationView from '../components/configuration/ConfigurationView';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
-import { fetchApp, watchApps } from '../actions/apps';
+import { fetchApp, fetchAndWatchApps } from '../actions/apps';
 import { fetchBuildConfigs } from '../actions/buildConfigs';
 import { fetchBuilds } from '../actions/builds';
 import DataService from '../DataService';
@@ -26,7 +26,7 @@ import { MobileApp } from '../models';
 import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
 import BuildConfigDialog from './BuildConfigDialog';
 import './Client.css';
-import { fetchServices } from '../actions/services';
+import { fetchAndWatchServices } from '../actions/services';
 
 export const TAB_CONFIGURATION = { key: 1, hash: 'configuration' };
 export const TAB_MOBILE_SERVICES = { key: 2, hash: 'services' };
@@ -53,7 +53,7 @@ export class Client extends Component {
     const appName = this.props.match.params.id;
 
     this.props.fetchApp(appName);
-    this.props.watchApps(() => this.props.fetchApp(appName));
+    this.props.fetchAndWatchApps();
 
     if (this.props.buildTabEnabled) {
       this.props.fetchBuildConfigs();
@@ -63,7 +63,7 @@ export class Client extends Component {
       this.wsBuilds = DataService.watchBuilds(this.props.fetchBuilds);
     }
 
-    this.props.fetchServices(appName);
+    this.props.fetchAndWatchServices();
   }
 
   componentWillUnmount() {
@@ -215,8 +215,8 @@ const mapDispatchToProps = {
   fetchApp,
   fetchBuildConfigs,
   fetchBuilds,
-  fetchServices,
-  watchApps
+  fetchAndWatchServices,
+  fetchAndWatchApps
 };
 
 export default connect(
