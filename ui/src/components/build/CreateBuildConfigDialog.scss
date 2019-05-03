@@ -24,11 +24,14 @@
   color: #767676;
 }
 
-.required:before {
-  content: '*';
-  position: absolute;
-  left: 10px;
+.buildConfigModal {
+  .required:before {
+    content: '*';
+    position: absolute;
+    left: 10px;
+  }
 }
+
 
 .with-divider {
   border-top: 1px solid rgba(0,0,0,.15);

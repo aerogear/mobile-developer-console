@@ -1,50 +1,15 @@
-import { DISMISS_ERROR, DISMISS_ALL_ERRORS } from '../actions/errors';
-
 const defaultState = {
   isFetching: false,
   items: [],
-  errors: [],
   isCreating: false,
   isDeleting: false,
   isActioning: false,
   isReading: false
 };
 
-const getErrors = (error, type, errors) => {
-  const index = errors.findIndex(e => e.type === type);
-  if (!error) {
-    if (index >= 0) {
-      return [...errors.slice(0, index), ...errors.slice(index + 1)];
-    }
-    return errors;
-  }
-  if (index >= 0) {
-    return [...errors.slice(0, index), { error, type }, ...errors.slice(index + 1)];
-  }
-  return [{ error, type }, ...errors];
-};
-
 const resourceReducer = actions => (state = defaultState, action) => {
   let index;
-  let errorsToDismiss;
-  let errors;
   switch (action.type) {
-    case DISMISS_ERROR:
-      errorsToDismiss = state.errors.filter(e => e.error.message === action.errorMessage);
-      errors = [...state.errors];
-      errorsToDismiss.forEach(e => {
-        index = errors.findIndex(err => err === e);
-        errors = [...errors.slice(0, index), ...errors.slice(index + 1)];
-      });
-      return {
-        ...state,
-        errors
-      };
-    case DISMISS_ALL_ERRORS:
-      return {
-        ...state,
-        errors: []
-      };
     case actions.listRequest:
       return {
         ...state,
@@ -54,14 +19,12 @@ const resourceReducer = actions => (state = defaultState, action) => {
       return {
         ...state,
         isFetching: false,
-        items: action.result.items,
-        errors: getErrors(null, 'list', state.errors)
+        items: action.result.items
       };
     case actions.listFailure:
       return {
         ...state,
-        isFetching: false,
-        errors: getErrors(action.error, 'list', state.errors)
+        isFetching: false
       };
     case actions.readRequest:
       return {
@@ -74,21 +37,18 @@ const resourceReducer = actions => (state = defaultState, action) => {
         return {
           ...state,
           isReading: false,
-          items: [...state.items.slice(0, index), action.result, ...state.items.slice(index + 1)],
-          errors: getErrors(null, 'read', state.errors)
+          items: [...state.items.slice(0, index), action.result, ...state.items.slice(index + 1)]
         };
       }
       return {
         ...state,
         isReading: false,
-        items: [...state.items, action.result],
-        errors: getErrors(null, 'read', state.errors)
+        items: [...state.items, action.result]
       };
     case actions.readFailure:
       return {
         ...state,
-        isReading: false,
-        errors: getErrors(action.error, 'read', state.errors)
+        isReading: false
       };
     case actions.createRequest:
       return {
@@ -96,17 +56,16 @@ const resourceReducer = actions => (state = defaultState, action) => {
         isCreating: true
       };
     case actions.createSuccess:
+      index = state.items.findIndex(item => item.metadata.name === action.result.metadata.name);
       return {
         ...state,
         isCreating: false,
-        errors: getErrors(null, 'create', state.errors),
-        items: [...state.items, action.result]
+        items: index >= 0 ? state.items : [...state.items, action.result]
       };
     case actions.createFailure:
       return {
         ...state,
-        isCreating: false,
-        errors: getErrors(action.error, 'create', state.errors)
+        isCreating: false
       };
     case actions.updateRequest:
       return {
@@ -134,18 +93,16 @@ const resourceReducer = actions => (state = defaultState, action) => {
         isDeleting: true
       };
     case actions.deleteSuccess:
-      index = state.items.findIndex(item => item.metadata.name === action.result.details.name);
+      index = state.items.findIndex(item => item.metadata.name === action.result.metadata.name);
       return {
         ...state,
         isDeleting: false,
-        errors: getErrors(null, 'delete', state.errors),
         items: [...state.items.slice(0, index), ...state.items.slice(index + 1)]
       };
     case actions.deleteFailure:
       return {
         ...state,
-        isDeleting: false,
-        errors: getErrors(action.error, 'delete', state.errors)
+        isDeleting: false
       };
     case actions.actionRequest:
       return {
@@ -155,19 +112,12 @@ const resourceReducer = actions => (state = defaultState, action) => {
     case actions.actionSuccess:
       return {
         ...state,
-        isActioning: false,
-        errors: getErrors(null, 'action', state.errors)
+        isActioning: false
       };
     case actions.actionFailure:
       return {
         ...state,
-        isActioning: false,
-        errors: getErrors(action.error, 'action', state.errors)
-      };
-    case actions.websocketFailure:
-      return {
-        ...state,
-        errors: getErrors(action.error, 'websocket', state.errors)
+        isActioning: false
       };
     default:
       return state;

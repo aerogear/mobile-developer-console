@@ -4,7 +4,7 @@ import { ErrorMessages } from './ErrorMessages';
 
 describe('ErrorMessages', () => {
   it('test render', () => {
-    const errors = [{ error: { message: 'error1' } }, { error: { message: 'error2' } }];
+    const errors = [{ message: 'error1' }, { message: 'error2' }];
 
     const history = {
       listen: () => {}

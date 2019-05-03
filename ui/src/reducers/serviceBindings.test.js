@@ -72,33 +72,6 @@ describe('Create Binding', () => {
     });
     expect(newState.isCreating).toBe(false);
     expect(newState.services).toHaveLength(1);
-    const service = newState.services[0];
-    expect(service.serviceBindings).toHaveLength(1);
-    expect(service.isBindingOperationInProgress()).toBe(true);
-  });
-
-  it('test create success in case of multiple bindings', () => {
-    const initialState = {
-      ...getInitialState(),
-      services: [createService('test-instance')]
-    };
-
-    let newState = serviceBindingReducer(initialState, {
-      type: SERVICE_BINDING_CREATE_SUCCESS,
-      result: { serviceInstanceName: 'test-instance' }
-    });
-    expect(newState.isCreating).toBe(false);
-    expect(newState.services).toHaveLength(1);
-    let service = newState.services[0];
-    expect(service.isBindingOperationInProgress()).toBe(true);
-    expect(service.serviceBindings).toHaveLength(1);
-
-    newState = serviceBindingReducer(initialState, {
-      type: SERVICE_BINDING_CREATE_SUCCESS,
-      result: { serviceInstanceName: 'test-instance' }
-    });
-    [service] = newState.services;
-    expect(service.serviceBindings).toHaveLength(2);
   });
 
   it('test create failure', () => {
@@ -113,7 +86,6 @@ describe('Create Binding', () => {
     });
     expect(newState.isCreating).toBe(false);
     expect(newState.services).toHaveLength(1);
-    expect(newState.services[0].serviceBindings).toHaveLength(0);
     expect(newState.errors).toHaveLength(1);
     expect(newState.errors[0]).toEqual({ error: 'service binding test error', type: 'create' });
   });
@@ -130,7 +102,6 @@ describe('Create Binding', () => {
     });
     expect(newState.isCreating).toBe(false);
     expect(newState.services).toHaveLength(1);
-    expect(newState.services[0].serviceBindings).toHaveLength(0);
     expect(newState.errors).toHaveLength(1);
     expect(newState.errors[0]).toEqual({ error: 'service binding test error', type: 'create' });
   });
@@ -156,10 +127,6 @@ describe('Delete Binding', () => {
     });
     expect(newState.isDeleting).toBe(false);
     expect(newState.services).toHaveLength(1);
-    const [service] = newState.services;
-    expect(service.serviceBindings).toHaveLength(1);
-    expect(service.isBindingOperationInProgress()).toBe(true);
-    expect(service.serviceBindings[0].getCurrentOperation()).toBe('Unbinding');
   });
 
   it('test delete failure', () => {

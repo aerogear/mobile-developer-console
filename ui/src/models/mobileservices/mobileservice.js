@@ -1,6 +1,7 @@
-import { find } from 'lodash-es';
+import { find, filter, reduce, uniqBy } from 'lodash-es';
 import Resource from '../k8s/resource';
 import { ServiceBinding } from './servicebinding';
+import { newCustomResource, newCustomResourceClass } from './customresourcefactory';
 
 export class MobileService {
   constructor(json = {}) {
@@ -8,7 +9,6 @@ export class MobileService {
     this.configuration = this.data.configuration || [];
     this.configurationExt = this.data.configurationExt || [];
     this.setupText = '';
-    this.serviceInstance = new Resource(this.data.serviceInstance);
     this.serviceBindings = [];
     if (this.data.serviceBindings) {
       for (const binding of this.data.serviceBindings) {
@@ -16,7 +16,17 @@ export class MobileService {
       }
     }
     this.serviceClass = new Resource(this.data.serviceClass);
-    this.servicePlan = new Resource(this.data.servicePlan);
+
+    if (this.data.bindCustomResource) {
+      this.customResourceClass = newCustomResourceClass(this.data.bindCustomResource.kind);
+    }
+
+    this.customResources = [];
+    if (this.data.customResources) {
+      for (const customResource of this.data.customResources) {
+        this.customResources.push(newCustomResource(customResource));
+      }
+    }
   }
 
   getName() {
@@ -40,64 +50,64 @@ export class MobileService {
   }
 
   isBound() {
-    return this.data.customResources.length > 0;
+    return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady());
+  }
+
+  isBoundToApp(appName) {
+    return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady() && cr.hasAppLabel(appName));
+  }
+
+  getCustomResourcesForApp(appName) {
+    return filter(this.customResources, cr => cr.hasAppLabel(appName));
   }
 
   getServiceInstanceName() {
-    return this.serviceInstance.metadata.get('name');
+    return this.data.name;
   }
 
   getSetupText() {
     return this.setupText;
   }
 
-  getBindingSchema() {
-    return this.servicePlan.spec.get('serviceBindingCreateParameterSchema');
+  getBindingForm(params) {
+    return this.customResourceClass.bindForm(params);
   }
 
   isBindingOperationInProgress() {
-    const inprogressBinding = find(this.serviceBindings, binding => binding.isInProgress());
-    return inprogressBinding != null;
+    const inprogressCR = find(this.customResources, cr => cr.isInProgress());
+    return inprogressCR != null;
   }
 
   getBindingOperation() {
-    const currentBinding = find(this.serviceBindings, binding => binding.isInProgress());
-    if (currentBinding) {
-      return currentBinding.getCurrentOperation();
+    const inprogressCR = find(this.customResources, cr => cr.isInProgress());
+    if (inprogressCR) {
+      return inprogressCR.getCurrentOperation();
     }
     return undefined;
   }
 
   isBindingOperationFailed() {
-    const failedBinding = find(this.serviceBindings, binding => binding.isFailed());
-    return failedBinding != null;
-  }
-
-  getFormDefinition() {
-    const form = this.servicePlan.spec.get('externalMetadata.schemas.service_binding.create.openshift_form_definition');
-    form.filterDisplayGroupBy = JSON.parse(
-      this.servicePlan.spec.get('externalMetadata.mobileclient_bind_parameters_data[0]') || ''
-    ).filterDisplayGroupBy;
-    return form;
-  }
-
-  setBindingSchemaDefaultValues(name, value) {
-    const bindingSchema = this.getBindingSchema();
-    if (bindingSchema && bindingSchema.properties && bindingSchema.properties[name]) {
-      bindingSchema.properties[name].default = value;
-    }
-  }
-
-  getServiceClassExternalName() {
-    return this.serviceClass.spec.get('externalMetadata.serviceName');
+    const failedCR = find(this.customResources, cr => cr.isFailed());
+    return failedCR != null;
   }
 
   isUPSService() {
-    return this.getServiceClassExternalName() === 'ups';
+    return this.data.type === 'push';
   }
 
-  getConfiguration() {
-    return this.data.configuration;
+  customResourceDef() {
+    return this.data.bindCustomResource;
+  }
+
+  newCustomResource(formdata) {
+    return this.customResourceClass.newInstance(formdata);
+  }
+
+  getConfiguration(appName) {
+    const crs = this.getCustomResourcesForApp(appName);
+    const configurations = reduce(crs, (all, cr) => all.concat(cr.getConfiguration(this.data.url)), []);
+    const uniqConfigs = uniqBy(configurations, config => config.label);
+    return uniqConfigs;
   }
 
   getConfigurationExt() {
@@ -140,7 +150,7 @@ export class MobileService {
   }
 
   getDocumentationUrl() {
-    return this.serviceClass.spec.get('externalMetadata.documentationUrl');
+    return this.customResourceClass.getDocumentationUrl();
   }
 
   findBinding(bindingName) {
@@ -152,7 +162,6 @@ export class MobileService {
       ...this.data,
       configuration: this.configuration,
       configurationExt: this.configurationExt,
-      serviceInstance: this.serviceInstance.toJSON(),
       serviceBindings: this.serviceBindings.toJSON(),
       serviceClass: this.serviceClass.toJSON()
     };

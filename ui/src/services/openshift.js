@@ -39,6 +39,13 @@ class OpenShiftWatchEventListener {
   }
 }
 
+const getNamespace = () => {
+  if (window && window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.mdcNamespace) {
+    return window.OPENSHIFT_CONFIG.mdcNamespace;
+  }
+  return undefined;
+};
+
 const getUser = () => {
   if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.user) {
     return Promise.resolve(Object.freeze(window.OPENSHIFT_CONFIG.user));
@@ -175,4 +182,4 @@ const _labelsToQuery = labels => {
   return labelsArr.join(',');
 };
 
-export { get, create, list, watch, update, remove, OpenShiftWatchEvents, getUser, listWithLabels };
+export { get, create, list, watch, update, remove, OpenShiftWatchEvents, getUser, listWithLabels, getNamespace };

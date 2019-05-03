@@ -24,10 +24,10 @@ describe('BoundServiceRow - not UPS', () => {
     getLogoUrl: () => undefined,
     getName: () => 'Data Sync',
     isUPSService: () => false,
-    serviceBindings: [
+    getCustomResourcesForApp: () => [
       {
-        getName: () => 'test-data-sync-r66b9',
-        getPlatform: () => undefined
+        getName: () => 'test',
+        getPlatform: () => 'android'
       }
     ]
   };
@@ -45,11 +45,11 @@ describe('BoundServiceRow - not UPS', () => {
   it('should display configuration details in the service row', () => {
     const configurationUrl = 'http://configuration-url.com';
     service.getConfiguration = () => [
-      `{
-        "label": "test-label",
-        "type": "href",
-        "value": "${configurationUrl}"
-      }`
+      {
+        label: 'test-label',
+        type: 'href',
+        value: `${configurationUrl}`
+      }
     ];
     const wrapper = shallow(<BoundServiceRow service={service} />);
     expect(wrapper.find(`a[href="${configurationUrl}"]`).text()).toEqual(configurationUrl);
@@ -110,7 +110,7 @@ describe('BoundServiceRow - UPS - 1 binding', () => {
     getBindingSchema: () => bindingSchema,
     getFormDefinition: () => undefined,
     isBound: () => true,
-    serviceBindings: [
+    getCustomResourcesForApp: () => [
       {
         getName: () => 'test-data-sync-r66b9',
         getPlatform: () => undefined
@@ -172,7 +172,7 @@ describe('BoundServiceRow - UPS - 2 bindings', () => {
     getBindingSchema: () => bindingSchema,
     getFormDefinition: () => undefined,
     isBound: () => true,
-    serviceBindings: [
+    getCustomResourcesForApp: () => [
       {
         getName: () => 'test-ups-r66b9',
         getPlatform: () => 'android'

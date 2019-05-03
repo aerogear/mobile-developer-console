@@ -1,5 +1,5 @@
 import { getUser } from '../services/openshift';
-import fetchAction from './fetch';
+import { fetchAction } from './fetch';
 
 export const USER_INFO_REQUEST = 'USER_INFO_REQUEST';
 export const USER_INFO_SUCCESS = 'USER_INFO_SUCCESS';
