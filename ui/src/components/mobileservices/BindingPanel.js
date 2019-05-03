@@ -83,6 +83,7 @@ export class BindingPanel extends Component {
         }}
         validate={this.validate}
         showErrorList={false}
+        formData={this.state.formData}
         onChange={this.onFormChange} // eslint-disable-line no-return-assign
       >
         <div />

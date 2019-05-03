@@ -1,4 +1,4 @@
-import { find } from 'lodash-es';
+import { find, filter } from 'lodash-es';
 import Resource from '../k8s/resource';
 import { ServiceBinding } from './servicebinding';
 import { newCustomResource, newCustomResourceClass } from './customresourcefactory';
@@ -51,6 +51,14 @@ export class MobileService {
 
   isBound() {
     return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady());
+  }
+
+  isBoundToApp(appName) {
+    return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady() && cr.hasAppLabel(appName));
+  }
+
+  getCustomResourcesForApp(appName) {
+    return filter(this.customResources, cr => cr.hasAppLabel(appName));
   }
 
   getServiceInstanceName() {

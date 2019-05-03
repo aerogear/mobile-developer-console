@@ -24,10 +24,10 @@ describe('BoundServiceRow - not UPS', () => {
     getLogoUrl: () => undefined,
     getName: () => 'Data Sync',
     isUPSService: () => false,
-    serviceBindings: [
+    getCustomResourcesForApp: () => [
       {
-        getName: () => 'test-data-sync-r66b9',
-        getPlatform: () => undefined
+        getName: () => 'test',
+        getPlatform: () => 'android'
       }
     ]
   };
@@ -110,7 +110,7 @@ describe('BoundServiceRow - UPS - 1 binding', () => {
     getBindingSchema: () => bindingSchema,
     getFormDefinition: () => undefined,
     isBound: () => true,
-    serviceBindings: [
+    getCustomResourcesForApp: () => [
       {
         getName: () => 'test-data-sync-r66b9',
         getPlatform: () => undefined
@@ -172,7 +172,7 @@ describe('BoundServiceRow - UPS - 2 bindings', () => {
     getBindingSchema: () => bindingSchema,
     getFormDefinition: () => undefined,
     isBound: () => true,
-    serviceBindings: [
+    getCustomResourcesForApp: () => [
       {
         getName: () => 'test-ups-r66b9',
         getPlatform: () => 'android'

@@ -3,7 +3,6 @@ import { MenuItem, MessageDialog } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { deleteApp } from '../actions/apps';
-import { deleteBinding } from '../actions/serviceBinding';
 import { deleteBuildConfig } from '../actions/buildConfigs';
 
 class DeleteItemButton extends Component {
@@ -15,19 +14,21 @@ class DeleteItemButton extends Component {
   }
 
   triggerDeletion = history => {
-    const { itemType, itemName, navigate } = this.props;
-    switch (itemType) {
-      case 'app':
-        this.props.deleteApp(itemName);
-        break;
-      case 'buildconfig':
-        this.props.deleteBuildConfig(itemName);
-        break;
-      case 'serviceBinding':
-        this.props.deleteBinding(itemName);
-        break;
-      default:
-        break;
+    const { onDelete, navigate } = this.props;
+    if (onDelete && typeof onDelete === 'function') {
+      onDelete();
+    } else {
+      const { itemType, itemName } = this.props;
+      switch (itemType) {
+        case 'app':
+          this.props.deleteApp(itemName);
+          break;
+        case 'buildconfig':
+          this.props.deleteBuildConfig(itemName);
+          break;
+        default:
+          break;
+      }
     }
     // This ensure hiding the dropdown menu when deletion was not successful
     // See https://github.com/react-bootstrap/react-bootstrap/issues/541
@@ -93,8 +94,7 @@ class DeleteItemButton extends Component {
 
 const mapDispatchToProps = {
   deleteApp,
-  deleteBuildConfig,
-  deleteBinding
+  deleteBuildConfig
 };
 
 export default connect(

@@ -41,7 +41,7 @@ export class KeycloakRealmCR extends CustomResource {
               clientId: {
                 title: 'Client Id',
                 type: 'string',
-                default: `${params.appName}-realm`
+                default: `${params.appName}-client`
               },
               CLIENT_TYPE: {
                 default: 'public',

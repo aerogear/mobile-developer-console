@@ -1,6 +1,6 @@
 import { compact } from 'lodash-es';
 import { mobileServices } from '../services/mobileservices';
-import { list, watch, create, OpenShiftWatchEvents } from '../services/openshift';
+import { list, watch, create, OpenShiftWatchEvents, remove } from '../services/openshift';
 import { errorCreator } from './errors';
 
 export const SERVICES_REQUEST = 'SERVICES_REQUEST';
@@ -39,6 +39,13 @@ export const createCustomResourceForService = (service, formdata) => async dispa
   const reqBody = service.newCustomResource(formdata);
   // we don't need to handle success event here as it will be handled by the WS handler
   return create(resDef, reqBody).catch(err => {
+    dispatch(errorCreator(err));
+  });
+};
+
+export const deleteCustomResource = (service, cr) => async dispatch => {
+  const resDef = service.customResourceDef();
+  return remove(resDef, cr).catch(err => {
     dispatch(errorCreator(err));
   });
 };

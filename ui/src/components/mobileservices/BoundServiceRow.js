@@ -141,15 +141,16 @@ class BoundServiceRow extends Component {
   }
 
   renderDeleteBindingDropdowns() {
-    const bindings = this.props.service.serviceBindings;
+    const crs = this.props.service.getCustomResourcesForApp(this.props.appName);
     return (
       <DropdownKebab id={`delete-binding}`} pullRight>
-        {bindings.map(binding => (
+        {crs.map(cr => (
           <DeleteItemButton
-            key={`delete-binding-${binding.getName()}`}
-            title={binding.getPlatform() ? `Delete ${binding.getPlatform()} Binding` : undefined}
-            itemType="serviceBinding"
-            itemName={binding.getName()}
+            key={`delete-cr-${cr.getName()}`}
+            title={cr.getPlatform ? `Delete ${cr.getPlatform()}` : undefined}
+            itemType="config"
+            itemName={cr.getName()}
+            onDelete={() => this.props.onDeleteBinding(cr)}
           />
         ))}
       </DropdownKebab>

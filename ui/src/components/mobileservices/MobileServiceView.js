@@ -5,7 +5,7 @@ import { partition } from 'lodash-es';
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
 import './MobileServiceView.css';
-import { fetchServices } from '../../actions/services';
+import { fetchServices, deleteCustomResource } from '../../actions/services';
 import BindingPanel from './BindingPanel';
 import { MobileService } from '../../models/';
 
@@ -34,9 +34,11 @@ class MobileServiceView extends Component {
           this.props.boundServices.map(service => (
             <BoundServiceRow
               key={service.getId()}
+              appName={this.props.appName}
               service={service}
               onCreateBinding={() => this.showBindingPanel(service)}
               onFinished={this.hideBindingPanel}
+              onDeleteBinding={cr => this.props.deleteCustomResource(service, cr.toJSON())}
             />
           ))
         ) : (
@@ -108,14 +110,15 @@ class MobileServiceView extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, oldProp) {
   const services = state.services.items.map(item => new MobileService(item));
-  const filteredServices = partition(services, service => service.isBound());
+  const filteredServices = partition(services, service => service.isBoundToApp(oldProp.appName));
   return { ...state.services, boundServices: filteredServices[0], unboundServices: filteredServices[1] };
 }
 
 const mapDispatchToProps = {
-  fetchServices
+  fetchServices,
+  deleteCustomResource
 };
 
 export default connect(

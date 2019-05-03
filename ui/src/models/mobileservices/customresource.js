@@ -25,6 +25,14 @@ export class CustomResource extends Resource {
     return CustomResource.READY_STATUSES.indexOf(phase) > -1;
   }
 
+  hasAppLabel(appName) {
+    const labels = this.metadata.get('labels');
+    if (labels) {
+      return labels['mobile.aerogear.org/client'] === appName;
+    }
+    return false;
+  }
+
   isInProgress() {
     const phase = this.status.get('phase');
     return CustomResource.INPROGRESS_STATUSES.indexOf(phase) > -1;
