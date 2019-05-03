@@ -1,4 +1,4 @@
-import { find, filter } from 'lodash-es';
+import { find, filter, reduce, uniqBy } from 'lodash-es';
 import Resource from '../k8s/resource';
 import { ServiceBinding } from './servicebinding';
 import { newCustomResource, newCustomResourceClass } from './customresourcefactory';
@@ -103,8 +103,11 @@ export class MobileService {
     return this.customResourceClass.newInstance(formdata);
   }
 
-  getConfiguration() {
-    return this.data.configuration;
+  getConfiguration(appName) {
+    const crs = this.getCustomResourcesForApp(appName);
+    const configurations = reduce(crs, (all, cr) => all.concat(cr.getConfiguration(this.data.url)), []);
+    const uniqConfigs = uniqBy(configurations, config => config.label);
+    return uniqConfigs;
   }
 
   getConfigurationExt() {
@@ -147,7 +150,7 @@ export class MobileService {
   }
 
   getDocumentationUrl() {
-    return this.serviceClass.spec.get('externalMetadata.documentationUrl');
+    return this.customResourceClass.getDocumentationUrl();
   }
 
   findBinding(bindingName) {

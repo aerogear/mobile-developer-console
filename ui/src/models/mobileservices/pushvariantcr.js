@@ -18,6 +18,20 @@ export class PushVariantCR extends CustomResource {
     return this.spec.get('platform');
   }
 
+  getConfiguration(serviceHost) {
+    // TODO: need to make sure the push app id is here
+    const pushAppId = this.spec.get('pushApplicationId');
+    return [
+      { type: 'string', label: 'Push Application Id', value: pushAppId },
+      { type: 'href', label: 'UPS Admin Console URL', value: serviceHost },
+      {
+        type: 'href',
+        label: 'Push Application',
+        value: `${serviceHost}/#/app/${pushAppId}/variants`
+      }
+    ];
+  }
+
   static bindForm(params) {
     const { service } = params;
     const hasIOS = hasPlatform(service, 'ios');
@@ -212,5 +226,9 @@ export class PushVariantCR extends CustomResource {
   static newInstance(params) {
     // TODO: implement me!
     return {};
+  }
+
+  static getDocumentationUrl() {
+    return 'https://docs.aerogear.org/external/apb/unifiedpush.html';
   }
 }

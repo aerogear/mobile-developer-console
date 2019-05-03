@@ -45,11 +45,11 @@ describe('BoundServiceRow - not UPS', () => {
   it('should display configuration details in the service row', () => {
     const configurationUrl = 'http://configuration-url.com';
     service.getConfiguration = () => [
-      `{
-        "label": "test-label",
-        "type": "href",
-        "value": "${configurationUrl}"
-      }`
+      {
+        label: 'test-label',
+        type: 'href',
+        value: `${configurationUrl}`
+      }
     ];
     const wrapper = shallow(<BoundServiceRow service={service} />);
     expect(wrapper.find(`a[href="${configurationUrl}"]`).text()).toEqual(configurationUrl);

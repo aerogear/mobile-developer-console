@@ -5,6 +5,19 @@ export class KeycloakRealmCR extends CustomResource {
     super(data);
   }
 
+  getConfiguration(serviceHost) {
+    const realmId = this.spec.get('realm');
+    return [
+      { type: 'string', label: 'Keycloak Realm', value: realmId },
+      { type: 'href', label: 'Service Host', value: serviceHost },
+      {
+        type: 'href',
+        label: 'Keycloak Realm URL',
+        value: `${serviceHost}/auth/admin/${realmId}/console/#/realms/${realmId}`
+      }
+    ];
+  }
+
   static bindForm(params) {
     return {
       schema: {
@@ -141,14 +154,18 @@ export class KeycloakRealmCR extends CustomResource {
             firstName: '',
             lastName: '',
             email: '',
-            realmRoles: ['admin', 'offline_access', 'uma_authorization'],
+            realmRoles: ['offline_access', 'uma_authorization'],
             clientRoles: {
               account: ['manage-account', 'view-profile'],
-              'realm-management': ['manage-users']
+              'realm-management': ['realm-admin']
             }
           }
         ]
       }
     };
+  }
+
+  static getDocumentationUrl() {
+    return 'https://docs.aerogear.org/external/apb/keycloak.html';
   }
 }

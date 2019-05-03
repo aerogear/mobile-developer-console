@@ -1,6 +1,19 @@
 import { CustomResource } from './customresource';
 
 export class MetricsCR extends CustomResource {
+  getConfiguration() {
+    const metricsUrl = this.spec.get('metricsUrl');
+    const grafanaUrl = this.spec.get('grafanaUrl');
+    return [
+      { type: 'href', label: 'Metrics Endpoint', value: metricsUrl },
+      {
+        type: 'href',
+        label: 'Grafana URL',
+        value: grafanaUrl
+      }
+    ];
+  }
+
   static bindForm(params) {
     return {
       schema: {
@@ -25,5 +38,9 @@ export class MetricsCR extends CustomResource {
   static newInstance(params) {
     // TODO: implement me
     return {};
+  }
+
+  static getDocumentationUrl() {
+    return 'https://docs.aerogear.org/external/apb/metrics.html';
   }
 }
