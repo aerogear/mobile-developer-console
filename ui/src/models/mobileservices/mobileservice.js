@@ -1,6 +1,4 @@
 import { find, filter, reduce, uniqBy } from 'lodash-es';
-import Resource from '../k8s/resource';
-import { ServiceBinding } from './servicebinding';
 import { newCustomResource, newCustomResourceClass } from './customresourcefactory';
 
 export class MobileService {
@@ -9,13 +7,6 @@ export class MobileService {
     this.configuration = this.data.configuration || [];
     this.configurationExt = this.data.configurationExt || [];
     this.setupText = '';
-    this.serviceBindings = [];
-    if (this.data.serviceBindings) {
-      for (const binding of this.data.serviceBindings) {
-        this.serviceBindings.push(new ServiceBinding(binding));
-      }
-    }
-    this.serviceClass = new Resource(this.data.serviceClass);
 
     if (this.data.bindCustomResource) {
       this.customResourceClass = newCustomResourceClass(this.data.bindCustomResource.kind);
@@ -153,17 +144,11 @@ export class MobileService {
     return this.customResourceClass.getDocumentationUrl();
   }
 
-  findBinding(bindingName) {
-    return find(this.serviceBindings, binding => binding.getName() === bindingName);
-  }
-
   toJSON() {
     return {
       ...this.data,
       configuration: this.configuration,
-      configurationExt: this.configurationExt,
-      serviceBindings: this.serviceBindings.toJSON(),
-      serviceClass: this.serviceClass.toJSON()
+      configurationExt: this.configurationExt
     };
   }
 }

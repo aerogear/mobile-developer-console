@@ -5,7 +5,6 @@ import buildConfigs, { buildConfigReducer } from './buildConfigs';
 import builds from './builds';
 import user from './user';
 import config from './config';
-import serviceBindings from './serviceBindings';
 import createClientAppDialog from './createClientAppDialog';
 import errors from './errors';
 
@@ -17,7 +16,6 @@ export default combineReducers({
   builds,
   user,
   config,
-  serviceBindings,
   createClientAppDialog,
   errors
 });
