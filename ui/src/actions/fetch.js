@@ -17,26 +17,30 @@ const failureAction = (type, error) => ({
 
 const watchStatus = {};
 
-const fetchIfRequired = (resource, storekey, actionTypes, dispatch, getState) => {
+const fetchIfRequired = (resource, storekey, actionTypes, dispatch, getState, actionCreators) => {
+  const requestActionCreator = actionCreators.request || requestAction;
+  const successActionCreators = actionCreators.success || successAction;
   const currentState = getState();
   const currentStoreData = currentState[storekey];
-  if (currentStoreData && currentStoreData.items && currentStoreData.items.length > 0 && watchStatus[resource.kind]) {
+  if (currentStoreData && currentStoreData.fetched && watchStatus[resource.kind]) {
     return Promise.resolve();
   }
-  dispatch(requestAction(actionTypes.REQUEST));
+  dispatch(requestActionCreator(actionTypes.REQUEST));
   return list(resource).then(data => {
-    dispatch(successAction(actionTypes.SUCCESS, data));
+    dispatch(successActionCreators(actionTypes.SUCCESS, data));
   });
 };
 
-const watchIfRequired = (resource, actionTypes, dispatch) => {
+const watchIfRequired = (resource, actionTypes, dispatch, actionCreators) => {
   if (watchStatus[resource.kind]) {
     return Promise.resolve();
   }
-  return watchResource(resource, actionTypes, dispatch);
+  return watchResource(resource, actionTypes, dispatch, actionCreators);
 };
 
-const watchResource = (resource, actionTypes, dispatch) => {
+const watchResource = (resource, actionTypes, dispatch, actionCreators) => {
+  const successActionCreators = actionCreators.success || successAction;
+  const failureActionCreator = actionCreators.failure || failureAction;
   watchStatus[resource.kind] = true;
   // TODO: add label selectors to the watch url
   return watch(resource).then(handler => {
@@ -44,31 +48,36 @@ const watchResource = (resource, actionTypes, dispatch) => {
       if (event.type === OpenShiftWatchEvents.CLOSED) {
         watchStatus[resource.kind] = false;
       } else if (event.type === OpenShiftWatchEvents.ADDED) {
-        dispatch(successAction(actionTypes.ADDED, event.payload));
+        dispatch(successActionCreators(actionTypes.ADDED, event.payload));
       } else if (event.type === OpenShiftWatchEvents.MODIFIED) {
-        dispatch(successAction(actionTypes.MODIFIED, event.payload));
+        dispatch(successActionCreators(actionTypes.MODIFIED, event.payload));
       } else if (event.type === OpenShiftWatchEvents.DELETED) {
-        dispatch(successAction(actionTypes.DELETED, event.payload));
+        dispatch(successActionCreators(actionTypes.DELETED, event.payload));
       }
     });
     handler.catch(error => {
       watchStatus[resource.kind] = false;
-      dispatch(failureAction(actionTypes.FAILURE, error));
+      dispatch(failureActionCreator(actionTypes.FAILURE, error));
       dispatch(errorCreator(error));
     });
     return handler;
   });
 };
 
-export const fetchAndWatchOpenShiftResource = (resource, storeKey, actionTypes) => () => async (dispatch, getState) =>
-  fetchIfRequired(resource, storeKey, actionTypes, dispatch, getState)
+export const fetchAndWatchOpenShiftResource = (resource, storeKey, actionTypes, actionCreators = {}) => () => async (
+  dispatch,
+  getState
+) => {
+  const failureActionCreator = actionCreators.failure || failureAction;
+  fetchIfRequired(resource, storeKey, actionTypes, dispatch, getState, actionCreators)
     .then(() => {
-      watchIfRequired(resource, actionTypes, dispatch);
+      watchIfRequired(resource, actionTypes, dispatch, actionCreators);
     })
     .catch(error => {
-      dispatch(failureAction(actionTypes.FAILURE, error));
+      dispatch(failureActionCreator(actionTypes.FAILURE, error));
       dispatch(errorCreator(error));
     });
+};
 
 export const fetchAction = ([request, success, failure], doFetch) => () => async dispatch => {
   dispatch(requestAction(request));

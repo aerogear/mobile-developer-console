@@ -46,6 +46,13 @@ const getNamespace = () => {
   return undefined;
 };
 
+const getMasterUri = () => {
+  if (window && window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.masterUri) {
+    return window.OPENSHIFT_CONFIG.masterUri;
+  }
+  return undefined;
+};
+
 const getUser = () => {
   if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.user) {
     return Promise.resolve(Object.freeze(window.OPENSHIFT_CONFIG.user));
@@ -182,4 +189,16 @@ const _labelsToQuery = labels => {
   return labelsArr.join(',');
 };
 
-export { get, create, list, watch, update, remove, OpenShiftWatchEvents, getUser, listWithLabels, getNamespace };
+export {
+  get,
+  create,
+  list,
+  watch,
+  update,
+  remove,
+  OpenShiftWatchEvents,
+  getUser,
+  listWithLabels,
+  getNamespace,
+  getMasterUri
+};

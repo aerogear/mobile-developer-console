@@ -9,7 +9,7 @@ describe('Overview', () => {
 
     const props = {
       fetchAndWatchApps: mockFetchApps,
-      fetchBuilds: mockFetchBuilds,
+      fetchAndWatchBuilds: mockFetchBuilds,
       buildTabEnabled: true,
       apps: { items: [] },
       services: { items: [] },

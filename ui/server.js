@@ -65,11 +65,23 @@ app.get('/about', (_, res) => {
 });
 
 function getConfigData(req) {
-  const { OPENSHIFT_USER_TOKEN, OPENSHIFT_USER_NAME, OPENSHIFT_USER_EMAIL, OPENSHIFT_MDC_NAMESPACE } = process.env;
+  const {
+    OPENSHIFT_USER_TOKEN,
+    OPENSHIFT_USER_NAME,
+    OPENSHIFT_USER_EMAIL,
+    OPENSHIFT_MDC_NAMESPACE,
+    ENABLE_BUILD_TAB,
+    DOCS_PREFIX
+  } = process.env;
   let userToken = OPENSHIFT_USER_TOKEN;
   let userName = OPENSHIFT_USER_NAME || 'testuser';
   let userEmail = OPENSHIFT_USER_EMAIL || 'testuser@localhost';
   const mdcNamespace = OPENSHIFT_MDC_NAMESPACE || 'myproject';
+  const docsPrefix = DOCS_PREFIX || 'https://docs.aerogear.org/aerogear/latest';
+  let enableBuildTab = false;
+  if (ENABLE_BUILD_TAB && ENABLE_BUILD_TAB === 'true') {
+    enableBuildTab = true;
+  }
 
   if (process.env.NODE_ENV === 'production') {
     userToken = req.get('X-Forwarded-Access-Token');
@@ -86,7 +98,7 @@ function getConfigData(req) {
       name: '${userName}',
       email: '${userEmail}'
     }
-  };`;
+  }; window.SERVER_DATA= { ENABLE_BUILD_TAB: ${enableBuildTab}, DOCS_PREFIX: '${DOCS_PREFIX}' };`;
 }
 
 function getServices(servicesConfigPath) {

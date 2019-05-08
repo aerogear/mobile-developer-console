@@ -5,28 +5,32 @@ const mobileAppDef = namespace => ({
   kind: 'MobileClient',
   namespace
 });
-const keycloakRealmDef = namespace => ({
-  name: 'keycloakrealms',
-  version: 'v1alpha1',
-  group: 'aerogear.org',
-  kind: 'KeycloakRealm',
+const buildsDef = namespace => ({
+  name: 'builds',
+  version: 'v1',
+  group: 'build.openshift.io',
+  kind: 'Build',
   namespace
 });
-// TODO: use the right type definition
-const pushVariantDef = namespace => ({
-  name: 'pushvariant',
-  version: 'v1alpha1',
-  group: 'aerogear.org',
-  kind: 'PushVariant',
+const buildConfigsDef = namespace => ({
+  name: 'buildconfigs',
+  version: 'v1',
+  group: 'build.openshift.io',
+  kind: 'BuildConfig',
   namespace
 });
-// TODO: use the right type definition
-const metricsApp = namespace => ({
-  name: 'metricsApp',
-  version: 'v1alpha1',
-  group: 'aerogear.org',
-  kind: 'MetricsApp',
+const buildConfigInstantiateDef = namespace => name => ({
+  name: `buildconfigs/${name}/instantiate`,
+  version: 'v1',
+  group: 'build.openshift.io',
+  kind: 'BuildRequest',
+  namespace
+});
+const secretsDef = namespace => ({
+  name: 'secrets',
+  version: 'v1',
+  kind: 'Secret',
   namespace
 });
 
-export { mobileAppDef, keycloakRealmDef, pushVariantDef, metricsApp };
+export { mobileAppDef, buildsDef, buildConfigsDef, buildConfigInstantiateDef, secretsDef };
