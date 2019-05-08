@@ -1,14 +1,9 @@
-import DataService from '../DataService';
-import { fetchAction } from './fetch';
+import { fetchAction, fetchAndWatchOpenShiftResource } from './fetch';
+import { buildConfigsService } from '../services/buildconfigs';
 
 export const BUILD_CONFIGS_REQUEST = 'BUILD_CONFIGS_REQUEST';
 export const BUILD_CONFIGS_SUCCESS = 'BUILD_CONFIGS_SUCCESS';
 export const BUILD_CONFIGS_FAILURE = 'BUILD_CONFIGS_FAILURE';
-
-export const fetchBuildConfigs = fetchAction(
-  [BUILD_CONFIGS_REQUEST, BUILD_CONFIGS_SUCCESS, BUILD_CONFIGS_FAILURE],
-  DataService.buildConfigs
-);
 
 export const BUILD_CONFIG_DELETE_REQUEST = 'BUILD_CONFIG_DELETE_REQUEST';
 export const BUILD_CONFIG_DELETE_SUCCESS = 'BUILD_CONFIG_DELETE_SUCCESS';
@@ -16,7 +11,7 @@ export const BUILD_CONFIG_DELETE_FAILURE = 'BUILD_CONFIG_DELETE_FAILURE';
 
 export const deleteBuildConfig = name =>
   fetchAction([BUILD_CONFIG_DELETE_REQUEST, BUILD_CONFIG_DELETE_SUCCESS, BUILD_CONFIG_DELETE_FAILURE], async () =>
-    DataService.deleteBuildConfig(name)
+    buildConfigsService.deleteBuildConfig(name)
   )();
 
 export const BUILD_CONFIG_CREATE_REQUEST = 'BUILD_CONFIG_CREATE_REQUEST';
@@ -25,8 +20,22 @@ export const BUILD_CONFIG_CREATE_FAILURE = 'BUILD_CONFIG_CREATE_FAILURE';
 
 export const createBuildConfig = config =>
   fetchAction([BUILD_CONFIG_CREATE_REQUEST, BUILD_CONFIG_CREATE_SUCCESS, BUILD_CONFIG_CREATE_FAILURE], async () =>
-    DataService.createBuildConfig(config)
+    buildConfigsService.createBuildConfig(config)
   )();
+
+export const BUILD_CONFIG_UPDATE_SUCCESS = 'BUILD_CONFIG_UPDATE_SUCCESS';
+export const fetchAndWatchBuildConfigs = fetchAndWatchOpenShiftResource(
+  buildConfigsService.buildConfigsRes,
+  'buildConfigs',
+  {
+    REQUEST: BUILD_CONFIGS_REQUEST,
+    SUCCESS: BUILD_CONFIGS_SUCCESS,
+    FAILURE: BUILD_CONFIGS_FAILURE,
+    ADDED: BUILD_CONFIG_CREATE_SUCCESS,
+    MODIFIED: BUILD_CONFIG_UPDATE_SUCCESS,
+    DELETED: BUILD_CONFIG_DELETE_SUCCESS
+  }
+);
 
 export const BUILD_CONFIG_FIELD_SET_VALUE = 'BUILD_CONFIG_FIELD_SET_VALUE';
 export const BUILD_CONFIG_FIELD_REMOVE_VALUE = 'BUILD_CONFIG_FIELD_REMOVE_VALUE';

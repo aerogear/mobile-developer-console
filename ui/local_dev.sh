@@ -13,6 +13,7 @@ oc project myproject
 echo "Setup environment variables"
 export OPENSHIFT_HOST="$MINISHIFT_IP:8443"
 export OPENSHIFT_USER_TOKEN="$USER_TOKEN"
+export ENABLE_BUILD_TAB="false"
 echo "Start server"
 npm run start:server &
 npm run start

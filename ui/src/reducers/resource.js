@@ -4,7 +4,8 @@ const defaultState = {
   isCreating: false,
   isDeleting: false,
   isActioning: false,
-  isReading: false
+  isReading: false,
+  fetched: false
 };
 
 const resourceReducer = actions => (state = defaultState, action) => {
@@ -19,7 +20,8 @@ const resourceReducer = actions => (state = defaultState, action) => {
       return {
         ...state,
         isFetching: false,
-        items: action.result.items
+        items: action.result.items,
+        fetched: true
       };
     case actions.listFailure:
       return {
