@@ -31,7 +31,7 @@ async function getServiceItemsFromStoreOrRemote(dispatch, getState) {
 function listCustomResourceForServiceIfRequired(dispatch, service) {
   const custRes = service.bindCustomResource;
   // If there is already a list of custom resources available and we are still watching them, then the store is up to date and there is no need to list again
-  if (service.customResources && service.customResources.length > 0 && watchStatus[custRes.kind]) {
+  if (service.customResources && watchStatus[custRes.kind]) {
     return Promise.resolve();
   }
   return listCustomResourceForService(dispatch, service);

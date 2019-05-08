@@ -7,7 +7,9 @@ import {
   BUILD_TRIGGER_FAILURE,
   BUILD_DOWNLOAD_REQUEST,
   BUILD_DOWNLOAD_SUCCESS,
-  BUILD_DOWNLOAD_FAILURE
+  BUILD_DOWNLOAD_FAILURE,
+  BUILDS_MODIFIED_SUCCESS,
+  BUILDS_DELETE_SUCCESS
 } from '../actions/builds';
 import resourceReducer from './resource';
 
@@ -20,7 +22,9 @@ const builds = resourceReducer({
   createFailure: BUILD_TRIGGER_FAILURE,
   actionRequest: BUILD_DOWNLOAD_REQUEST,
   actionSuccess: BUILD_DOWNLOAD_SUCCESS,
-  actionFailure: BUILD_DOWNLOAD_FAILURE
+  actionFailure: BUILD_DOWNLOAD_FAILURE,
+  updateSuccess: BUILDS_MODIFIED_SUCCESS,
+  deleteSuccess: BUILDS_DELETE_SUCCESS
 });
 
 export default builds;

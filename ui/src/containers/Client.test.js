@@ -3,8 +3,6 @@ import React from 'react';
 import { TabContainer, NavItem } from 'patternfly-react';
 import { Client, TAB_CONFIGURATION, TAB_MOBILE_SERVICES } from './Client';
 
-jest.mock('../DataService');
-
 describe('Client', () => {
   it('test render all tabs', () => {
     const mockFetchApp = jest.fn();
@@ -18,8 +16,8 @@ describe('Client', () => {
       match: { params: { id: 'testapp' } },
       fetchApp: mockFetchApp,
       buildTabEnabled: true,
-      fetchBuildConfigs: mockFetchBuildConfigs,
-      fetchBuilds: mockFetchBuilds,
+      fetchAndWatchBuildConfigs: mockFetchBuildConfigs,
+      fetchAndWatchBuilds: mockFetchBuilds,
       fetchAndWatchServices: mockFetchServices,
       apps: { items: [{ metadata: { name: 'testapp' }, spec: { name: 'testapp' } }] },
       buildConfigs: { items: [] },
@@ -47,8 +45,8 @@ describe('Client', () => {
       match: { params: { id: 'testapp' } },
       fetchApp: mockFetchApp,
       buildTabEnabled: false,
-      fetchBuildConfigs: mockFetchBuildConfigs,
-      fetchBuilds: mockFetchBuilds,
+      fetchAndWatchBuildConfigs: mockFetchBuildConfigs,
+      fetchAndWatchBuilds: mockFetchBuilds,
       fetchAndWatchServices: mockFetchServices,
       apps: { items: [{ metadata: { name: 'testapp' }, spec: { name: 'testapp' } }] },
       buildConfigs: { items: [] },
@@ -75,8 +73,8 @@ describe('Client', () => {
       match: { params: { id: 'testapp' } },
       fetchApp: mockFetchApp,
       buildTabEnabled: true,
-      fetchBuildConfigs: mockFetchBuildConfigs,
-      fetchBuilds: mockFetchBuilds,
+      fetchAndWatchBuildConfigs: mockFetchBuildConfigs,
+      fetchAndWatchBuilds: mockFetchBuilds,
       fetchAndWatchServices: mockFetchServices,
       apps: { items: [{ metadata: { name: 'testapp' }, spec: { name: 'testapp' } }] },
       buildConfigs: { items: [] },

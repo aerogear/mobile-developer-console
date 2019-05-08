@@ -18,9 +18,8 @@ import Moment from 'react-moment';
 import ConfigurationView from '../components/configuration/ConfigurationView';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
 import { fetchApp, fetchAndWatchApps } from '../actions/apps';
-import { fetchBuildConfigs } from '../actions/buildConfigs';
-import { fetchBuilds } from '../actions/builds';
-import DataService from '../DataService';
+import { fetchAndWatchBuildConfigs } from '../actions/buildConfigs';
+import { fetchAndWatchBuilds } from '../actions/builds';
 import DeleteItemButton from './DeleteItemButton';
 import { MobileApp } from '../models';
 import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
@@ -56,19 +55,11 @@ export class Client extends Component {
     this.props.fetchAndWatchApps();
 
     if (this.props.buildTabEnabled) {
-      this.props.fetchBuildConfigs();
-      this.props.fetchBuilds();
-
-      this.wsBuildConfigs = DataService.watchBuildConfigs(this.props.fetchBuildConfigs);
-      this.wsBuilds = DataService.watchBuilds(this.props.fetchBuilds);
+      this.props.fetchAndWatchBuilds();
+      this.props.fetchAndWatchBuildConfigs();
     }
 
     this.props.fetchAndWatchServices();
-  }
-
-  componentWillUnmount() {
-    this.wsBuildConfigs && this.wsBuildConfigs.close();
-    this.wsBuilds && this.wsBuilds.close();
   }
 
   getMobileApp() {
@@ -213,8 +204,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   fetchApp,
-  fetchBuildConfigs,
-  fetchBuilds,
+  fetchAndWatchBuildConfigs,
+  fetchAndWatchBuilds,
   fetchAndWatchServices,
   fetchAndWatchApps
 };
