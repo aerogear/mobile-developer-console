@@ -19,7 +19,7 @@ npm-ci:
 
 .PHONY: check-code-style
 check-code-style: setup
-	node node_modules/eslint/bin/eslint src/
+	npm run build-css && node node_modules/eslint/bin/eslint src/
 
 .PHONY: test-cover
 test-cover: npm-ci
