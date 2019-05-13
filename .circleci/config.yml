@@ -1,6 +1,5 @@
-# Golang CircleCI 2.0 configuration file
+# CircleCI 2.0 configuration file
 #
-# Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
 # Disable goveralls to make build work when merging from forks
@@ -9,7 +8,7 @@ jobs:
   build_ui:
     working_directory: ~/mobile-developer-console
     docker:
-      - image: circleci/node:8.15.0
+      - image: circleci/node:dubnium
 
     steps:
       - checkout
@@ -21,7 +20,7 @@ jobs:
   docker_push_master:
     working_directory: ~/mobile-developer-console
     docker:
-      - image: circleci/node:8.15.0
+      - image: circleci/node:dubnium
     steps:
       - checkout
       - run: make build
@@ -31,7 +30,7 @@ jobs:
   docker_release:
     working_directory: ~/mobile-developer-console
     docker:
-      - image: circleci/node:8.15.0
+      - image: circleci/node:dubnium
     steps:
       - checkout
       - run: make build
