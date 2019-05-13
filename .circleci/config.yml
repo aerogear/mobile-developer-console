@@ -1,87 +1,52 @@
-# Golang CircleCI 2.0 configuration file
+# CircleCI 2.0 configuration file
 #
-# Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
-  build_server:
-    working_directory: /go/src/github.com/aerogear/mobile-developer-console
-
-    docker:
-      - image: circleci/golang:1.10
-
-    steps:
-      - checkout
-      - run: go get github.com/mattn/goveralls
-      - run: go get -u github.com/golang/dep/cmd/dep
-      - run: make build
-      - run: make test_cover
 # Disable goveralls to make build work when merging from forks
 #      - run: /go/bin/goveralls -coverprofile=coverage-all.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
 
   build_ui:
     working_directory: ~/mobile-developer-console
-
     docker:
-      - image: circleci/node:8.15.0
+      - image: circleci/node:dubnium
 
     steps:
       - checkout
-      - run: make ui-check-code-style
-      - run: make ui-test-cover
-      - run: make ui
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ui/build
+      - run: make check-code-style
+      - run: make test-cover
+      - run: make build
 
 
   docker_push_master:
-    working_directory: /go/src/github.com/aerogear/mobile-developer-console
+    working_directory: ~/mobile-developer-console
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/node:dubnium
     steps:
       - checkout
-      - attach_workspace:
-          at: .
-      - run: go get -u github.com/golang/dep/cmd/dep
-      - run: make setup
-      - setup_remote_docker
-      - run: make build_linux
+      - run: make build
       - run: make docker_build_master
       - run: make docker_push_master
 
   docker_release:
-    working_directory: /go/src/github.com/aerogear/mobile-developer-console
+    working_directory: ~/mobile-developer-console
     docker:
-      - image: circleci/golang:1.10
+      - image: circleci/node:dubnium
     steps:
       - checkout
-      - attach_workspace:
-          at: .
-      - run: go get -u github.com/golang/dep/cmd/dep
-      - run: make setup
-      - run: curl -sL https://raw.githubusercontent.com/goreleaser/get/master/get | bash
-      - setup_remote_docker
+      - run: make build
       - run: make docker_build_release
       - run: make docker_push_release
-      - store_artifacts:
-          path: dist
 
 workflows:
   version: 2
   build_and_push:
     jobs:
-      - build_server:
-          filters:
-            tags:
-              only: /.*/
       - build_ui:
           filters:
             tags:
               only: /.*/
       - docker_push_master:
           requires:
-            - build_server
             - build_ui
           filters:
             branches:
@@ -89,7 +54,6 @@ workflows:
                 - master
       - docker_release:
           requires:
-            - build_server
             - build_ui
           filters:
             tags:
