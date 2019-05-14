@@ -1,0 +1,6 @@
+apiVersion: v1
+grantMethod: auto
+kind: OAuthClient
+metadata:
+  name: mobile-developer-console
+secret: SECRETPLACEHOLDER

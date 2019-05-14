@@ -69,14 +69,14 @@ function getConfigData(req) {
     OPENSHIFT_USER_TOKEN,
     OPENSHIFT_USER_NAME,
     OPENSHIFT_USER_EMAIL,
-    OPENSHIFT_MDC_NAMESPACE,
+    NAMESPACE,
     ENABLE_BUILD_TAB,
     DOCS_PREFIX
   } = process.env;
   let userToken = OPENSHIFT_USER_TOKEN;
   let userName = OPENSHIFT_USER_NAME || 'testuser';
   let userEmail = OPENSHIFT_USER_EMAIL || 'testuser@localhost';
-  const mdcNamespace = OPENSHIFT_MDC_NAMESPACE || 'myproject';
+  const mdcNamespace = NAMESPACE || 'myproject';
   const docsPrefix = DOCS_PREFIX || 'https://docs.aerogear.org/aerogear/latest';
   let enableBuildTab = false;
   if (ENABLE_BUILD_TAB && ENABLE_BUILD_TAB === 'true') {
