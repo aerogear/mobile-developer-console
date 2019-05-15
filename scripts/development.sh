@@ -1,16 +1,25 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-    go get github.com/oxequa/realize
-    cd ui && npm start &
-    rm -f server.log && touch server.log && tail -f server.log &
-    realize start
+# Use the minishift instance for local development
+cd "$(dirname "$0")" || exit 1
+
+MINISHIFT_STATUS=`minishift status | head -1 | awk -F: '/ /{gsub(/ /, "", $2); print $2}'`
+if [ "$MINISHIFT_STATUS" == "Stopped" ]; then
+  echo "minishift is not running"
+  exit 1
 fi
 
-if [ "$1" == "go-server" ]; then
-    DEBUG=true ENABLE_BUILD_TAB=true ./mobile-developer-console -kubeconfig ~/.kube/config &>server.log
-fi
-
-if [ "$1" == "kill-go-server" ]; then
-    pkill mobile-developer-console
-fi
+MINISHIFT_IP=`minishift ip`
+echo "minishift ip is $MINISHIFT_IP"
+oc login "$MINISHIFT_IP:8443" --username=developer --password=developer --insecure-skip-tls-verify=true
+USER_TOKEN=`oc whoami -t`
+echo "Use myproject namespace"
+oc project myproject
+echo "Setup environment variables"
+export OPENSHIFT_HOST="$MINISHIFT_IP:8443"
+export OPENSHIFT_USER_TOKEN="$USER_TOKEN"
+export ENABLE_BUILD_TAB="false"
+echo "Start local development server..."
+cd ../
+npm run start:server &
+npm run start:client

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Run this script to deploy MDC to an OpenShift cluster using S2I. 
-# Make sure you run `prepare.sh` first.
+# Make sure you run `../scripts/prepare.sh` first.
+cd "$(dirname "$0")" || exit 1
 
 if [ $# -ne 3 ]; then
     echo 'Must specify openshift host, a namespace & git ref to deploy e.g. ./deploy-image-stream.sh openshift.example.com:8443 development'
@@ -34,5 +35,6 @@ MDC_HOST=$($OC_CMD -n $NAMESPACE get route mobile-developer-console --template "
 $OC_CMD patch oauthclient/mobile-developer-console --patch "{\"redirectURIs\":[\"https://$MDC_HOST\"]}"
 
 $OC_CMD start-build -n $NAMESPACE mobile-developer-console
-echo "Please also add $MDC_HOST to the \"corsAllowedOrigins\" section of the master config file and then restart the master node."
+echo "Mobile developer console will be avaialble at: https://$MDC_HOST"
+echo "You may also need to add $MDC_HOST to the \"corsAllowedOrigins\" section of the master config file and then restart the master node if you are running against a remote cluster."
 echo "For more information, please check https://docs.openshift.com/container-platform/3.11/install_config/master_node_configuration.html#master-config-asset-config."

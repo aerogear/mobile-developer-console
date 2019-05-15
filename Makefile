@@ -13,6 +13,10 @@ setup:
 build: setup
 	npm run build
 
+.PHONY: test
+test: setup
+	npm run build-css && npm run test
+
 .PHONY:
 npm-ci:
 	npm ci
