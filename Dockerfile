@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/rhoar-nodejs/nodejs-10
+FROM nodeshift/centos7-s2i-nodejs:10.x
 EXPOSE 4000
 
 USER default

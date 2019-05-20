@@ -1,8 +1,0 @@
-apiVersion: "aerogear.org/v1alpha1"
-kind: "MobileClient"
-metadata:
-  name: "example"
-spec:
-  name: "android-app"
-  apiKey: "bf997a82-9415-40fc-8480-e222a97d55b4"
-

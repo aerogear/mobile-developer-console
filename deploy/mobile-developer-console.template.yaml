@@ -1,0 +1,140 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: mobile-developer-console-template
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: "${SERVICE_NAME}"
+    name: "${SERVICE_NAME}"
+  spec:
+    replicas: 1
+    selector:
+      app: "${SERVICE_NAME}"
+    triggers:
+      - type: ConfigChange
+    template:
+      metadata:
+        labels:
+          app: "${SERVICE_NAME}"
+      spec:
+        securityContext: {}
+        serviceAccount: "${SERVICE_ACCOUNT_NAME}"
+        serviceAccountName: "${SERVICE_ACCOUNT_NAME}"
+        containers:
+        - name: "${SERVICE_NAME}"
+          image: ${SERVER_IMAGE}
+          imagePullPolicy: Always
+          ports:
+          - containerPort: ${SERVER_PORT}
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: "NODE_ENV"
+              value: "production"
+            - name: "OPENSHIFT_HOST"
+              value: "${OPENSHIFT_HOST}"
+        - name: "${SERVICE_NAME}-oauth-proxy"
+          image: ${OAUTH_PROXY_IMAGE}
+          ports:
+            - containerPort: ${OAUTH_PROXY_PORT}
+              name: public
+              protocol: TCP
+          args:
+            - '--provider=openshift'
+            - '--client-id=mobile-developer-console'
+            - '--client-secret=SECRETPLACEHOLDER'
+            - '--upstream=http://localhost:${SERVER_PORT}/'
+            - '--http-address=0.0.0.0:${OAUTH_PROXY_PORT}'
+            - '--https-address='
+            - '--cookie-secret=${OAUTH_PROXY_COOKIE_SECRET}'
+            - '--cookie-httponly=false'
+            - '--pass-access-token=true'
+            - '--scope=user:full'
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: "${SERVICE_NAME}"
+    name: "${SERVICE_NAME}"
+  spec:
+    ports:
+    - name: "${SERVER_PORT}-tcp"
+      port: ${SERVER_PORT}
+      protocol: TCP
+    selector:
+      app: "${SERVICE_NAME}"
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: "${SERVICE_NAME}"
+    name: "${SERVICE_NAME}-proxy"
+  spec:
+    ports:
+    - name: "${OAUTH_PROXY_PORT}-tcp"
+      port: ${OAUTH_PROXY_PORT}
+      protocol: TCP
+    selector:
+      app: "${SERVICE_NAME}"
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: "${SERVICE_NAME}"
+    name: "${SERVICE_NAME}"
+  spec:
+    port:
+      targetPort: "${OAUTH_PROXY_PORT}-tcp"
+    tls:
+      termination: edge
+    to:
+      kind: Service
+      name: "${SERVICE_NAME}-proxy"
+
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: "${SERVICE_ACCOUNT_NAME}"
+
+parameters:
+- name: SERVER_PORT
+  description: The port for the server to listen on.
+  value: "4000"
+  required: true
+- name: SERVER_IMAGE
+  description: The image to create the server from.
+  value: quay.io/aerogear/mobile-developer-console:latest
+  required: true
+- name: SERVICE_NAME
+  description: What to name the service/application in OpenShift. Selectors will be updated also.
+  value: mobile-developer-console
+  required: true
+- name: SERVICE_ACCOUNT_NAME
+  description: What to name the service account to run this service
+  value: mobile-developer-console
+  required: true
+- name: OAUTH_PROXY_IMAGE
+  description: The oauth proxy image
+  value: docker.io/openshift/oauth-proxy:v1.1.0
+  required: true
+- name: OAUTH_PROXY_PORT
+  description: The port number for the oauth proxy
+  value: "4180"
+  required: true
+- name: OAUTH_PROXY_COOKIE_SECRET
+  description: "The secret value for the oauth proxy cookie"
+  generate: expression
+  from: "[a-zA-Z0-9]{32}"
+- name: OPENSHIFT_HOST
+  description: The OpenShift master/api host e.g. openshift.example.com:8443. If blank, mock data (and mock service URL params) will be used.
+  displayName: OpenShift Host
+  required: false

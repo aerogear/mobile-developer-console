@@ -1,9 +1,9 @@
 APP_NAME = mobile-developer-console
-
+SERVER = quay.io
 RELEASE_TAG ?= $(CIRCLE_TAG)
-DOCKER_LATEST_TAG = aerogear/$(APP_NAME):latest
-DOCKER_MASTER_TAG = aerogear/$(APP_NAME):master
-DOCKER_RELEASE_TAG = aerogear/$(APP_NAME):$(RELEASE_TAG)
+DOCKER_LATEST_TAG = ${SERVER}/aerogear/$(APP_NAME):latest
+DOCKER_MASTER_TAG = ${SERVER}/aerogear/$(APP_NAME):master
+DOCKER_RELEASE_TAG = ${SERVER}/aerogear/$(APP_NAME):$(RELEASE_TAG)
 
 .PHONY: setup
 setup:
@@ -12,6 +12,10 @@ setup:
 .PHONY: build
 build: setup
 	npm run build
+
+.PHONY: test
+test: setup
+	npm run build-css && npm run test
 
 .PHONY:
 npm-ci:
@@ -43,11 +47,11 @@ docker_build_master:
 
 .PHONY: docker_push_release
 docker_push_release:
-	@docker login --username $(DOCKERHUB_USERNAME) --password $(DOCKERHUB_PASSWORD)
+	@docker login --username $(QUAY_USERNAME) --password $(QUAY_PASSWORD) ${SERVER}
 	docker push $(DOCKER_LATEST_TAG)
 	docker push $(DOCKER_RELEASE_TAG)
 
 .PHONY: docker_push_master
 docker_push_master:
-	@docker login -u $(DOCKERHUB_USERNAME) -p $(DOCKERHUB_PASSWORD)
+	@docker login -u $(QUAY_USERNAME) -p $(QUAY_PASSWORD) ${SERVER}
 	docker push $(DOCKER_MASTER_TAG)

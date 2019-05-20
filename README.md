@@ -1,101 +1,117 @@
-[![CircleCI](https://circleci.com/gh/aerogear/mobile-developer-console.svg?style=svg)](https://circleci.com/gh/aerogear/mobile-developer-console) [![Coverage Status](https://coveralls.io/repos/github/aerogear/mobile-developer-console/badge.svg?branch=master)](https://coveralls.io/github/aerogear/mobile-developer-console?branch=master)
-[![](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/aerogearcatalog/mobile-developer-console-apb/)
-[![Docker Stars](https://img.shields.io/docker/stars/aerogearcatalog/mobile-developer-console-apb.svg?style=plastic)](https://registry.hub.docker.com/v2/repositories/aerogearcatalog/mobile-developer-console-apb/stars/count/)
-[![Docker pulls](https://img.shields.io/docker/pulls/aerogearcatalog/mobile-developer-console-apb.svg?style=plastic)](https://registry.hub.docker.com/v2/repositories/aerogearcatalog/mobile-developer-console-apb/)
+[![CircleCI](https://circleci.com/gh/aerogear/mobile-developer-console.svg?style=svg)](https://circleci.com/gh/aerogear/mobile-developer-console)
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 # Mobile Developer Console
 
 ## Try it out
 
-1. Navigate to [Mobile Services Installer repository](https://github.com/aerogear/mobile-services-installer) and follow the instructions for installation of Mobile Services (including Mobile Developer Console) to [existing OpenShift cluster](https://github.com/aerogear/mobile-services-installer#prerequisites) or [to local instance of OpenShift](https://github.com/aerogear/mobile-services-installer#local-development).
-2. After installation is finished, navigate to OpenShift Service Catalog and **Mobile** tab, select **Mobile Developer Console** and follow the wizard to provision the Service to your project.
-3. When provision is finished, navigate to Mobile Developer Console's URL and login with your OpenShift credentials.
+### Local Cluster
+
+1. Make sure you have the latest version of [Minishift](https://github.com/minishift/minishift) installed.
+2. Run the following commands:
+    ```
+    ./scripts/minishift_start.sh
+    ./scripts/prepare.sh
+    ./deploy/deploy-image.sh $(minishift ip):8443 mobile
+    ```
+3. [Enable CORS](#enable-cors-in-the-openshift-cluster)
+4. Open the mobile developer console URL printed by the script.
+
+### Remote Cluster
+
+1. Make sure you have `oc` CLI installed and logged into the remote cluster as a cluster-admin user.
+    ```
+    oc login <openshift-url>
+    ```
+2. Deploy the service using one of the following commands:
+   ```
+   # Deploy the latest image
+   ./deploy/deploy-image.sh <openshift-url> <namespace>
+
+   # OR deploy the service using S2I
+   ./deploy/deploy-image-stream.sh <openshift-url> <namespace> <git-ref>
+   ```
+3. [Enable CORS](#enable-cors-in-the-openshift-cluster)
 
 ## Development
 
 ### Prerequisites
 
-* Golang (1.10)
- * [Dep tool](https://golang.github.io/dep/docs/installation.html)
-* [oc tools >= 3.9.0](https://github.com/openshift/origin/releases)
-* Nodejs
+* Nodejs >= 10
+* An OpenShift cluster. You can either use a local cluster, or a remote cluster.
 
-### Setup
+### Local OpenShift Cluster
 
-Checkout to $GOPATH/src/github.com/aerogear
+It is recommended to use the latest release of [Minishift](https://github.com/minishift/minishift) to run the local cluster. Make sure you have it installed and then run the following commands to start development locally:
 
-```bash
-mkdir -v $GOPATH/src/github.com/aerogear
-git clone https://github.com/aerogear/mobile-developer-console $GOPATH/src/github.com/aerogear/mobile-developer-console
-cd $GOPATH/src/github.com/aerogear/mobile-developer-console
 ```
-
-```bash
-make setup
-```
-
-### Build
-
-```bash
-# Build the API server
-make build
-# Build the UI
-make ui
-```
-
-### Run locally
-
-If you don't have OpenShift running, navigate to [Mobile Services Installer repository](https://github.com/aerogear/mobile-services-installer#local-development) and follow the instructions to spin up local instance of OpenShift.
-
-After your local OpenShift instance is ready, create a new target project
-```bash
-oc new-project <target-project>
-```
-
-Now set the `NAMESPACE` env var to point at the `target-project`
-```bash
-export NAMESPACE=<target-project>
-```
-
-Also set `KUBERNETES_CONFIG` to point to your `.kube/config` which is usually at `$HOME/.kube/config`
-```bash
-export KUBERNETES_CONFIG=$HOME/.kube/config
-```
-
-From root folder of this repository, run 
-```
+./scripts/minishift_start.sh
+./scripts/prepare.sh
 ./scripts/development.sh
 ```
-This will start [CORS Anywhere proxy server](https://www.npmjs.com/package/cors-anywhere) (on port 8080), Go backend server (port 4000) and Node development server (port 3000).
 
-When changes are made to `.go` files, current instance of Go server is killed, source files are rebuilt and new instance of Go server is run.
-These changes are handled by [realize task runner](https://github.com/oxequa/realize).
+### Remote OpenShift Cluster
 
-Changes to `.js` files are handled by Node server([react-scripts](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-start)).
+If you are using a remote cluster, make sure you have `oc` CLI installed locally and login to the remote cluster. You will need a user that has `cluster-admin` permission.
+
+```
+oc login <openshift-url>
+```
+
+then you need to run the prepare script:
+
+```
+./scripts/prepare.sh
+```
+
+and start the development server:
+
+```
+export OPENSHIFT_HOST=<openshift-url>
+export OPENSHIFT_USER_TOKEN=$(oc whoami -t)
+npm run start:server &
+npm run start:client
+```
+
+This will start the MDC in development mode, and you should see the console opened inside a browser tab. It will watch local files and the browser tab will be refreshed automatically whenever changes are made inside the `./src` directory. 
+
+### Enable CORS in the OpenShift cluster
+
+The mobile developer console will need to talk to the OpenShift API server directly. However, the requests will likely to be blocked by the browser due to [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) restrictions.
+
+To fix this, you will need to manually update the OpenShift master configuration to allow CORS requests from the mobile developer console.
+
+If you are using minishift, you should use the [CORS addon](https://github.com/minishift/minishift-addons/tree/master/add-ons/cors) to enable it.
+
+```
+git clone https://github.com/minishift/minishift-addons.git /tmp/
+minishift addons install /tmp/minishift-addons/add-ons/cors
+minishift addons apply cors
+```
+
+If you are using a remote cluster, you should check [OpenShift configuration guide](https://docs.openshift.com/container-platform/3.11/install_config/master_node_configuration.html#master-config-asset-config) on how to update the CORS configurations.
+
+## Build
+
+```bash
+make build
+```
 
 ## Test
 
-### Backend unit tests
+### Unit tests
 ```bash
 make test
 ```
 
-### Backend integration tests
+## Release
+
+Create a new Git tag and the CI job will automatically push the built image to [quay.io](https://quay.io/repository/aerogear/mobile-developer-console?tab=tags).
+
+<!-- ### Backend integration tests
 
 1. Build the API Server: `make build`
 2. Follow [these instructions](#Run-locally) to target existing OpenShift project (**Note:** the project must not contain existing mobile clients)
 3. Provision Metrics service in the OpenShift project that you target
 4. Install dependencies: `cd integration_tests && npm install`
-5. Run the tests: `npm test`
-
-
-## Generate the API definition for the CRD
-
-If you are changing the type definition of (MobileClient)[./pkg/apis/aerogear/v1alpha1/types.go], you should run the following command to regenerate some of the files.
-
-Make sure you have the [operator-sdk](https://github.com/operator-framework/operator-sdk) installed locally, and then run
-
-```
- operator-sdk generate k8s
-```
+5. Run the tests: `npm test` -->
