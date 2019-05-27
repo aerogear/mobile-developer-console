@@ -24,6 +24,7 @@ jobs:
     steps:
       - checkout
       - run: make build
+      - setup_remote_docker
       - run: make docker_build_master
       - run: make docker_push_master
 
@@ -34,6 +35,7 @@ jobs:
     steps:
       - checkout
       - run: make build
+      - setup_remote_docker
       - run: make docker_build_release
       - run: make docker_push_release
 
