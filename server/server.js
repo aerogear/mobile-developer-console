@@ -8,6 +8,7 @@ const Request = require('kubernetes-client/backends/request');
 const packageJson = require('../package.json');
 const fs = require('fs');
 const { PushService, IdentityManagementService, MetricsService, MobileServicesMap } = require('./mobile-services-info');
+const appconfig = require('./appconfig');
 
 const app = express();
 let kubeclient;
