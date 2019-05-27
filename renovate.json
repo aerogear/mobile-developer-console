@@ -11,10 +11,13 @@
     "**/integration_tests/**",
     "**/vendor/**"
   ],
-  "ignoreDeps":["com.github.eirslett:frontend-maven-plugin", "org.apache.maven.plugins:maven-enforcer-plugin"],
+  "ignoreDeps":["com.github.eirslett:frontend-maven-plugin", "org.apache.maven.plugins:maven-enforcer-plugin", "ant-contrib:ant-contrib"],
   "packageRules": [{
     "packageNames": ["react-redux"],
     "allowedVersions": "<6.0"
+  }, {
+    "packageNames": ["react-scripts"],
+    "allowedVersions": "<3.0"
   }],
   "groupName": "mdc"
 }
