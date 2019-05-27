@@ -1,0 +1,17 @@
+a:-webkit-any-link {
+  text-decoration: none !important; }
+
+.create-client-form {
+  padding-top: 16px; }
+
+.mobile-client-creation-result {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.4; }
+
+.mobile-client-creation-result-text {
+  padding-left: 16px;
+  padding-right: 16px; }
+
+pre {
+  margin-top: 16px; }

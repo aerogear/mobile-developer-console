@@ -1,0 +1,22 @@
+.client-details {
+  width: 100%;
+  padding-top: 10px;
+  flex: 1; }
+  .client-details .breadcrumb {
+    margin-bottom: 10px; }
+  .client-details .app-header-wrapper {
+    display: flex;
+    justify-content: space-between; }
+    .client-details .app-header-wrapper .app-header {
+      display: flex;
+      margin-bottom: 30px; }
+      .client-details .app-header-wrapper .app-header h1 {
+        margin-top: 0;
+        margin-bottom: 0; }
+      .client-details .app-header-wrapper .app-header .platform {
+        text-transform: uppercase;
+        color: grey; }
+      .client-details .app-header-wrapper .app-header .platform-icon {
+        margin-right: 15px; }
+    .client-details .app-header-wrapper .app-actions-dropdown {
+      margin-top: 15px; }

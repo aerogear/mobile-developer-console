@@ -1,9 +1,13 @@
-FROM centos:7.4.1708
-ARG BINARY=./mobile-developer-console
+FROM nodeshift/centos7-s2i-nodejs:10.x
 EXPOSE 4000
 
-ADD ui/build /opt/mobile-developer-console/ui
-COPY ${BINARY} /opt/mobile-developer-console/server/
+USER default
+COPY . ./
 
-ENV STATIC_FILES_DIR /opt/mobile-developer-console/ui
-CMD "/opt/mobile-developer-console/server/mobile-developer-console"
+USER root
+RUN chmod -R g+w src/
+
+USER default
+RUN npm install --silent && npm run build
+
+CMD ["npm", "start"]

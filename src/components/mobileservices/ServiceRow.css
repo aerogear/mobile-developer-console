@@ -1,0 +1,23 @@
+.detailsKey {
+  text-align: left;
+  font-weight: 700; }
+
+.boundService .list-group-item-header {
+  background-color: #ededed;
+  border-color: #bbb;
+  border-bottom-width: 1px;
+  border-bottom-style: solid; }
+
+.boundService .bind-button {
+  margin-right: 10px; }
+
+.unboundService .bind-button {
+  margin-right: 25px; }
+
+.list-group-item .logo {
+  width: 30px;
+  height: 30px;
+  margin: 0 10px;
+  display: block;
+  float: left;
+  font-size: 1.6em; }

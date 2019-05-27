@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: mdc-source-building-supplement
+parameters:
+  - name: SOURCE_REPOSITORY_URL
+    value: https://github.com/aerogear/mobile-developer-console
+    required: true
+  - name: SOURCE_REPOSITORY_REF
+    value: refactor-server
+    required: true
+  - name: SOURCE_REPOSITORY_DIR
+    value: .
+    required: true
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: mobile-developer-console
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: mobile-developer-console
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: mobile-developer-console:latest
+    resources:
+      limits:
+        memory: 2Gi
+    source:
+      git:
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
+      contextDir: ${SOURCE_REPOSITORY_DIR}
+      type: Git
+    strategy:
+      type: Docker
+    triggers:
+    - type: ConfigChange

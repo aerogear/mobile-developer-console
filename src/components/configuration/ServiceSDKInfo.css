@@ -1,0 +1,19 @@
+.service-sdk-info {
+  padding: 0px; }
+
+.service-sdk-info img {
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  vertical-align: middle; }
+
+.service-sdk-info .service-name {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px; }
+
+.service-sdk-info .service-name h4 {
+  margin: 0px; }
+
+.service-sdk-info .service-details {
+  padding-left: 40px; }

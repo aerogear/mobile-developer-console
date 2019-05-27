@@ -1,0 +1,19 @@
+.platform-icon span, .platform-icon img {
+  max-height: 60px;
+  max-width: 60px; }
+
+.platform-icon img {
+  width: 60px; }
+
+.platform-icon .fa {
+  font-size: 60px; }
+
+.platform-icon-small span, .platform-icon-small img {
+  max-height: 45px;
+  max-width: 45px; }
+
+.platform-icon-small img {
+  width: 45px; }
+
+.platform-icon-small .fa {
+  font-size: 45px; }

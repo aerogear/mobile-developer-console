@@ -1,0 +1,16 @@
+spec:
+  template:
+    spec:
+      containers:
+      - name: mobile-developer-console
+        image: mobile-developer-console
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        from:
+          kind: ImageStreamTag
+          name: 'mobile-developer-console:latest'
+        containerNames:
+          - mobile-developer-console
