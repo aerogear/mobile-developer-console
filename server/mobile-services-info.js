@@ -25,6 +25,9 @@ const IdentityManagementService = {
     version: 'v1alpha1',
     group: 'aerogear.org',
     kind: 'KeycloakRealm'
+  },
+  getClientConfig: (appname, kubeclient) => {
+    
   }
 };
 

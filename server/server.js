@@ -3,11 +3,15 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const promMid = require('express-prometheus-middleware');
 const Prometheus = require('prom-client');
-const packageJson = require('./package.json');
+const { Client } = require('kubernetes-client');
+const Request = require('kubernetes-client/backends/request');
+const packageJson = require('../package.json');
 const fs = require('fs');
 const { PushService, IdentityManagementService, MetricsService, MobileServicesMap } = require('./mobile-services-info');
+const appconfig = require('./appconfig');
 
 const app = express();
+let kubeclient;
 
 app.use(bodyParser.json());
 
@@ -55,6 +59,12 @@ app.get('/api/mobileservices', (req, res) => {
     res.json({
       items: servicesJson
     });
+  });
+});
+
+app.get('/api/mobileclient/:name/config', (req, res) => {
+  appconfig.load(req.params.name, kubeclient).then(json => {
+    res.json(json);
   });
 });
 
@@ -127,6 +137,18 @@ function getServices(servicesConfigPath) {
     );
 }
 
+async function initKubeClient() {
+  try {
+    const conf =
+      process.env.NODE_ENV === 'production' ? Request.config.getInCluster() : Request.config.fromKubeconfig();
+    const backend = new Request(conf);
+    kubeclient = new Client({ backend });
+    await kubeclient.loadSpec();
+  } catch (e) {
+    console.error('Failed to init kube client', e);
+  }
+}
+
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files
   app.use(express.static(path.join(__dirname, 'build')));
@@ -136,7 +158,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-function run() {
+async function run() {
   const { OPENSHIFT_HOST, OPENSHIFT_USER_TOKEN } = process.env;
   if (!OPENSHIFT_HOST) {
     console.warn('OPENSHIFT_HOST environment variable is not set');
@@ -144,6 +166,7 @@ function run() {
   if (!OPENSHIFT_USER_TOKEN && process.env.NODE_ENV !== 'production') {
     console.warn('OPENSHIFT_USER_TOKEN environment variable is not set');
   }
+  await initKubeClient();
   app.listen(port, () => console.log(`Listening on port ${port}`));
 }
 

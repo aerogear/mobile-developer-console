@@ -12,6 +12,7 @@
     "highlight.js": "9.15.8",
     "http-proxy-middleware": "0.19.1",
     "is-git-url": "1.0.0",
+    "kubernetes-client": "^8.1.2",
     "lodash": "4.17.11",
     "lodash-es": "4.17.11",
     "moment": "2.24.0",
@@ -39,10 +40,10 @@
     "redux-thunk": "2.3.0"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node server/server.js",
     "start-js": "react-scripts start",
     "start:client": "npm-run-all -p watch-css start-js",
-    "start:server": "nodemon --watch server.js --exec 'node server.js'",
+    "start:server": "nodemon --watch server/server.js --exec 'node server/server.js'",
     "build-js": "react-scripts build",
     "build": "npm-run-all build-css build-js",
     "test": "react-scripts test --env=jsdom --transformIgnorePatterns \"node_modules/(?!lodash-es)/\"",
