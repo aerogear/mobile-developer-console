@@ -27,7 +27,7 @@
 
     <!-- Version of Ant dependencies -->
     <version.ant-nodeps>1.8.1</version.ant-nodeps>
-    <version.ant-contrib>1.0b3</version.ant-contrib>
+    <version.ant-contrib>20020829</version.ant-contrib>
 
     <!-- Version of frontend-maven-plugin -->
     <version.frontend-maven-plugin>1.6</version.frontend-maven-plugin>
