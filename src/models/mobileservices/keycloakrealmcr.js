@@ -141,7 +141,8 @@ export class KeycloakRealmCR extends CustomResource {
             webOrigins: ['http://localhost:8100', '*'],
             redirectUris: ['http://localhost:*'],
             standardFlowEnabled: true,
-            enabled: true
+            enabled: true,
+            outputSecret: `${clientId}-install-config`
           }
         ],
         users: [

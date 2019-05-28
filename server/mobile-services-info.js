@@ -2,6 +2,11 @@ const PUSH_SERVIE_TYPE = 'push';
 const IDM_SERVICE_TYPE = 'keycloak';
 const METRICS_SERVICE_TYPE = 'metrics';
 
+function decodeBase64(encoded) {
+  const buff = Buffer.from(encoded, 'base64');
+  return buff.toString('utf8');
+}
+
 const PushService = {
   type: PUSH_SERVIE_TYPE,
   name: 'Push Notification',
@@ -12,7 +17,10 @@ const PushService = {
     version: 'v1alpha1',
     group: 'aerogear.org',
     kind: 'PushVariant'
-  }
+  },
+  getClientConfig: (namespace, appname, kubeclient) =>
+    // TODO: implement me!
+    null
 };
 
 const IdentityManagementService = {
@@ -26,8 +34,30 @@ const IdentityManagementService = {
     group: 'aerogear.org',
     kind: 'KeycloakRealm'
   },
-  getClientConfig: (appname, kubeclient) => {
-    
+  getClientConfig: (namespace, appname, kubeclient) => {
+    const secretName = `${appname}-client-install-config`;
+    return kubeclient.api.v1
+      .namespaces(namespace)
+      .secrets(secretName)
+      .get()
+      .then(secret => {
+        if (secret) {
+          const encodedInstall = secret.data.install;
+          const config = JSON.parse(decodeBase64(encodedInstall));
+          return {
+            id: secret.metadata.uid,
+            name: 'keycloak',
+            type: 'keycloak',
+            url: config['auth-server-url'],
+            config
+          };
+        }
+        return null;
+      })
+      .catch(err => {
+        console.warn(`Error when fetch secret ${secretName}`, err);
+        return null;
+      });
   }
 };
 
@@ -41,7 +71,10 @@ const MetricsService = {
     version: 'v1alpha1',
     group: 'aerogear.org',
     kind: 'MetricsApp'
-  }
+  },
+  getClientConfig: (namespace, appname, kubeclient) =>
+    // TODO: implement me!
+    null
 };
 
 const MobileServicesMap = {
