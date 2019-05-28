@@ -81,7 +81,8 @@ const resourceReducer = actions => (state = defaultState, action) => {
         ...state,
         isUpdating: false,
         updateError: false,
-        items: index >=0 ? [...state.items.slice(0, index), action.result, ...state.items.slice(index + 1)] : state.items
+        items:
+          index >= 0 ? [...state.items.slice(0, index), action.result, ...state.items.slice(index + 1)] : state.items
       };
     case actions.updateFailure:
       return {
