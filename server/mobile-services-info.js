@@ -40,6 +40,7 @@ const IdentityManagementService = {
       .namespaces(namespace)
       .secrets(secretName)
       .get()
+      .then(resp => resp.body)
       .then(secret => {
         if (secret) {
           const encodedInstall = secret.data.install;
