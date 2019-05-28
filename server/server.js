@@ -8,7 +8,13 @@ const Request = require('kubernetes-client/backends/request');
 const packageJson = require('../package.json');
 const fs = require('fs');
 const { compact } = require('lodash');
-const { PushService, IdentityManagementService, MetricsService, MobileServicesMap } = require('./mobile-services-info');
+const {
+  PushService,
+  IdentityManagementService,
+  MetricsService,
+  DataSyncService,
+  MobileServicesMap
+} = require('./mobile-services-info');
 
 const app = express();
 let kubeclient;
@@ -32,13 +38,16 @@ const DEFAULT_SERVICES = {
       type: IdentityManagementService.type,
       url: `https://${process.env.IDM_URL || process.env.OPENSHIFT_HOST}`
     },
+    // {
+    //   type: PushService.type,
+    //   url: `https://${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`
+    // },
+    // {
+    //   type: MetricsService.type,
+    //   url: `https://${process.env.METRICS_URL || process.env.OPENSHIFT_HOST}`
+    // }
     {
-      type: PushService.type,
-      url: `https://${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`
-    },
-    {
-      type: MetricsService.type,
-      url: `https://${process.env.METRICS_URL || process.env.OPENSHIFT_HOST}`
+      type: DataSyncService.type
     }
   ]
 };

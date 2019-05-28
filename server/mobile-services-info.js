@@ -1,6 +1,7 @@
 const PUSH_SERVIE_TYPE = 'push';
 const IDM_SERVICE_TYPE = 'keycloak';
 const METRICS_SERVICE_TYPE = 'metrics';
+const DATA_SYNC_TYPE = 'sync-app';
 
 function decodeBase64(encoded) {
   const buff = Buffer.from(encoded, 'base64');
@@ -48,7 +49,7 @@ const IdentityManagementService = {
           return {
             id: secret.metadata.uid,
             name: 'keycloak',
-            type: 'keycloak',
+            type: IDM_SERVICE_TYPE,
             url: config['auth-server-url'],
             config
           };
@@ -78,10 +79,21 @@ const MetricsService = {
     null
 };
 
+const DataSyncService = {
+  type: DATA_SYNC_TYPE,
+  name: 'Data Sync',
+  icon: '/img/sync.svg',
+  description: 'Data Sync',
+  getClientConfig: (namespace, appname, kubeclient) =>
+    // TODO: implement me!
+    null
+};
+
 const MobileServicesMap = {
   [PUSH_SERVIE_TYPE]: PushService,
   [IDM_SERVICE_TYPE]: IdentityManagementService,
-  [METRICS_SERVICE_TYPE]: MetricsService
+  [METRICS_SERVICE_TYPE]: MetricsService,
+  [DATA_SYNC_TYPE]: DataSyncService
 };
 
-module.exports = { MobileServicesMap, PushService, IdentityManagementService, MetricsService };
+module.exports = { MobileServicesMap, PushService, IdentityManagementService, DataSyncService, MetricsService };
