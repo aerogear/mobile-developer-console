@@ -1,3 +1,4 @@
+const url = require('url');
 const PUSH_SERVIE_TYPE = 'push';
 const IDM_SERVICE_TYPE = 'keycloak';
 const METRICS_SERVICE_TYPE = 'metrics';
@@ -102,15 +103,16 @@ const DataSyncService = {
       .then(resp => resp.body)
       .then(configmap => {
         if (configmap) {
-          const serverUrl = configmap.data.syncServerUrl.toLowerCase();
-          const endpoint = configmap.data.graphqlEndpoint.toLowerCase();
-          const url = `${serverUrl}/${endpoint}`;
-          const websocketUrl = url.replace('https://', 'wss://');
+          const serverUrl = url.parse(configmap.data.syncServerUrl);
+          serverUrl.pathname = configmap.data.graphqlEndpoint;
+          const httpUrl = url.format(serverUrl);
+          serverUrl.protocol = 'wss';
+          const websocketUrl = url.format(serverUrl);
           return {
             id: configmap.metadata.uid,
             name: 'sync-app',
             type: DATA_SYNC_TYPE,
-            url,
+            url: httpUrl,
             config: {
               websocketUrl
             }

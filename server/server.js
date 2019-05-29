@@ -7,7 +7,6 @@ const { Client } = require('kubernetes-client');
 const Request = require('kubernetes-client/backends/request');
 const packageJson = require('../package.json');
 const fs = require('fs');
-const { compact } = require('lodash');
 const {
   PushService,
   IdentityManagementService,

@@ -52,6 +52,16 @@ export class DataSyncCR extends CustomResource {
       uiSchema: {
         CLIENT_ID: {
           'ui:widget': 'hidden'
+        },
+        syncServerConfig: {
+          url: {
+            'ui:description': 'The URL of the data sync server, including protocol and hostname.',
+            'ui:placeholder': 'https://datasync.example.com'
+          },
+          graphqlEndpoint: {
+            'ui:description':
+              "The Graphql endpoint of the data sync server, starts with '/'. You shouldn't need to change this value in most of the cases."
+          }
         }
       },
       validationRules: {
@@ -64,6 +74,11 @@ export class DataSyncCR extends CustomResource {
                   {
                     type: 'required',
                     error: 'Data Sync Server URL is required'
+                  },
+                  {
+                    type: 'regexp',
+                    regexp: /^https?:\/\/.{1}/,
+                    error: "URL is not valid. It should start with 'http' or 'https' and have a valid hostname."
                   }
                 ]
               },
@@ -72,6 +87,11 @@ export class DataSyncCR extends CustomResource {
                   {
                     type: 'required',
                     error: 'Data Sync Server GraphQL endpoint is required'
+                  },
+                  {
+                    type: 'regexp',
+                    regexp: /^\//,
+                    error: "Endpoint should start with '/'"
                   }
                 ]
               }
