@@ -51,8 +51,8 @@ const appConfigs = (state = defaultAppConfigs, action) => {
         isFetching: true
       };
     case APP_CONFIG_SUCCESS: {
-      const appname = action.result.clientId;
-      const index = state.items.findIndex(item => item.clientId === appname);
+      const appName = action.result.clientId;
+      const index = state.items.findIndex(item => item.clientId === appName);
       if (index >= 0) {
         return {
           ...state,

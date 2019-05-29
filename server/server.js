@@ -7,7 +7,6 @@ const { Client } = require('kubernetes-client');
 const Request = require('kubernetes-client/backends/request');
 const packageJson = require('../package.json');
 const fs = require('fs');
-const { compact } = require('lodash');
 const { PushService, IdentityManagementService, MetricsService, MobileServicesMap } = require('./mobile-services-info');
 
 const app = express();
@@ -73,7 +72,7 @@ app.get('/api/mobileclient/:name/config', (req, res) => {
   const services = [PushService, IdentityManagementService, MetricsService];
   const promises = services.map(service => service.getClientConfig(mdcNamespace, appName, kubeclient));
   Promise.all(promises).then(serviceConfigs => {
-    data.services = compact(serviceConfigs);
+    data.services = serviceConfigs.filter(Boolean);
     return res.json(data);
   });
 });
