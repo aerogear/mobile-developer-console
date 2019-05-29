@@ -168,7 +168,7 @@ export class Client extends Component {
               </Nav>
               <TabContent>
                 <TabPane eventKey={TAB_CONFIGURATION.key}>
-                  <ConfigurationView app={mobileApp} />
+                  <ConfigurationView app={mobileApp} appName={appName} />
                 </TabPane>
                 <TabPane eventKey={TAB_MOBILE_SERVICES.key}>
                   <MobileServiceView appName={appName} />

@@ -13,9 +13,17 @@ import {
   APP_DELETE_FAILURE,
   APP_UPDATE_REQUEST,
   APP_UPDATE_SUCCESS,
-  APP_UPDATE_FAILURE
+  APP_UPDATE_FAILURE,
+  APP_CONFIG_REQUEST,
+  APP_CONFIG_SUCCESS,
+  APP_CONFIG_FAILURE
 } from '../actions/apps';
 import resourceReducer from './resource';
+
+const defaultAppConfigs = {
+  items: [],
+  isFetching: false
+};
 
 const apps = resourceReducer({
   listRequest: APPS_REQUEST,
@@ -35,4 +43,36 @@ const apps = resourceReducer({
   deleteFailure: APP_DELETE_FAILURE
 });
 
-export default apps;
+const appConfigs = (state = defaultAppConfigs, action) => {
+  switch (action.type) {
+    case APP_CONFIG_REQUEST:
+      return {
+        ...state,
+        isFetching: true
+      };
+    case APP_CONFIG_SUCCESS: {
+      const appName = action.result.clientId;
+      const index = state.items.findIndex(item => item.clientId === appName);
+      if (index >= 0) {
+        return {
+          ...state,
+          isFetching: false,
+          items: [...state.items.slice(0, index), action.result, ...state.items.slice(index + 1)]
+        };
+      }
+      return {
+        ...state,
+        items: [...state.items, action.result]
+      };
+    }
+    case APP_CONFIG_FAILURE:
+      return {
+        ...state,
+        isFetching: false
+      };
+    default:
+      return state;
+  }
+};
+
+export { apps, appConfigs };

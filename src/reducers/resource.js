@@ -81,7 +81,8 @@ const resourceReducer = actions => (state = defaultState, action) => {
         ...state,
         isUpdating: false,
         updateError: false,
-        items: [...state.items.slice(0, index), action.result, ...state.items.slice(index + 1)]
+        items:
+          index >= 0 ? [...state.items.slice(0, index), action.result, ...state.items.slice(index + 1)] : state.items
       };
     case actions.updateFailure:
       return {
@@ -94,13 +95,15 @@ const resourceReducer = actions => (state = defaultState, action) => {
         ...state,
         isDeleting: true
       };
-    case actions.deleteSuccess:
-      index = state.items.findIndex(item => item.metadata.name === action.result.metadata.name);
+    case actions.deleteSuccess: {
+      const name = action.result.metadata.name || action.result.details.name;
+      index = state.items.findIndex(item => item.metadata.name === name);
       return {
         ...state,
         isDeleting: false,
-        items: [...state.items.slice(0, index), ...state.items.slice(index + 1)]
+        items: index >= 0 ? [...state.items.slice(0, index), ...state.items.slice(index + 1)] : state.items
       };
+    }
     case actions.deleteFailure:
       return {
         ...state,
