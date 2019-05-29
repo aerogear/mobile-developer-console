@@ -79,7 +79,7 @@ app.get('/api/mobileclient/:name/config', (req, res) => {
     namespace: mdcNamespace,
     clientId: appName
   };
-  const services = [PushService, IdentityManagementService, MetricsService];
+  const services = [PushService, IdentityManagementService, MetricsService, DataSyncService];
   const promises = services.map(service => service.getClientConfig(mdcNamespace, appName, kubeclient));
   Promise.all(promises).then(serviceConfigs => {
     data.services = serviceConfigs.filter(Boolean);

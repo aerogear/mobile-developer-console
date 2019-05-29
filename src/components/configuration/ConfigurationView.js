@@ -16,7 +16,7 @@ class ConfigurationView extends Component {
     this.props.fetchAppConfig(appName);
     // for now we keep it simple by simply fetching the app config every 5 seconds.
     // we can consider adding websocket support in the future if it's actually needed.
-    this.appConfigInterval = setInterval(() => this.props.fetchAppConfig(appName), 5000);
+    this.appConfigInterval = setInterval(() => this.props.fetchAppConfig(appName), 2000);
   }
 
   componentWillUnmount() {

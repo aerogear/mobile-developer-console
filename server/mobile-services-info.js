@@ -57,7 +57,11 @@ const IdentityManagementService = {
         return null;
       })
       .catch(err => {
-        console.warn(`Error when fetch secret ${secretName}`, err);
+        if (err && err.statusCode && err.statusCode === 404) {
+          console.info(`Can not find secret ${secretName}`);
+        } else {
+          console.warn(`Error when fetch secret ${secretName}`, err);
+        }
         return null;
       });
   }
@@ -84,9 +88,45 @@ const DataSyncService = {
   name: 'Data Sync',
   icon: '/img/sync.svg',
   description: 'Data Sync',
-  getClientConfig: (namespace, appname, kubeclient) =>
-    // TODO: implement me!
-    null
+  bindCustomResource: {
+    name: 'configmaps',
+    version: 'v1',
+    kind: 'ConfigMap'
+  },
+  getClientConfig: (namespace, appname, kubeclient) => {
+    const configmapName = `${appname}-data-sync-binding`;
+    return kubeclient.api.v1
+      .namespaces(namespace)
+      .configmaps(configmapName)
+      .get()
+      .then(resp => resp.body)
+      .then(configmap => {
+        if (configmap) {
+          const serverUrl = configmap.data.syncServerUrl.toLowerCase();
+          const endpoint = configmap.data.graphqlEndpoint.toLowerCase();
+          const url = `${serverUrl}/${endpoint}`;
+          const websocketUrl = url.replace('https://', 'wss://');
+          return {
+            id: configmap.metadata.uid,
+            name: 'sync-app',
+            type: DATA_SYNC_TYPE,
+            url,
+            config: {
+              websocketUrl
+            }
+          };
+        }
+        return null;
+      })
+      .catch(err => {
+        if (err && err.statusCode && err.statusCode === 404) {
+          console.info(`Can not find configmap ${configmapName}`);
+        } else {
+          console.warn(`Error when fetch configmap ${configmapName}`, err);
+        }
+        return null;
+      });
+  }
 };
 
 const MobileServicesMap = {
