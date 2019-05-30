@@ -50,6 +50,7 @@ const DEFAULT_SERVICES = {
     }
   ]
 };
+const DEFAULT_NAMESPACE = 'mobile-console';
 
 // metric endpoint
 app.get('/metrics', (req, res) => {
@@ -71,7 +72,7 @@ app.get('/api/mobileservices', (req, res) => {
 });
 
 app.get('/api/mobileclient/:name/config', (req, res) => {
-  const mdcNamespace = process.env.NAMESPACE || 'myproject';
+  const mdcNamespace = process.env.NAMESPACE || DEFAULT_NAMESPACE;
   const appName = req.params.name;
   const data = {
     version: 1,
@@ -104,7 +105,7 @@ function getConfigData(req) {
   let userToken = OPENSHIFT_USER_TOKEN;
   let userName = OPENSHIFT_USER_NAME || 'testuser';
   let userEmail = OPENSHIFT_USER_EMAIL || 'testuser@localhost';
-  const mdcNamespace = NAMESPACE || 'myproject';
+  const mdcNamespace = NAMESPACE || DEFAULT_NAMESPACE;
   const docsPrefix = DOCS_PREFIX || 'https://docs.aerogear.org/aerogear/latest';
   let enableBuildTab = false;
   if (ENABLE_BUILD_TAB && ENABLE_BUILD_TAB === 'true') {
@@ -177,9 +178,12 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 async function run() {
-  const { OPENSHIFT_HOST, OPENSHIFT_USER_TOKEN } = process.env;
+  const { OPENSHIFT_HOST, OPENSHIFT_USER_TOKEN, NAMESPACE } = process.env;
   if (!OPENSHIFT_HOST) {
     console.warn('OPENSHIFT_HOST environment variable is not set');
+  }
+  if (!NAMESPACE) {
+    console.warn(`NAMESPACE environment variable is not set, will use the default namespace ${DEFAULT_NAMESPACE}`);
   }
   if (!OPENSHIFT_USER_TOKEN && process.env.NODE_ENV !== 'production') {
     console.warn('OPENSHIFT_USER_TOKEN environment variable is not set');
