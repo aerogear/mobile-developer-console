@@ -19,8 +19,8 @@ const watchStatus = {};
 // the services are unlikely to change because they should be pre-provisioned, so we can just use the data from the store if it's available already.
 async function getServiceItemsFromStoreOrRemote(dispatch, getState) {
   const currentItems = getState().services;
-  if (currentItems && currentItems.items.length > 0) {
-    return currentItems.items;
+  if (currentItems && currentItems.items && currentItems.items.length > 0) {
+    return currentItems;
   }
   dispatch({ type: SERVICES_REQUEST });
   const serviceItems = await mobileServices.list();
@@ -61,11 +61,11 @@ export const fetchAndWatchServices = () => async (dispatch, getState) => {
   }
 };
 
-export const createCustomResourceForService = (service, formdata) => async dispatch => {
+export const createCustomResourceForService = (service, formdata, app) => async dispatch => {
   const resDef = service.customResourceDef();
   const reqBody = service.newCustomResource(formdata);
   // we don't need to handle success event here as it will be handled by the WS handler
-  return create(resDef, reqBody).catch(err => {
+  return create(resDef, reqBody, app).catch(err => {
     dispatch(errorCreator(err));
   });
 };
