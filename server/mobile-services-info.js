@@ -1,6 +1,9 @@
+const url = require('url');
+
 const PUSH_SERVIE_TYPE = 'push';
 const IDM_SERVICE_TYPE = 'keycloak';
 const METRICS_SERVICE_TYPE = 'metrics';
+const DATA_SYNC_TYPE = 'sync-app';
 
 function decodeBase64(encoded) {
   const buff = Buffer.from(encoded, 'base64');
@@ -47,8 +50,8 @@ const IdentityManagementService = {
           const config = JSON.parse(decodeBase64(encodedInstall));
           return {
             id: secret.metadata.uid,
-            name: 'keycloak',
-            type: 'keycloak',
+            name: IDM_SERVICE_TYPE,
+            type: IDM_SERVICE_TYPE,
             url: config['auth-server-url'],
             config
           };
@@ -56,7 +59,11 @@ const IdentityManagementService = {
         return null;
       })
       .catch(err => {
-        console.warn(`Error when fetch secret ${secretName}`, err);
+        if (err && err.statusCode && err.statusCode === 404) {
+          console.info(`Can not find secret ${secretName}`);
+        } else {
+          console.warn(`Error when fetch secret ${secretName}`, err);
+        }
         return null;
       });
   }
@@ -78,10 +85,58 @@ const MetricsService = {
     null
 };
 
+const DataSyncService = {
+  type: DATA_SYNC_TYPE,
+  name: 'Data Sync',
+  icon: '/img/sync.svg',
+  description: 'Data Sync',
+  bindCustomResource: {
+    name: 'configmaps',
+    version: 'v1',
+    kind: 'ConfigMap'
+  },
+  getClientConfig: (namespace, appname, kubeclient) => {
+    const configmapName = `${appname}-data-sync-binding`;
+    return kubeclient.api.v1
+      .namespaces(namespace)
+      .configmaps(configmapName)
+      .get()
+      .then(resp => resp.body)
+      .then(configmap => {
+        if (configmap) {
+          const serverUrl = url.parse(configmap.data.syncServerUrl);
+          serverUrl.pathname = configmap.data.graphqlEndpoint;
+          const httpUrl = url.format(serverUrl);
+          serverUrl.protocol = 'wss';
+          const websocketUrl = url.format(serverUrl);
+          return {
+            id: configmap.metadata.uid,
+            name: DATA_SYNC_TYPE,
+            type: DATA_SYNC_TYPE,
+            url: httpUrl,
+            config: {
+              websocketUrl
+            }
+          };
+        }
+        return null;
+      })
+      .catch(err => {
+        if (err && err.statusCode && err.statusCode === 404) {
+          console.info(`Can not find configmap ${configmapName}`);
+        } else {
+          console.warn(`Error when fetch configmap ${configmapName}`, err);
+        }
+        return null;
+      });
+  }
+};
+
 const MobileServicesMap = {
   [PUSH_SERVIE_TYPE]: PushService,
   [IDM_SERVICE_TYPE]: IdentityManagementService,
-  [METRICS_SERVICE_TYPE]: MetricsService
+  [METRICS_SERVICE_TYPE]: MetricsService,
+  [DATA_SYNC_TYPE]: DataSyncService
 };
 
-module.exports = { MobileServicesMap, PushService, IdentityManagementService, MetricsService };
+module.exports = { MobileServicesMap, PushService, IdentityManagementService, DataSyncService, MetricsService };

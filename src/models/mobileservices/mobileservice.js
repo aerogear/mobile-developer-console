@@ -9,13 +9,13 @@ export class MobileService {
     this.setupText = '';
 
     if (this.data.bindCustomResource) {
-      this.customResourceClass = newCustomResourceClass(this.data.bindCustomResource.kind);
+      this.customResourceClass = newCustomResourceClass(this.data);
     }
 
     this.customResources = [];
     if (this.data.customResources) {
       for (const customResource of this.data.customResources) {
-        this.customResources.push(newCustomResource(customResource));
+        this.customResources.push(newCustomResource(this.data, customResource));
       }
     }
   }

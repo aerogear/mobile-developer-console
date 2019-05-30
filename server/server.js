@@ -7,7 +7,13 @@ const { Client } = require('kubernetes-client');
 const Request = require('kubernetes-client/backends/request');
 const packageJson = require('../package.json');
 const fs = require('fs');
-const { PushService, IdentityManagementService, MetricsService, MobileServicesMap } = require('./mobile-services-info');
+const {
+  PushService,
+  IdentityManagementService,
+  MetricsService,
+  DataSyncService,
+  MobileServicesMap
+} = require('./mobile-services-info');
 
 const app = express();
 let kubeclient;
@@ -31,13 +37,16 @@ const DEFAULT_SERVICES = {
       type: IdentityManagementService.type,
       url: `https://${process.env.IDM_URL || process.env.OPENSHIFT_HOST}`
     },
+    // {
+    //   type: PushService.type,
+    //   url: `https://${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`
+    // },
+    // {
+    //   type: MetricsService.type,
+    //   url: `https://${process.env.METRICS_URL || process.env.OPENSHIFT_HOST}`
+    // }
     {
-      type: PushService.type,
-      url: `https://${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`
-    },
-    {
-      type: MetricsService.type,
-      url: `https://${process.env.METRICS_URL || process.env.OPENSHIFT_HOST}`
+      type: DataSyncService.type
     }
   ]
 };
@@ -69,7 +78,7 @@ app.get('/api/mobileclient/:name/config', (req, res) => {
     namespace: mdcNamespace,
     clientId: appName
   };
-  const services = [PushService, IdentityManagementService, MetricsService];
+  const services = [PushService, IdentityManagementService, MetricsService, DataSyncService];
   const promises = services.map(service => service.getClientConfig(mdcNamespace, appName, kubeclient));
   Promise.all(promises).then(serviceConfigs => {
     data.services = serviceConfigs.filter(Boolean);
