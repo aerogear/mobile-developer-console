@@ -37,7 +37,7 @@ const framework = docsPrefix => {
     ],
     services: {
       keycloak: {
-        serviceLogoUrl: '/img/keycloak.png',
+        serviceLogoUrl: '/img/keycloak.svg',
         serviceName: 'Identity Management',
         serviceDescription: 'Identity Management - Identity and Access Management',
         setupText: 'Identity Management SDK setup',
@@ -51,7 +51,7 @@ const framework = docsPrefix => {
         ]
       },
       push: {
-        serviceLogoUrl: '/img/push.png',
+        serviceLogoUrl: '/img/push.svg',
         serviceName: 'Push Notifications',
         serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
         setupText: 'Push SDK setup',
@@ -68,7 +68,7 @@ const framework = docsPrefix => {
         ]
       },
       metrics: {
-        serviceLogoUrl: '/img/metrics.png',
+        serviceLogoUrl: '/img/metrics.svg',
         serviceName: 'Mobile Metrics',
         serviceDescription: 'Installs a metrics service based on Prometheus and Grafana',
         setupText: 'Mobile Metrics SDK setup',
