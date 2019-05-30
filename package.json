@@ -44,6 +44,7 @@
     "start-js": "react-scripts start",
     "start:client": "npm-run-all -p watch-css start-js",
     "start:server": "nodemon --watch server/server.js --exec 'node server/server.js'",
+    "debug:server": "nodemon --watch server/server.js --exec 'node --inspect server/server.js'",
     "build-js": "react-scripts build",
     "build": "npm-run-all build-css build-js",
     "test": "react-scripts test --env=jsdom --transformIgnorePatterns \"node_modules/(?!lodash-es)/\"",
