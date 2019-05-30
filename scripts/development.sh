@@ -1,5 +1,6 @@
 #!/bin/bash
 
+NAMESPACE="${NAMESPACE:-mobile-console}"
 # Use the minishift instance for local development
 cd "$(dirname "$0")" || exit 1
 
@@ -13,8 +14,8 @@ MINISHIFT_IP=`minishift ip`
 echo "minishift ip is $MINISHIFT_IP"
 oc login "$MINISHIFT_IP:8443" --username=developer --password=developer --insecure-skip-tls-verify=true
 USER_TOKEN=`oc whoami -t`
-echo "Use myproject namespace"
-oc project myproject
+echo "Use namespace ${NAMESPACE}"
+oc project ${NAMESPACE}
 echo "Setup environment variables"
 export OPENSHIFT_HOST="$MINISHIFT_IP:8443"
 export OPENSHIFT_USER_TOKEN="$USER_TOKEN"
