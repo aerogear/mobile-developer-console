@@ -1,4 +1,5 @@
 const url = require('url');
+
 const PUSH_SERVIE_TYPE = 'push';
 const IDM_SERVICE_TYPE = 'keycloak';
 const METRICS_SERVICE_TYPE = 'metrics';
@@ -49,7 +50,7 @@ const IdentityManagementService = {
           const config = JSON.parse(decodeBase64(encodedInstall));
           return {
             id: secret.metadata.uid,
-            name: 'keycloak',
+            name: IDM_SERVICE_TYPE,
             type: IDM_SERVICE_TYPE,
             url: config['auth-server-url'],
             config
@@ -110,7 +111,7 @@ const DataSyncService = {
           const websocketUrl = url.format(serverUrl);
           return {
             id: configmap.metadata.uid,
-            name: 'sync-app',
+            name: DATA_SYNC_TYPE,
             type: DATA_SYNC_TYPE,
             url: httpUrl,
             config: {

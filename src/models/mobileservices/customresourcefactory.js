@@ -20,7 +20,7 @@ export function newCustomResource(serviceInfo, data) {
   if (serviceInfo.type === 'push') {
     return new PushVariantCR(data);
   }
-  if (serviceInfo.typ === 'metrics') {
+  if (serviceInfo.type === 'metrics') {
     return new MetricsCR(data);
   }
   return new CustomResource(data);
@@ -37,7 +37,7 @@ export function newCustomResourceClass(serviceInfo) {
   if (serviceInfo.type === 'push') {
     return PushVariantCR;
   }
-  if (serviceInfo.typ === 'metrics') {
+  if (serviceInfo.type === 'metrics') {
     return MetricsCR;
   }
   return CustomResource;
