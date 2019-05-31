@@ -7,16 +7,11 @@ const { Client } = require('kubernetes-client');
 const Request = require('kubernetes-client/backends/request');
 const packageJson = require('../package.json');
 const fs = require('fs');
-const {
-  PushService,
-  IdentityManagementService,
-  MetricsService,
-  DataSyncService,
-  MobileServicesMap
-} = require('./mobile-services-info');
+const { IdentityManagementService, DataSyncService, MobileServicesMap } = require('./mobile-services-info');
+const { updateAppsAndWatch } = require('./appServices');
+const mobileClientCRD = require('./mobile-client-crd.json');
 
 const app = express();
-let kubeclient;
 
 app.use(bodyParser.json());
 
@@ -68,22 +63,6 @@ app.get('/api/mobileservices', (req, res) => {
     res.json({
       items: servicesJson
     });
-  });
-});
-
-app.get('/api/mobileclient/:name/config', (req, res) => {
-  const mdcNamespace = process.env.NAMESPACE || DEFAULT_NAMESPACE;
-  const appName = req.params.name;
-  const data = {
-    version: 1,
-    namespace: mdcNamespace,
-    clientId: appName
-  };
-  const services = [PushService, IdentityManagementService, MetricsService, DataSyncService];
-  const promises = services.map(service => service.getClientConfig(mdcNamespace, appName, kubeclient));
-  Promise.all(promises).then(serviceConfigs => {
-    data.services = serviceConfigs.filter(Boolean);
-    return res.json(data);
   });
 });
 
@@ -161,10 +140,13 @@ async function initKubeClient() {
     const conf =
       process.env.NODE_ENV === 'production' ? Request.config.getInCluster() : Request.config.fromKubeconfig();
     const backend = new Request(conf);
-    kubeclient = new Client({ backend });
+    const kubeclient = new Client({ backend });
     await kubeclient.loadSpec();
+    kubeclient.addCustomResourceDefinition(mobileClientCRD);
+    return kubeclient;
   } catch (e) {
     console.error('Failed to init kube client', e);
+    return null;
   }
 }
 
@@ -188,7 +170,8 @@ async function run() {
   if (!OPENSHIFT_USER_TOKEN && process.env.NODE_ENV !== 'production') {
     console.warn('OPENSHIFT_USER_TOKEN environment variable is not set');
   }
-  await initKubeClient();
+  const kubeclient = await initKubeClient();
+  updateAppsAndWatch(NAMESPACE || DEFAULT_NAMESPACE, kubeclient);
   app.listen(port, () => console.log(`Listening on port ${port}`));
 }
 

@@ -1,6 +1,5 @@
 import { fetchAction, fetchAndWatchOpenShiftResource } from './fetch';
 import { getNamespace, get, create, update, remove } from '../services/openshift';
-import { get as getConfig } from '../services/appconfig';
 import { mobileAppDef } from '../models/k8s/definitions';
 
 const appResource = mobileAppDef(getNamespace());
@@ -51,13 +50,6 @@ export const fetchAndWatchApps = fetchAndWatchOpenShiftResource(appResource, 'ap
   MODIFIED: APP_UPDATE_SUCCESS,
   DELETED: APP_DELETE_SUCCESS
 });
-
-export const APP_CONFIG_REQUEST = 'APP_CONFIG_REQUEST';
-export const APP_CONFIG_SUCCESS = 'APP_CONFIG_SUCCESS';
-export const APP_CONFIG_FAILURE = 'APP_CONFIG_FAILURE';
-
-export const fetchAppConfig = name =>
-  fetchAction([APP_CONFIG_REQUEST, APP_CONFIG_SUCCESS, APP_CONFIG_FAILURE], async () => getConfig(name))();
 
 // CREATE CLIENT APP DIALOG ACTIONS
 export const APP_FORM_RESET = 'FORM_RESET';
