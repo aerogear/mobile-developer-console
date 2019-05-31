@@ -100,7 +100,7 @@ const list = res =>
     }).then(response => response.data)
   );
 
-const create = (res, obj) =>
+const create = (res, obj, owner) =>
   getUser().then(user => {
     const requestUrl = _buildRequestUrl(res);
 
@@ -109,6 +109,17 @@ const create = (res, obj) =>
     }
     if (!obj.kind && res.kind) {
       obj.kind = res.kind;
+    }
+    if (owner) {
+      obj.metadata.ownerReferences = [
+        {
+          apiVersion: owner.apiVersion,
+          kind: owner.kind,
+          blockOwnerDeletion: false,
+          name: owner.metadata.name,
+          uid: owner.metadata.uid
+        }
+      ];
     }
 
     return axios({

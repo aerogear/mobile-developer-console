@@ -103,7 +103,38 @@ objects:
 - apiVersion: v1
   kind: ServiceAccount
   metadata:
+    labels:
+      app: "${SERVICE_NAME}"
     name: "${SERVICE_ACCOUNT_NAME}"
+
+- kind: Role
+  apiVersion: rbac.authorization.k8s.io/v1beta1
+  metadata:
+    labels:
+      app: "${SERVICE_NAME}"
+    name: mobile-developer-console-server-role
+  rules:
+    - apiGroups:
+        - ""
+      resources:
+        - secrets
+        - configmaps
+      verbs:
+        - "*"
+
+- kind: RoleBinding
+  apiVersion: rbac.authorization.k8s.io/v1beta1
+  metadata:
+    labels:
+      app: "${SERVICE_NAME}"
+    name: mobile-developer-console-role-binding
+  subjects:
+    - kind: ServiceAccount
+      name: "${SERVICE_ACCOUNT_NAME}"
+  roleRef:
+    kind: Role
+    name: mobile-developer-console-server-role
+    apiGroup: rbac.authorization.k8s.io
 
 parameters:
 - name: SERVER_PORT

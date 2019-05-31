@@ -125,7 +125,7 @@ export class BindingPanel extends Component {
   stepChanged = step => {
     if (step === 2) {
       this.setState({ loading: true });
-      this.props.createCustomResourceForService(this.state.service, this.state.formData);
+      this.props.createCustomResourceForService(this.state.service, this.state.formData, this.props.app);
     }
   };
 
@@ -184,8 +184,10 @@ const mapDispatchToProps = {
   createCustomResourceForService
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  const { appName } = ownProps;
   return {
+    app: state.apps.items.find(app => app.metadata.name === appName),
     services: state.services.items.map(service => new MobileService(service))
   };
 }
