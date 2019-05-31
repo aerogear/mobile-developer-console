@@ -23,5 +23,6 @@ export NAMESPACE="$NAMESPACE"
 export ENABLE_BUILD_TAB="false"
 echo "Start local development server..."
 cd ../
+npm install
 npm run start:server &
 npm run start:client
