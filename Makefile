@@ -39,19 +39,19 @@ docker_build:
 
 .PHONY: docker_build_release
 docker_build_release:
-	docker build -t $(DOCKER_LATEST_TAG) -t $(DOCKER_RELEASE_TAG) .
+	docker build -t $(DOCKER_RELEASE_TAG) .
 
 .PHONY: docker_build_master
 docker_build_master:
-	docker build -t $(DOCKER_MASTER_TAG) .
+	docker build -t $(DOCKER_MASTER_TAG) -t $(DOCKER_LATEST_TAG) .
 
 .PHONY: docker_push_release
 docker_push_release:
 	@docker login --username $(QUAY_USERNAME) --password $(QUAY_PASSWORD) ${SERVER}
-	docker push $(DOCKER_LATEST_TAG)
 	docker push $(DOCKER_RELEASE_TAG)
 
 .PHONY: docker_push_master
 docker_push_master:
 	@docker login -u $(QUAY_USERNAME) -p $(QUAY_PASSWORD) ${SERVER}
 	docker push $(DOCKER_MASTER_TAG)
+	docker push $(DOCKER_LATEST_TAG)

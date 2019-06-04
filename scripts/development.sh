@@ -23,5 +23,8 @@ export NAMESPACE="$NAMESPACE"
 export ENABLE_BUILD_TAB="false"
 echo "Start local development server..."
 cd ../
+if [ "$1" != "--skip-npm-install" ]; then
+  npm install
+fi
 npm run start:server &
 npm run start:client

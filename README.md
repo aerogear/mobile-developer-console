@@ -14,8 +14,7 @@
     ./scripts/prepare.sh
     ./deploy/deploy-image.sh $(minishift ip):8443 mobile
     ```
-3. [Enable CORS](#enable-cors-in-the-openshift-cluster)
-4. Open the mobile developer console URL printed by the script.
+3. Open the mobile developer console URL printed by the script.
 
 ### Remote Cluster
 
@@ -26,10 +25,10 @@
 2. Deploy the service using one of the following commands:
    ```
    # Deploy the latest image
-   ./deploy/deploy-image.sh <openshift-url> <namespace>
+   ./deploy/deploy-image.sh <openshift-host> <namespace>
 
    # OR deploy the service using S2I
-   ./deploy/deploy-image-stream.sh <openshift-url> <namespace> <git-ref>
+   ./deploy/deploy-image-stream.sh <openshift-host> <namespace> <git-ref>
    ```
 3. [Enable CORS](#enable-cors-in-the-openshift-cluster)
 
@@ -44,10 +43,10 @@
 
 It is recommended to use the latest release of [Minishift](https://github.com/minishift/minishift) to run the local cluster. Make sure you have it installed and then run the following commands to start development locally:
 
-```
+```console
 ./scripts/minishift_start.sh
 ./scripts/prepare.sh
-./scripts/development.sh
+./scripts/development.sh # You can add "--skip-npm-install" argument if you want to skip installation of node modules
 ```
 
 ### Remote OpenShift Cluster
@@ -67,7 +66,7 @@ then you need to run the prepare script:
 and start the development server:
 
 ```
-export OPENSHIFT_HOST=<openshift-url>
+export OPENSHIFT_HOST=<openshift-hostname>
 export OPENSHIFT_USER_TOKEN=$(oc whoami -t)
 npm run start:server &
 npm run start:client
@@ -81,13 +80,7 @@ The mobile developer console will need to talk to the OpenShift API server direc
 
 To fix this, you will need to manually update the OpenShift master configuration to allow CORS requests from the mobile developer console.
 
-If you are using minishift, you should use the [CORS addon](https://github.com/minishift/minishift-addons/tree/master/add-ons/cors) to enable it.
-
-```
-git clone https://github.com/minishift/minishift-addons.git /tmp/
-minishift addons install /tmp/minishift-addons/add-ons/cors
-minishift addons apply cors
-```
+If you are using Minishift, you should use the [CORS addon](https://github.com/minishift/minishift-addons/tree/master/add-ons/cors). Installation of this plugin is automated in [`./scripts/minishift_start.sh`](scripts/minishift_start.sh).
 
 If you are using a remote cluster, you should check [OpenShift configuration guide](https://docs.openshift.com/container-platform/3.11/install_config/master_node_configuration.html#master-config-asset-config) on how to update the CORS configurations.
 

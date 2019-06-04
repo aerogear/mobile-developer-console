@@ -34,7 +34,6 @@ $OC_CMD patch -n $NAMESPACE deploymentconfig/mobile-developer-console --patch "$
 MDC_HOST=$($OC_CMD -n $NAMESPACE get route mobile-developer-console --template "{{.spec.host}}")
 $OC_CMD patch oauthclient/mobile-developer-console --patch "{\"redirectURIs\":[\"https://$MDC_HOST\"]}"
 
-$OC_CMD start-build -n $NAMESPACE mobile-developer-console
 echo "Mobile developer console will be avaialble at: https://$MDC_HOST"
 echo "You may also need to add $MDC_HOST to the \"corsAllowedOrigins\" section of the master config file and then restart the master node if you are running against a remote cluster."
 echo "For more information, please check https://docs.openshift.com/container-platform/3.11/install_config/master_node_configuration.html#master-config-asset-config."
