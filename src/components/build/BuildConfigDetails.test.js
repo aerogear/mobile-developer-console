@@ -12,7 +12,7 @@ const setup = (propOverrides = {}) => {
     }
   };
 
-  const props = { ...defaultProps, propOverrides };
+  const props = { ...defaultProps, ...propOverrides };
   const wrapper = shallow(<BuildConfigDetails {...props} />);
 
   return {
