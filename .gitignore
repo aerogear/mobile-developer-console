@@ -55,4 +55,3 @@ yarn-error.log*
 node
 npm-cache
 target
-build
