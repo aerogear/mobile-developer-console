@@ -33,18 +33,18 @@ const MobileClientCardViewItem = props => {
   return (
     <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3">
       <Card matchHeight /* accented */ className="mobile-client-card">
-        <CardHeading>
-          <DropdownKebab id={app.metadata.name} pullRight className="card-dropdown-kebab">
-            <EditItemButton item={app} />
-            <DeleteItemButton itemType="app" itemName={appName} item={app} />
-          </DropdownKebab>
-          <Link to={`/mobileclient/${app.metadata.name}`}>
-            <div className="card-pf-title">
-              <h1>{app.spec.name}</h1>
-            </div>
-          </Link>
-        </CardHeading>
         <Link to={`/mobileclient/${app.metadata.name}`}>
+          <CardHeading>
+            <DropdownKebab id={app.metadata.name} pullRight className="card-dropdown-kebab">
+              <EditItemButton item={app} />
+              <DeleteItemButton itemType="app" itemName={appName} item={app} />
+            </DropdownKebab>
+            <Link to={`/mobileclient/${app.metadata.name}`}>
+              <div className="card-pf-title">
+                <h1>{app.spec.name}</h1>
+              </div>
+            </Link>
+          </CardHeading>
           <CardBody>
             <div className="card-icons">
               {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}
