@@ -538,7 +538,9 @@ ShallowWrapper {
           },
         },
       },
+      Symbol(enzyme.__providerValues__): undefined,
     },
+    Symbol(enzyme.__providerValues__): Map {},
   },
   Symbol(enzyme.__unrendered__): null,
   Symbol(enzyme.__renderer__): Object {
@@ -575,6 +577,7 @@ ShallowWrapper {
         },
       },
     },
+    Symbol(enzyme.__providerValues__): undefined,
   },
   Symbol(enzyme.__rootNodes__): Array [
     Object {
@@ -818,5 +821,6 @@ ShallowWrapper {
       "type": "div",
     },
   ],
+  Symbol(enzyme.__providerValues__): null,
 }
 `;
