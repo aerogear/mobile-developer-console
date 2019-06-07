@@ -22,15 +22,21 @@
     ```
     oc login <openshift-url>
     ```
-2. Deploy the service using one of the following commands:
+2. Export `NAMESPACE` and `OPENSHIFT_HOST` variables and run [`prepare.sh`](scripts/prepare.sh) script:
+   ```
+   export NAMESPACE="<your-project-name>"
+   export OPENSHIFT_HOST="<your-openshift-host>"
+   ./scripts/prepare.sh
+   ```
+3. Deploy the service using one of the following commands:
    ```
    # Deploy the latest image
-   ./deploy/deploy-image.sh <openshift-host> <namespace>
+   ./deploy/deploy-image.sh $OPENSHIFT_HOST $NAMESPACE
 
    # OR deploy the service using S2I
-   ./deploy/deploy-image-stream.sh <openshift-host> <namespace> <git-ref>
+   ./deploy/deploy-image-stream.sh $OPENSHIFT_HOST $NAMESPACE <git-ref>
    ```
-3. [Enable CORS](#enable-cors-in-the-openshift-cluster)
+4. [Enable CORS](#enable-cors-in-the-openshift-cluster)
 
 ## Development
 
