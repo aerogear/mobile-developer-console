@@ -23,7 +23,7 @@ const reducer = (state = defaultState, action) => {
         return state;
       }
       return {
-        errors: [ { message : action.errorMessage }, ...state.errors]
+        errors: [{ message: action.errorMessage }, ...state.errors]
       };
     }
     default:
