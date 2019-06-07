@@ -8,7 +8,7 @@ const defaultState = {
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
     case DISMISS_ERROR: {
-      const errors = filter(state.errors, err => !err.message === action.errorMessage);
+      const errors = filter(state.errors, err => err.message !== action.errorMessage);
       return {
         errors
       };
@@ -23,7 +23,7 @@ const reducer = (state = defaultState, action) => {
         return state;
       }
       return {
-        errors: [action.error, ...state.errors]
+        errors: [ { message : action.errorMessage }, ...state.errors]
       };
     }
     default:
