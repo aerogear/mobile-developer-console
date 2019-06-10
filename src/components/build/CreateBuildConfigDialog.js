@@ -8,7 +8,7 @@ import SourceSection from './create_build_config/SourceSection';
 import BuildSection from './create_build_config/BuildSection';
 import { createBuildConfigConnect } from './create_build_config/ReduxCommon';
 
-class CreateBuildConfigDialog extends Component {
+export class CreateBuildConfigDialog extends Component {
   state = { valid: false };
 
   componentDidUpdate(prevProps) {
@@ -74,4 +74,5 @@ class CreateBuildConfigDialog extends Component {
     );
   }
 }
+
 export default createBuildConfigConnect(KEY_CR, configValidation, CreateBuildConfigDialog);
