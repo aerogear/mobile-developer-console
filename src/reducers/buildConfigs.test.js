@@ -1,7 +1,17 @@
 import _, { get as _get } from 'lodash';
-import { buildConfigReducer as buildConfigDialogReducer } from './buildConfigs';
+import buildConfigsResourceReducer, { buildConfigReducer as buildConfigDialogReducer } from './buildConfigs';
 
 import {
+  BUILD_CONFIGS_REQUEST,
+  BUILD_CONFIGS_SUCCESS,
+  BUILD_CONFIGS_FAILURE,
+  BUILD_CONFIG_DELETE_REQUEST,
+  BUILD_CONFIG_DELETE_SUCCESS,
+  BUILD_CONFIG_DELETE_FAILURE,
+  BUILD_CONFIG_CREATE_REQUEST,
+  BUILD_CONFIG_CREATE_SUCCESS,
+  BUILD_CONFIG_CREATE_FAILURE,
+  BUILD_CONFIG_UPDATE_SUCCESS,
   BUILD_CONFIG_FIELD_SET_VALUE,
   BUILD_CONFIG_FIELD_SET_UI_STATE,
   BUILD_CONFIG_FIELD_REMOVE_VALUE,
@@ -60,6 +70,16 @@ const initialState = {
     }
   },
   ui: {}
+};
+
+const resourceReducerInitialState = {
+  isFetching: false,
+  items: [],
+  isCreating: false,
+  isDeleting: false,
+  isActioning: false,
+  isReading: false,
+  fetched: false
 };
 
 // Test variables
@@ -170,5 +190,110 @@ describe('buildConfig Dialog Reducer', () => {
 
     // json.parse/stringify needed to avoid equality check fail due to different, non human visible, properties.
     expect(JSON.parse(JSON.stringify(res))).toEqual(JSON.parse(JSON.stringify(initialState)));
+  });
+});
+
+const ITEM1 = 'ITEM1';
+const ITEM2 = 'ITEM2';
+const ITEM3 = 'ITEM3';
+const TESTITEM1 = { metadata: { name: ITEM1 } };
+const TESTITEM2 = { metadata: { name: ITEM2 } };
+const TESTITEM3 = { metadata: { name: ITEM3 } };
+const TESTITEM1_UPDATE = { metadata: { name: ITEM1, updated: true } };
+
+describe('buildConfig Resource Reducer', () => {
+  it('test Config createRequest', () => {
+    const state = _.cloneDeep(resourceReducerInitialState);
+    const res = buildConfigsResourceReducer(state, { type: BUILD_CONFIG_CREATE_REQUEST });
+    expect(res.isCreating).toBe(true);
+    expect(_.omit(state, ['isCreating'])).toEqual(_.omit(res, ['isCreating']));
+    expect(resourceReducerInitialState).toEqual(state); // Original state must be unchanged
+  });
+  it('test Config createSuccess', () => {
+    const state = _.cloneDeep(resourceReducerInitialState);
+    const res = buildConfigsResourceReducer(state, { type: BUILD_CONFIG_CREATE_SUCCESS, result: 'MYITEM' });
+    expect(res.isCreating).toBe(false);
+    expect(res.items).toEqual(['MYITEM']);
+    expect(_.isMatch(res, state)).toBe(true);
+    expect(_.omit(state, ['isCreating', 'items'])).toEqual(_.omit(res, ['isCreating', 'items']));
+    expect(resourceReducerInitialState).toEqual(state); // Original state must be unchanged
+  });
+  it('test Config createFailure', () => {
+    const state = _.cloneDeep(resourceReducerInitialState);
+    const res = buildConfigsResourceReducer(state, { type: BUILD_CONFIG_CREATE_FAILURE });
+    expect(res.isCreating).toBe(false);
+    expect(_.omit(state, ['isCreating'])).toEqual(_.omit(res, ['isCreating']));
+    expect(resourceReducerInitialState).toEqual(state); // Original state must be unchanged
+  });
+
+  it('test Build Configs Request', () => {
+    const state = _.cloneDeep(resourceReducerInitialState);
+    const res = buildConfigsResourceReducer(state, { type: BUILD_CONFIGS_REQUEST });
+    expect(res.isFetching).toBe(true);
+    expect(_.omit(state, ['isFetching'])).toEqual(_.omit(res, ['isFetching']));
+    expect(resourceReducerInitialState).toEqual(state); // Original state must be unchanged
+  });
+  it('test Build Configs Success', () => {
+    const action = { type: BUILD_CONFIGS_SUCCESS, result: { items: ['MYITEM1', 'MYITEM2'] } };
+
+    const state = _.cloneDeep(resourceReducerInitialState);
+    const res = buildConfigsResourceReducer(state, action);
+    expect(res.isFetching).toBe(false);
+    expect(res.fetched).toBe(true);
+    expect(_.omit(state, ['fetched', 'isFetching', 'items'])).toEqual(_.omit(res, ['fetched', 'isFetching', 'items']));
+    expect(resourceReducerInitialState).toEqual(state); // Original state must be unchanged
+  });
+  it('test Build Configs Failure', () => {
+    const action = { type: BUILD_CONFIGS_FAILURE };
+
+    const state = _.cloneDeep(resourceReducerInitialState);
+    const res = buildConfigsResourceReducer(state, action);
+    expect(res.isFetching).toBe(false);
+    expect(res.fetched).toBe(false);
+    expect(_.omit(state, ['fetched', 'isFetching'])).toEqual(_.omit(res, ['fetched', 'isFetching']));
+    expect(resourceReducerInitialState).toEqual(state); // Original state must be unchanged
+  });
+
+  it('test Build Config Delete Request', () => {
+    const state = _.cloneDeep(resourceReducerInitialState);
+    const res = buildConfigsResourceReducer(state, { type: BUILD_CONFIG_DELETE_REQUEST });
+    expect(res.isDeleting).toBe(true);
+    expect(_.omit(state, ['isDeleting'])).toEqual(_.omit(res, ['isDeleting']));
+    expect(resourceReducerInitialState).toEqual(state); // Original state must be unchanged
+  });
+  it('test Build Config Delete Success', () => {
+    const action = { type: BUILD_CONFIG_DELETE_SUCCESS, result: { metadata: { name: ITEM2 } } };
+
+    const state = _.cloneDeep(resourceReducerInitialState);
+    state.items = [TESTITEM1, TESTITEM2, TESTITEM3];
+
+    const res = buildConfigsResourceReducer(state, action);
+    expect(res.isDeleting).toBe(false);
+    expect(res.items).toEqual([TESTITEM1, TESTITEM3]);
+    expect(_.omit(state, ['isDeleting', 'items'])).toEqual(_.omit(res, ['isDeleting', 'items']));
+    expect(_.omit(resourceReducerInitialState, 'items')).toEqual(_.omit(state, ['items'])); // Original state must be unchanged
+  });
+  it('test Build Config Delete Failure', () => {
+    const state = _.cloneDeep(resourceReducerInitialState);
+    const res = buildConfigsResourceReducer(state, { type: BUILD_CONFIG_DELETE_FAILURE });
+    expect(res.isDeleting).toBe(false);
+    expect(_.omit(state, ['isDeleting'])).toEqual(_.omit(res, ['isDeleting']));
+    expect(resourceReducerInitialState).toEqual(state); // Original state must be unchanged
+  });
+
+  it('test Build Config Update Success', () => {
+    const action = { type: BUILD_CONFIG_UPDATE_SUCCESS, result: TESTITEM1_UPDATE };
+
+    const state = _.cloneDeep(resourceReducerInitialState);
+    state.items = [TESTITEM1, TESTITEM2, TESTITEM3];
+
+    const res = buildConfigsResourceReducer(state, action);
+    expect(res.isUpdating).toBe(false);
+    expect(res.updateError).toBe(false);
+    expect(res.items).toEqual([TESTITEM1_UPDATE, TESTITEM2, TESTITEM3]);
+    expect(_.omit(state, ['isUpdating', 'items', 'updateError'])).toEqual(
+      _.omit(res, ['isUpdating', 'items', 'updateError'])
+    );
+    expect(_.omit(resourceReducerInitialState, 'items')).toEqual(_.omit(state, ['items'])); // Original state must be unchanged
   });
 });
