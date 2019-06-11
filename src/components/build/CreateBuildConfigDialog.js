@@ -28,11 +28,6 @@ export class CreateBuildConfigDialog extends Component {
     onSave && onSave({ config });
   };
 
-  cancel = () => {
-    const { onCancel } = this.props;
-    onCancel && onCancel();
-  };
-
   renderFormButtons = (onCancel, valid) => (
     <div>
       <Button onClick={onCancel}>Cancel</Button>
@@ -41,8 +36,6 @@ export class CreateBuildConfigDialog extends Component {
       </Button>
     </div>
   );
-
-  getValidationState = () => {};
 
   render() {
     const { show, title, onCancel } = this.props;
