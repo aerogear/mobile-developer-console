@@ -8,7 +8,7 @@ import SourceSection from './create_build_config/SourceSection';
 import BuildSection from './create_build_config/BuildSection';
 import { createBuildConfigConnect } from './create_build_config/ReduxCommon';
 
-class CreateBuildConfigDialog extends Component {
+export class CreateBuildConfigDialog extends Component {
   state = { valid: false };
 
   componentDidUpdate(prevProps) {
@@ -28,11 +28,6 @@ class CreateBuildConfigDialog extends Component {
     onSave && onSave({ config });
   };
 
-  cancel = () => {
-    const { onCancel } = this.props;
-    onCancel && onCancel();
-  };
-
   renderFormButtons = (onCancel, valid) => (
     <div>
       <Button onClick={onCancel}>Cancel</Button>
@@ -41,8 +36,6 @@ class CreateBuildConfigDialog extends Component {
       </Button>
     </div>
   );
-
-  getValidationState = () => {};
 
   render() {
     const { show, title, onCancel } = this.props;
@@ -74,4 +67,5 @@ class CreateBuildConfigDialog extends Component {
     );
   }
 }
+
 export default createBuildConfigConnect(KEY_CR, configValidation, CreateBuildConfigDialog);
