@@ -56,29 +56,8 @@ class MobileClientBuildListItem extends Component {
     super(props);
 
     this.state = {
-      isHidden: true
+      buildHistoryOpen: false
     };
-  }
-
-  toggleHidden() {
-    this.setState({
-      isHidden: !this.state.isHidden
-    });
-  }
-
-  historyButton() {
-    if (this.state.isHidden) {
-      return (
-        <Button bsStyle="link" onClick={this.toggleHidden}>
-          <span className="fa fa-angle-right fa-fw" aria-hidden="true" /> Show Build History
-        </Button>
-      );
-    }
-    return (
-      <Button bsStyle="link" onClick={this.toggleHidden}>
-        <span className="fa fa-angle-down fa-fw" aria-hidden="true" /> Hide Build History
-      </Button>
-    );
   }
 
   render = () => {
