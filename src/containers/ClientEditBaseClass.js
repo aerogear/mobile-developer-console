@@ -17,12 +17,21 @@ class ClientEditBaseClass extends Component {
   }
 
   getMobileAppToEdit(newWindow) {
-    if (!newWindow && this.props.createClientAppDialog.app) {
-      return new MobileApp({ ...this.props.createClientAppDialog.app });
+    const {
+      createClientAppDialog: { app },
+      item
+    } = this.props;
+
+    if (!newWindow && app) {
+      return new MobileApp({
+        ...app,
+        clientId: app.spec.name,
+        services: []
+      });
     }
 
-    if (this.props.item) {
-      return new MobileApp(JSON.parse(JSON.stringify(this.props.item)));
+    if (item) {
+      return new MobileApp(JSON.parse(JSON.stringify(item)));
     }
 
     return new MobileApp();

@@ -102,6 +102,10 @@ const create = (res, obj, owner) =>
   getUser().then(user => {
     const requestUrl = _buildRequestUrl(res);
 
+    if (obj.status) {
+      obj.status.namespace = window.OPENSHIFT_CONFIG.mdcNamespace;
+    }
+
     if (!obj.apiVersion) {
       obj.apiVersion = res.group ? `${res.group}/${res.version}` : res.version;
     }
