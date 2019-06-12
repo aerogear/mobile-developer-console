@@ -1,4 +1,4 @@
-import { find, filter } from 'lodash-es';
+import { find, filter, cloneDeep } from 'lodash-es';
 import {
   SERVICES_REQUEST,
   SERVICES_SUCCESS,
@@ -63,14 +63,17 @@ const resourceReducer = (state = defaultState, action) => {
     case CUSTOM_RESOURCE_ADDED_SUCCESS:
     case CUSTOM_RESOURCE_MODIFIED_SUCCESS: {
       const { service, result } = action;
-      const existingService = find(state.items, s => sameService(s, service));
+
+      const items = cloneDeep(state.items); // to avoid changing the 'customResources' of the original state
+      const existingService = find(items, s => sameService(s, service));
       if (existingService) {
         existingService.customResources = addOrReplaceItem(existingService.customResources, result, c =>
           sameCustomResource(c, result)
         );
       }
       return {
-        ...state
+        ...state,
+        items
       };
     }
     case CUSTOM_RESOURCE_DELETED_SUCCESS: {
