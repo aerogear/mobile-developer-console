@@ -63,8 +63,7 @@ const getUser = () => {
 const get = (res, name) =>
   getUser().then(user =>
     axios({
-      url: `${window.OPENSHIFT_CONFIG.masterUri}/apis/${res.group}/${res.version}/namespaces/
-      ${res.namespace}/${res.name}/${name}`,
+      url: `${window.OPENSHIFT_CONFIG.masterUri}/apis/${res.group}/${res.version}/namespaces/${res.namespace}/${res.name}/${name}`,
       headers: {
         authorization: `Bearer ${user.accessToken}`
       }
