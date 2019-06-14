@@ -9,33 +9,41 @@
 
 1. Make sure you have the latest version of [Minishift](https://github.com/minishift/minishift) installed.
 2. Run the following commands:
-    ```
+
+    ```sh
     ./scripts/minishift_start.sh
     ./scripts/prepare.sh
     ./deploy/deploy-image.sh $(minishift ip):8443 mobile
     ```
+
 3. Open the mobile developer console URL printed by the script.
 
 ### Remote Cluster
 
 1. Make sure you have `oc` CLI installed and logged into the remote cluster as a cluster-admin user.
-    ```
+
+    ```sh
     oc login <openshift-url>
     ```
+
 2. Export `NAMESPACE` and `OPENSHIFT_HOST` variables and run [`prepare.sh`](scripts/prepare.sh) script:
-   ```
+
+   ```sh
    export NAMESPACE="<your-project-name>"
    export OPENSHIFT_HOST="<your-openshift-host>"
    ./scripts/prepare.sh
    ```
+
 3. Deploy the service using one of the following commands:
-   ```
+
+   ```sh
    # Deploy the latest image
    ./deploy/deploy-image.sh $OPENSHIFT_HOST $NAMESPACE
 
    # OR deploy the service using S2I
    ./deploy/deploy-image-stream.sh $OPENSHIFT_HOST $NAMESPACE <git-ref>
    ```
+
 4. [Enable CORS](#enable-cors-in-the-openshift-cluster)
 
 ## Development
@@ -49,7 +57,7 @@
 
 It is recommended to use the latest release of [Minishift](https://github.com/minishift/minishift) to run the local cluster. Make sure you have it installed and then run the following commands to start development locally:
 
-```console
+```sh
 ./scripts/minishift_start.sh
 ./scripts/prepare.sh
 ./scripts/development.sh # You can add "--skip-npm-install" argument if you want to skip installation of node modules
@@ -59,26 +67,26 @@ It is recommended to use the latest release of [Minishift](https://github.com/mi
 
 If you are using a remote cluster, make sure you have `oc` CLI installed locally and login to the remote cluster. You will need a user that has `cluster-admin` permission.
 
-```
+```sh
 oc login <openshift-url>
 ```
 
 then you need to run the prepare script:
 
-```
+```sh
 ./scripts/prepare.sh
 ```
 
 and start the development server:
 
-```
+```sh
 export OPENSHIFT_HOST=<openshift-hostname>
 export OPENSHIFT_USER_TOKEN=$(oc whoami -t)
 npm run start:server &
 npm run start:client
 ```
 
-This will start the MDC in development mode, and you should see the console opened inside a browser tab. It will watch local files and the browser tab will be refreshed automatically whenever changes are made inside the `./src` directory. 
+This will start the MDC in development mode, and you should see the console opened inside a browser tab. It will watch local files and the browser tab will be refreshed automatically whenever changes are made inside the `./src` directory.
 
 ### Enable CORS in the OpenShift cluster
 
@@ -92,14 +100,15 @@ If you are using a remote cluster, you should check [OpenShift configuration gui
 
 ## Build
 
-```bash
+```sh
 make build
 ```
 
 ## Test
 
 ### Unit tests
-```bash
+
+```sh
 make test
 ```
 
