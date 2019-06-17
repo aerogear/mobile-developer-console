@@ -123,7 +123,7 @@ describe('async actions', () => {
         { error: new Error('Request failed with status code 404'), type: ERROR }
       ];
 
-      store.dispatch(fetchApp('myapp1')).catch(() => {
+      store.dispatch(fetchApp('myapp1')).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -138,7 +138,7 @@ describe('async actions', () => {
 
       const expectedActions = [{ type: APP_REQUEST }, { type: APP_SUCCESS, result: mockApp }];
 
-      store.dispatch(fetchApp('myapp')).catch(() => {
+      store.dispatch(fetchApp('myapp')).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -148,7 +148,7 @@ describe('async actions', () => {
   describe('createApp', () => {
     it('dispatches APP_CREATE_SUCCESS action', () => {
       mock
-        .onPost(`${masterUri}/apis/mobile.k8s.io/v1alpha1/namespaces/${mdcNamespace}/mobileclients`, mockApp)
+        .onPost(`${masterUri}/apis/mobile.k8s.io/v1alpha1/namespaces/${mdcNamespace}/mobileclients`)
         .reply(201, mockApp);
 
       const expectedActions = [{ type: APP_CREATE_REQUEST }, { type: APP_CREATE_SUCCESS, result: mockApp }];
@@ -206,7 +206,7 @@ describe('async actions', () => {
         { error: new Error('Request failed with status code 409'), type: ERROR }
       ];
 
-      store.dispatch(updateApp(new MobileApp(mockApp))).catch(() => {
+      store.dispatch(updateApp(new MobileApp(mockApp))).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
