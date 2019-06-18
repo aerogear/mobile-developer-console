@@ -1,5 +1,6 @@
 import { APP_FORM_RESET, APP_FIELD_SETVALUE, APP_EDIT } from '../actions/apps';
 import { MobileApp } from '../models';
+import _ from 'lodash';
 
 const defaultState = {
   fields: {},
@@ -19,7 +20,7 @@ const resourceReducer = (state = defaultState, action) => {
         fields: {}
       };
     case APP_FIELD_SETVALUE: {
-      const appModel = new MobileApp({ ...state.app });
+      const appModel = new MobileApp(_.cloneDeep(state.app));
       appModel.setProperty(action.payload.name, action.payload.value);
       return {
         ...state,
