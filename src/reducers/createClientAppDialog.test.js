@@ -1,7 +1,7 @@
 import _ from 'lodash';
+import reducer from './createClientAppDialog';
 import { MobileApp } from '../models';
 import { APP_FORM_RESET, APP_FIELD_SETVALUE, APP_EDIT } from '../actions/apps';
-import reducer from './createClientAppDialog';
 
 const initialState = {
   fields: {},
@@ -36,7 +36,10 @@ describe('error createClientAppDialog reducer', () => {
     const testAppModel = new MobileApp(_.cloneDeep(state.app));
     testAppModel.setProperty(TEST.TEST_FIELD1, TEST.TEST_VALUE1);
 
-    const res = reducer(state, { type: APP_FIELD_SETVALUE, payload: { name: TEST.TEST_FIELD1, value: TEST.TEST_VALUE1} });
+    const res = reducer(state, {
+      type: APP_FIELD_SETVALUE,
+      payload: { name: TEST.TEST_FIELD1, value: TEST.TEST_VALUE1 }
+    });
     expect(res.app).toBeDefined();
     const resAppModel = new MobileApp(res.app);
     expect(resAppModel.getProperty(TEST.TEST_FIELD1)).toEqual(TEST.TEST_VALUE1);

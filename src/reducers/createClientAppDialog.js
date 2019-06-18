@@ -1,6 +1,6 @@
+import _ from 'lodash';
 import { APP_FORM_RESET, APP_FIELD_SETVALUE, APP_EDIT } from '../actions/apps';
 import { MobileApp } from '../models';
-import _ from 'lodash';
 
 const defaultState = {
   fields: {},
