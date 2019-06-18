@@ -11,6 +11,9 @@ const setup = (propOverrides = {}) => {
         },
         status: {
           services: []
+        },
+        spec: {
+          name: 'my-app'
         }
       },
       {
@@ -19,6 +22,9 @@ const setup = (propOverrides = {}) => {
         },
         status: {
           services: []
+        },
+        spec: {
+          name: 'your-app'
         }
       }
     ],
@@ -98,6 +104,9 @@ describe('MobileClientCardView', () => {
         },
         status: {
           services: []
+        },
+        spec: {
+          name: 'my-app'
         }
       },
       {
@@ -106,6 +115,9 @@ describe('MobileClientCardView', () => {
         },
         status: {
           services: []
+        },
+        spec: {
+          name: 'my-app-2'
         }
       },
       {
@@ -114,6 +126,9 @@ describe('MobileClientCardView', () => {
         },
         status: {
           services: []
+        },
+        spec: {
+          name: 'your-app'
         }
       }
     ];

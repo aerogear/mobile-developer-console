@@ -83,7 +83,7 @@ class MobileClientCardView extends Component {
     return mobileClients
       .map(app => {
         const {
-          metadata: { name: clientAppName }
+          spec: { name: clientAppName }
         } = app;
         const { filter } = this.state;
         return clientAppName.indexOf(filter) > -1 ? (
