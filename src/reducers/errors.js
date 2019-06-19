@@ -18,12 +18,13 @@ const reducer = (state = defaultState, action) => {
         errors: []
       };
     case ERROR: {
-      const existingErr = find(state.errors, err => err.message === action.errorMessage);
+      const existingErr = find(state.errors, err => err.message === action.error.message);
       if (existingErr) {
         return state;
       }
       return {
-        errors: [{ message: action.errorMessage }, ...state.errors]
+        // action.error must contain a 'message' field
+        errors: [action.error, ...state.errors]
       };
     }
     default:

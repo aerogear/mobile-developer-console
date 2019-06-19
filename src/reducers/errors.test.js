@@ -49,9 +49,9 @@ describe('error reducer', () => {
   it('add error', () => {
     const state = _.cloneDeep(testState);
 
-    let res = reducer(state, { type: ERROR, errorMessage: TEST_ERROR_MESSAGE3 });
+    let res = reducer(state, { type: ERROR, error: { message: TEST_ERROR_MESSAGE3 } });
     expect(_.isEqual(state, res)).toBe(true); // The message was already there
-    res = reducer(state, { type: ERROR, errorMessage: TEST_ERROR_MESSAGE4 });
+    res = reducer(state, { type: ERROR, error: { message: TEST_ERROR_MESSAGE4 } });
     expect(res.errors).toHaveLength(4);
     expect(_.some(res.errors, { message: TEST_ERROR_MESSAGE1 })).toBe(true); // The message was already there
     expect(_.some(res.errors, { message: TEST_ERROR_MESSAGE2 })).toBe(true); // The message was already there
