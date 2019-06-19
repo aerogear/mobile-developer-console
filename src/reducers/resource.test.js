@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash-es';
 import resourceReducer from './resource';
 
 const TEST_LIST_REQUEST = 'TEST_LIST_REQUEST';

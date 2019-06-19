@@ -1,4 +1,4 @@
-import _, { get as _get } from 'lodash';
+import _, { get as _get } from 'lodash-es';
 import buildConfigsResourceReducer, { buildConfigReducer as buildConfigDialogReducer } from './buildConfigs';
 
 import {

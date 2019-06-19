@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash-es';
 import reducer from './errors';
 import { DISMISS_ERROR, DISMISS_ALL_ERRORS, ERROR } from '../actions/errors';
 
