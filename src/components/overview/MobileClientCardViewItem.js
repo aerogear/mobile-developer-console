@@ -3,7 +3,6 @@ import React from 'react';
 import { Card, CardHeading, CardBody, CardFooter, DropdownKebab } from 'patternfly-react';
 import { Link } from 'react-router-dom';
 import DeleteItemButton from '../../containers/DeleteItemButton';
-import EditItemButton from '../../containers/EditItemButton';
 
 const getServiceIcons = services => {
   const icons = {
@@ -35,7 +34,6 @@ const MobileClientCardViewItem = props => {
       <Card matchHeight /* accented */ className="mobile-client-card">
         <CardHeading>
           <DropdownKebab id={app.metadata.name} pullRight className="card-dropdown-kebab">
-            <EditItemButton item={app} />
             <DeleteItemButton itemType="app" itemName={appName} item={app} />
           </DropdownKebab>
           <Link to={`/mobileclient/${app.metadata.name}`}>
