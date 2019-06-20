@@ -1,7 +1,7 @@
 import { get } from 'lodash-es';
 import Metadata from '../k8s/metadata';
-import AppSpec from './mobileappspec';
 import AppStatus from './mobileappstatus';
+import { getNamespace } from '../../services/openshift';
 
 export const PROPERTIES = {
   NAME: 'name'
@@ -64,12 +64,14 @@ export default class MobileApp {
   }
 
   toJSON() {
-    const spec = this.spec.toJSON();
     const metadata = this.metadata.toJSON();
+    const status = this.status.toJSON();
     if (this.isNew) {
-      metadata.name = spec.name;
+      status.clientId = metadata.name;
+      status.services = [];
+      status.namespace = getNamespace();
     }
-    return { ...this.app, spec, metadata, status: this.status.toJSON() };
+    return { ...this.app, metadata, status };
   }
 
   /**
