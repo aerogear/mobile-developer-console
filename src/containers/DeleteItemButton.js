@@ -50,7 +50,7 @@ class DeleteItemButton extends Component {
   };
 
   getItemName() {
-    return this.props.item ? this.props.item.spec.name : this.props.itemName;
+    return this.props.item ? this.props.item.metadata.name : this.props.itemName;
   }
 
   render() {
