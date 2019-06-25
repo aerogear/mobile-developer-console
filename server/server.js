@@ -7,9 +7,15 @@ const { Client } = require('kubernetes-client');
 const Request = require('kubernetes-client/backends/request');
 const packageJson = require('../package.json');
 const fs = require('fs');
-const { IdentityManagementService, DataSyncService, MobileServicesMap } = require('./mobile-services-info');
-const { updateAppsAndWatch } = require('./appServices');
+const {
+  IdentityManagementService,
+  DataSyncService,
+  MobileServicesMap,
+  DeviceSecurityService
+} = require('./mobile-services-info');
+const { updateAppsAndWatch, watchMobileSecurityService } = require('./appServices');
 const mobileClientCRD = require('./mobile-client-crd.json');
+const mobileSecurityServiceCRD = require('./mobile-security-service-crd.json');
 
 const app = express();
 
@@ -42,9 +48,13 @@ const DEFAULT_SERVICES = {
     // }
     {
       type: DataSyncService.type
+    },
+    {
+      type: DeviceSecurityService.type
     }
   ]
 };
+
 const DEFAULT_NAMESPACE = 'mobile-console';
 
 // metric endpoint
@@ -78,6 +88,8 @@ function getConfigData(req) {
     OPENSHIFT_USER_NAME,
     OPENSHIFT_USER_EMAIL,
     NAMESPACE,
+    MSS_NAMESPACE,
+    MSS_APPS_NAMESPACE,
     ENABLE_BUILD_TAB,
     DOCS_PREFIX
   } = process.env;
@@ -85,6 +97,8 @@ function getConfigData(req) {
   let userName = OPENSHIFT_USER_NAME || 'testuser';
   let userEmail = OPENSHIFT_USER_EMAIL || 'testuser@localhost';
   const mdcNamespace = NAMESPACE || DEFAULT_NAMESPACE;
+  const mssNamespace = MSS_NAMESPACE || false;
+  const mssAppsNamespace = MSS_APPS_NAMESPACE || MSS_NAMESPACE;
   const docsPrefix = DOCS_PREFIX || 'https://docs.aerogear.org/aerogear/latest';
   let enableBuildTab = false;
   if (ENABLE_BUILD_TAB && ENABLE_BUILD_TAB === 'true') {
@@ -99,6 +113,10 @@ function getConfigData(req) {
 
   return `window.OPENSHIFT_CONFIG = {
     mdcNamespace: '${mdcNamespace}',
+    mss: {
+      namespace: '${mssNamespace}',
+      appsNamespace: '${mssAppsNamespace}'
+    },
     masterUri: 'https://${process.env.OPENSHIFT_HOST}',
     wssMasterUri: 'wss://${process.env.OPENSHIFT_HOST}',
     user: {
@@ -143,6 +161,7 @@ async function initKubeClient() {
     const kubeclient = new Client({ backend });
     await kubeclient.loadSpec();
     kubeclient.addCustomResourceDefinition(mobileClientCRD);
+    kubeclient.addCustomResourceDefinition(mobileSecurityServiceCRD);
     return kubeclient;
   } catch (e) {
     console.error('Failed to init kube client', e);
@@ -160,7 +179,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 async function run() {
-  const { OPENSHIFT_HOST, OPENSHIFT_USER_TOKEN, NAMESPACE } = process.env;
+  const { OPENSHIFT_HOST, OPENSHIFT_USER_TOKEN, NAMESPACE, MSS_NAMESPACE } = process.env;
   if (!OPENSHIFT_HOST) {
     console.warn('OPENSHIFT_HOST environment variable is not set');
   }
@@ -172,6 +191,7 @@ async function run() {
   }
   const kubeclient = await initKubeClient();
   updateAppsAndWatch(NAMESPACE || DEFAULT_NAMESPACE, kubeclient);
+  watchMobileSecurityService(MSS_NAMESPACE, kubeclient);
   app.listen(port, () => console.log(`Listening on port ${port}`));
 }
 

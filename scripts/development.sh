@@ -1,6 +1,11 @@
 #!/bin/bash
 
 NAMESPACE="${NAMESPACE:-mobile-console}"
+
+# Mobile Security Service config
+MSS_NAMESPACE=$MSS_NAMESPACE
+MSS_APPS_NAMESPACE=${MSS_APPS_NAMESPACE:-$MSS_NAMESPACE}
+
 # Use the minishift instance for local development
 cd "$(dirname "$0")" || exit 1
 
@@ -21,6 +26,8 @@ export OPENSHIFT_HOST="$MINISHIFT_IP:8443"
 export OPENSHIFT_USER_TOKEN="$USER_TOKEN"
 export NAMESPACE="$NAMESPACE"
 export ENABLE_BUILD_TAB="false"
+export MSS_NAMESPACE=$MSS_NAMESPACE
+export MSS_APPS_NAMESPACE=$MSS_APPS_NAMESPACE
 echo "Start local development server..."
 cd ../
 if [ "$1" != "--skip-npm-install" ]; then

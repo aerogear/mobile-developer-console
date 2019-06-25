@@ -1,10 +1,16 @@
 const equal = require('fast-deep-equal');
 const JSONStream = require('json-stream');
 const mobileClientCRD = require('./mobile-client-crd.json');
+const mobileSecurityServiceCRD = require('./mobile-security-service-crd.json');
+const {
+  PushService,
+  IdentityManagementService,
+  MetricsService,
+  DataSyncService,
+  DeviceSecurityService
+} = require('./mobile-services-info');
 
-const { PushService, IdentityManagementService, MetricsService, DataSyncService } = require('./mobile-services-info');
-
-const services = [PushService, IdentityManagementService, MetricsService, DataSyncService];
+const services = [PushService, IdentityManagementService, MetricsService, DataSyncService, DeviceSecurityService];
 
 const KEYCLOAK_SECRET_SUFFIX = '-install-config';
 const DATASYNC_CONFIGMAP_SUFFIX = '-data-sync-binding';
@@ -85,6 +91,50 @@ function updateAppsAndWatch(namespace, kubeclient) {
   });
 }
 
+/**
+ * Watch the namespace for the Mobile Security Service.
+ * When the namespace is created then start watching changes
+ * to the MobileSecurityService custom resource
+ *
+ * @param {String} namespace - The managed namespace of the Mobile Security Service
+ * @param {*} kubeclient - The kubernetes API client
+ */
+function watchMobileSecurityService(namespace, kubeclient) {
+  const stream = kubeclient.api.v1.watch.namespace(namespace).getStream();
+  const jsonStream = new JSONStream();
+  stream.pipe(jsonStream);
+  jsonStream.on('data', event => {
+    if (event.type === 'ADDED') {
+      watchMobileSecurityServiceCR(namespace, kubeclient);
+    }
+  });
+}
+
+/**
+ * Watch for changes to the MobileSecurityService custom resource.
+ *
+ * @param {String} namespace - The managed namespace of the Mobile Security Service
+ * @param {*} kubeclient - The kubernetes API client
+ */
+function watchMobileSecurityServiceCR(namespace, kubeclient) {
+  const stream = kubeclient.apis[mobileSecurityServiceCRD.spec.group].v1alpha1.watch
+    .namespace(namespace)
+    .mobilesecurityservices()
+    .getStream();
+
+  const jsonStream = new JSONStream();
+  stream.pipe(jsonStream);
+
+  jsonStream.on('data', event => {
+    if (event.type === 'ADDED') {
+      DeviceSecurityService.disabled = false;
+    } else if (event.type === 'DELETED') {
+      DeviceSecurityService.disabled = true;
+    }
+  });
+}
+
 module.exports = {
-  updateAppsAndWatch
+  updateAppsAndWatch,
+  watchMobileSecurityService
 };

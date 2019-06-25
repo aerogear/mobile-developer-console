@@ -4,6 +4,7 @@ const PUSH_SERVIE_TYPE = 'push';
 const IDM_SERVICE_TYPE = 'keycloak';
 const METRICS_SERVICE_TYPE = 'metrics';
 const DATA_SYNC_TYPE = 'sync-app';
+const DEVICE_SECURITY_TYPE = 'security';
 
 function decodeBase64(encoded) {
   const buff = Buffer.from(encoded, 'base64');
@@ -132,11 +133,62 @@ const DataSyncService = {
   }
 };
 
+const mssAppsNamespace = process.env.MSS_APPS_NAMESPACE || process.env.MSS_NAMESPACE;
+
+const DeviceSecurityService = {
+  type: DEVICE_SECURITY_TYPE,
+  name: 'Device Security',
+  disabled: true,
+  icon: '/img/security.svg',
+  description: 'Device Security',
+  bindCustomResource: {
+    name: 'configmaps',
+    version: 'v1',
+    kind: 'ConfigMap'
+  },
+  getClientConfig: (_, appname, kubeclient) => {
+    const configmapName = `${appname}-security`;
+    return kubeclient.api.v1
+      .namespaces(mssAppsNamespace)
+      .configmaps(configmapName)
+      .get()
+      .then(resp => resp.body)
+      .then(configmap => {
+        if (configmap) {
+          const sdkConfig = JSON.parse(configmap.data.SDKConfig);
+          return {
+            id: configmap.metadata.uid,
+            name: DEVICE_SECURITY_TYPE,
+            type: DEVICE_SECURITY_TYPE,
+            url: url.format(sdkConfig.url)
+          };
+        }
+        return null;
+      })
+      .catch(err => {
+        if (err && err.statusCode && err.statusCode === 404) {
+          console.info(`Can not find configmap ${configmapName}`);
+        } else {
+          console.warn(`Error when fetch configmap ${configmapName}`, err);
+        }
+        return null;
+      });
+  }
+};
+
 const MobileServicesMap = {
   [PUSH_SERVIE_TYPE]: PushService,
   [IDM_SERVICE_TYPE]: IdentityManagementService,
   [METRICS_SERVICE_TYPE]: MetricsService,
-  [DATA_SYNC_TYPE]: DataSyncService
+  [DATA_SYNC_TYPE]: DataSyncService,
+  [DEVICE_SECURITY_TYPE]: DeviceSecurityService
 };
 
-module.exports = { MobileServicesMap, PushService, IdentityManagementService, DataSyncService, MetricsService };
+module.exports = {
+  MobileServicesMap,
+  PushService,
+  IdentityManagementService,
+  DataSyncService,
+  MetricsService,
+  DeviceSecurityService
+};
