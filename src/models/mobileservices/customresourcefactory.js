@@ -3,6 +3,7 @@ import { KeycloakRealmCR } from './keycloakrealmcr';
 import { PushVariantCR } from './pushvariantcr';
 import { MetricsCR } from './metricscr';
 import { DataSyncCR } from './datasync';
+import { MobileSecurityServiceAppCR } from './mobilesecurityserviceappcr';
 
 /**
  * Produce an instance of a custom resouce based on the passed in data.
@@ -23,6 +24,9 @@ export function newCustomResource(serviceInfo, data) {
   if (serviceInfo.type === 'metrics') {
     return new MetricsCR(data);
   }
+  if (serviceInfo.type === 'security') {
+    return new MobileSecurityServiceAppCR(data);
+  }
   return new CustomResource(data);
 }
 
@@ -39,6 +43,9 @@ export function newCustomResourceClass(serviceInfo) {
   }
   if (serviceInfo.type === 'metrics') {
     return MetricsCR;
+  }
+  if (serviceInfo.type === 'security') {
+    return MobileSecurityServiceAppCR;
   }
   return CustomResource;
 }

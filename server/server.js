@@ -11,7 +11,7 @@ const {
   IdentityManagementService,
   DataSyncService,
   MobileServicesMap,
-  DeviceSecurityService
+  AppSecurityService
 } = require('./mobile-services-info');
 const { updateAppsAndWatch, watchMobileSecurityService } = require('./appServices');
 const mobileClientCRD = require('./mobile-client-crd.json');
@@ -50,7 +50,7 @@ const DEFAULT_SERVICES = {
       type: DataSyncService.type
     },
     {
-      type: DeviceSecurityService.type
+      type: AppSecurityService.type
     }
   ]
 };
@@ -191,7 +191,9 @@ async function run() {
   }
   const kubeclient = await initKubeClient();
   updateAppsAndWatch(NAMESPACE || DEFAULT_NAMESPACE, kubeclient);
-  watchMobileSecurityService(MSS_NAMESPACE, kubeclient);
+  if (MSS_NAMESPACE) {
+    watchMobileSecurityService(MSS_NAMESPACE, kubeclient);
+  }
   app.listen(port, () => console.log(`Listening on port ${port}`));
 }
 
