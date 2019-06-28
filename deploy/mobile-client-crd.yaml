@@ -21,6 +21,7 @@ spec:
             apiKey:
               type: string
               pattern: '(\w{8}-\w{4}-\w{4}-\w{4}-\w{11})'
+            # `spec.name` is used in OpenShift as the descriptor title of the custom resource
             name:
               type: string
               pattern: '([\w-])'

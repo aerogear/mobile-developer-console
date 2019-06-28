@@ -24,9 +24,7 @@ class ClientEditBaseClass extends Component {
 
     if (!newWindow && app) {
       return new MobileApp({
-        ...app,
-        clientId: app.spec.name,
-        services: []
+        ...app
       });
     }
 
