@@ -7,13 +7,14 @@ const {
   IdentityManagementService,
   MetricsService,
   DataSyncService,
-  DeviceSecurityService
+  AppSecurityService
 } = require('./mobile-services-info');
 
-const services = [PushService, IdentityManagementService, MetricsService, DataSyncService, DeviceSecurityService];
+const services = [PushService, IdentityManagementService, MetricsService, DataSyncService, AppSecurityService];
 
 const KEYCLOAK_SECRET_SUFFIX = '-install-config';
 const DATASYNC_CONFIGMAP_SUFFIX = '-data-sync-binding';
+const APP_SECURITY_SUFFIX = '-security';
 
 function updateAll(namespace, kubeclient) {
   console.log('Check services for all apps');
@@ -54,7 +55,9 @@ function updateApp(namespace, app, kubeclient) {
 
 function getServicesForApp(namespace, app, kubeclient) {
   const appName = app.metadata.name;
-  const promises = services.map(service => service.getClientConfig(namespace, appName, kubeclient));
+  const promises = services.map(service =>
+    service.getClientConfig(service.bindCustomResource.namespace || namespace, appName, kubeclient)
+  );
   return Promise.all(promises).then(serviceConfigs => serviceConfigs.filter(Boolean));
 }
 
@@ -85,6 +88,15 @@ function updateAppsAndWatch(namespace, kubeclient) {
     configmapStream.pipe(configmapJsonStream);
     configmapJsonStream.on('data', event => {
       if (event.object && event.object.metadata.name.endsWith(DATASYNC_CONFIGMAP_SUFFIX)) {
+        updateAll(namespace, kubeclient);
+      }
+    });
+
+    const mssConfigMapStream = kubeclient.api.v1.watch.namespace('mobile-security-service-apps').configmaps.getStream();
+    const mssConfigMapJsonStream = new JSONStream();
+    mssConfigMapStream.pipe(mssConfigMapJsonStream);
+    mssConfigMapJsonStream.on('data', event => {
+      if (event.object && event.object.metadata.name.endsWith(APP_SECURITY_SUFFIX)) {
         updateAll(namespace, kubeclient);
       }
     });
@@ -127,9 +139,9 @@ function watchMobileSecurityServiceCR(namespace, kubeclient) {
 
   jsonStream.on('data', event => {
     if (event.type === 'ADDED') {
-      DeviceSecurityService.disabled = false;
+      AppSecurityService.disabled = false;
     } else if (event.type === 'DELETED') {
-      DeviceSecurityService.disabled = true;
+      AppSecurityService.disabled = true;
     }
   });
 }

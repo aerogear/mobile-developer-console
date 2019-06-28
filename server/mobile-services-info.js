@@ -4,7 +4,7 @@ const PUSH_SERVIE_TYPE = 'push';
 const IDM_SERVICE_TYPE = 'keycloak';
 const METRICS_SERVICE_TYPE = 'metrics';
 const DATA_SYNC_TYPE = 'sync-app';
-const DEVICE_SECURITY_TYPE = 'security';
+const APP_SECURITY_TYPE = 'security';
 
 function decodeBase64(encoded) {
   const buff = Buffer.from(encoded, 'base64');
@@ -133,23 +133,24 @@ const DataSyncService = {
   }
 };
 
-const mssAppsNamespace = process.env.MSS_APPS_NAMESPACE || process.env.MSS_NAMESPACE;
-
-const DeviceSecurityService = {
-  type: DEVICE_SECURITY_TYPE,
-  name: 'Device Security',
-  disabled: true,
+const AppSecurityService = {
+  type: APP_SECURITY_TYPE,
+  name: 'App Security',
+  disabled: true, // disabled by default. Will become enabled based on MSS operator availability
   icon: '/img/security.svg',
-  description: 'Device Security',
+  description: 'Mobile App Security',
   bindCustomResource: {
-    name: 'configmaps',
-    version: 'v1',
-    kind: 'ConfigMap'
+    name: 'mobilesecurityserviceapps',
+    namespace: 'mobile-security-service-apps',
+    version: 'v1alpha1',
+    group: 'mobile-security-service.aerogear.com',
+    kind: 'MobileSecurityServiceApp'
   },
-  getClientConfig: (_, appname, kubeclient) => {
+  getClientConfig: (namespace, appname, kubeclient) => {
     const configmapName = `${appname}-security`;
+
     return kubeclient.api.v1
-      .namespaces(mssAppsNamespace)
+      .namespaces(namespace)
       .configmaps(configmapName)
       .get()
       .then(resp => resp.body)
@@ -158,8 +159,8 @@ const DeviceSecurityService = {
           const sdkConfig = JSON.parse(configmap.data.SDKConfig);
           return {
             id: configmap.metadata.uid,
-            name: DEVICE_SECURITY_TYPE,
-            type: DEVICE_SECURITY_TYPE,
+            name: APP_SECURITY_TYPE,
+            type: APP_SECURITY_TYPE,
             url: url.format(sdkConfig.url)
           };
         }
@@ -181,7 +182,7 @@ const MobileServicesMap = {
   [IDM_SERVICE_TYPE]: IdentityManagementService,
   [METRICS_SERVICE_TYPE]: MetricsService,
   [DATA_SYNC_TYPE]: DataSyncService,
-  [DEVICE_SECURITY_TYPE]: DeviceSecurityService
+  [APP_SECURITY_TYPE]: AppSecurityService
 };
 
 module.exports = {
@@ -190,5 +191,5 @@ module.exports = {
   IdentityManagementService,
   DataSyncService,
   MetricsService,
-  DeviceSecurityService
+  AppSecurityService
 };

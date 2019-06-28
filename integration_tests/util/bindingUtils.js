@@ -1,6 +1,6 @@
 const _ = require('lodash');
-const sendRequest = require("./sendRequest");
-const assert = require("assert");
+const sendRequest = require('./sendRequest');
+const assert = require('assert');
 
 const DNS1123_SUBDOMAIN_VALIDATION = {
   pattern: /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/,
@@ -22,22 +22,20 @@ const createSecretName = prefix => {
 
   prefix += `-${randomString}`;
   return prefix;
-}
+};
 
 const isBindingFailed = binding => {
-  const conditions = binding.status.conditions;
+  const { conditions } = binding.status;
   return conditions && _.find(conditions, { type: 'Failed', status: 'True' });
 };
 
 const isBindingInProgress = binding => {
-  const conditions = binding.status.conditions;
-  return conditions &&
-    _.find(conditions, { type: 'Ready', status: 'False' }) &&
-    !isBindingFailed(binding);
+  const { conditions } = binding.status;
+  return conditions && _.find(conditions, { type: 'Ready', status: 'False' }) && !isBindingFailed(binding);
 };
 
 const isBindingReady = binding => {
-  const conditions = binding.status.conditions;
+  const { conditions } = binding.status;
   return conditions && _.find(conditions, { type: 'Ready', status: 'True' });
 };
 
@@ -56,9 +54,7 @@ const isServiceBound = service => {
   return boundBinding != null;
 };
 
-const isUPSFullyBound = service => {
-  return _.every(service.serviceBindings, binding => isBindingReady(binding));
-};
+const isUPSFullyBound = service => _.every(service.serviceBindings, binding => isBindingReady(binding));
 
 const getBindingTemplate = (appName, service, serviceName, formData) => {
   const template = {
@@ -71,12 +67,8 @@ const getBindingTemplate = (appName, service, serviceName, formData) => {
     serviceClassExternalName: serviceName,
     serviceInstanceName: null
   };
-  const credentialSecretName = createSecretName(
-    `${service.serviceInstance.metadata.name}-credentials`
-  );
-  const parametersSecretName = createSecretName(
-    `${service.serviceInstance.metadata.name}-bind-parameters`
-  );
+  const credentialSecretName = createSecretName(`${service.serviceInstance.metadata.name}-credentials`);
+  const parametersSecretName = createSecretName(`${service.serviceInstance.metadata.name}-bind-parameters`);
   template.bindingParametersName = parametersSecretName;
   template.bindingSecretName = credentialSecretName;
   template.serviceInstanceName = service.serviceInstance.metadata.name;
@@ -84,10 +76,10 @@ const getBindingTemplate = (appName, service, serviceName, formData) => {
 };
 
 const createBinding = async (appName, template, serviceName, isBound = isServiceBound) => {
-  const res = await sendRequest('POST', 'bindableservices', template)
+  const res = await sendRequest('POST', 'bindableservices', template);
   assert.equal(res.status, 200, 'request for new binding should be successful');
   const bindingName = res.data.metadata.name;
-  
+
   let service;
   let timeout = 6 * 60 * 1000;
   while ((!service || !isBound(service)) && timeout > 0) {

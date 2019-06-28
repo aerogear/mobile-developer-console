@@ -79,7 +79,7 @@ export const deleteCustomResource = (service, cr) => async dispatch => {
 
 function listCustomResourceForService(dispatch, service) {
   const custRes = service.bindCustomResource;
-  custRes.namespace = getNamespace();
+  custRes.namespace = service.bindCustomResource.namespace || getNamespace();
   return list(custRes)
     .then(resList => {
       const { items } = resList;
@@ -103,7 +103,7 @@ function watchCustomResourceIfRequired(dispatch, service) {
 
 function watchCustomResource(dispatch, service) {
   const custRes = service.bindCustomResource;
-  custRes.namespace = getNamespace();
+  custRes.namespace = service.bindCustomResource.namespace || getNamespace();
   watchStatus[custRes.kind] = true;
   // TODO: add label selectors to the watch url
   return watch(custRes).then(handler => {
