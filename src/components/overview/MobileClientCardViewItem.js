@@ -10,7 +10,8 @@ const getServiceIcons = services => {
     keycloak: <img alt="Keycloak" className="icon" src="/img/keycloak.svg" />,
     push: <img alt="Push" className="icon" src="/img/push.svg" />,
     sync: <img alt="Sync" className="icon" src="/img/sync.svg" />,
-    'sync-app': <img alt="Sync" className="icon" src="/img/sync.svg" />
+    'sync-app': <img alt="Sync" className="icon" src="/img/sync.svg" />,
+    security: <img alt="Security" className="icon" src="/img/security.svg" />
   };
   return services.map((service, i) => (
     <span className="service-icon" key={i}>
