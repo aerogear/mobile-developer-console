@@ -90,7 +90,7 @@ const DataSyncService = {
   type: DATA_SYNC_TYPE,
   name: 'Data Sync',
   icon: '/img/sync.svg',
-  description: 'Data Sync',
+  description: 'Data Sync Service',
   bindCustomResource: {
     name: 'configmaps',
     version: 'v1',

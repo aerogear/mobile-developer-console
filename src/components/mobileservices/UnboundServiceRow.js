@@ -16,6 +16,7 @@ class UnboundServiceRow extends Component {
 
   renderServiceBadge() {
     let serviceDetailName = this.props.service.getId();
+    const serviceDetailDescription = this.props.service.getDescription();
     const mdcDisplayName = _get(this.props.service, 'serviceInstance.metadata.data.labels.mdcName');
     if (mdcDisplayName) {
       serviceDetailName = mdcDisplayName;
@@ -34,10 +35,10 @@ class UnboundServiceRow extends Component {
           <div className="service-name">
             <h4>
               <div>
-                <a href={`#${this.props.service.getId()}`}>{this.props.service.getName()}</a>
+                <a href={`#${this.props.service.getId()}`}>{serviceDetailName}</a>
               </div>
               <div>
-                <small>{serviceDetailName}</small>
+                <small>{serviceDetailDescription}</small>
               </div>
             </h4>
           </div>
