@@ -41,15 +41,16 @@ class BoundServiceRow extends Component {
       serviceDetailName = mdcDisplayName;
     }
 
+    const serviceDetailDescription = this.props.service.getDescription();
     return (
       <Col key={this.props.service.getId()} md={3} className="service-sdk-info">
         <Col md={12}>
           {icon}
           <div className="service-name">
             <h4>
-              <div>{this.props.service.getName()}</div>
+              <div>{serviceDetailName}</div>
               <div>
-                <small>{serviceDetailName}</small>
+                <small>{serviceDetailDescription}</small>
               </div>
             </h4>
           </div>
