@@ -16,15 +16,57 @@ const PushService = {
   name: 'Push Notification',
   icon: '/img/push.svg',
   description: 'Unified Push Server',
-  bindCustomResource: {
-    name: 'pushvariants',
+  bindCustomResource:
+  {
+    name: 'pushapplications',
     version: 'v1alpha1',
-    group: 'aerogear.org',
-    kind: 'PushVariant'
+    group: 'push.aerogear.org',
+    kind: 'pushapplications',
+    variants: [
+      {
+        name: 'androidvariants',
+        version: 'v1alpha1',
+        group: 'push.aerogear.org',
+        kind: 'AndroidVariant',
+      },
+      {
+        name: 'iosvariants',
+        version: 'v1alpha1',
+        group: 'push.aerogear.org',
+        kind: 'IOSVariant'
+      }
+    ]
   },
-  getClientConfig: (namespace, appname, kubeclient) =>
-    // TODO: implement me!
-    null
+  getClientConfig: (namespace, appname, kubeclient) => {
+    const configmapName = `${appname}-ups`;
+
+    return kubeclient.api.v1
+      .namespaces(namespace)
+      .configmaps(configmapName)
+      .get()
+      .then(resp => resp.body)
+      .then(configmap => {
+        if (configmap) {
+          const sdkConfig = JSON.parse(configmap.data.SDKConfig);
+          return {
+            id: configmap.metadata.uid,
+            name: APP_SECURITY_TYPE,
+            type: APP_SECURITY_TYPE,
+            url: url.format(sdkConfig.url)
+          };
+        }
+        return null;
+      })
+      .catch(err => {
+        if (err && err.statusCode && err.statusCode === 404) {
+          console.info(`Can not find configmap ${configmapName}`);
+        } else {
+          console.warn(`Error when fetch configmap ${configmapName}`, err);
+        }
+        return null;
+      });
+  }
+
 };
 
 const IdentityManagementService = {

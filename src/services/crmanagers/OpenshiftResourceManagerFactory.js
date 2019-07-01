@@ -18,7 +18,9 @@ class UserBoundResourceManager {
 export class OpenshiftResourceManagerFactory {
   static forResource(kind) {
     switch (kind) {
-      case 'pushvariantcr':
+      case 'pushapplications':
+      case 'AndroidVariant':
+      case 'IOSVariant':
         return new UserBoundResourceManager(new PushVariantResourceManager());
       default:
         return new UserBoundResourceManager(new GenericResourceManager());

@@ -1,25 +1,7 @@
-import { map } from 'lodash-es';
 import axios from 'axios';
 import { OpenShiftWatchEvents } from './OpenShiftWatchEvents';
 
-const _buildOpenshiftApiUrl = (baseUrl, res) => (res.group ? `${baseUrl}/apis/${res.group}` : `${baseUrl}/api`);
-
-const _buildOpenShiftUrl = (baseUrl, res) => {
-  const urlBegin = `${_buildOpenshiftApiUrl(baseUrl, res)}/${res.version}`;
-  if (res.namespace) {
-    return `${urlBegin}/namespaces/${res.namespace}/${res.name}`;
-  }
-  return `${urlBegin}/${res.name}`;
-};
-
-const _buildRequestUrl = res => `${_buildOpenShiftUrl(window.OPENSHIFT_CONFIG.masterUri, res)}`;
-
-const _buildWatchUrl = res => `${_buildOpenShiftUrl(window.OPENSHIFT_CONFIG.wssMasterUri, res)}?watch=true`;
-
-const _labelsToQuery = labels => {
-  const labelsArr = map(labels, (value, name) => `${name}%3D${value}`);
-  return labelsArr.join(',');
-};
+import { _buildRequestUrl, _labelsToQuery, _buildWatchUrl } from './utils';
 
 class OpenShiftWatchEventListener {
   _handler = () => {};
@@ -148,7 +130,7 @@ export class GenericResourceManager {
   }
 
   get(user, res, name) {
-    axios({
+    return axios({
       url: `${window.OPENSHIFT_CONFIG.masterUri}/apis/${res.group}/${res.version}/namespaces/${res.namespace}/${res.name}/${name}`,
       headers: {
         authorization: `Bearer ${user.accessToken}`

@@ -32,6 +32,10 @@ export class PushVariantCR extends CustomResource {
     ];
   }
 
+  isReady() {
+    return true;
+  }
+
   static bindForm(params) {
     const { service } = params;
     const hasIOS = hasPlatform(service, 'ios');
@@ -224,8 +228,47 @@ export class PushVariantCR extends CustomResource {
   }
 
   static newInstance(params) {
-    // TODO: implement me!
-    return {};
+    const { CLIENT_ID, CLIENT_TYPE } = params;
+
+    switch(CLIENT_TYPE) {
+      case 'Android':
+        return {
+          apiVersion: 'push.aerogear.org/v1alpha1',
+          kind: 'AndroidVariant',
+          metadata: {
+            name: `${CLIENT_ID}-ups-android`,
+            labels: {
+              'mobile.aerogear.org/client': CLIENT_ID
+            }
+          },
+          spec: {
+            description: 'UPS Android Variant',
+            serverKey: params.platformConfig.googlekey,
+            senderId: '',
+            pushApplicationId: null
+          }
+        };
+      case 'iOS':
+        return {
+          apiVersion: 'push.aerogear.org/v1alpha1',
+          kind: 'IOSVariant',
+          metadata: {
+            name: `${CLIENT_ID}-ups-ios`,
+            labels: {
+              'mobile.aerogear.org/client': CLIENT_ID
+            }
+          },
+          spec: {
+            description: 'UPS iOS Variant',
+            certificate: params.platformConfig.cert,
+            passphrase: params.platformConfig.passphrase,
+            production: params.platformConfig.iosIsProduction,
+            pushApplicationId: null
+          }
+        };
+      default:
+        return {};
+    }
   }
 
   static getDocumentationUrl() {
