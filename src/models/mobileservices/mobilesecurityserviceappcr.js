@@ -57,8 +57,8 @@ export class MobileSecurityServiceAppCR extends CustomResource {
         }
       },
       validationRules: {
-        APP_SECURITY_BINDING: {
-          comment: 'This is the set of rules that will be used to validate APP_SECURITY bindings',
+        MOBILE_SECURITY_BINDING: {
+          comment: 'This is the set of rules that will be used to validate MOBILE_SECURITY bindings',
           fields: {
             appConfig: {
               appId: {

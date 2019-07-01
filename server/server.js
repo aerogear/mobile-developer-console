@@ -11,7 +11,7 @@ const {
   IdentityManagementService,
   DataSyncService,
   MobileServicesMap,
-  AppSecurityService
+  MobileSecurityService
 } = require('./mobile-services-info');
 const { updateAppsAndWatch, watchMobileSecurityService } = require('./appServices');
 const mobileClientCRD = require('./mobile-client-crd.json');
@@ -50,7 +50,7 @@ const DEFAULT_SERVICES = {
       type: DataSyncService.type
     },
     {
-      type: AppSecurityService.type
+      type: MobileSecurityService.type
     }
   ]
 };
