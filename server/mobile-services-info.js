@@ -157,13 +157,12 @@ const MobileSecurityService = {
       .then(configmap => {
         if (configmap) {
           const sdkConfig = JSON.parse(configmap.data.SDKConfig);
-          const sdkConfigUrl = url.parse(sdkConfig.url);
-          sdkConfigUrl.pathname = '';
+          const sdkConfigUrl = sdkConfig.url;
           return {
             id: configmap.metadata.uid,
             name: MOBILE_SECURITY_TYPE,
             type: MOBILE_SECURITY_TYPE,
-            url: url.format(sdkConfig.url)
+            url: sdkConfigUrl
           };
         }
         return null;
