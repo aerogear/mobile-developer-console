@@ -4,7 +4,7 @@ const PUSH_SERVIE_TYPE = 'push';
 const IDM_SERVICE_TYPE = 'keycloak';
 const METRICS_SERVICE_TYPE = 'metrics';
 const DATA_SYNC_TYPE = 'sync-app';
-const APP_SECURITY_TYPE = 'security';
+const MOBILE_SECURITY_TYPE = 'security';
 
 function decodeBase64(encoded) {
   const buff = Buffer.from(encoded, 'base64');
@@ -133,12 +133,12 @@ const DataSyncService = {
   }
 };
 
-const AppSecurityService = {
-  type: APP_SECURITY_TYPE,
-  name: 'App Security',
+const MobileSecurityService = {
+  type: MOBILE_SECURITY_TYPE,
+  name: 'Mobile Security',
   disabled: true, // disabled by default. Will become enabled based on MSS operator availability
   icon: '/img/security.svg',
-  description: 'Mobile App Security',
+  description: 'Mobile Security Service',
   bindCustomResource: {
     name: 'mobilesecurityserviceapps',
     namespace: 'mobile-security-service-apps',
@@ -159,8 +159,8 @@ const AppSecurityService = {
           const sdkConfig = JSON.parse(configmap.data.SDKConfig);
           return {
             id: configmap.metadata.uid,
-            name: APP_SECURITY_TYPE,
-            type: APP_SECURITY_TYPE,
+            name: MOBILE_SECURITY_TYPE,
+            type: MOBILE_SECURITY_TYPE,
             url: url.format(sdkConfig.url)
           };
         }
@@ -182,7 +182,7 @@ const MobileServicesMap = {
   [IDM_SERVICE_TYPE]: IdentityManagementService,
   [METRICS_SERVICE_TYPE]: MetricsService,
   [DATA_SYNC_TYPE]: DataSyncService,
-  [APP_SECURITY_TYPE]: AppSecurityService
+  [MOBILE_SECURITY_TYPE]: MobileSecurityService
 };
 
 module.exports = {
@@ -191,5 +191,5 @@ module.exports = {
   IdentityManagementService,
   DataSyncService,
   MetricsService,
-  AppSecurityService
+  MobileSecurityService
 };

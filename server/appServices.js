@@ -7,14 +7,14 @@ const {
   IdentityManagementService,
   MetricsService,
   DataSyncService,
-  AppSecurityService
+  MobileSecurityService
 } = require('./mobile-services-info');
 
-const services = [PushService, IdentityManagementService, MetricsService, DataSyncService, AppSecurityService];
+const services = [PushService, IdentityManagementService, MetricsService, DataSyncService, MobileSecurityService];
 
 const KEYCLOAK_SECRET_SUFFIX = '-install-config';
 const DATASYNC_CONFIGMAP_SUFFIX = '-data-sync-binding';
-const APP_SECURITY_SUFFIX = '-security';
+const MOBILE_SECURITY_SUFFIX = '-security';
 
 function updateAll(namespace, kubeclient) {
   console.log('Check services for all apps');
@@ -96,7 +96,7 @@ function updateAppsAndWatch(namespace, kubeclient) {
     const mssConfigMapJsonStream = new JSONStream();
     mssConfigMapStream.pipe(mssConfigMapJsonStream);
     mssConfigMapJsonStream.on('data', event => {
-      if (event.object && event.object.metadata.name.endsWith(APP_SECURITY_SUFFIX)) {
+      if (event.object && event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX)) {
         updateAll(namespace, kubeclient);
       }
     });
@@ -139,9 +139,9 @@ function watchMobileSecurityServiceCR(namespace, kubeclient) {
 
   jsonStream.on('data', event => {
     if (event.type === 'ADDED') {
-      AppSecurityService.disabled = false;
+      MobileSecurityService.disabled = false;
     } else if (event.type === 'DELETED') {
-      AppSecurityService.disabled = true;
+      MobileSecurityService.disabled = true;
     }
   });
 }
