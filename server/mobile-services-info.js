@@ -157,6 +157,8 @@ const MobileSecurityService = {
       .then(configmap => {
         if (configmap) {
           const sdkConfig = JSON.parse(configmap.data.SDKConfig);
+          const sdkConfigUrl = url.parse(sdkConfig.url);
+          sdkConfigUrl.pathname = '';
           return {
             id: configmap.metadata.uid,
             name: MOBILE_SECURITY_TYPE,

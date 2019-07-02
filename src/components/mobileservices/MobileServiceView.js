@@ -7,7 +7,7 @@ import UnboundServiceRow from './UnboundServiceRow';
 import './MobileServiceView.css';
 import { fetchAndWatchServices, deleteCustomResource } from '../../actions/services';
 import BindingPanel from './BindingPanel';
-import { MobileService } from '../../models/';
+import { MobileService, MobileApp } from '../../models/';
 
 class MobileServiceView extends Component {
   constructor(props) {
@@ -26,6 +26,36 @@ class MobileServiceView extends Component {
     this.props.fetchAndWatchServices();
   }
 
+  /**
+   * Used to provide custom configuration values to the BoundServiceRow and UnboundServiceRow.
+   *
+   * @param {String} type - The service type
+   * @returns {Object}
+   * @memberof MobileServiceView
+   */
+  getConfigurationOptions(type) {
+    if (!this.props.app) {
+      return null;
+    }
+
+    const {
+      status: {
+        data: { services }
+      }
+    } = this.props.app;
+
+    let options = {};
+    if (type === 'security') {
+      const securityService = services.find(s => s.name === 'security');
+      if (securityService) {
+        options = {
+          url: securityService.url
+        };
+      }
+    }
+    return options;
+  }
+
   boundServiceRows() {
     return (
       <React.Fragment>
@@ -36,6 +66,7 @@ class MobileServiceView extends Component {
               key={service.getId()}
               appName={this.props.appName}
               service={service}
+              configurationOptions={this.getConfigurationOptions(service.data.type, this.props.app)}
               onCreateBinding={() => this.showBindingPanel(service)}
               onFinished={this.hideBindingPanel}
               onDeleteBinding={cr => this.props.deleteCustomResource(service, cr.toJSON())}
@@ -111,10 +142,10 @@ class MobileServiceView extends Component {
 }
 
 function mapStateToProps(state, oldProp) {
-  console.log(state.services.items);
+  const app = MobileApp.find(state.apps.items, oldProp.appName);
   const services = state.services.items.filter(item => !item.disabled).map(item => new MobileService(item));
   const filteredServices = partition(services, service => service.isBoundToApp(oldProp.appName));
-  return { ...state.services, boundServices: filteredServices[0], unboundServices: filteredServices[1] };
+  return { ...state.services, app, boundServices: filteredServices[0], unboundServices: filteredServices[1] };
 }
 
 const mapDispatchToProps = {

@@ -10,13 +10,13 @@ export class MobileSecurityServiceAppCR extends CustomResource {
     return true;
   }
 
-  getConfiguration() {
-    const appId = this.get('data.appId');
+  // eslint-disable-next-line class-methods-use-this
+  getConfiguration(_, options) {
     return [
       {
-        type: 'string',
-        label: 'App ID',
-        value: appId
+        type: 'href',
+        label: 'Mobile Security Service URL',
+        value: options.url
       }
     ];
   }
