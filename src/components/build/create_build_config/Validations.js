@@ -18,7 +18,13 @@ import {
   KEY_CR_BUILD_IOS_CREDENTIALS_PROFILE_PASSWORD,
   withPath
 } from '../Constants';
-import { VALIDATION_OK, validateNotEmpty, validateGitUrl, VALIDATION_ERROR } from '../../common/Validation';
+import {
+  VALIDATION_OK,
+  validateNotEmpty,
+  validateGitUrl,
+  VALIDATION_ERROR,
+  validateNameString
+} from '../../common/Validation';
 
 export const setWithValidation = (dispatcher, validation) => (key, value) =>
   dispatcher(key, value, validation(key, value));
@@ -62,7 +68,7 @@ export function checkMandatoryFields(state) {
 export function configValidation(key, value) {
   switch (key) {
     case KEY_CR_NAME:
-      return validateNotEmpty(value);
+      return validateNameString(value);
     default:
       return VALIDATION_OK;
   }
