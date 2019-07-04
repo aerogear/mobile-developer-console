@@ -31,7 +31,7 @@ async function getServiceItemsFromStoreOrRemote(dispatch, getState) {
 function listCustomResourceForServiceIfRequired(dispatch, service) {
   const custRes = service.bindCustomResource;
   // If there is already a list of custom resources available and we are still watching them, then the store is up to date and there is no need to list again
-  if (service.customResources && watchStatus[custRes.kind]) {
+  if (service.disabled || (service.customResources && watchStatus[custRes.kind])) {
     return Promise.resolve();
   }
   return listCustomResourceForService(dispatch, service);
@@ -87,15 +87,17 @@ function listCustomResourceForService(dispatch, service) {
       return items;
     })
     .catch(error => {
-      dispatch({ type: CUSTOM_RESOURCE_LIST_ERROR, service, resource: custRes, error });
-      dispatch(errorCreator(error));
+      if (!service.disabled) {
+        dispatch({ type: CUSTOM_RESOURCE_LIST_ERROR, service, resource: custRes, error });
+        dispatch(errorCreator(error));
+      }
       return [];
     });
 }
 
 function watchCustomResourceIfRequired(dispatch, service) {
   const custRes = service.bindCustomResource;
-  if (watchStatus[custRes.kind]) {
+  if (watchStatus[custRes.kind] || service.disabled) {
     return Promise.resolve();
   }
   return watchCustomResource(dispatch, service);
@@ -120,8 +122,10 @@ function watchCustomResource(dispatch, service) {
     });
     handler.catch(error => {
       watchStatus[custRes.kind] = false;
-      dispatch({ type: CUSTOM_RESOURCE_WS_ERROR, service, resource: custRes, error });
-      dispatch(errorCreator(error));
+      if (!service.disabled) {
+        dispatch({ type: CUSTOM_RESOURCE_WS_ERROR, service, resource: custRes, error });
+        dispatch(errorCreator(error));
+      }
     });
     return handler;
   });
