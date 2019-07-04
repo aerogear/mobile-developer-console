@@ -35,6 +35,11 @@ class OpenShiftWatchEventListener {
 
 /* eslint-disable class-methods-use-this */
 
+/**
+ * This class has all the method to be used for common operation on the resources.
+ * If a resource needs some custom operation, a dedicated resource manager instance extending
+ * this class should be provided.
+ */
 export class GenericResourceManager {
   create(user, res, obj, owner) {
     const requestUrl = _buildRequestUrl(res);

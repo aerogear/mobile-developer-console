@@ -37,7 +37,6 @@ export function newCustomResourceClass(serviceInfo) {
   if (serviceInfo.type === 'sync-app') {
     return DataSyncCR;
   }
-  // TODO: use the right kind
   if (serviceInfo.type === 'push') {
     return PushVariantCR;
   }

@@ -1,10 +1,13 @@
 import { find } from 'lodash-es';
 import { CustomResource } from './customresource';
 
-function hasPlatform(service, platform) {
+function hasPlatform(service, appName, platform) {
   return (
     service.customResources &&
-    find(service.customResources, cr => typeof cr.getPlatform === 'function' && cr.getPlatform() === platform)
+    find(
+      service.getCustomResourcesForApp(appName),
+      cr => typeof cr.getPlatform === 'function' && cr.getPlatform() === platform
+    )
   );
 }
 
@@ -14,8 +17,7 @@ export class PushVariantCR extends CustomResource {
   }
 
   getPlatform() {
-    // TODO: fix me!!
-    return this.spec.get('platform');
+    return this.data.kind;
   }
 
   getConfiguration(serviceHost) {
@@ -32,14 +34,15 @@ export class PushVariantCR extends CustomResource {
     ];
   }
 
+  // eslint-disable-next-line class-methods-use-this
   isReady() {
     return true;
   }
 
   static bindForm(params) {
     const { service } = params;
-    const hasIOS = hasPlatform(service, 'ios');
-    const hasAndroid = hasPlatform(service, 'android');
+    const hasIOS = hasPlatform(service, params.appName, 'IOSVariant');
+    const hasAndroid = hasPlatform(service, params.appName, 'AndroidVariant');
     let defaultPlatform = 'Android';
     let platforms = ['Android', 'iOS'];
     const androidConfig = {
@@ -230,13 +233,13 @@ export class PushVariantCR extends CustomResource {
   static newInstance(params) {
     const { CLIENT_ID, CLIENT_TYPE } = params;
 
-    switch(CLIENT_TYPE) {
+    switch (CLIENT_TYPE) {
       case 'Android':
         return {
           apiVersion: 'push.aerogear.org/v1alpha1',
           kind: 'AndroidVariant',
           metadata: {
-            name: `${CLIENT_ID}-ups-android`,
+            name: `${CLIENT_ID}-android-ups-variant`,
             labels: {
               'mobile.aerogear.org/client': CLIENT_ID
             }
@@ -253,7 +256,7 @@ export class PushVariantCR extends CustomResource {
           apiVersion: 'push.aerogear.org/v1alpha1',
           kind: 'IOSVariant',
           metadata: {
-            name: `${CLIENT_ID}-ups-ios`,
+            name: `${CLIENT_ID}-ios-ups-variant`,
             labels: {
               'mobile.aerogear.org/client': CLIENT_ID
             }

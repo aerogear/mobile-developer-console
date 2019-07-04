@@ -2,9 +2,8 @@ import _ from 'lodash-es';
 import { GenericResourceManager } from './GenericResourceManager';
 import { PushApplicationCR } from '../../models/mobileservices/pushapplicationcr';
 
-function poll(fnToBePolled, checkOutcome, timeout, interval) {
+function poll(fnToBePolled, checkOutcome, timeout, interval = 100) {
   const endTime = Number(new Date()) + (timeout || 2000);
-  interval = interval || 100;
 
   const checkCondition = function(resolve, reject) {
     const promise = fnToBePolled();
@@ -27,14 +26,11 @@ function poll(fnToBePolled, checkOutcome, timeout, interval) {
 
 export class PushVariantResourceManager extends GenericResourceManager {
   async create(user, res, variantData, mobileApp) {
-    // TODO: Add code to check if an application already exists and to create it if it doesn't.
-    // super.list(user, res)
-
     const apps = await super.list(user, res);
     let app = _.find(apps.items, item => item.metadata.name === mobileApp.metadata.name);
 
     if (!app) {
-      app = await super.create(
+      await super.create(
         user,
         {
           name: 'pushapplications',
@@ -57,13 +53,9 @@ export class PushVariantResourceManager extends GenericResourceManager {
         5000,
         1000
       );
-
-      console.log('Created ', app);
     }
 
     variantData.spec.pushApplicationId = app.status.pushApplicationId;
-
-    console.log('assign application id');
 
     const variantCR = _.find(res.variants, item => item.kind === variantData.kind);
     variantCR.namespace = res.namespace;
@@ -80,5 +72,12 @@ export class PushVariantResourceManager extends GenericResourceManager {
 
       return result;
     });
+  }
+
+  remove(user, res, variantData) {
+    const variantCR = _.find(res.variants, item => item.kind === variantData.kind);
+    variantCR.namespace = res.namespace;
+
+    return super.remove(user, variantCR, variantData);
   }
 }

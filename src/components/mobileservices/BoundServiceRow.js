@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ListViewItem, Row, Col, DropdownKebab } from 'patternfly-react';
-import { get as _get } from 'lodash-es';
+import { filter as _filter, get as _get } from 'lodash-es';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import DeleteItemButton from '../../containers/DeleteItemButton';
@@ -129,19 +129,14 @@ class BoundServiceRow extends Component {
     if (!this.props.service.isUPSService()) {
       return null;
     }
-    const configurationExt = this.props.service.getConfigurationExtAsJSON();
-    // sample value for configurationExt
-    /*
-      [
-        {"type":"ios","typeLabel":"iOS","url":"https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/c8d70b96-bd52-499c-845b-756089e06d36","id":"c8d70b96-bd52-499c-845b-756089e06d36"},
-        {"type":"android","typeLabel":"Android","url":"https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/2d76d1eb-65ef-471c-8d21-75f80c3f370f","id":"2d76d1eb-65ef-471c-8d21-75f80c3f370f"}
-      ]
-    */
-    if (configurationExt && configurationExt.length) {
-      if (configurationExt[0] && configurationExt[0].length && configurationExt[0].length >= 2) {
-        // there are 2 variants already. can't create another variant.
-        return null;
-      }
+
+    const binds = _filter(
+      this.props.service.customResources,
+      res => res.data.metadata.labels && res.data.metadata.labels['mobile.aerogear.org/client'] === this.props.appName
+    );
+
+    if (binds.length >= 2) {
+      return null;
     }
 
     return <BindButton service={this.props.service} onClick={this.props.onCreateBinding} />;

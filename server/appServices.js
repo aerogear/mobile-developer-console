@@ -15,6 +15,7 @@ const services = [PushService, IdentityManagementService, MetricsService, DataSy
 const KEYCLOAK_SECRET_SUFFIX = '-install-config';
 const DATASYNC_CONFIGMAP_SUFFIX = '-data-sync-binding';
 const MOBILE_SECURITY_SUFFIX = '-security';
+const UPS_SUFFIX = '-ups-variant';
 
 function updateAll(namespace, kubeclient) {
   console.log('Check services for all apps');
@@ -99,6 +100,15 @@ function updateAppsAndWatch(namespace, kubeclient) {
     mssConfigMapStream.pipe(mssConfigMapJsonStream);
     mssConfigMapJsonStream.on('data', event => {
       if (event.object && event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX)) {
+        updateAll(namespace, kubeclient);
+      }
+    });
+
+    const upsConfigMapStream = kubeclient.api.v1.watch.namespace(namespace).configmaps.getStream();
+    const upsConfigMapJsonStream = new JSONStream();
+    upsConfigMapStream.pipe(upsConfigMapJsonStream);
+    upsConfigMapJsonStream.on('data', event => {
+      if (event.object && event.object.metadata.name.endsWith(UPS_SUFFIX)) {
         updateAll(namespace, kubeclient);
       }
     });

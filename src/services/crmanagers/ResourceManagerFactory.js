@@ -2,6 +2,10 @@ import { GenericResourceManager } from './GenericResourceManager';
 import { PushVariantResourceManager } from './PushVariantResourceManager';
 import { getUser } from '../openshift';
 
+/**
+ * This class delegates all his operation to the provided resource manager.
+ * The added value of this layer is that it automatically passes the user object.
+ */
 class UserBoundResourceManager {
   constructor(resourceManager) {
     this._resourceManager = resourceManager;
@@ -15,7 +19,11 @@ class UserBoundResourceManager {
   get = (res, name) => getUser().then(user => this._resourceManager.get(user, res, name));
 }
 
-export class OpenshiftResourceManagerFactory {
+/**
+ * This class produces the resource manager for the received resource.
+ * The resource manager will automatically received the user object.
+ */
+export class ResourceManagerFactory {
   static forResource(kind) {
     switch (kind) {
       case 'pushapplications':

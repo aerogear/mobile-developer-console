@@ -10,6 +10,7 @@ export class PushApplicationCR extends CustomResource {
     return this.spec.get('platform');
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getConfiguration(serviceHost) {}
 
   static bindForm(params) {}
@@ -31,5 +32,10 @@ export class PushApplicationCR extends CustomResource {
 
   static getDocumentationUrl() {
     return 'https://docs.aerogear.org/external/apb/unifiedpush.html';
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  isReady() {
+    return true;
   }
 }

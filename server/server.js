@@ -162,7 +162,7 @@ async function initKubeClient() {
     backend.requestOptions.insecureSkipTlsVerify = true;
     backend.requestOptions.strictSSL = false;
 
-    const kubeclient = new Client({ backend, config: {insecureSkipTlsVerify: true } });
+    const kubeclient = new Client({ backend, config: { insecureSkipTlsVerify: true } });
     await kubeclient.loadSpec();
     kubeclient.addCustomResourceDefinition(mobileClientCRD);
     kubeclient.addCustomResourceDefinition(mobileSecurityServiceCRD);

@@ -6,4 +6,4 @@ const OpenShiftWatchEvents = Object.freeze({
   CLOSED: 'CLOSED'
 });
 
-export { OpenShiftWatchEvents }
+export { OpenShiftWatchEvents };

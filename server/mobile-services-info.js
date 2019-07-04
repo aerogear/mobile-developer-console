@@ -16,8 +16,7 @@ const PushService = {
   name: 'Push Notification',
   icon: '/img/push.svg',
   description: 'Unified Push Server',
-  bindCustomResource:
-  {
+  bindCustomResource: {
     name: 'pushapplications',
     version: 'v1alpha1',
     group: 'push.aerogear.org',
@@ -27,7 +26,7 @@ const PushService = {
         name: 'androidvariants',
         version: 'v1alpha1',
         group: 'push.aerogear.org',
-        kind: 'AndroidVariant',
+        kind: 'AndroidVariant'
       },
       {
         name: 'iosvariants',
@@ -38,35 +37,8 @@ const PushService = {
     ]
   },
   getClientConfig: (namespace, appname, kubeclient) => {
-    const configmapName = `${appname}-ups`;
-
-    return kubeclient.api.v1
-      .namespaces(namespace)
-      .configmaps(configmapName)
-      .get()
-      .then(resp => resp.body)
-      .then(configmap => {
-        if (configmap) {
-          const sdkConfig = JSON.parse(configmap.data.SDKConfig);
-          return {
-            id: configmap.metadata.uid,
-            name: APP_SECURITY_TYPE,
-            type: APP_SECURITY_TYPE,
-            url: url.format(sdkConfig.url)
-          };
-        }
-        return null;
-      })
-      .catch(err => {
-        if (err && err.statusCode && err.statusCode === 404) {
-          console.info(`Can not find configmap ${configmapName}`);
-        } else {
-          console.warn(`Error when fetch configmap ${configmapName}`, err);
-        }
-        return null;
-      });
+    // TODO: to be implemented
   }
-
 };
 
 const IdentityManagementService = {

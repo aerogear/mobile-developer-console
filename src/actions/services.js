@@ -80,10 +80,7 @@ export const deleteCustomResource = (service, cr) => async dispatch => {
 function listCustomResourceForService(dispatch, service) {
   const custRes = service.bindCustomResource;
   custRes.namespace = service.bindCustomResource.namespace || getNamespace();
-
-  const listRes = list(custRes);
-
-  return listRes
+  return list(custRes)
     .then(resList => {
       const { items } = resList;
       dispatch({ type: CUSTOM_RESOURCE_LIST_SUCCESS, service, resource: custRes, items });

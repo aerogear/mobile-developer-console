@@ -1,4 +1,4 @@
-import { OpenshiftResourceManagerFactory } from './OpenshiftResourceManagerFactory';
+import { ResourceManagerFactory } from './ResourceManagerFactory';
 import { OpenShiftWatchEvents } from './OpenShiftWatchEvents';
 
-export { OpenshiftResourceManagerFactory, OpenShiftWatchEvents };
+export { ResourceManagerFactory, OpenShiftWatchEvents };
