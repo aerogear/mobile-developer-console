@@ -82,7 +82,7 @@ describe('async actions', () => {
 
       const expectedActions = [{ type: BUILD_TRIGGER_REQUEST }, { type: BUILD_TRIGGER_SUCCESS, result: mockResponse }];
 
-      store.dispatch(triggerBuild(buildConfigName)).then(() => {
+      return store.dispatch(triggerBuild(buildConfigName)).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -101,7 +101,7 @@ describe('async actions', () => {
         { error: new Error('Request failed with status code 404'), type: ERROR }
       ];
 
-      store.dispatch(triggerBuild(buildConfigName)).then(() => {
+      return store.dispatch(triggerBuild(buildConfigName)).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -121,7 +121,7 @@ describe('async actions', () => {
         { error: new Error('Request failed with status code 404'), type: ERROR }
       ];
 
-      store.dispatch(generateDownloadURL(buildConfigName)).then(() => {
+      return store.dispatch(generateDownloadURL(buildConfigName)).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
