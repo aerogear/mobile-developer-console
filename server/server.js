@@ -159,10 +159,7 @@ async function initKubeClient() {
     const conf =
       process.env.NODE_ENV === 'production' ? Request.config.getInCluster() : Request.config.fromKubeconfig();
     const backend = new Request(conf);
-    backend.requestOptions.insecureSkipTlsVerify = true;
-    backend.requestOptions.strictSSL = false;
-
-    const kubeclient = new Client({ backend, config: { insecureSkipTlsVerify: true } });
+    const kubeclient = new Client({ backend });
     await kubeclient.loadSpec();
     kubeclient.addCustomResourceDefinition(mobileClientCRD);
     kubeclient.addCustomResourceDefinition(mobileSecurityServiceCRD);
