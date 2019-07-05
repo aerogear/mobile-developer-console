@@ -155,7 +155,7 @@ const MobileSecurityService = {
   description: 'Mobile Security Service',
   bindCustomResource: {
     name: 'mobilesecurityserviceapps',
-    namespace: 'mobile-security-service-apps',
+    namespace: process.env.MSS_APPS_NAMESPACE || process.env.MSS_NAMESPACE,
     version: 'v1alpha1',
     group: 'mobile-security-service.aerogear.com',
     kind: 'MobileSecurityServiceApp'
