@@ -6,31 +6,7 @@ import { ERROR } from './errors';
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
-const userInfoRequest = 'USER_INFO_REQUEST';
-const userInfoSuccess = 'USER_INFO_SUCCESS';
-const userInfoFailure = 'USER_INFO_FAILURE';
-
-const result = {
-  accessToken: 'vlseTWA8LXFz6X5kBH2BJO2l33GRZSPZAHA2-FHGC94',
-  name: 'mockuser',
-  email: 'mockuser@example.com'
-};
-
-describe('All constants remain unchanged', () => {
-  it('USER_INFO_REQUEST == USER_INFO_REQUEST', () => {
-    expect(USER_INFO_REQUEST).toEqual(userInfoRequest);
-  });
-
-  it('USER_INFO_SUCCESS == USER_INFO_SUCCESS', () => {
-    expect(USER_INFO_SUCCESS).toEqual(userInfoSuccess);
-  });
-
-  it('USER_INFO_FAILURE == USER_INFO_FAILURE', () => {
-    expect(USER_INFO_FAILURE).toEqual(userInfoFailure);
-  });
-});
-
-describe('Test actions', () => {
+describe('Actions', () => {
   let store;
   let initialState;
 
@@ -38,13 +14,23 @@ describe('Test actions', () => {
     initialState = {};
   });
 
-  beforeEach(() => {
-    store = mockStore(initialState);
-  });
-
   describe('fetchUserInfo', () => {
-    it('successfully fetch user info', () => {
-      const expectedActions = [{ type: userInfoRequest }, { result, type: userInfoSuccess }];
+    let user;
+
+    beforeEach(() => {
+      store = mockStore(initialState);
+      user = { ...window.OPENSHIFT_CONFIG.user };
+    });
+
+    afterEach(() => {
+      window.OPENSHIFT_CONFIG.user = user;
+    });
+
+    it('creates USER_INFO_SUCCESS action', () => {
+      const expectedActions = [
+        { type: USER_INFO_REQUEST },
+        { result: window.OPENSHIFT_CONFIG.user, type: USER_INFO_SUCCESS }
+      ];
 
       return store.dispatch(fetchUserInfo()).then(() => {
         const actions = store.getActions();
@@ -52,10 +38,10 @@ describe('Test actions', () => {
       });
     });
 
-    it('window.OPENSHIFT_CONFIG.user = null', () => {
+    it('creates USER_INFO_FAILURE action', () => {
       const expectedActions = [
-        { type: userInfoRequest },
-        { error: new Error('no user found'), type: userInfoFailure },
+        { type: USER_INFO_REQUEST },
+        { error: new Error('no user found'), type: USER_INFO_FAILURE },
         { error: new Error('no user found'), type: ERROR }
       ];
 
