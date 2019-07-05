@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ListViewItem, Row, Col, DropdownKebab } from 'patternfly-react';
-import { filter as _filter, get as _get } from 'lodash-es';
+import { get as _get } from 'lodash-es';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import DeleteItemButton from '../../containers/DeleteItemButton';
@@ -130,12 +130,7 @@ class BoundServiceRow extends Component {
       return null;
     }
 
-    const binds = _filter(
-      this.props.service.customResources,
-      res => res.data.metadata.labels && res.data.metadata.labels['mobile.aerogear.org/client'] === this.props.appName
-    );
-
-    if (binds.length >= 2) {
+    if (this.props.service.getCustomResourcesForApp(this.props.appName).length >= 2) {
       return null;
     }
 

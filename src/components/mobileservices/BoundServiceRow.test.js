@@ -147,15 +147,15 @@ describe('BoundServiceRow - UPS - 2 bindings', () => {
     getConfigurationExtAsJSON: () => [
       [
         {
-          type: 'android',
-          typeLabel: 'Android',
+          type: 'AndroidVariant',
+          typeLabel: 'AndroidVariant',
           url:
             'https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/2d76d1eb-65ef-471c-8d21-75f80c3f370f',
           id: '2d76d1eb-65ef-471c-8d21-75f80c3f370f'
         },
         {
-          type: 'ios',
-          typeLabel: 'iOS',
+          type: 'IOSVariant',
+          typeLabel: 'IOSVariant',
           url:
             'https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/c8d70b96-bd52-499c-845b-756089e06d36',
           id: 'c8d70b96-bd52-499c-845b-756089e06d36'
@@ -177,8 +177,12 @@ describe('BoundServiceRow - UPS - 2 bindings', () => {
     isBound: () => true,
     getCustomResourcesForApp: () => [
       {
-        getName: () => 'test-ups-r66b9',
+        getName: () => 'test-ups-r66b9-android',
         getPlatform: () => 'android'
+      },
+      {
+        getName: () => 'test-ups-r66b9-ios',
+        getPlatform: () => 'ios'
       }
     ]
   };
