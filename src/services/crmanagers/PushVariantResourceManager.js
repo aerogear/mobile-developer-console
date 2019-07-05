@@ -80,4 +80,8 @@ export class PushVariantResourceManager extends GenericResourceManager {
 
     return super.remove(user, variantCR, variantData);
   }
+
+  watch(user, res) {
+    return Promise.all(res.variants.map(variantRes => super.watch(user, variantRes)));
+  }
 }

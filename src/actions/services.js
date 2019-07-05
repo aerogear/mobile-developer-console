@@ -1,4 +1,4 @@
-import { compact } from 'lodash-es';
+import { forEach, isArray, compact } from 'lodash-es';
 import { mobileServices } from '../services/mobileservices';
 import { list, watch, create, OpenShiftWatchEvents, remove, getNamespace } from '../services/openshift';
 import { errorCreator } from './errors';
@@ -109,24 +109,27 @@ function watchCustomResource(dispatch, service) {
   watchStatus[custRes.kind] = true;
   // TODO: add label selectors to the watch url
   return watch(custRes).then(handler => {
-    handler.onEvent(event => {
-      if (event.type === OpenShiftWatchEvents.CLOSED) {
+    forEach(isArray(handler) ? handler : [handler], h => {
+      h.onEvent(event => {
+        if (event.type === OpenShiftWatchEvents.CLOSED) {
+          watchStatus[custRes.kind] = false;
+        } else if (event.type === OpenShiftWatchEvents.ADDED) {
+          dispatch({ type: CUSTOM_RESOURCE_ADDED_SUCCESS, service, resource: custRes, result: event.payload });
+        } else if (event.type === OpenShiftWatchEvents.MODIFIED) {
+          dispatch({ type: CUSTOM_RESOURCE_MODIFIED_SUCCESS, service, resource: custRes, result: event.payload });
+        } else if (event.type === OpenShiftWatchEvents.DELETED) {
+          dispatch({ type: CUSTOM_RESOURCE_DELETED_SUCCESS, service, resource: custRes, result: event.payload });
+        }
+      });
+      h.catch(error => {
         watchStatus[custRes.kind] = false;
-      } else if (event.type === OpenShiftWatchEvents.ADDED) {
-        dispatch({ type: CUSTOM_RESOURCE_ADDED_SUCCESS, service, resource: custRes, result: event.payload });
-      } else if (event.type === OpenShiftWatchEvents.MODIFIED) {
-        dispatch({ type: CUSTOM_RESOURCE_MODIFIED_SUCCESS, service, resource: custRes, result: event.payload });
-      } else if (event.type === OpenShiftWatchEvents.DELETED) {
-        dispatch({ type: CUSTOM_RESOURCE_DELETED_SUCCESS, service, resource: custRes, result: event.payload });
-      }
+        if (!service.disabled) {
+          dispatch({ type: CUSTOM_RESOURCE_WS_ERROR, service, resource: custRes, error });
+          dispatch(errorCreator(error));
+        }
+      });
     });
-    handler.catch(error => {
-      watchStatus[custRes.kind] = false;
-      if (!service.disabled) {
-        dispatch({ type: CUSTOM_RESOURCE_WS_ERROR, service, resource: custRes, error });
-        dispatch(errorCreator(error));
-      }
-    });
+
     return handler;
   });
 }

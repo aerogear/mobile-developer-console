@@ -39,6 +39,10 @@ export class PushVariantCR extends CustomResource {
     return true;
   }
 
+  isInProgress() {
+    return !this.status || !this.status.data.ready;
+  }
+
   static bindForm(params) {
     const { service } = params;
     const hasIOS = hasPlatform(service, params.appName, 'IOSVariant');
