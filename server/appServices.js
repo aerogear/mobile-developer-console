@@ -92,7 +92,9 @@ function updateAppsAndWatch(namespace, kubeclient) {
       }
     });
 
-    const mssConfigMapStream = kubeclient.api.v1.watch.namespace('mobile-security-service-apps').configmaps.getStream();
+    const mssConfigMapStream = kubeclient.api.v1.watch
+      .namespace(_getMobileSecurityServiceAppsNamespace())
+      .configmaps.getStream();
     const mssConfigMapJsonStream = new JSONStream();
     mssConfigMapStream.pipe(mssConfigMapJsonStream);
     mssConfigMapJsonStream.on('data', event => {
@@ -144,6 +146,14 @@ function watchMobileSecurityServiceCR(namespace, kubeclient) {
       MobileSecurityService.disabled = true;
     }
   });
+}
+
+function _getMobileSecurityServiceNamespace() {
+  return process.env.MSS_NAMESPACE || false;
+}
+
+function _getMobileSecurityServiceAppsNamespace() {
+  return process.env.MSS_APPS_NAMESPACE || _getMobileSecurityServiceNamespace();
 }
 
 module.exports = {
