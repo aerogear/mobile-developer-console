@@ -103,7 +103,7 @@ describe('async actions', () => {
         { type: BUILD_CONFIG_DELETE_SUCCESS, result: response }
       ];
 
-      store.dispatch(deleteBuildConfig(name)).then(() => {
+      return store.dispatch(deleteBuildConfig(name)).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -121,7 +121,7 @@ describe('async actions', () => {
         { error: new Error('Request failed with status code 404'), type: ERROR }
       ];
 
-      store.dispatch(deleteBuildConfig(name)).then(() => {
+      return store.dispatch(deleteBuildConfig(name)).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -139,7 +139,7 @@ describe('async actions', () => {
         { type: BUILD_CONFIG_CREATE_SUCCESS, result: [] }
       ];
 
-      store.dispatch(createBuildConfig(mockConfig)).then(() => {
+      return store.dispatch(createBuildConfig(mockConfig)).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -154,7 +154,7 @@ describe('async actions', () => {
         { error: new Error('Request failed with status code 401'), type: ERROR }
       ];
 
-      store.dispatch(createBuildConfig(mockConfig)).then(() => {
+      return store.dispatch(createBuildConfig(mockConfig)).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -170,7 +170,7 @@ describe('async actions', () => {
       { error: new Error('Request failed with status code 404'), type: ERROR }
     ];
 
-    store.dispatch(createBuildConfig(mockConfig)).then(() => {
+    return store.dispatch(createBuildConfig(mockConfig)).then(() => {
       const actions = store.getActions();
       expect(actions).toEqual(expectedActions);
     });

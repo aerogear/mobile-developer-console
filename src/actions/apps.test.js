@@ -123,7 +123,7 @@ describe('async actions', () => {
         { error: new Error('Request failed with status code 404'), type: ERROR }
       ];
 
-      store.dispatch(fetchApp('myapp1')).then(() => {
+      return store.dispatch(fetchApp('myapp1')).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -138,7 +138,7 @@ describe('async actions', () => {
 
       const expectedActions = [{ type: APP_REQUEST }, { type: APP_SUCCESS, result: mockApp }];
 
-      store.dispatch(fetchApp('myapp')).then(() => {
+      return store.dispatch(fetchApp('myapp')).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -153,7 +153,7 @@ describe('async actions', () => {
 
       const expectedActions = [{ type: APP_CREATE_REQUEST }, { type: APP_CREATE_SUCCESS, result: mockApp }];
 
-      store.dispatch(createApp(new MobileApp(mockApp))).then(() => {
+      return store.dispatch(createApp(new MobileApp(mockApp))).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -168,7 +168,7 @@ describe('async actions', () => {
         { error: new Error('Request failed with status code 409'), type: ERROR }
       ];
 
-      store.dispatch(createApp(new MobileApp(mockApp))).then(() => {
+      return store.dispatch(createApp(new MobileApp(mockApp))).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -186,7 +186,7 @@ describe('async actions', () => {
 
       const expectedActions = [{ type: APP_UPDATE_REQUEST }, { type: APP_UPDATE_SUCCESS, result: mockApp }];
 
-      store.dispatch(updateApp(new MobileApp(mockApp))).then(() => {
+      return store.dispatch(updateApp(new MobileApp(mockApp))).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -206,7 +206,7 @@ describe('async actions', () => {
         { error: new Error('Request failed with status code 409'), type: ERROR }
       ];
 
-      store.dispatch(updateApp(new MobileApp(mockApp))).then(() => {
+      return store.dispatch(updateApp(new MobileApp(mockApp))).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
@@ -236,7 +236,7 @@ describe('async actions', () => {
 
       const expectedActions = [{ type: APP_DELETE_REQUEST }, { type: APP_DELETE_SUCCESS, result: response }];
 
-      store.dispatch(deleteApp('myapp')).then(() => {
+      return store.dispatch(deleteApp('myapp')).then(() => {
         const actions = store.getActions();
         expect(actions).toEqual(expectedActions);
       });
