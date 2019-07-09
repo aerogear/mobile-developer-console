@@ -159,6 +159,11 @@ async function initKubeClient() {
     const conf =
       process.env.NODE_ENV === 'production' ? Request.config.getInCluster() : Request.config.fromKubeconfig();
     const backend = new Request(conf);
+
+    if (process.env.INSECURE_SERVER) {
+      backend.requestOptions.strictSSL = false;
+    }
+
     const kubeclient = new Client({ backend });
     await kubeclient.loadSpec();
     kubeclient.addCustomResourceDefinition(mobileClientCRD);
