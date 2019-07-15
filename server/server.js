@@ -14,9 +14,8 @@ const {
   MobileSecurityService,
   PushService
 } = require('./mobile-services-info');
-const { updateAppsAndWatch, watchMobileSecurityService } = require('./appServices');
+const { updateAppsAndWatch } = require('./appServices');
 const mobileClientCRD = require('./mobile-client-crd.json');
-const mobileSecurityServiceCRD = require('./mobile-security-service-crd.json');
 
 const app = express();
 
@@ -167,7 +166,6 @@ async function initKubeClient() {
     const kubeclient = new Client({ backend });
     await kubeclient.loadSpec();
     kubeclient.addCustomResourceDefinition(mobileClientCRD);
-    kubeclient.addCustomResourceDefinition(mobileSecurityServiceCRD);
     return kubeclient;
   } catch (e) {
     console.error('Failed to init kube client', e);
@@ -185,7 +183,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 async function run() {
-  const { OPENSHIFT_HOST, OPENSHIFT_USER_TOKEN, NAMESPACE, MSS_NAMESPACE } = process.env;
+  const { OPENSHIFT_HOST, OPENSHIFT_USER_TOKEN, NAMESPACE } = process.env;
   if (!OPENSHIFT_HOST) {
     console.warn('OPENSHIFT_HOST environment variable is not set');
   }
@@ -196,10 +194,9 @@ async function run() {
     console.warn('OPENSHIFT_USER_TOKEN environment variable is not set');
   }
   const kubeclient = await initKubeClient();
+
   updateAppsAndWatch(NAMESPACE || DEFAULT_NAMESPACE, kubeclient);
-  if (MSS_NAMESPACE) {
-    watchMobileSecurityService(MSS_NAMESPACE, kubeclient);
-  }
+
   app.listen(port, () => console.log(`Listening on port ${port}`));
 }
 

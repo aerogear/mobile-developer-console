@@ -1,7 +1,6 @@
 const equal = require('fast-deep-equal');
 const JSONStream = require('json-stream');
 const mobileClientCRD = require('./mobile-client-crd.json');
-const mobileSecurityServiceCRD = require('./mobile-security-service-crd.json');
 const {
   PushService,
   IdentityManagementService,
@@ -56,9 +55,7 @@ function updateApp(namespace, app, kubeclient) {
 
 function getServicesForApp(namespace, app, kubeclient) {
   const appName = app.metadata.name;
-  const promises = services.map(service =>
-    service.getClientConfig(service.bindCustomResource.namespace || namespace, appName, kubeclient)
-  );
+  const promises = services.map(service => service.getClientConfig(namespace, appName, kubeclient));
   return Promise.all(promises).then(serviceConfigs => serviceConfigs.filter(Boolean));
 }
 
@@ -93,9 +90,7 @@ function updateAppsAndWatch(namespace, kubeclient) {
       }
     });
 
-    const mssConfigMapStream = kubeclient.api.v1.watch
-      .namespace(_getMobileSecurityServiceAppsNamespace())
-      .configmaps.getStream();
+    const mssConfigMapStream = kubeclient.api.v1.watch.namespace(namespace).configmaps.getStream();
     const mssConfigMapJsonStream = new JSONStream();
     mssConfigMapStream.pipe(mssConfigMapJsonStream);
     mssConfigMapJsonStream.on('data', event => {
@@ -115,58 +110,6 @@ function updateAppsAndWatch(namespace, kubeclient) {
   });
 }
 
-/**
- * Watch the namespace for the Mobile Security Service.
- * When the namespace is created then start watching changes
- * to the MobileSecurityService custom resource
- *
- * @param {String} namespace - The managed namespace of the Mobile Security Service
- * @param {*} kubeclient - The kubernetes API client
- */
-function watchMobileSecurityService(namespace, kubeclient) {
-  const stream = kubeclient.api.v1.watch.namespace(namespace).getStream();
-  const jsonStream = new JSONStream();
-  stream.pipe(jsonStream);
-  jsonStream.on('data', event => {
-    if (event.type === 'ADDED') {
-      watchMobileSecurityServiceCR(namespace, kubeclient);
-    }
-  });
-}
-
-/**
- * Watch for changes to the MobileSecurityService custom resource.
- *
- * @param {String} namespace - The managed namespace of the Mobile Security Service
- * @param {*} kubeclient - The kubernetes API client
- */
-function watchMobileSecurityServiceCR(namespace, kubeclient) {
-  const stream = kubeclient.apis[mobileSecurityServiceCRD.spec.group].v1alpha1.watch
-    .namespace(namespace)
-    .mobilesecurityservices()
-    .getStream();
-
-  const jsonStream = new JSONStream();
-  stream.pipe(jsonStream);
-
-  jsonStream.on('data', event => {
-    if (event.type === 'ADDED') {
-      MobileSecurityService.disabled = false;
-    } else if (event.type === 'DELETED') {
-      MobileSecurityService.disabled = true;
-    }
-  });
-}
-
-function _getMobileSecurityServiceNamespace() {
-  return process.env.MSS_NAMESPACE || false;
-}
-
-function _getMobileSecurityServiceAppsNamespace() {
-  return process.env.MSS_APPS_NAMESPACE || _getMobileSecurityServiceNamespace();
-}
-
 module.exports = {
-  updateAppsAndWatch,
-  watchMobileSecurityService
+  updateAppsAndWatch
 };
