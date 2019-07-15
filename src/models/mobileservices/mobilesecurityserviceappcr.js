@@ -88,7 +88,6 @@ export class MobileSecurityServiceAppCR extends CustomResource {
       kind: 'MobileSecurityServiceApp',
       metadata: {
         name: `${appName}-security`,
-        namespace: 'mobile-security-service-apps',
         labels: {
           'mobile.aerogear.org/client': appName
         }
