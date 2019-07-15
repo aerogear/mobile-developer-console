@@ -64,10 +64,7 @@ class BoundServiceRow extends Component {
     let propertyFragment;
 
     const docUrl = this.props.service.getDocumentationUrl();
-    const serviceConfigurations = this.props.service.getConfiguration(
-      this.props.appName,
-      this.props.configurationOptions
-    );
+    const serviceConfigurations = this.props.service.getConfiguration(this.props.appName);
 
     if (docUrl) {
       documentationFragment = (
