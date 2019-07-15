@@ -1,3 +1,4 @@
+import { isArray, forEach } from 'lodash-es';
 import { errorCreator } from './errors';
 import { list, watch, OpenShiftWatchEvents } from '../services/openshift';
 
@@ -44,21 +45,23 @@ const watchResource = (resource, actionTypes, dispatch, actionCreators) => {
   watchStatus[resource.kind] = true;
   // TODO: add label selectors to the watch url
   return watch(resource).then(handler => {
-    handler.onEvent(event => {
-      if (event.type === OpenShiftWatchEvents.CLOSED) {
+    forEach(isArray(handler) ? handler : [handler], h => {
+      h.onEvent(event => {
+        if (event.type === OpenShiftWatchEvents.CLOSED) {
+          watchStatus[resource.kind] = false;
+        } else if (event.type === OpenShiftWatchEvents.ADDED) {
+          dispatch(successActionCreators(actionTypes.ADDED, event.payload));
+        } else if (event.type === OpenShiftWatchEvents.MODIFIED) {
+          dispatch(successActionCreators(actionTypes.MODIFIED, event.payload));
+        } else if (event.type === OpenShiftWatchEvents.DELETED) {
+          dispatch(successActionCreators(actionTypes.DELETED, event.payload));
+        }
+      });
+      h.catch(error => {
         watchStatus[resource.kind] = false;
-      } else if (event.type === OpenShiftWatchEvents.ADDED) {
-        dispatch(successActionCreators(actionTypes.ADDED, event.payload));
-      } else if (event.type === OpenShiftWatchEvents.MODIFIED) {
-        dispatch(successActionCreators(actionTypes.MODIFIED, event.payload));
-      } else if (event.type === OpenShiftWatchEvents.DELETED) {
-        dispatch(successActionCreators(actionTypes.DELETED, event.payload));
-      }
-    });
-    handler.catch(error => {
-      watchStatus[resource.kind] = false;
-      dispatch(failureActionCreator(actionTypes.FAILURE, error));
-      dispatch(errorCreator(error));
+        dispatch(failureActionCreator(actionTypes.FAILURE, error));
+        dispatch(errorCreator(error));
+      });
     });
     return handler;
   });

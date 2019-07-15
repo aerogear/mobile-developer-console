@@ -11,7 +11,8 @@ const {
   IdentityManagementService,
   DataSyncService,
   MobileServicesMap,
-  MobileSecurityService
+  MobileSecurityService,
+  PushService
 } = require('./mobile-services-info');
 const { updateAppsAndWatch, watchMobileSecurityService } = require('./appServices');
 const mobileClientCRD = require('./mobile-client-crd.json');
@@ -38,10 +39,10 @@ const DEFAULT_SERVICES = {
       type: IdentityManagementService.type,
       url: `https://${process.env.IDM_URL || process.env.OPENSHIFT_HOST}`
     },
-    // {
-    //   type: PushService.type,
-    //   url: `https://${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`
-    // },
+    {
+      type: PushService.type,
+      url: `https://${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`
+    },
     // {
     //   type: MetricsService.type,
     //   url: `https://${process.env.METRICS_URL || process.env.OPENSHIFT_HOST}`
@@ -158,6 +159,11 @@ async function initKubeClient() {
     const conf =
       process.env.NODE_ENV === 'production' ? Request.config.getInCluster() : Request.config.fromKubeconfig();
     const backend = new Request(conf);
+
+    if (process.env.INSECURE_SERVER) {
+      backend.requestOptions.strictSSL = false;
+    }
+
     const kubeclient = new Client({ backend });
     await kubeclient.loadSpec();
     kubeclient.addCustomResourceDefinition(mobileClientCRD);

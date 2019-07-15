@@ -17,14 +17,28 @@ const PushService = {
   icon: '/img/push.svg',
   description: 'Unified Push Server',
   bindCustomResource: {
-    name: 'pushvariants',
+    name: 'pushapplications',
     version: 'v1alpha1',
-    group: 'aerogear.org',
-    kind: 'PushVariant'
+    group: 'push.aerogear.org',
+    kind: 'pushapplications',
+    variants: [
+      {
+        name: 'androidvariants',
+        version: 'v1alpha1',
+        group: 'push.aerogear.org',
+        kind: 'AndroidVariant'
+      },
+      {
+        name: 'iosvariants',
+        version: 'v1alpha1',
+        group: 'push.aerogear.org',
+        kind: 'IOSVariant'
+      }
+    ]
   },
-  getClientConfig: (namespace, appname, kubeclient) =>
-    // TODO: implement me!
-    null
+  getClientConfig: (namespace, appname, kubeclient) => {
+    // TODO: to be implemented
+  }
 };
 
 const IdentityManagementService = {
