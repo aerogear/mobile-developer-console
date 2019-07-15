@@ -12,6 +12,7 @@ const {
   DataSyncService,
   MobileServicesMap,
   MobileSecurityService,
+  MetricsService,
   PushService
 } = require('./mobile-services-info');
 const { updateAppsAndWatch, watchMobileSecurityService } = require('./appServices');
@@ -43,10 +44,10 @@ const DEFAULT_SERVICES = {
       type: PushService.type,
       url: `https://${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`
     },
-    // {
-    //   type: MetricsService.type,
-    //   url: `https://${process.env.METRICS_URL || process.env.OPENSHIFT_HOST}`
-    // }
+    {
+      type: MetricsService.type,
+      url: `https://${process.env.METRICS_URL || process.env.OPENSHIFT_HOST}`
+    },
     {
       type: DataSyncService.type
     },

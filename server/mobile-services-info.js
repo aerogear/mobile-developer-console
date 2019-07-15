@@ -95,9 +95,35 @@ const MetricsService = {
     group: 'aerogear.org',
     kind: 'MetricsApp'
   },
-  getClientConfig: (namespace, appname, kubeclient) =>
-    // TODO: implement me!
-    null
+  getClientConfig: (namespace, appname, kubeclient) => {
+    const configmapName = `${appname}-app-metrics`;
+    return kubeclient.api.v1
+      .namespaces(namespace)
+      .configmaps(configmapName)
+      .get()
+      .then(resp => resp.body)
+      .then(configmap => {
+        if (configmap) {
+          const sdkConfig = JSON.parse(configmap.data.SDKConfig);
+
+          return {
+            id: configmap.metadata.uid,
+            name: METRICS_SERVICE_TYPE,
+            type: METRICS_SERVICE_TYPE,
+            url: sdkConfig.url
+          };
+        }
+        return null;
+      })
+      .catch(err => {
+        if (err && err.statusCode && err.statusCode === 404) {
+          console.info(`Can not find configmap ${configmapName}`);
+        } else {
+          console.warn(`Error when fetch configmap ${configmapName}`, err);
+        }
+        return null;
+      });
+  }
 };
 
 const DataSyncService = {
