@@ -150,12 +150,10 @@ const DataSyncService = {
 const MobileSecurityService = {
   type: MOBILE_SECURITY_TYPE,
   name: 'Mobile Security',
-  disabled: true, // disabled by default. Will become enabled based on MSS operator availability
   icon: '/img/security.svg',
   description: 'Mobile Security Service',
   bindCustomResource: {
     name: 'mobilesecurityserviceapps',
-    namespace: 'mobile-security-service-apps',
     version: 'v1alpha1',
     group: 'mobile-security-service.aerogear.com',
     kind: 'MobileSecurityServiceApp'
