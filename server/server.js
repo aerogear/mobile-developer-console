@@ -126,9 +126,9 @@ function getConfigData(req) {
   let host = process.env.OPENSHIFT_HOST;
   host = addProtocolIfMissing(host);
   const parsedHost = new URL(host);
-const masterUri = parsedHost.origin;
+  const masterUri = parsedHost.origin;
   parsedHost.protocol = 'wss';
-const wssMasterUri = parsedHost.origin;
+  const wssMasterUri = parsedHost.origin;
 
   return `window.OPENSHIFT_CONFIG = {
     mdcNamespace: '${mdcNamespace}',
