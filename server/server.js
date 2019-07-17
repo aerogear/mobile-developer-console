@@ -2,11 +2,11 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const promMid = require('express-prometheus-middleware');
-const Prometheus = require('prom-client');
 const { Client } = require('kubernetes-client');
 const Request = require('kubernetes-client/backends/request');
 const packageJson = require('../package.json');
 const fs = require('fs');
+const { URL } = require('url');
 const {
   IdentityManagementService,
   DataSyncService,
@@ -35,37 +35,39 @@ app.use(
 
 const port = process.env.PORT || 4000;
 const configPath = process.env.MOBILE_SERVICES_CONFIG_FILE || '/etc/mdc/servicesConfig.json';
+const dataSyncService = {
+  type: DataSyncService.type,
+  mobile: true
+};
 const DEFAULT_SERVICES = {
-  services: [
+  version: 'dev',
+  components: [
     {
       type: IdentityManagementService.type,
-      url: `https://${process.env.IDM_URL || process.env.OPENSHIFT_HOST}`
+      version: 'latest',
+      host: `https://${process.env.IDM_URL || process.env.OPENSHIFT_HOST}`,
+      mobile: true
     },
     {
       type: PushService.type,
-      url: `https://${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`
+      host: `https://${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`,
+      version: 'latest',
+      mobile: true
     },
     // {
     //   type: MetricsService.type,
     //   url: `https://${process.env.METRICS_URL || process.env.OPENSHIFT_HOST}`
     // }
     {
-      type: DataSyncService.type
-    },
-    {
       type: MobileSecurityService.type,
-      url: `https://${process.env.MSS_URL || process.env.OPENSHIFT_HOST}`
+      host: `https://${process.env.MSS_URL || process.env.OPENSHIFT_HOST}`,
+      version: 'latest',
+      mobile: true
     }
   ]
 };
 
 const DEFAULT_NAMESPACE = 'mobile-console';
-
-// metric endpoint
-app.get('/metrics', (req, res) => {
-  res.set('Content-Type', Prometheus.register.contentType);
-  res.end(Prometheus.register.metrics());
-});
 
 // Dynamic configuration for openshift API calls
 app.get('/api/server_config.js', (req, res) => {
@@ -114,6 +116,13 @@ function getConfigData(req) {
     userName = req.get('X-Forwarded-User');
     userEmail = req.get('X-Forwarded-Email');
   }
+  const parsedHost = new URL(process.env.OPENSHIFT_HOST);
+  if (!parsedHost.protocol) {
+    parsedHost.protocol = 'https';
+  }
+  const masterUri = parsedHost.toString().slice(0, -1);
+  parsedHost.protocol = 'wss';
+  const wssMasterUri = parsedHost.toString().slice(0, -1);
 
   return `window.OPENSHIFT_CONFIG = {
     mdcNamespace: '${mdcNamespace}',
@@ -121,8 +130,8 @@ function getConfigData(req) {
       namespace: '${mssNamespace}',
       appsNamespace: '${mssAppsNamespace}'
     },
-    masterUri: 'https://${process.env.OPENSHIFT_HOST}',
-    wssMasterUri: 'wss://${process.env.OPENSHIFT_HOST}',
+    masterUri: '${masterUri}',
+    wssMasterUri: '${wssMasterUri}',
     user: {
       accessToken: '${userToken}',
       name: '${userName}',
@@ -145,7 +154,8 @@ function getServices(servicesConfigPath) {
     console.warn(`can not find service config file at ${servicesConfigPath}, mock data will be used`);
     return resolve(DEFAULT_SERVICES);
   })
-    .then(servicesUrls => servicesUrls.services)
+    .then(servicesUrls => servicesUrls.components.concat([dataSyncService]))
+    .then(services => services.filter(s => s.mobile))
     .then(services =>
       services.map(service => {
         const serviceInfo = MobileServicesMap[service.type];
