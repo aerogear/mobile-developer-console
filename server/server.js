@@ -116,10 +116,11 @@ function getConfigData(req) {
     userName = req.get('X-Forwarded-User');
     userEmail = req.get('X-Forwarded-Email');
   }
-  const parsedHost = new URL(process.env.OPENSHIFT_HOST);
-  if (!parsedHost.protocol) {
-    parsedHost.protocol = 'https';
+  let host = process.env.OPENSHIFT_HOST;
+  if (host && host.indexOf('http') === -1) {
+    host = `https://${host}`;
   }
+  const parsedHost = new URL(host);
   const masterUri = parsedHost.toString().slice(0, -1);
   parsedHost.protocol = 'wss';
   const wssMasterUri = parsedHost.toString().slice(0, -1);
