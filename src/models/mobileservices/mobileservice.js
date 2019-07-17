@@ -96,7 +96,7 @@ export class MobileService {
 
   getConfiguration(appName) {
     const crs = this.getCustomResourcesForApp(appName);
-    const configurations = reduce(crs, (all, cr) => all.concat(cr.getConfiguration(this.data.url)), []);
+    const configurations = reduce(crs, (all, cr) => all.concat(cr.getConfiguration(this.data.host)), []);
     const uniqConfigs = uniqBy(configurations, config => config.label);
     return uniqConfigs;
   }
