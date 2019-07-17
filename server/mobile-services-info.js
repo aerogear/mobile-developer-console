@@ -1,10 +1,21 @@
 const url = require('url');
+const pushApplicationCRD = require('./push-application-crd.json');
+const androidVariantCRD = require('./android-variant-crd.json');
+const iosVariantCRD = require('./ios-variant-crd.json');
 
-const PUSH_SERVIE_TYPE = 'push';
+const PUSH_SERVICE_TYPE = 'push';
 const IDM_SERVICE_TYPE = 'keycloak';
 const METRICS_SERVICE_TYPE = 'metrics';
 const DATA_SYNC_TYPE = 'sync-app';
 const MOBILE_SECURITY_TYPE = 'security';
+const ANDROID_VARIANT_TYPE = 'android';
+const IOS_VARIANT_TYPE = 'ios';
+
+const IOS_VARIANT_KIND = 'IOSVariant';
+const ANDROID_VARIANT_KIND = 'AndroidVariant';
+
+const IOS_UPS_SUFFIX = '-ios-ups-variant';
+const ANDROID_UPS_SUFFIX = '-android-ups-variant';
 
 function decodeBase64(encoded) {
   const buff = Buffer.from(encoded, 'base64');
@@ -12,7 +23,7 @@ function decodeBase64(encoded) {
 }
 
 const PushService = {
-  type: PUSH_SERVIE_TYPE,
+  type: PUSH_SERVICE_TYPE,
   name: 'Push Notification',
   icon: '/img/push.svg',
   description: 'Unified Push Server',
@@ -37,7 +48,85 @@ const PushService = {
     ]
   },
   getClientConfig: (namespace, appname, kubeclient) => {
-    // TODO: to be implemented
+    // get the android variant associated with this app
+    const getAndroidVariant = kubeclient.apis[androidVariantCRD.spec.group].v1alpha1
+      .namespace(namespace)
+      .androidvariants(`${appname}${ANDROID_UPS_SUFFIX}`)
+      .get()
+      .then(resp => resp.body)
+      .catch(err => {
+        const name = `${appname}${ANDROID_UPS_SUFFIX}`;
+        if (err && err.statusCode && err.statusCode === 404) {
+          console.info(`Can not find AndroidVariant ${name}`);
+        } else {
+          console.warn(`Error when fetch AndroidVariant ${name}`, err);
+        }
+      });
+
+    // get the iOS variant associated with this app
+    const getIOSVariant = kubeclient.apis[iosVariantCRD.spec.group].v1alpha1
+      .namespace(namespace)
+      .iosvariants(`${appname}${IOS_UPS_SUFFIX}`)
+      .get()
+      .then(resp => resp.body)
+      .catch(err => {
+        const name = `${appname}${IOS_UPS_SUFFIX}`;
+        if (err && err.statusCode && err.statusCode === 404) {
+          console.info(`Can not find IOSVariant ${name}`);
+        } else {
+          console.warn(`Error when fetch IOSVariant ${name}`, err);
+        }
+      });
+
+    return kubeclient.apis[pushApplicationCRD.spec.group].v1alpha1
+      .namespace(namespace)
+      .pushapplications(appname)
+      .get()
+      .then(resp => resp.body)
+      .then(pushApplication => ({
+        id: pushApplication.metadata.uid,
+        name: PUSH_SERVICE_TYPE,
+        type: PUSH_SERVICE_TYPE,
+        url: `https://${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`,
+        config: {}
+      }))
+      .then(service =>
+        Promise.all([getAndroidVariant, getIOSVariant])
+          .then(variants => variants.filter(Boolean))
+          .then(variants => {
+            if (!variants || !variants.length) {
+              return null;
+            }
+
+            // get the AndroidVariant and add it
+            const androidVariant = variants.find(v => !!v && v.kind === ANDROID_VARIANT_KIND);
+            if (androidVariant && androidVariant.status) {
+              service.config[ANDROID_VARIANT_TYPE] = {
+                variantSecret: androidVariant.status.secret,
+                variantId: androidVariant.status.variantId
+              };
+            }
+
+            // get the IOSVariant and add it
+            const iosVariant = variants.find(v => !!v && v.kind === IOS_VARIANT_KIND);
+            if (iosVariant && iosVariant.status) {
+              service.config[IOS_VARIANT_TYPE] = {
+                variantSecret: iosVariant.status.secret,
+                variantId: iosVariant.status.variantId
+              };
+            }
+
+            return service;
+          })
+      )
+      .catch(err => {
+        if (err && err.statusCode && err.statusCode === 404) {
+          console.info(`Can not find PushApplication ${appname}`);
+        } else {
+          console.warn(`Error when fetch PushApplication ${appname}`, err);
+        }
+        return null;
+      });
   }
 };
 
@@ -191,7 +280,7 @@ const MobileSecurityService = {
 };
 
 const MobileServicesMap = {
-  [PUSH_SERVIE_TYPE]: PushService,
+  [PUSH_SERVICE_TYPE]: PushService,
   [IDM_SERVICE_TYPE]: IdentityManagementService,
   [METRICS_SERVICE_TYPE]: MetricsService,
   [DATA_SYNC_TYPE]: DataSyncService,

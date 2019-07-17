@@ -1,0 +1,22 @@
+{
+  "kind": "CustomResourceDefinition", 
+  "spec": {
+    "scope": "Namespaced", 
+    "versions": [{
+      "name": "v1alpha1",
+      "served": true,
+      "storage": true
+    }],
+    "group": "push.aerogear.org",
+    "names": {
+      "kind": "AndroidVariant", 
+      "listKind": "AndroidVariantList",
+      "plural": "androidvariants", 
+      "singular": "androidvariant"
+    }
+  }, 
+  "apiVersion": "apiextensions.k8s.io/v1beta1", 
+  "metadata": {
+    "name": "androidvariants.push.aerogear.org"
+  }
+}
