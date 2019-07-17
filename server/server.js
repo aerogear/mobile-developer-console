@@ -39,18 +39,25 @@ const dataSyncService = {
   type: DataSyncService.type,
   mobile: true
 };
+
+const addProtocolIfMissing = function(url) {
+  if (url && !url.startsWith('http')) {
+    return `https://${url}`;
+  }
+  return url;
+};
 const DEFAULT_SERVICES = {
   version: 'dev',
   components: [
     {
       type: IdentityManagementService.type,
       version: 'latest',
-      host: `https://${process.env.IDM_URL || process.env.OPENSHIFT_HOST}`,
+      host: addProtocolIfMissing(`${process.env.IDM_URL || process.env.OPENSHIFT_HOST}`),
       mobile: true
     },
     {
       type: PushService.type,
-      host: `https://${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`,
+      host: addProtocolIfMissing(`${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`),
       version: 'latest',
       mobile: true
     },
@@ -60,7 +67,7 @@ const DEFAULT_SERVICES = {
     // }
     {
       type: MobileSecurityService.type,
-      host: `https://${process.env.MSS_URL || process.env.OPENSHIFT_HOST}`,
+      host: addProtocolIfMissing(`${process.env.MSS_URL || process.env.OPENSHIFT_HOST}`),
       version: 'latest',
       mobile: true
     }
@@ -117,9 +124,7 @@ function getConfigData(req) {
     userEmail = req.get('X-Forwarded-Email');
   }
   let host = process.env.OPENSHIFT_HOST;
-  if (host && host.indexOf('http') === -1) {
-    host = `https://${host}`;
-  }
+  host = addProtocolIfMissing(host);
   const parsedHost = new URL(host);
   const masterUri = parsedHost.toString().slice(0, -1);
   parsedHost.protocol = 'wss';
