@@ -25,8 +25,9 @@ export class RuleSetValidator {
           return validationResult;
         }
       }
+      return { valid: true };
     }
-    return { valid: true };
+    return { valid: false, error: 'Key not found' };
   }
 
   notifyError(errorsCb, key, message) {
