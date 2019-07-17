@@ -9,7 +9,7 @@ import { fetchAndWatchServices, deleteCustomResource } from '../../actions/servi
 import BindingPanel from './BindingPanel';
 import { MobileService, MobileApp } from '../../models/';
 
-class MobileServiceView extends Component {
+export class MobileServiceView extends Component {
   constructor(props) {
     super(props);
 
