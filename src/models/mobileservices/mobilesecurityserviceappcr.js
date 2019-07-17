@@ -11,12 +11,12 @@ export class MobileSecurityServiceAppCR extends CustomResource {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  getConfiguration(_, options) {
+  getConfiguration(serviceHost) {
     return [
       {
         type: 'href',
         label: 'Mobile Security Service URL',
-        value: options.url
+        value: serviceHost
       }
     ];
   }

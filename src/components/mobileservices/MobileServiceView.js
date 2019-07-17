@@ -26,36 +26,6 @@ class MobileServiceView extends Component {
     this.props.fetchAndWatchServices();
   }
 
-  /**
-   * Used to provide custom configuration values to the BoundServiceRow and UnboundServiceRow.
-   *
-   * @param {String} type - The service type
-   * @returns {Object}
-   * @memberof MobileServiceView
-   */
-  getConfigurationOptions(type) {
-    if (!this.props.app) {
-      return null;
-    }
-
-    const {
-      status: {
-        data: { services }
-      }
-    } = this.props.app;
-
-    let options = {};
-    if (type === 'security') {
-      const securityService = services.find(s => s.name === 'security');
-      if (securityService) {
-        options = {
-          url: securityService.url
-        };
-      }
-    }
-    return options;
-  }
-
   boundServiceRows() {
     return (
       <React.Fragment>
@@ -66,7 +36,6 @@ class MobileServiceView extends Component {
               key={service.getId()}
               appName={this.props.appName}
               service={service}
-              configurationOptions={this.getConfigurationOptions(service.data.type, this.props.app)}
               onCreateBinding={() => this.showBindingPanel(service)}
               onFinished={this.hideBindingPanel}
               onDeleteBinding={cr => this.props.deleteCustomResource(service, cr.toJSON())}

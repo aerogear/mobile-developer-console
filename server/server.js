@@ -50,7 +50,8 @@ const DEFAULT_SERVICES = {
       type: DataSyncService.type
     },
     {
-      type: MobileSecurityService.type
+      type: MobileSecurityService.type,
+      url: `https://${process.env.MSS_URL || process.env.OPENSHIFT_HOST}`
     }
   ]
 };
