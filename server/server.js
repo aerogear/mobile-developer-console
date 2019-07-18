@@ -35,6 +35,7 @@ app.use(
 
 const port = process.env.PORT || 4000;
 const configPath = process.env.MOBILE_SERVICES_CONFIG_FILE || '/etc/mdc/servicesConfig.json';
+
 const dataSyncService = {
   type: DataSyncService.type,
   mobile: true
@@ -149,7 +150,7 @@ function getConfigData(req) {
 function getServices(servicesConfigPath) {
   return new Promise(resolve => {
     if (fs.existsSync(servicesConfigPath)) {
-      fs.readFile(servicesConfigPath, (err, data) => {
+      return fs.readFile(servicesConfigPath, (err, data) => {
         if (err) {
           console.error(`Failed to read service config file ${servicesConfigPath}, mock data will be used`);
           return resolve(DEFAULT_SERVICES);
