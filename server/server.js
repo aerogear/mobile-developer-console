@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const promMid = require('express-prometheus-middleware');
-const { Client } = require('kubernetes-client');
+const { Client, KubeConfig } = require('kubernetes-client');
 const Request = require('kubernetes-client/backends/request');
 const packageJson = require('../package.json');
 const fs = require('fs');
@@ -176,9 +176,13 @@ function getServices(servicesConfigPath) {
 
 async function initKubeClient() {
   try {
-    const conf =
-      process.env.NODE_ENV === 'production' ? Request.config.getInCluster() : Request.config.fromKubeconfig();
-    const backend = new Request(conf);
+    const kubeconfig = new KubeConfig();
+    if (process.env.NODE_ENV === 'production') {
+      kubeclient.loadFromCluster();
+    } else {
+      kubeconfig.loadFromDefault();
+    }
+    const backend = new Request({ kubeconfig });
 
     if (process.env.INSECURE_SERVER) {
       backend.requestOptions.strictSSL = false;
