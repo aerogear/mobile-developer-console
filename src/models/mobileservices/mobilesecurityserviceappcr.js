@@ -100,7 +100,6 @@ export class MobileSecurityServiceAppCR extends CustomResource {
   }
 
   static getDocumentationUrl() {
-    // TODO: Replace with direct link to documentation when documentation is published
-    return 'https://docs.aerogear.org';
+    return 'https://docs.aerogear.org/aerogear/latest/security.html#app-security';
   }
 }
