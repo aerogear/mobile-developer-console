@@ -17,7 +17,10 @@ const KEYCLOAK_SECRET_SUFFIX = '-install-config';
 const DATASYNC_CONFIGMAP_SUFFIX = '-data-sync-binding';
 const MOBILE_SECURITY_SUFFIX = '-security';
 
+let updating = false;
+
 function updateAll(namespace, kubeclient) {
+  updating = true;
   console.log('Check services for all apps');
   return kubeclient.apis[mobileClientCRD.spec.group].v1alpha1
     .namespace(namespace)
@@ -26,6 +29,9 @@ function updateAll(namespace, kubeclient) {
     .then(mobileclientList => mobileclientList.items)
     .then(mobileclients => mobileclients.map(mobileclient => updateApp(namespace, mobileclient, kubeclient)))
     .then(promises => Promise.all(promises))
+    .then(() => {
+      updating = false;
+    })
     .catch(err => console.error(`Failed to update apps due to error`, err));
 }
 
@@ -61,17 +67,8 @@ function getServicesForApp(namespace, app, kubeclient) {
 }
 
 function updateAppsAndWatch(namespace, kubeclient) {
-  updateAll(namespace, kubeclient).then(() => {
-    const appStream = kubeclient.apis[mobileClientCRD.spec.group].v1alpha1.watch
-      .namespace(namespace)
-      .mobileclients.getStream();
-    const appJsonStream = new JSONStream();
-    appStream.pipe(appJsonStream);
-    appJsonStream.on('data', event => {
-      if (event.type === 'ADDED') {
-        updateAll(namespace, kubeclient);
-      }
-    });
+  updateAll(namespace, kubeclient).then(async () => {
+    watchMobileClients(namespace, kubeclient);
 
     const secretStream = kubeclient.api.v1.watch.namespace(namespace).secrets.getStream();
     const secretsJsonStream = new JSONStream();
@@ -100,27 +97,86 @@ function updateAppsAndWatch(namespace, kubeclient) {
       }
     });
 
-    const androidVariantStream = kubeclient.apis[androidVariantCRD.spec.group].v1alpha1.watch
-      .namespace(namespace)
-      .androidvariants.getStream();
-    const androidVariantJsonStream = new JSONStream();
-    androidVariantStream.pipe(androidVariantJsonStream);
-    androidVariantJsonStream.on('data', event => {
-      if (event.object && event.object.status) {
-        updateAll(namespace, kubeclient);
-      }
-    });
+    watchAndroidVariantStream(namespace, kubeclient);
+    watchIosVariantStream(namespace, kubeclient);
+  });
+}
 
-    const iosVariantStream = kubeclient.apis[iosVariantCRD.spec.group].v1alpha1.watch
-      .namespace(namespace)
-      .iosvariants.getStream();
-    const iosVariantJsonStream = new JSONStream();
-    iosVariantStream.pipe(iosVariantJsonStream);
-    iosVariantJsonStream.on('data', event => {
-      if (event.object && event.object.status) {
-        updateAll(namespace, kubeclient);
-      }
-    });
+/**
+ * Watch for updates to the MobileClient custom resource.
+ * @param {String} namespace - The namespace to watch
+ * @param {*} kubeclient - kubernetes client
+ */
+function watchMobileClients(namespace, kubeclient) {
+  const appStream = kubeclient.apis[mobileClientCRD.spec.group].v1alpha1.watch
+    .namespaces(namespace)
+    .mobileclients.getStream();
+  const appJsonStream = new JSONStream();
+  appStream.pipe(appJsonStream);
+  appStream.on('data', event => {
+    if (event.type === 'ADDED') {
+      updateAll(namespace, kubeclient);
+    }
+  });
+
+  // === WORKAROUND ===
+  // The stream automatically closes when watching CRDs after an inconsistent amount of time.
+  // Listen for when the stream ends and reopen it.
+  // Ref: https://github.com/godaddy/kubernetes-client/issues/520
+  appStream.on('end', () => {
+    watchMobileClients(namespace, kubeclient);
+  });
+}
+
+/**
+ * Watch for updates to the AndroidVariant custom resource.
+ * @param {String} namespace - The namespace to watch
+ * @param {*} kubeclient - kubernetes client
+ */
+function watchAndroidVariantStream(namespace, kubeclient) {
+  const androidVariantStream = kubeclient.apis[androidVariantCRD.spec.group].v1alpha1.watch
+    .namespaces(namespace)
+    .androidvariants.getStream();
+  const androidVariantJsonStream = new JSONStream();
+  androidVariantStream.pipe(androidVariantJsonStream);
+  androidVariantJsonStream.on('data', event => {
+    if (event.object && event.object.status && !updating) {
+      updateAll(namespace, kubeclient);
+    }
+  });
+
+  // === WORKAROUND ===
+  // The stream automatically closes when watching CRDs after an inconsistent amount of time.
+  // Listen for when the stream ends and reopen it.
+  // Ref: https://github.com/godaddy/kubernetes-client/issues/520
+  androidVariantJsonStream.on('end', () => {
+    watchAndroidVariantStream(namespace, kubeclient);
+  });
+}
+
+/**
+ * Watch for updates to the IOSVariant custom resource.
+ * @param {String} namespace - The namespace to watch
+ * @param {*} kubeclient - kubernetes client
+ */
+function watchIosVariantStream(namespace, kubeclient) {
+  const iosVariantStream = kubeclient.apis[iosVariantCRD.spec.group].v1alpha1.watch
+    .namespaces(namespace)
+    .iosvariants.getStream();
+  const iosVariantJsonStream = new JSONStream();
+  iosVariantStream.pipe(iosVariantJsonStream);
+  iosVariantJsonStream.on('data', event => {
+    if (event.object && event.object.status && !updating) {
+      updateAll(namespace, kubeclient);
+    }
+  });
+
+  // === WORKAROUND ===
+  // The stream automatically closes when watching CRDs after an inconsistent amount of time.
+  // Listen for when the stream ends and reopen it.
+  // Ref: https://github.com/godaddy/kubernetes-client/issues/520
+  iosVariantJsonStream.on('end', () => {
+    watchIosVariantStream(namespace, kubeclient);
   });
 }
 
