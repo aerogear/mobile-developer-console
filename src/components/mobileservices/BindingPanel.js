@@ -65,10 +65,13 @@ export class BindingPanel extends Component {
     const { formData } = data;
     if (this.state.onChangeHandler) {
       const newSchema = this.state.onChangeHandler(formData, this.state.schema);
-      return this.setState({
-        formData,
-        schema: newSchema
-      });
+
+      if (newSchema) {
+        return this.setState({
+          formData: {},
+          schema: newSchema
+        });
+      }
     }
     return this.setState({ formData });
   }

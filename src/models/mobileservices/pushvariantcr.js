@@ -132,15 +132,15 @@ export class PushVariantCR extends CustomResource {
       onChangeHandler(formData, oldSchema) {
         const s = oldSchema;
         if (oldSchema.properties.platformConfig.title === 'Android' && formData.CLIENT_TYPE === 'iOS') {
-          delete s.properties.platformConfig;
           s.properties.CLIENT_TYPE.default = 'iOS';
           s.properties.platformConfig = iosConfig;
+          return s;
         } else if (oldSchema.properties.platformConfig.title === 'iOS' && formData.CLIENT_TYPE === 'Android') {
-          delete s.properties.platformConfig;
           s.properties.CLIENT_TYPE.default = 'Android';
           s.properties.platformConfig = androidConfig;
+          return s;
         }
-        return s;
+        return null;
       },
       validationRules: {
         UPSCOMMON: {
