@@ -34,9 +34,7 @@ class UnboundServiceRow extends Component {
           {icon}
           <div className="service-name">
             <h4>
-              <div>
-                <a href={`#${this.props.service.getId()}`}>{serviceDetailName}</a>
-              </div>
+              <div>{serviceDetailName}</div>
               <div>
                 <small>{serviceDetailDescription}</small>
               </div>
