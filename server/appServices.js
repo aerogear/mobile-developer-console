@@ -66,32 +66,26 @@ function getServicesForApp(namespace, app, kubeclient) {
   return Promise.all(promises).then(serviceConfigs => serviceConfigs.filter(Boolean));
 }
 
-function updateAppsAndWatch(namespace, kubeclient) {
+async function updateAppsAndWatch(namespace, kubeclient) {
   updateAll(namespace, kubeclient).then(async () => {
     watchMobileClients(namespace, kubeclient);
 
-    const secretStream = kubeclient.api.v1.watch.namespace(namespace).secrets.getStream();
-    const secretsJsonStream = new JSONStream();
-    secretStream.pipe(secretsJsonStream);
-    secretsJsonStream.on('data', event => {
+    const secretStream = await kubeclient.api.v1.watch.namespace(namespace).secrets.getObjectStream();
+    secretStream.on('data', event => {
       if (event.object && event.object.metadata.name.endsWith(KEYCLOAK_SECRET_SUFFIX)) {
         updateAll(namespace, kubeclient);
       }
     });
 
-    const configmapStream = kubeclient.api.v1.watch.namespace(namespace).configmaps.getStream();
-    const configmapJsonStream = new JSONStream();
-    configmapStream.pipe(configmapJsonStream);
-    configmapJsonStream.on('data', event => {
+    const configmapStream = await kubeclient.api.v1.watch.namespace(namespace).configmaps.getObjectStream();
+    configmapStream.on('data', event => {
       if (event.object && event.object.metadata.name.endsWith(DATASYNC_CONFIGMAP_SUFFIX)) {
         updateAll(namespace, kubeclient);
       }
     });
 
-    const mssConfigMapStream = kubeclient.api.v1.watch.namespace(namespace).configmaps.getStream();
-    const mssConfigMapJsonStream = new JSONStream();
-    mssConfigMapStream.pipe(mssConfigMapJsonStream);
-    mssConfigMapJsonStream.on('data', event => {
+    const mssConfigMapStream = await kubeclient.api.v1.watch.namespace(namespace).configmaps.getObjectStream();
+    mssConfigMapStream.on('data', event => {
       if (event.object && event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX)) {
         updateAll(namespace, kubeclient);
       }
