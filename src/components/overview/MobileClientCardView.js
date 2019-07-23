@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Toolbar, Filter, EmptyState, EmptyStateTitle, EmptyStateAction, CardGrid } from 'patternfly-react';
+import { Toolbar, Filter, CardGrid } from 'patternfly-react';
+import { EmptyState, EmptyStateBody, EmptyStateVariant, EmptyStateIcon, Title } from '@patternfly/react-core';
+import { MobileAltIcon } from '@patternfly/react-icons';
 import DebounceInput from 'react-debounce-input';
 import './MobileClientCardView.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
@@ -11,7 +13,8 @@ class MobileClientCardView extends Component {
     this.state = { filter: '', currentValue: '' };
 
     this.emptyStateMessage = {
-      noAppsCreated: 'You have no mobile apps right now. Create one to get started.',
+      noAppsCreatedTitle: "You don't have any Mobile Apps.",
+      noAppsCreated: 'JavaScript-based mobile apps can be configured for a variety of mobile platforms.',
       noAppsAfterFiltering: 'No mobile apps match the entered filter.'
     };
   }
@@ -28,11 +31,13 @@ class MobileClientCardView extends Component {
 
   getEmptyState() {
     return (
-      <EmptyState>
-        <EmptyStateTitle>{this.emptyStateMessage.noAppsCreated}</EmptyStateTitle>
-        <EmptyStateAction>
-          <CreateClient createButtonSize="large" />
-        </EmptyStateAction>
+      <EmptyState variant={EmptyStateVariant.full}>
+        <EmptyStateIcon icon={MobileAltIcon} />
+        <Title headingLevel="h5" size="lg">
+          {this.emptyStateMessage.noAppsCreatedTitle}
+        </Title>
+        <EmptyStateBody>{this.emptyStateMessage.noAppsCreated}</EmptyStateBody>
+        <CreateClient createButtonSize="large" />
       </EmptyState>
     );
   }
@@ -108,7 +113,10 @@ class MobileClientCardView extends Component {
       </CardGrid>
     ) : (
       <EmptyState>
-        <EmptyStateTitle>{this.emptyStateMessage.noAppsAfterFiltering}</EmptyStateTitle>
+        <EmptyStateIcon icon={MobileAltIcon} />
+        <Title headingLevel="h5" size="lg">
+          {this.emptyStateMessage.noAppsAfterFiltering}
+        </Title>
       </EmptyState>
     );
   }
