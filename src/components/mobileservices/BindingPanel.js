@@ -33,7 +33,8 @@ export class BindingPanel extends Component {
       service,
       activeStepIndex: 0,
       validationRules,
-      onChangeHandler
+      onChangeHandler,
+      key: Date.now() // required to reset any possible validation errors
     };
   }
 
@@ -69,7 +70,8 @@ export class BindingPanel extends Component {
       if (newSchema) {
         return this.setState({
           formData: {},
-          schema: newSchema
+          schema: newSchema,
+          key: Date.now() // reset any possible validation errors
         });
       }
     }
@@ -79,6 +81,7 @@ export class BindingPanel extends Component {
   renderPropertiesSchema() {
     return (
       <Form
+        key={this.state.key} // required to reset any possible validation errors
         schema={this.state.schema}
         uiSchema={this.state.uiSchema}
         ref={form => {
