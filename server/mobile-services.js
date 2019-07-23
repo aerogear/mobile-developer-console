@@ -22,6 +22,7 @@ const IOS_UPS_SUFFIX = '-ios-ups-variant';
 const ANDROID_UPS_SUFFIX = '-android-ups-variant';
 
 const configPath = process.env.MOBILE_SERVICES_CONFIG_FILE || '/etc/mdc/servicesConfig.json';
+const { UPS_DOCUMENTATION_URL, IDM_DOCUMENTATION_URL, MSS_DOCUMENTATION_URL, SYNC_DOCUMENTATION_URL } = process.env;
 
 function decodeBase64(encoded) {
   const buff = Buffer.from(encoded, 'base64');
@@ -33,6 +34,7 @@ const PushService = {
   name: 'Push Notification',
   icon: '/img/push.svg',
   description: 'Unified Push Server',
+  documentationUrl: UPS_DOCUMENTATION_URL,
   bindCustomResource: {
     name: 'pushapplications',
     version: 'v1alpha1',
@@ -149,6 +151,7 @@ const IdentityManagementService = {
   name: 'Identity Management',
   icon: '/img/keycloak.svg',
   description: 'Identity Management Service',
+  documentationUrl: IDM_DOCUMENTATION_URL,
   bindCustomResource: {
     name: 'keycloakrealms',
     version: 'v1alpha1',
@@ -208,6 +211,7 @@ const DataSyncService = {
   name: 'Data Sync',
   icon: '/img/sync.svg',
   description: 'Data Sync Service',
+  documentationUrl: SYNC_DOCUMENTATION_URL,
   bindCustomResource: {
     name: 'configmaps',
     version: 'v1',
@@ -255,6 +259,7 @@ const MobileSecurityService = {
   name: 'Mobile Security',
   icon: '/img/security.svg',
   description: 'Mobile Security Service',
+  documentationUrl: MSS_DOCUMENTATION_URL,
   bindCustomResource: {
     name: 'mobilesecurityserviceapps',
     version: 'v1alpha1',

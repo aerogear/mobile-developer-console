@@ -57,8 +57,6 @@ function getConfigData(req) {
     OPENSHIFT_USER_NAME,
     OPENSHIFT_USER_EMAIL,
     NAMESPACE,
-    MSS_NAMESPACE,
-    MSS_APPS_NAMESPACE,
     ENABLE_BUILD_TAB,
     DOCS_PREFIX
   } = process.env;
@@ -66,8 +64,6 @@ function getConfigData(req) {
   let userName = OPENSHIFT_USER_NAME || 'testuser';
   let userEmail = OPENSHIFT_USER_EMAIL || 'testuser@localhost';
   const mdcNamespace = NAMESPACE || DEFAULT_NAMESPACE;
-  const mssNamespace = MSS_NAMESPACE || false;
-  const mssAppsNamespace = MSS_APPS_NAMESPACE || MSS_NAMESPACE;
   const docsPrefix = DOCS_PREFIX || 'https://docs.aerogear.org/aerogear/latest';
   let enableBuildTab = false;
   if (ENABLE_BUILD_TAB && ENABLE_BUILD_TAB === 'true') {
@@ -88,17 +84,13 @@ function getConfigData(req) {
 
   return `window.OPENSHIFT_CONFIG = {
     mdcNamespace: '${mdcNamespace}',
-    mss: {
-      namespace: '${mssNamespace}',
-      appsNamespace: '${mssAppsNamespace}'
-    },
     masterUri: '${masterUri}',
     wssMasterUri: '${wssMasterUri}',
     user: {
       accessToken: '${userToken}',
       name: '${userName}',
       email: '${userEmail}'
-    }
+    },
   }; window.SERVER_DATA= { ENABLE_BUILD_TAB: ${enableBuildTab}, DOCS_PREFIX: '${docsPrefix}' };`;
 }
 
