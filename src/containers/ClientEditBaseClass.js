@@ -1,6 +1,7 @@
 /* eslint guard-for-in: 0 */
-import React, { Component } from 'react';
-import { FormGroup, Button, Modal, Alert, Icon } from 'patternfly-react';
+import React, { Component, Fragment } from 'react';
+import { FormGroup, Modal, Alert, Icon } from 'patternfly-react';
+import { Button } from '@patternfly/react-core';
 import CreateClient from '../components/create_client/CreateClient';
 import '../components/create_client/create_client.css';
 import { MobileApp } from '../models';
@@ -110,12 +111,12 @@ class ClientEditBaseClass extends Component {
 
   render() {
     return (
-      <div>
-        <Button bsStyle="primary" bsSize={this.props.createButtonSize} onClick={this.open}>
-          Create Mobile App
+      <Fragment>
+        <Button bsSize={this.props.createButtonSize} onClick={this.open}>
+          Create a mobile app
         </Button>
         {this.renderModal()}
-      </div>
+      </Fragment>
     );
   }
 }
