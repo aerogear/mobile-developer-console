@@ -77,10 +77,17 @@ describe('MobileClientCardView', () => {
     expect(wrapper.find('EmptyState')).toHaveLength(1);
     expect(
       wrapper
-        .find('EmptyStateTitle')
+        .find('Title')
         .render()
         .text()
-    ).toBe('You have no mobile apps right now. Create one to get started.');
+    ).toBe("You don't have any Mobile Apps.");
+
+    expect(
+      wrapper
+        .find('EmptyStateBody')
+        .render()
+        .text()
+    ).toBe('JavaScript-based mobile apps can be configured for a variety of mobile platforms.');
   });
 
   it('renders apps', () => {
@@ -150,7 +157,7 @@ describe('MobileClientCardView', () => {
       expect(wrapper.find('FilterItem')).toHaveLength(1);
       expect(
         wrapper
-          .find('EmptyStateTitle')
+          .find('Title')
           .render()
           .text()
       ).toBe('No mobile apps match the entered filter.');
