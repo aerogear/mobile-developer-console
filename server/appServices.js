@@ -1,5 +1,4 @@
 const equal = require('fast-deep-equal');
-const JSONStream = require('json-stream');
 const mobileClientCRD = require('./mobile-client-crd.json');
 const androidVariantCRD = require('./android-variant-crd.json');
 const iosVariantCRD = require('./ios-variant-crd.json');
@@ -101,12 +100,10 @@ async function updateAppsAndWatch(namespace, kubeclient) {
  * @param {String} namespace - The namespace to watch
  * @param {*} kubeclient - kubernetes client
  */
-function watchMobileClients(namespace, kubeclient) {
-  const appStream = kubeclient.apis[mobileClientCRD.spec.group].v1alpha1.watch
+async function watchMobileClients(namespace, kubeclient) {
+  const appStream = await kubeclient.apis[mobileClientCRD.spec.group].v1alpha1.watch
     .namespaces(namespace)
-    .mobileclients.getStream();
-  const appJsonStream = new JSONStream();
-  appStream.pipe(appJsonStream);
+    .mobileclients.getObjectStream();
   appStream.on('data', event => {
     if (event.type === 'ADDED') {
       updateAll(namespace, kubeclient);
@@ -116,7 +113,6 @@ function watchMobileClients(namespace, kubeclient) {
   // === WORKAROUND ===
   // The stream automatically closes when watching CRDs after an inconsistent amount of time.
   // Listen for when the stream ends and reopen it.
-  // Ref: https://github.com/godaddy/kubernetes-client/issues/520
   appStream.on('end', () => {
     watchMobileClients(namespace, kubeclient);
   });
@@ -127,13 +123,11 @@ function watchMobileClients(namespace, kubeclient) {
  * @param {String} namespace - The namespace to watch
  * @param {*} kubeclient - kubernetes client
  */
-function watchAndroidVariantStream(namespace, kubeclient) {
-  const androidVariantStream = kubeclient.apis[androidVariantCRD.spec.group].v1alpha1.watch
+async function watchAndroidVariantStream(namespace, kubeclient) {
+  const androidVariantStream = await kubeclient.apis[androidVariantCRD.spec.group].v1alpha1.watch
     .namespaces(namespace)
-    .androidvariants.getStream();
-  const androidVariantJsonStream = new JSONStream();
-  androidVariantStream.pipe(androidVariantJsonStream);
-  androidVariantJsonStream.on('data', event => {
+    .androidvariants.getObjectStream();
+  androidVariantStream.on('data', event => {
     if (event.object && event.object.status && !updating) {
       updateAll(namespace, kubeclient);
     }
@@ -142,8 +136,7 @@ function watchAndroidVariantStream(namespace, kubeclient) {
   // === WORKAROUND ===
   // The stream automatically closes when watching CRDs after an inconsistent amount of time.
   // Listen for when the stream ends and reopen it.
-  // Ref: https://github.com/godaddy/kubernetes-client/issues/520
-  androidVariantJsonStream.on('end', () => {
+  androidVariantStream.on('end', () => {
     watchAndroidVariantStream(namespace, kubeclient);
   });
 }
@@ -153,13 +146,11 @@ function watchAndroidVariantStream(namespace, kubeclient) {
  * @param {String} namespace - The namespace to watch
  * @param {*} kubeclient - kubernetes client
  */
-function watchIosVariantStream(namespace, kubeclient) {
-  const iosVariantStream = kubeclient.apis[iosVariantCRD.spec.group].v1alpha1.watch
+async function watchIosVariantStream(namespace, kubeclient) {
+  const iosVariantStream = await kubeclient.apis[iosVariantCRD.spec.group].v1alpha1.watch
     .namespaces(namespace)
-    .iosvariants.getStream();
-  const iosVariantJsonStream = new JSONStream();
-  iosVariantStream.pipe(iosVariantJsonStream);
-  iosVariantJsonStream.on('data', event => {
+    .iosvariants.getObjectStream();
+  iosVariantStream.on('data', event => {
     if (event.object && event.object.status && !updating) {
       updateAll(namespace, kubeclient);
     }
@@ -168,8 +159,7 @@ function watchIosVariantStream(namespace, kubeclient) {
   // === WORKAROUND ===
   // The stream automatically closes when watching CRDs after an inconsistent amount of time.
   // Listen for when the stream ends and reopen it.
-  // Ref: https://github.com/godaddy/kubernetes-client/issues/520
-  iosVariantJsonStream.on('end', () => {
+  iosVariantStream.on('end', () => {
     watchIosVariantStream(namespace, kubeclient);
   });
 }
