@@ -9,7 +9,7 @@ const {
   MetricsService,
   DataSyncService,
   MobileSecurityService
-} = require('./mobile-services-info');
+} = require('./mobile-services');
 
 const services = [PushService, IdentityManagementService, MetricsService, DataSyncService, MobileSecurityService];
 
