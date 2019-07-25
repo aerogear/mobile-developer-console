@@ -140,8 +140,20 @@ export class MobileService {
     return configExtItems;
   }
 
+  /**
+   * Return the docuemntation URL for this service. Firs try to load from an enviroment variable,
+   * otherwise default to the upstream URL.
+   *
+   * @returns the service documentation URL
+   * @memberof MobileService
+   */
   getDocumentationUrl() {
-    return this.customResourceClass.getDocumentationUrl();
+    let url = this.data.documentationUrl;
+    if (this.data.documentationUrl && !this.data.documentationUrl.startsWith('http')) {
+      url = `https://${url}`;
+    }
+
+    return url || this.customResourceClass.getDocumentationUrl();
   }
 
   toJSON() {
