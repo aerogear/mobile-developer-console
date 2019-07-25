@@ -178,7 +178,7 @@ async function initKubeClient() {
   try {
     const kubeconfig = new KubeConfig();
     if (process.env.NODE_ENV === 'production') {
-      kubeclient.loadFromCluster();
+      kubeconfig.loadFromCluster();
     } else {
       kubeconfig.loadFromDefault();
     }
