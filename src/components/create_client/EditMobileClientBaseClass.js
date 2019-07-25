@@ -62,8 +62,8 @@ class EditMobileClientBaseClass extends Component {
         <Grid bsClass="create-client-form">
           <Form vertical="true">{generatedFields}</Form>
         </Grid>
-        <p>JavaScript-based mobile apps can be configured for a variety of mobile platforms.</p>
-        <p>Our JavaScript SDK supports the following frameworks:</p>
+        <p>Create cross-platform mobile apps using JavaScript.</p>
+        <p>You can use the following JavaScript frameworks:</p>
         <Row className="show-grid container">
           <Col md={1} className="text-center">
             <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />
