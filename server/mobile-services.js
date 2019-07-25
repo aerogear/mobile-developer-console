@@ -1,4 +1,8 @@
 const url = require('url');
+const fs = require('fs');
+
+const { addProtocolIfMissing } = require('./helpers');
+
 const pushApplicationCRD = require('./push-application-crd.json');
 const androidVariantCRD = require('./android-variant-crd.json');
 const iosVariantCRD = require('./ios-variant-crd.json');
@@ -16,6 +20,8 @@ const ANDROID_VARIANT_KIND = 'AndroidVariant';
 
 const IOS_UPS_SUFFIX = '-ios-ups-variant';
 const ANDROID_UPS_SUFFIX = '-android-ups-variant';
+
+const configPath = process.env.MOBILE_SERVICES_CONFIG_FILE || '/etc/mdc/servicesConfig.json';
 
 function decodeBase64(encoded) {
   const buff = Buffer.from(encoded, 'base64');
@@ -87,10 +93,18 @@ const PushService = {
         id: pushApplication.metadata.uid,
         name: PUSH_SERVICE_TYPE,
         type: PUSH_SERVICE_TYPE,
-        url: `https://${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`,
         config: {}
       }))
-      .then(service =>
+      .then(push =>
+        getServices(configPath).then(services => {
+          const pushService = services.find(s => s.type === PUSH_SERVICE_TYPE);
+          return {
+            ...push,
+            url: pushService.host
+          };
+        })
+      )
+      .then(push =>
         Promise.all([getAndroidVariant, getIOSVariant])
           .then(variants => variants.filter(Boolean))
           .then(variants => {
@@ -101,7 +115,7 @@ const PushService = {
             // get the AndroidVariant and add it
             const androidVariant = variants.find(v => !!v && v.kind === ANDROID_VARIANT_KIND);
             if (androidVariant && androidVariant.status) {
-              service.config[ANDROID_VARIANT_TYPE] = {
+              push.config[ANDROID_VARIANT_TYPE] = {
                 variantSecret: androidVariant.status.secret,
                 variantId: androidVariant.status.variantId
               };
@@ -110,13 +124,13 @@ const PushService = {
             // get the IOSVariant and add it
             const iosVariant = variants.find(v => !!v && v.kind === IOS_VARIANT_KIND);
             if (iosVariant && iosVariant.status) {
-              service.config[IOS_VARIANT_TYPE] = {
+              push.config[IOS_VARIANT_TYPE] = {
                 variantSecret: iosVariant.status.secret,
                 variantId: iosVariant.status.variantId
               };
             }
 
-            return service;
+            return push;
           })
       )
       .catch(err => {
@@ -287,11 +301,77 @@ const MobileServicesMap = {
   [MOBILE_SECURITY_TYPE]: MobileSecurityService
 };
 
+const dataSyncService = {
+  type: DataSyncService.type,
+  mobile: true
+};
+
+const DEFAULT_SERVICES = {
+  version: 'dev',
+  components: [
+    {
+      type: IdentityManagementService.type,
+      version: 'latest',
+      host: addProtocolIfMissing(`${process.env.IDM_URL || process.env.OPENSHIFT_HOST}`),
+      mobile: true
+    },
+    {
+      type: PushService.type,
+      host: addProtocolIfMissing(`${process.env.UPS_URL || process.env.OPENSHIFT_HOST}`),
+      version: 'latest',
+      mobile: true
+    },
+    // {
+    //   type: MetricsService.type,
+    //   url: `https://${process.env.METRICS_URL || process.env.OPENSHIFT_HOST}`
+    // }
+    {
+      type: MobileSecurityService.type,
+      host: addProtocolIfMissing(`${process.env.MSS_URL || process.env.OPENSHIFT_HOST}`),
+      version: 'latest',
+      mobile: true
+    }
+  ]
+};
+
+/**
+ * Get the mobile services that are provisioned and available to be used by MDC
+ *
+ * @returns {Object} the available mobile services
+ */
+function getServices() {
+  return new Promise(resolve => {
+    if (fs.existsSync(configPath)) {
+      return fs.readFile(configPath, (err, data) => {
+        if (err) {
+          console.error(`Failed to read service config file ${configPath}, mock data will be used`);
+          return resolve(DEFAULT_SERVICES);
+        }
+        return resolve(JSON.parse(data));
+      });
+    }
+    console.warn(`can not find service config file at ${configPath}, mock data will be used`);
+    return resolve(DEFAULT_SERVICES);
+  })
+    .then(servicesUrls => servicesUrls.components.concat([dataSyncService]))
+    .then(services => services.filter(s => s.mobile))
+    .then(services =>
+      services.map(service => {
+        const serviceInfo = MobileServicesMap[service.type];
+        if (serviceInfo) {
+          return { ...serviceInfo, ...service };
+        }
+        return service;
+      })
+    );
+}
+
 module.exports = {
   MobileServicesMap,
   PushService,
   IdentityManagementService,
   DataSyncService,
   MetricsService,
-  MobileSecurityService
+  MobileSecurityService,
+  getServices
 };
