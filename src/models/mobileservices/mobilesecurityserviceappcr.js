@@ -27,7 +27,7 @@ export class MobileSecurityServiceAppCR extends CustomResource {
         additionalProperties: false,
         properties: {
           appName: {
-            title: 'App Name',
+            title: 'Mobile Client ID',
             type: 'string',
             default: params.appName
           },
