@@ -84,7 +84,7 @@ export class MobileSecurityServiceAppCR extends CustomResource {
 
   static newInstance({ appName, appConfig: { appId } }) {
     return {
-      apiVersion: 'mobile-security-service.aerogear.com/v1alpha1',
+      apiVersion: 'mobile-security-service.aerogear.org/v1alpha1',
       kind: 'MobileSecurityServiceApp',
       metadata: {
         name: `${appName}-security`,

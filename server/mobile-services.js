@@ -263,7 +263,7 @@ const MobileSecurityService = {
   bindCustomResource: {
     name: 'mobilesecurityserviceapps',
     version: 'v1alpha1',
-    group: 'mobile-security-service.aerogear.com',
+    group: 'mobile-security-service.aerogear.org',
     kind: 'MobileSecurityServiceApp'
   },
   getClientConfig: (namespace, appname, kubeclient) => {
