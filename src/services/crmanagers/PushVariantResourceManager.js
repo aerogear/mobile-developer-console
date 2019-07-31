@@ -64,7 +64,9 @@ export class PushVariantResourceManager extends GenericResourceManager {
   }
 
   list(user, res, labels) {
-    return Promise.all(res.variants.map(variantRes => super.list(user, variantRes, labels))).then(results => {
+    return Promise.all(
+      res.variants.map(variantRes => super.list(user, { ...variantRes, namespace: res.namespace }, labels))
+    ).then(results => {
       const result = results[0];
       result.kind = 'Variants';
       delete result.metadata;
@@ -82,6 +84,6 @@ export class PushVariantResourceManager extends GenericResourceManager {
   }
 
   watch(user, res) {
-    return Promise.all(res.variants.map(variantRes => super.watch(user, variantRes)));
+    return Promise.all(res.variants.map(variantRes => super.watch(user, { ...variantRes, namespace: res.namespace })));
   }
 }
