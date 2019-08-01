@@ -139,10 +139,11 @@ export class KeycloakRealmCR extends CustomResource {
             publicClient: CLIENT_TYPE === 'public',
             bearerOnly: CLIENT_TYPE === 'bearer',
             webOrigins: ['http://localhost:8100', '*'],
-            redirectUris: ['http://localhost:*'],
+            redirectUris: ['http://localhost*'],
             standardFlowEnabled: true,
             enabled: true,
-            outputSecret: `${clientId}-install-config`
+            outputSecret: `${clientId}-install-config`,
+            clientAuthenticatorType: 'client-secret'
           }
         ],
         users: [
