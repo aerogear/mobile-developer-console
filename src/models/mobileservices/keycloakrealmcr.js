@@ -77,9 +77,6 @@ export class KeycloakRealmCR extends CustomResource {
           }
         },
         realmSettings: {
-          realmId: {
-            'ui:readonly': true
-          },
           adminPassword: {
             'ui:widget': 'password'
           }
@@ -90,6 +87,15 @@ export class KeycloakRealmCR extends CustomResource {
           comment: 'This is the set of rules that will be used to validate IDM bindings',
           fields: {
             realmSettings: {
+              realmId: {
+                validation_rules: [
+                  {
+                    type: 'maxlength',
+                    length: 36,
+                    error: 'realm id is too big, max length is 36 chars'
+                  }
+                ]
+              },
               adminUsername: {
                 validation_rules: [
                   {
