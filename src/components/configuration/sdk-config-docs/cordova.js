@@ -89,17 +89,14 @@ const framework = docsPrefix => {
         serviceDescription: 'Installs Sync service based on Voyager Server',
         setupText: 'Sync SDK setup',
         docsLink: `${docsPrefix}/data-sync.html`,
-
         steps: [
           {
             introduction:
               'Execute following commands in your project directory to install all necessary NPM packages needed for the Sync service:',
             commands: [
               [
-                [
-                  'Install AeroGear Sync Cordova plugin',
-                  '```cordova plugin add @aerogear/cordova-plugin-aerogear-sync```'
-                ]
+                'Install AeroGear Sync Cordova plugin',
+                '```cordova plugin add @aerogear/cordova-plugin-aerogear-sync```'
               ]
             ]
           }
