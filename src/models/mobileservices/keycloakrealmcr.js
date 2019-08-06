@@ -91,8 +91,7 @@ export class KeycloakRealmCR extends CustomResource {
                 validation_rules: [
                   {
                     type: 'maxlength',
-                    length: 36,
-                    error: 'realm id is too big, max length is 36 chars'
+                    length: 36
                   }
                 ]
               },
