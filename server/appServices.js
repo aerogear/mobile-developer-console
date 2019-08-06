@@ -68,35 +68,17 @@ function getServicesForApp(namespace, app, kubeclient) {
 async function updateAppsAndWatch(namespace, kubeclient) {
   updateAll(namespace, kubeclient).then(async () => {
     watchMobileClients(namespace, kubeclient);
-
-    const secretStream = await kubeclient.api.v1.watch.namespace(namespace).secrets.getObjectStream();
-    secretStream.on('data', event => {
-      if (event.object && event.object.metadata.name.endsWith(KEYCLOAK_SECRET_SUFFIX)) {
-        updateAll(namespace, kubeclient);
-      }
-    });
-
-    const configmapStream = await kubeclient.api.v1.watch.namespace(namespace).configmaps.getObjectStream();
-    configmapStream.on('data', event => {
-      if (event.object && event.object.metadata.name.endsWith(DATASYNC_CONFIGMAP_SUFFIX)) {
-        updateAll(namespace, kubeclient);
-      }
-    });
-
-    const mssConfigMapStream = await kubeclient.api.v1.watch.namespace(namespace).configmaps.getObjectStream();
-    mssConfigMapStream.on('data', event => {
-      if (event.object && event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX)) {
-        updateAll(namespace, kubeclient);
-      }
-    });
-
-    watchAndroidVariantStream(namespace, kubeclient);
-    watchIosVariantStream(namespace, kubeclient);
+    watchDataSyncConfigMaps(namespace, kubeclient);
+    watchKeyCloakSecrets(namespace, kubeclient);
+    watchAndroidVariants(namespace, kubeclient);
+    watchIosVariants(namespace, kubeclient);
+    watchMobileSecurityConfigMaps(namespace, kubeclient);
   });
 }
 
 /**
- * Watch for updates to the MobileClient custom resource.
+ * Watch for updates to the MobileClient custom resource and update all apps.
+ *
  * @param {String} namespace - The namespace to watch
  * @param {*} kubeclient - kubernetes client
  */
@@ -104,63 +86,122 @@ async function watchMobileClients(namespace, kubeclient) {
   const appStream = await kubeclient.apis[mobileClientCRD.spec.group].v1alpha1.watch
     .namespaces(namespace)
     .mobileclients.getObjectStream();
+
   appStream.on('data', event => {
     if (event.type === 'ADDED') {
       updateAll(namespace, kubeclient);
     }
   });
 
-  // === WORKAROUND ===
-  // The stream automatically closes when watching CRDs after an inconsistent amount of time.
-  // Listen for when the stream ends and reopen it.
+  // reopens the stream when it closes
   appStream.on('end', () => {
     watchMobileClients(namespace, kubeclient);
   });
 }
 
 /**
- * Watch for updates to the AndroidVariant custom resource.
+ * Watch for changes to Data sync config maps and update all apps.
+ *
+ * @param {String} namespace - The namespace to watch the config maps in
+ * @param {*} kubeclient - The kubernetes-client
+ */
+async function watchDataSyncConfigMaps(namespace, kubeclient) {
+  const configmapStream = await kubeclient.api.v1.watch.namespace(namespace).configmaps.getObjectStream();
+  configmapStream.on('data', event => {
+    if (event.object && event.object.metadata.name.endsWith(DATASYNC_CONFIGMAP_SUFFIX)) {
+      updateAll(namespace, kubeclient);
+    }
+  });
+
+  // reopens the stream when it closes
+  configmapStream.on('end', () => {
+    watchDataSyncConfigMaps(namespace, kubeclient);
+  });
+}
+
+/**
+ * Watch for changes to Keycloak secrets and update all apps.
+ *
+ * @param {String} namespace - The namespace to watch the secrets in
+ * @param {*} kubeclient - The kubernetes-client
+ */
+async function watchKeyCloakSecrets(namespace, kubeclient) {
+  const secretStream = await kubeclient.api.v1.watch.namespace(namespace).secrets.getObjectStream();
+  secretStream.on('data', event => {
+    if (event.object && event.object.metadata.name.endsWith(KEYCLOAK_SECRET_SUFFIX)) {
+      updateAll(namespace, kubeclient);
+    }
+  });
+
+  // reopens the stream when it closes
+  secretStream.on('end', () => {
+    watchKeyCloakSecrets(namespace, kubeclient);
+  });
+}
+
+/**
+ * Watch for updates to the AndroidVariant custom resource and update all apps.
+ *
  * @param {String} namespace - The namespace to watch
  * @param {*} kubeclient - kubernetes client
  */
-async function watchAndroidVariantStream(namespace, kubeclient) {
+async function watchAndroidVariants(namespace, kubeclient) {
   const androidVariantStream = await kubeclient.apis[androidVariantCRD.spec.group].v1alpha1.watch
     .namespaces(namespace)
     .androidvariants.getObjectStream();
+
   androidVariantStream.on('data', event => {
     if (event.object && event.object.status && !updating) {
       updateAll(namespace, kubeclient);
     }
   });
 
-  // === WORKAROUND ===
-  // The stream automatically closes when watching CRDs after an inconsistent amount of time.
-  // Listen for when the stream ends and reopen it.
+  // reopens the stream when it closes
   androidVariantStream.on('end', () => {
-    watchAndroidVariantStream(namespace, kubeclient);
+    watchAndroidVariants(namespace, kubeclient);
   });
 }
 
 /**
- * Watch for updates to the IOSVariant custom resource.
+ * Watch for updates to the IOSVariant custom resource and update all apps.
+ *
  * @param {String} namespace - The namespace to watch
  * @param {*} kubeclient - kubernetes client
  */
-async function watchIosVariantStream(namespace, kubeclient) {
+async function watchIosVariants(namespace, kubeclient) {
   const iosVariantStream = await kubeclient.apis[iosVariantCRD.spec.group].v1alpha1.watch
     .namespaces(namespace)
     .iosvariants.getObjectStream();
+
   iosVariantStream.on('data', event => {
     if (event.object && event.object.status && !updating) {
       updateAll(namespace, kubeclient);
     }
   });
 
-  // === WORKAROUND ===
-  // The stream automatically closes when watching CRDs after an inconsistent amount of time.
-  // Listen for when the stream ends and reopen it.
+  // reopens the stream when it closes
   iosVariantStream.on('end', () => {
-    watchIosVariantStream(namespace, kubeclient);
+    watchIosVariants(namespace, kubeclient);
+  });
+}
+
+/**
+ * Watch for updates to the Mobile Security Service config maps and update all apps.
+ *
+ * @param {String} namespace - The namespace to watch
+ * @param {*} kubeclient - kubernetes client
+ */
+async function watchMobileSecurityConfigMaps(namespace, kubeclient) {
+  const mssConfigMapStream = await kubeclient.api.v1.watch.namespace(namespace).configmaps.getObjectStream();
+  mssConfigMapStream.on('data', event => {
+    if (event.object && event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX)) {
+      updateAll(namespace, kubeclient);
+    }
+  });
+
+  // reopens the stream when it closes
+  mssConfigMapStream.on('end', () => {
+    watchMobileSecurityConfigMaps(namespace, kubeclient);
   });
 }
 
