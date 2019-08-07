@@ -58,7 +58,6 @@ export class KeycloakRealmCR extends CustomResource {
               },
               CLIENT_TYPE: {
                 default: 'public',
-                enum: ['bearer', 'public'],
                 title: 'Client type',
                 type: 'string'
               }
@@ -74,6 +73,9 @@ export class KeycloakRealmCR extends CustomResource {
         clientSettings: {
           clientId: {
             'ui:readonly': true
+          },
+          CLIENT_TYPE: {
+            'ui:widget': 'hidden'
           }
         },
         realmSettings: {
