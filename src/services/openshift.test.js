@@ -12,7 +12,7 @@ describe('OpenShiftWatchEventListener', () => {
     namespace: window.OPENSHIFT_CONFIG.mdcNamespace
   };
   const mockResponse = {
-    apiVersion: 'mobile.k8s.io/v1alpha1',
+    apiVersion: 'mdc.aerogear.org/v1alpha1',
     kind: 'MobileClient',
     metadata: {
       creationTimestamp: '2019-07-02T13:40:32Z',
@@ -20,7 +20,7 @@ describe('OpenShiftWatchEventListener', () => {
       name: 'myapp',
       namespace: window.OPENSHIFT_CONFIG,
       resourceVersion: '239554',
-      selfLink: '/apis/mobile.k8s.io/v1alpha1/namespaces/mobile-console/mobileclients/myapp',
+      selfLink: '/apis/mdc.aerogear.org/v1alpha1/namespaces/mobile-console/mobileclients/myapp',
       uid: 'f6a58d89-9cce-11e9-aaec-525400f46a9b'
     },
     spec: { name: 'myapp' },
@@ -28,7 +28,7 @@ describe('OpenShiftWatchEventListener', () => {
   };
 
   const mockObj = {
-    apiVersion: 'mobile.k8s.io/v1alpha1',
+    apiVersion: 'mdc.aerogear.org/v1alpha1',
     kind: 'MobileClient',
     metadata: {
       creationTimestamp: '2019-07-02T13:40:32Z',
@@ -36,7 +36,7 @@ describe('OpenShiftWatchEventListener', () => {
       name: 'myapp',
       namespace: window.OPENSHIFT_CONFIG,
       resourceVersion: '239554',
-      selfLink: '/apis/mobile.k8s.io/v1alpha1/namespaces/mobile-console/mobileclients/myapp',
+      selfLink: '/apis/mdc.aerogear.org/v1alpha1/namespaces/mobile-console/mobileclients/myapp',
       uid: 'f6a58d89-9cce-11e9-aaec-525400f46a9b'
     },
     spec: { name: 'myapp' },

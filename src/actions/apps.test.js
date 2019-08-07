@@ -33,7 +33,7 @@ const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 const { masterUri, mdcNamespace } = window.OPENSHIFT_CONFIG;
 const mockApp = {
-  apiVersion: 'mobile.k8s.io/v1alpha1',
+  apiVersion: 'mdc.aerogear.org/v1alpha1',
   kind: 'MobileClient',
   metadata: {
     creationTimestamp: '2019-06-13T10:24:09Z',
@@ -41,7 +41,7 @@ const mockApp = {
     name: 'myapp',
     namespace: mdcNamespace,
     resourceVersion: '771851',
-    selfLink: `/apis/mobile.k8s.io/v1alpha1/namespaces/${mdcNamespace}/mobileclients/myapp`,
+    selfLink: `/apis/mdc.aerogear.org/v1alpha1/namespaces/${mdcNamespace}/mobileclients/myapp`,
     uid: '616e0659-8dc5-11e9-986e-525400af1a76'
   },
   spec: { name: 'myapp' },
@@ -113,7 +113,7 @@ describe('async actions', () => {
     it('dispatches APP_FAILURE action', () => {
       mock
         .onGet(
-          `${masterUri}/apis/mobile.k8s.io/v1alpha1/namespaces/${mdcNamespace}/mobileclients/${mockApp.metadata.name}`
+          `${masterUri}/apis/mdc.aerogear.org/v1alpha1/namespaces/${mdcNamespace}/mobileclients/${mockApp.metadata.name}`
         )
         .reply(404);
 
@@ -132,7 +132,7 @@ describe('async actions', () => {
     it('dispatches APP_SUCCESS action', () => {
       mock
         .onGet(
-          `${masterUri}/apis/mobile.k8s.io/v1alpha1/namespaces/${mdcNamespace}/mobileclients/${mockApp.metadata.name}`
+          `${masterUri}/apis/mdc.aerogear.org/v1alpha1/namespaces/${mdcNamespace}/mobileclients/${mockApp.metadata.name}`
         )
         .reply(200, mockApp);
 
@@ -148,7 +148,7 @@ describe('async actions', () => {
   describe('createApp', () => {
     it('dispatches APP_CREATE_SUCCESS action', () => {
       mock
-        .onPost(`${masterUri}/apis/mobile.k8s.io/v1alpha1/namespaces/${mdcNamespace}/mobileclients`)
+        .onPost(`${masterUri}/apis/mdc.aerogear.org/v1alpha1/namespaces/${mdcNamespace}/mobileclients`)
         .reply(201, mockApp);
 
       const expectedActions = [{ type: APP_CREATE_REQUEST }, { type: APP_CREATE_SUCCESS, result: mockApp }];
@@ -160,7 +160,7 @@ describe('async actions', () => {
     });
 
     it('dispatches APP_CREATE_FAILURE action', () => {
-      mock.onPost(`${masterUri}/apis/mobile.k8s.io/v1alpha1/namespaces/${mdcNamespace}/mobileclients`).reply(409);
+      mock.onPost(`${masterUri}/apis/mdc.aerogear.org/v1alpha1/namespaces/${mdcNamespace}/mobileclients`).reply(409);
 
       const expectedActions = [
         { type: APP_CREATE_REQUEST },
@@ -179,7 +179,7 @@ describe('async actions', () => {
     it('dispatches APP_UPDATE_SUCCESS action', () => {
       mock
         .onPut(
-          `${masterUri}/apis/mobile.k8s.io/v1alpha1/namespaces/${mdcNamespace}/mobileclients/${mockApp.metadata.name}`,
+          `${masterUri}/apis/mdc.aerogear.org/v1alpha1/namespaces/${mdcNamespace}/mobileclients/${mockApp.metadata.name}`,
           mockApp
         )
         .reply(200, mockApp);
@@ -195,7 +195,7 @@ describe('async actions', () => {
     it('dispatches APP_UPDATE_FAILURE action', () => {
       mock
         .onPut(
-          `${masterUri}/apis/mobile.k8s.io/v1alpha1/namespaces/${mdcNamespace}/mobileclients/${mockApp.metadata.name}`,
+          `${masterUri}/apis/mdc.aerogear.org/v1alpha1/namespaces/${mdcNamespace}/mobileclients/${mockApp.metadata.name}`,
           mockApp
         )
         .reply(409);
@@ -222,7 +222,7 @@ describe('async actions', () => {
         status: 'Success',
         details: {
           name: 'myapp',
-          group: 'mobile.k8s.io',
+          group: 'mdc.aerogear.org',
           kind: 'mobileclients',
           uid: '616e0659-8dc5-11e9-986e-525400af1a76'
         }
@@ -230,7 +230,7 @@ describe('async actions', () => {
 
       mock
         .onDelete(
-          `${masterUri}/apis/mobile.k8s.io/v1alpha1/namespaces/${mdcNamespace}/mobileclients/${mockApp.metadata.name}`
+          `${masterUri}/apis/mdc.aerogear.org/v1alpha1/namespaces/${mdcNamespace}/mobileclients/${mockApp.metadata.name}`
         )
         .reply(200, response);
 
@@ -245,7 +245,7 @@ describe('async actions', () => {
     it('dispatches APP_DELETE_FAILURE action', () => {
       mock
         .onDelete(
-          `${masterUri}/apis/mobile.k8s.io/v1alpha1/namespaces/${mdcNamespace}/mobileclients/${mockApp.metadata.name}`
+          `${masterUri}/apis/mdc.aerogear.org/v1alpha1/namespaces/${mdcNamespace}/mobileclients/${mockApp.metadata.name}`
         )
         .reply(404);
 
