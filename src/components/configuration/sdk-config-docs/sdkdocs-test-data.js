@@ -1,6 +1,6 @@
 export const appJSON = {
   kind: 'MobileClient',
-  apiVersion: 'mobile.k8s.io/v1alpha1',
+  apiVersion: 'mdc.aerogear.org/v1alpha1',
   spec: {
     name: 'someapp',
     apiKey: 'a0f5e484-e27c-4cb8-ae35-f2b381d091c5',

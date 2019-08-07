@@ -7,7 +7,7 @@
       "served": true,
       "storage": true
     }],
-    "group": "mobile.k8s.io",
+    "group": "mdc.aerogear.org",
     "names": {
       "shortNames": [
         "mc"
@@ -19,6 +19,6 @@
   }, 
   "apiVersion": "apiextensions.k8s.io/v1beta1", 
   "metadata": {
-    "name": "mobileclients.mobile.k8s.io"
+    "name": "mobileclients.mdc.aerogear.org"
   }
 }

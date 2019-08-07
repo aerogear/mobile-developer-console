@@ -1,7 +1,7 @@
 const mobileAppDef = namespace => ({
   name: 'mobileclients',
   version: 'v1alpha1',
-  group: 'mobile.k8s.io',
+  group: 'mdc.aerogear.org',
   kind: 'MobileClient',
   namespace
 });
