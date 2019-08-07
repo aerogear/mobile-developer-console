@@ -1,6 +1,7 @@
 import { GenericResourceManager } from './GenericResourceManager';
 import { PushVariantResourceManager } from './PushVariantResourceManager';
 import { getUser } from '../openshift';
+import { MobileSecurityAppResourceManager } from './MobileSecurityAppResourceManager';
 
 /**
  * This class delegates all his operation to the provided resource manager.
@@ -26,6 +27,8 @@ class UserBoundResourceManager {
 export class ResourceManagerFactory {
   static forResource(kind) {
     switch (kind) {
+      case 'MobileSecurityServiceApp':
+        return new UserBoundResourceManager(new MobileSecurityAppResourceManager());
       case 'pushapplications':
       case 'AndroidVariant':
       case 'IOSVariant':
