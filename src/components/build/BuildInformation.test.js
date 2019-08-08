@@ -54,12 +54,4 @@ describe('BuildInformation', () => {
       expect(BuildPipelineStage.props().build).toEqual(build);
     });
   });
-
-  describe('BuildDownload', () => {
-    it('should match previous snapshot', () => {
-      const BuildDownload = wrapper.find('BuildDownload');
-
-      expect(BuildDownload).toMatchSnapshot();
-    });
-  });
 });
