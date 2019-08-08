@@ -131,7 +131,10 @@ export class BindingPanel extends Component {
   stepChanged = step => {
     if (step === 2) {
       this.setState({ loading: true });
-      this.props.createCustomResourceForService(this.state.service, this.state.formData, this.props.app);
+      this.props.createCustomResourceForService(this.state.service, this.state.formData, this.props.app).catch(() => {
+        // go back one step as the custom resource failed to create
+        this.setState({ loading: false, activeStepIndex: 1 });
+      });
     }
   };
 

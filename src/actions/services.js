@@ -67,6 +67,7 @@ export const createCustomResourceForService = (service, formdata, app) => async 
   // we don't need to handle success event here as it will be handled by the WS handler
   return create(resDef, reqBody, app).catch(err => {
     dispatch(errorCreator(err));
+    throw err;
   });
 };
 
