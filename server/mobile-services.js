@@ -229,8 +229,9 @@ const DataSyncService = {
           const serverUrl = url.parse(configmap.data.syncServerUrl);
           serverUrl.pathname = configmap.data.graphqlEndpoint;
           const httpUrl = url.format(serverUrl);
-          serverUrl.protocol = 'wss';
-          const websocketUrl = url.format(serverUrl);
+          const serverWsUrl = url.parse(httpUrl);
+          serverWsUrl.protocol = serverUrl.protocol === 'http:' ? 'ws:' : 'wss:';
+          const websocketUrl = url.format(serverWsUrl);
           return {
             id: configmap.metadata.uid,
             name: DATA_SYNC_TYPE,
