@@ -150,7 +150,9 @@ export class KeycloakRealmCR extends CustomResource {
             standardFlowEnabled: true,
             enabled: true,
             outputSecret: `${clientId}-install-config`,
-            clientAuthenticatorType: 'client-secret'
+            clientAuthenticatorType: 'client-secret',
+            fullScopeAllowed: true,
+            nodeReRegistrationTimeout: -1
           }
         ],
         users: [
