@@ -11,7 +11,6 @@
     "express-prometheus-middleware": "0.6.1",
     "fast-deep-equal": "2.0.1",
     "highlight.js": "9.15.9",
-    "http-proxy-middleware": "0.19.1",
     "is-git-url": "1.0.0",
     "json-stream": "1.0.0",
     "kubernetes-client": "8.3.3",
@@ -59,6 +58,7 @@
   },
   "homepage": "/",
   "devDependencies": {
+    "http-proxy-middleware": "0.19.1",
     "axios-mock-adapter": "1.17.0",
     "cors-anywhere": "0.4.1",
     "enzyme": "3.10.0",
