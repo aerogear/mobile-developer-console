@@ -69,9 +69,9 @@ export class MobileSecurityServiceAppCR extends CustomResource {
                   },
                   {
                     type: 'regexp',
-                    regexp: /^(?:[-a-zA-Z]+(?:\d*[a-zA-Z_]*)*)(?:\.[-a-zA-Z]+(?:\d*[a-zA-Z_]*)*)+$/,
+                    regexp: /^[-a-zA-Z][a-zA-Z0-9_]*(\.[-a-zA-Z]+[-a-zA-Z0-9_]*[^.]?)+$/,
                     error:
-                      'Unique identifier must have at least two segments separated by dots (.). Each segment must start with a letter or a hyphen. Valid characters: [a-zA-Z0-9_-].'
+                      'Unique identifier must have at least two segments separated by dots (.). Each segment must start with a letter, hyphen or underscore. Valid characters: [a-zA-Z0-9_-].'
                   }
                 ]
               }
