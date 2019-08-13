@@ -2,6 +2,7 @@ const equal = require('fast-deep-equal');
 const mobileClientCRD = require('./mobile-client-crd.json');
 const androidVariantCRD = require('./android-variant-crd.json');
 const iosVariantCRD = require('./ios-variant-crd.json');
+const mobileSecurityServiceCRD = require('./mobile-security-crd.json');
 const {
   PushService,
   IdentityManagementService,
@@ -20,7 +21,7 @@ let updating = false;
 
 function updateAll(namespace, kubeclient) {
   updating = true;
-  console.log('Check services for all apps');
+  console.log('Check services for all apps', Date());
   return kubeclient.apis[mobileClientCRD.spec.group].v1alpha1
     .namespace(namespace)
     .mobileclients.get()
@@ -72,7 +73,7 @@ async function updateAppsAndWatch(namespace, kubeclient) {
     watchKeyCloakSecrets(namespace, kubeclient);
     watchAndroidVariants(namespace, kubeclient);
     watchIosVariants(namespace, kubeclient);
-    watchMobileSecurityConfigMaps(namespace, kubeclient);
+    watchMobileSecurityApps(namespace, kubeclient);
   });
 }
 
@@ -186,22 +187,25 @@ async function watchIosVariants(namespace, kubeclient) {
 }
 
 /**
- * Watch for updates to the Mobile Security Service config maps and update all apps.
+ * Watch for updates to the MobileSecurityServiceApp custom resources and update all apps.
  *
  * @param {String} namespace - The namespace to watch
  * @param {*} kubeclient - kubernetes client
  */
-async function watchMobileSecurityConfigMaps(namespace, kubeclient) {
-  const mssConfigMapStream = await kubeclient.api.v1.watch.namespace(namespace).configmaps.getObjectStream();
-  mssConfigMapStream.on('data', event => {
-    if (event.object && event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX)) {
+async function watchMobileSecurityApps(namespace, kubeclient) {
+  const mssAppStream = await kubeclient.apis[mobileSecurityServiceCRD.spec.group].v1alpha1.watch
+    .namespaces(namespace)
+    .mobilesecurityserviceapps.getObjectStream();
+
+  mssAppStream.on('data', event => {
+    if (event.object && event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX) && !updating) {
       updateAll(namespace, kubeclient);
     }
   });
 
   // reopens the stream when it closes
-  mssConfigMapStream.on('end', () => {
-    watchMobileSecurityConfigMaps(namespace, kubeclient);
+  mssAppStream.on('end', () => {
+    watchMobileSecurityApps(namespace, kubeclient);
   });
 }
 
