@@ -7,6 +7,7 @@ import {
   Page,
   PageHeader,
   PageSection,
+  PageSectionVariants,
   Toolbar,
   ToolbarGroup,
   ToolbarItem,
@@ -96,7 +97,7 @@ class App extends React.Component {
             />
           }
         >
-          <PageSection>
+          <PageSection variant={PageSectionVariants.light}>
             <Switch>
               <Route exact path="/overview" component={Overview} />
               <Route exact path="/mobileclient/:id" component={Client} />
