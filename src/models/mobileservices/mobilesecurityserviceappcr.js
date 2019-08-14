@@ -68,6 +68,11 @@ export class MobileSecurityServiceAppCR extends CustomResource {
                     error: 'Unique identifier is required.'
                   },
                   {
+                    type: 'maxlength',
+                    length: 255,
+                    error: 'Unique identifer is too long. Maximum length allowed is 255 characters.'
+                  },
+                  {
                     type: 'regexp',
                     regexp: /^[-a-zA-Z][a-zA-Z0-9_]*(\.[-a-zA-Z]+[-a-zA-Z0-9_]*[^.]?)+$/,
                     error:
