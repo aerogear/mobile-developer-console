@@ -67,7 +67,7 @@ function getServicesForApp(namespace, app, kubeclient) {
 }
 
 async function updateAppsAndWatch(namespace, kubeclient) {
-  updateAll(namespace, kubeclient).then(async () => {
+  updateAll(namespace, kubeclient).then(() => {
     watchMobileClients(namespace, kubeclient);
     watchDataSyncConfigMaps(namespace, kubeclient);
     watchKeyCloakSecrets(namespace, kubeclient);
