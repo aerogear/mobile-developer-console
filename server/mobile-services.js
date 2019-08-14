@@ -7,6 +7,8 @@ const pushApplicationCRD = require('./push-application-crd.json');
 const androidVariantCRD = require('./android-variant-crd.json');
 const iosVariantCRD = require('./ios-variant-crd.json');
 
+const mobileSecurityServiceCRD = require('./mobile-security-crd.json');
+
 const PUSH_SERVICE_TYPE = 'push';
 const IDM_SERVICE_TYPE = 'keycloak';
 const METRICS_SERVICE_TYPE = 'metrics';
@@ -268,31 +270,28 @@ const MobileSecurityService = {
     kind: 'MobileSecurityServiceApp'
   },
   getClientConfig: (namespace, appname, kubeclient) => {
-    const configmapName = `${appname}-security`;
-
-    return kubeclient.api.v1
+    const resourceName = `${appname}-security`;
+    return kubeclient.apis[mobileSecurityServiceCRD.spec.group].v1alpha1
       .namespaces(namespace)
-      .configmaps(configmapName)
+      .mobilesecurityserviceapps(resourceName)
       .get()
       .then(resp => resp.body)
-      .then(configmap => {
-        if (configmap) {
-          const sdkConfig = JSON.parse(configmap.data.SDKConfig);
-          const sdkConfigUrl = sdkConfig.url;
+      .then(mssApp =>
+        getServices(configPath).then(services => {
+          const mobileService = services.find(s => s.type === MOBILE_SECURITY_TYPE);
           return {
-            id: configmap.metadata.uid,
+            id: mssApp.metadata.uid,
             name: MOBILE_SECURITY_TYPE,
             type: MOBILE_SECURITY_TYPE,
-            url: sdkConfigUrl
+            url: mobileService.host
           };
-        }
-        return null;
-      })
+        })
+      )
       .catch(err => {
         if (err && err.statusCode && err.statusCode === 404) {
-          console.info(`Can not find configmap ${configmapName}`);
+          console.info(`Can not find Mobile Security Service App ${resourceName}`);
         } else {
-          console.warn(`Error when fetch configmap ${configmapName}`, err);
+          console.warn(`Error when fetch Mobile Security Service App ${resourceName}`, err);
         }
         return null;
       });
