@@ -28,9 +28,9 @@ function updateAll(namespace, kubeclient) {
     .then(resp => resp.body)
     .then(mobileclientList => mobileclientList.items)
     .then(mobileclients => mobileclients.map(mobileclient => updateApp(namespace, mobileclient, kubeclient)))
-    .then(promises => Promise.all(promises))
-    .then(() => {
+    .then(promises => {
       updating = false;
+      return Promise.all(promises);
     })
     .catch(err => console.error(`Failed to update apps due to error`, err));
 }
