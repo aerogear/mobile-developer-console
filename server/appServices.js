@@ -3,6 +3,7 @@ const mobileClientCRD = require('./mobile-client-crd.json');
 const androidVariantCRD = require('./android-variant-crd.json');
 const iosVariantCRD = require('./ios-variant-crd.json');
 const mobileSecurityServiceCRD = require('./mobile-security-crd.json');
+const { debounce } = require('lodash');
 const {
   PushService,
   IdentityManagementService,
@@ -17,7 +18,18 @@ const KEYCLOAK_SECRET_SUFFIX = '-install-config';
 const DATASYNC_CONFIGMAP_SUFFIX = '-data-sync-binding';
 const MOBILE_SECURITY_SUFFIX = '-security';
 
+const { MAX_RETRIES = 60, RETRY_TIMEOUT = 5000 } = process.env;
+
 let updating = false;
+// keeps track of how many attempts were made to connect to the Kubernetes API server
+let connectionAttempts = 0;
+const debounceTime = 250;
+// create a debounce function for the if a connection to
+// the kubernetes API fails. this will ensure that only one connection
+// retry attempt will take place at a time.
+const retryWatchDebounce = debounce((namespace, kubeclient) => {
+  retryWatch(namespace, kubeclient);
+}, debounceTime);
 
 function updateAll(namespace, kubeclient) {
   updating = true;
@@ -32,7 +44,13 @@ function updateAll(namespace, kubeclient) {
       updating = false;
       return Promise.all(promises);
     })
-    .catch(err => console.error(`Failed to update apps due to error`, err));
+    .catch(err => {
+      console.error(`Failed to update apps due to error`, err);
+
+      retryWatchDebounce(namespace, kubeclient);
+
+      throw err;
+    });
 }
 
 function updateApp(namespace, app, kubeclient) {
@@ -57,7 +75,13 @@ function updateApp(namespace, app, kubeclient) {
       }
       return Promise.resolve();
     })
-    .catch(err => console.error(`Failed to update app ${app.metadata.name} due to error`, err));
+    .catch(err => {
+      console.error(`Failed to update app ${app.metadata.name} due to error`, err);
+
+      retryWatchDebounce();
+
+      throw err;
+    });
 }
 
 function getServicesForApp(namespace, app, kubeclient) {
@@ -67,13 +91,16 @@ function getServicesForApp(namespace, app, kubeclient) {
 }
 
 async function updateAppsAndWatch(namespace, kubeclient) {
-  updateAll(namespace, kubeclient).then(async () => {
+  connectionAttempts++;
+  updateAll(namespace, kubeclient).then(() => {
     watchMobileClients(namespace, kubeclient);
     watchDataSyncConfigMaps(namespace, kubeclient);
     watchKeyCloakSecrets(namespace, kubeclient);
     watchAndroidVariants(namespace, kubeclient);
     watchIosVariants(namespace, kubeclient);
     watchMobileSecurityApps(namespace, kubeclient);
+    // reset connection attempts count
+    connectionAttempts = 1;
   });
 }
 
@@ -98,6 +125,10 @@ async function watchMobileClients(namespace, kubeclient) {
   appStream.on('end', () => {
     watchMobileClients(namespace, kubeclient);
   });
+
+  appStream.on('close', () => {
+    retryWatchDebounce(namespace, kubeclient);
+  });
 }
 
 /**
@@ -117,6 +148,10 @@ async function watchDataSyncConfigMaps(namespace, kubeclient) {
   // reopens the stream when it closes
   configmapStream.on('end', () => {
     watchDataSyncConfigMaps(namespace, kubeclient);
+  });
+
+  configmapStream.on('close', () => {
+    retryWatchDebounce(namespace, kubeclient);
   });
 }
 
@@ -138,6 +173,32 @@ async function watchKeyCloakSecrets(namespace, kubeclient) {
   secretStream.on('end', () => {
     watchKeyCloakSecrets(namespace, kubeclient);
   });
+
+  secretStream.on('close', () => {
+    retryWatchDebounce(namespace, kubeclient);
+  });
+}
+
+/**
+ * When the Kubernetes API is restarted, set a timeout and try to set up the watches after the API is up again.
+ *
+ * @param {String} namespace
+ * @param {*} kubeclient
+ */
+function retryWatch(namespace, kubeclient) {
+  if (connectionAttempts < MAX_RETRIES) {
+    console.log(
+      `waiting ${RETRY_TIMEOUT} milliseconds before attempting services watches again`,
+      `attempt ${connectionAttempts} of ${MAX_RETRIES}`
+    );
+
+    setTimeout(() => {
+      updateAppsAndWatch(namespace, kubeclient);
+    }, RETRY_TIMEOUT);
+  } else {
+    console.log(`Failed to set up watch ${MAX_RETRIES} times, exiting application`);
+    process.exit(1);
+  }
 }
 
 /**
@@ -160,6 +221,10 @@ async function watchAndroidVariants(namespace, kubeclient) {
   // reopens the stream when it closes
   androidVariantStream.on('end', () => {
     watchAndroidVariants(namespace, kubeclient);
+  });
+
+  androidVariantStream.on('close', () => {
+    retryWatchDebounce();
   });
 }
 
@@ -184,6 +249,10 @@ async function watchIosVariants(namespace, kubeclient) {
   iosVariantStream.on('end', () => {
     watchIosVariants(namespace, kubeclient);
   });
+
+  iosVariantStream.on('close', () => {
+    retryWatchDebounce(namespace, kubeclient);
+  });
 }
 
 /**
@@ -206,6 +275,10 @@ async function watchMobileSecurityApps(namespace, kubeclient) {
   // reopens the stream when it closes
   mssAppStream.on('end', () => {
     watchMobileSecurityApps(namespace, kubeclient);
+  });
+
+  mssAppStream.on('close', () => {
+    retryWatchDebounce(namespace, kubeclient);
   });
 }
 
