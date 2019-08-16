@@ -6,10 +6,15 @@
     width: 30px;
     height: 30px; }
   .configurationView .list-group-item-container {
-    padding-top: 24px;
-    padding-right: 36px;
-    padding-bottom: 24px;
-    padding-left: 36px; }
+    padding-top: 16px;
+    padding-right: 24px;
+    padding-bottom: 16px;
+    padding-left: 24px; }
+    .configurationView .list-group-item-container ol {
+      margin-left: 32px; }
+    .configurationView .list-group-item-container ol > li > ul {
+      list-style-type: disc;
+      margin-left: 32px; }
   .configurationView .list-group-item-header {
     background-color: transparent;
     margin-top: 8px;
