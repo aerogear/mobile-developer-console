@@ -6,13 +6,38 @@ import {
   TabPane,
   TabContainer,
   Grid,
-  Breadcrumb,
   DropdownButton,
   Alert,
   MenuItem
 } from 'patternfly-react';
+import {
+  PageSection,
+  PageSectionVariants,
+  Breadcrumb,
+  BreadcrumbItem,
+  Level,
+  LevelItem,
+  Title,
+  Split, 
+  SplitItem,
+  Card,
+  CardBody,
+  Button,
+  DataList,
+  DataListItem,
+  DataListItemRow,
+  DataListCell,
+  DataListAction,
+  DataListToggle,
+  DataListContent,
+  DataListCheck,
+  DataListItemCells,
+  Dropdown,
+  DropdownItem,
+  DropdownPosition,
+  KebabToggle
+} from '@patternfly/react-core';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { find } from 'lodash-es';
 import Moment from 'react-moment';
 import ConfigurationView from '../components/configuration/ConfigurationView';
@@ -112,7 +137,7 @@ export class Client extends Component {
             </h1>
           </div>
         </div>
-        <div className="app-actions-dropdown">
+        {/* <div className="app-actions-dropdown">
           <DropdownButton id="app-actions-dropdown" title="Actions" pullRight>
             {mobileApp && selectedTab === TAB_BUILDS.key ? (
               <React.Fragment>
@@ -129,7 +154,7 @@ export class Client extends Component {
             )}
             <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
           </DropdownButton>
-        </div>
+        </div> */}
       </div>
     );
   };
@@ -139,14 +164,75 @@ export class Client extends Component {
     const clientInfo = { clientId: mobileApp.getName() };
     const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
+    const cardWidth = {width: '300px'};
+    const { creationTimestamp = null } = mobileApp.metadata.data;
     return mobileApp ? (
+      <div>
+      <PageSection variant={PageSectionVariants.light}>
+        <Level>
+          <LevelItem>
+            <Breadcrumb>
+              <BreadcrumbItem to="/overview">
+                Mobile Apps
+              </BreadcrumbItem>
+              <BreadcrumbItem isActives>
+                Review and Edit
+              </BreadcrumbItem>
+            </Breadcrumb>
+          </LevelItem>
+          <LevelItem>
+            Dropdown
+          </LevelItem>
+          </Level>
+      </PageSection>
+      <PageSection variant={PageSectionVariants.light}>
+        <Title headingLevel="h2" size="3xl">
+          {mobileApp.getName()}
+        </Title>
+          <span className="creation-timestamp">
+            created <Moment fromNow>{creationTimestamp}</Moment>
+          </span>
+      </PageSection>
+      <Split>
+        <SplitItem isFilled>
+          <PageSection>
+            <Title headingLevel="h3" size="xl">
+              Bound Services
+            </Title>
+            <DataList aria-label="Exapandable data list example">
+              Data list here
+            </DataList>
+          </PageSection>
+        </SplitItem>
+        <SplitItem>
+          <Card style={cardWidth}>
+            <CardBody>
+              <Title headingLevel="h3" size="xl">
+                Full Mobile Config
+              </Title>
+              <p> 
+                JavaScript-based mobile apps can be configured for a variety of mobile platforms. 
+                Our JavaScript SDK supports the following frameworks.
+              </p>
+              <div>
+                Add icons in here
+              </div>
+            </CardBody>
+            <CardBody>
+              <Title headingLevel="h4" size="md">
+                mobile-services.json
+              </Title>
+            </CardBody>
+          </Card>
+        </SplitItem> 
+      </Split>
       <Grid fluid className="client-details">
-        <Breadcrumb>
+        {/* <Breadcrumb>
           <Breadcrumb.Item active>
             <Link to="/overview">Mobile Apps</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item active>{mobileApp.getName()}</Breadcrumb.Item>
-        </Breadcrumb>
+        </Breadcrumb> */}
         {this.header(mobileApp)}
         {this.props.apps.readingError ? (
           <Alert>{this.props.apps.readingError.message}</Alert>
@@ -187,6 +273,7 @@ export class Client extends Component {
           </TabContainer>
         )}
       </Grid>
+    </div>
     ) : (
       <React.Fragment />
     );

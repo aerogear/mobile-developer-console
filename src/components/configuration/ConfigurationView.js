@@ -1,8 +1,8 @@
 import { Row, Col, ListView } from 'patternfly-react';
+import { ClipboardCopy, ClipboardCopyVariant } from '@patternfly/react-core';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from './Header';
-import CopyToClipboardMultiline from '../common/CopyToClipboardMultiline';
 
 import './ConfigurationView.css';
 import FrameworkSDKDocs from './FrameworkSDKDocs';
@@ -27,9 +27,9 @@ class ConfigurationView extends Component {
           </Col>
           <Col xs={6}>
             <Header>mobile-services.json</Header>
-            <CopyToClipboardMultiline className="mobile-client-config">
+            <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
               {JSON.stringify(status, null, 2)}
-            </CopyToClipboardMultiline>
+            </ClipboardCopy>
           </Col>
         </Row>
       </React.Fragment>
