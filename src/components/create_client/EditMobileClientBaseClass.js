@@ -1,13 +1,13 @@
 /* eslint guard-for-in: 0 */
 import React, { Component } from 'react';
 import { Grid, Form, Row, Col } from 'patternfly-react';
-import { MobileApp } from '../../models';
+import { MobileApp, MAXLENGTH_APPNAME } from '../../models';
 import { CREATE_CLIENT_NAME } from './Constants';
 import { VerticalFormField } from './VerticalFormField';
 
 export const LABEL_APPNAME = '* App Name';
 export const EXAMPLE_APPNAME = 'myapp';
-export const HELP_APPNAME = 'App name must only contain lowercase letters, numbers and dots.';
+export const HELP_APPNAME = `App name can not exceed ${MAXLENGTH_APPNAME} characters, and must only contain lowercase letters, numbers and dots.`;
 
 /**
  * Base component for the create/edit mobile client form.
