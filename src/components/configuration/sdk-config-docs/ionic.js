@@ -106,6 +106,26 @@ const framework = docsPrefix => {
             ]
           }
         ]
+      },
+      security: {
+        serviceLogoUrl: '/img/security.svg',
+        serviceName: 'Security',
+        serviceDescription:
+          'Installs a service which allows you remotely disable specific app variants from the Mobile Security Console.',
+        setupText: 'Security SDK setup',
+        docsLink: `${docsPrefix}/security.html`,
+        steps: [
+          {
+            introduction: 'Setting up Mobile Security service SDK',
+            commands: [
+              ['Install the AeroGear Security package from NPM', '```npm install @aerogear/security --save```'],
+              [
+                'Add the AeroGear Security plugin for Cordova',
+                '```cordova plugin add @aerogear/cordova-plugin-aerogear-security```'
+              ]
+            ]
+          }
+        ]
       }
     }
   };
