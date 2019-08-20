@@ -113,7 +113,7 @@ export class MobileServiceView extends Component {
 function mapStateToProps(state, oldProp) {
   const app = MobileApp.find(state.apps.items, oldProp.appName);
   const services = state.services.items.map(item => new MobileService(item));
-  const filteredServices = partition(services, service => service.isBoundToApp(oldProp.appName));
+  const filteredServices = partition(services, service => service.isBoundToApp(app ? app.metadata.data.uid : null));
   return { ...state.services, app, boundServices: filteredServices[0], unboundServices: filteredServices[1] };
 }
 

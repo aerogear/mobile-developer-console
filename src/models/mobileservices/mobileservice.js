@@ -90,8 +90,8 @@ export class MobileService {
     return this.data.bindCustomResource;
   }
 
-  newCustomResource(formdata) {
-    return this.customResourceClass.newInstance(formdata);
+  newCustomResource(formdata, ownerMetadata) {
+    return this.customResourceClass.newInstance({ ownerUid: ownerMetadata.uid, ...formdata });
   }
 
   getConfiguration(appName) {
