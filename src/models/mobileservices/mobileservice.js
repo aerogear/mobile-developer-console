@@ -64,8 +64,11 @@ export class MobileService {
     return this.customResourceClass.bindForm(params);
   }
 
-  isBindingOperationInProgress() {
-    const inprogressCR = find(this.customResources, cr => cr.isInProgress());
+  isBindingOperationInProgress(owner) {
+    const inprogressCR = find(
+      this.customResources,
+      cr => (owner ? find(cr.getOwners(), o => o.name === owner) : true) && cr.isInProgress()
+    );
     return inprogressCR != null;
   }
 

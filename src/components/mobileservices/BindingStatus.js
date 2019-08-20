@@ -11,12 +11,12 @@ class BindingStatus extends Component {
   }
 
   updateState() {
-    if (this.props.service.isBindingOperationInProgress() && !this.state.hasStarted) {
+    if (this.props.service.isBindingOperationInProgress(this.props.appName) && !this.state.hasStarted) {
       this.setState({
         hasStarted: true
       });
     }
-    if (this.state.hasStarted && !this.props.service.isBindingOperationInProgress()) {
+    if (this.state.hasStarted && !this.props.service.isBindingOperationInProgress(this.props.appName)) {
       this.props.onFinished();
       this.setState({
         hasStarted: false
@@ -28,8 +28,11 @@ class BindingStatus extends Component {
     this.props.onFinished();
   }
 
-  render() {
+  componentDidMount() {
     this.updateState();
+  }
+
+  render() {
     return (
       <ListView.InfoItem key="bind-status">
         {this.props.service.isBindingOperationInProgress() && (
