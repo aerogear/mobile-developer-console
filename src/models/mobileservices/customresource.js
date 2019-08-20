@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import Resource from '../k8s/resource';
 import Status from '../k8s/status';
 
@@ -36,6 +37,10 @@ export class CustomResource extends Resource {
   isInProgress() {
     const phase = this.status.get('phase');
     return CustomResource.INPROGRESS_STATUSES.indexOf(phase) > -1;
+  }
+
+  getOwners() {
+    return get(this, 'data.metadata.ownerReferences');
   }
 
   isFailed() {

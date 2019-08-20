@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { EmptyState, Spinner } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { partition } from 'lodash-es';
+
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
 import './MobileServiceView.css';
@@ -12,6 +13,8 @@ import { MobileService, MobileApp } from '../../models/';
 export class MobileServiceView extends Component {
   constructor(props) {
     super(props);
+
+    this.bindingPanelRef = React.createRef();
 
     this.state = {
       bindingPanelService: null
@@ -56,6 +59,7 @@ export class MobileServiceView extends Component {
           this.props.unboundServices.map(service => (
             <UnboundServiceRow
               key={service.getId()}
+              appName={this.props.appName}
               service={service}
               onCreateBinding={() => this.showBindingPanel(service)}
               onFinished={this.hideBindingPanel}
@@ -78,8 +82,8 @@ export class MobileServiceView extends Component {
     });
   };
 
-  hideBindingPanel = () => {
-    if (this.state.bindingPanelService) {
+  hideBindingPanel = force => {
+    if (this.state.bindingPanelService && (force || this.bindingPanelRef.current.getWrappedInstance().isInProgress())) {
       this.setState({
         bindingPanelService: null
       });
@@ -99,10 +103,11 @@ export class MobileServiceView extends Component {
         </Spinner>
         {this.state.bindingPanelService && (
           <BindingPanel
+            ref={this.bindingPanelRef}
             appName={this.props.appName}
             service={this.state.bindingPanelService}
             showModal
-            close={this.hideBindingPanel}
+            close={() => this.hideBindingPanel(true)}
           />
         )}
       </div>

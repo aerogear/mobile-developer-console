@@ -51,6 +51,7 @@ class UnboundServiceRow extends Component {
         key={`${this.props.service.getId()}binding status`}
         service={this.props.service}
         onFinished={this.props.onFinished}
+        appName={this.props.appName}
       />
     );
   }
