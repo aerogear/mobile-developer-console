@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import {
+  Title
+} from '@patternfly/react-core';
 import { EmptyState, Spinner } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { partition } from 'lodash-es';
@@ -14,7 +17,21 @@ export class MobileServiceView extends Component {
     super(props);
 
     this.state = {
-      bindingPanelService: null
+      bindingPanelService: null,
+      expanded: [],
+      isOpen1: false,
+      isOpen2: false,
+      isOpen3: false
+    };
+
+    this.onToggle1 = isOpen1 => {
+      this.setState({ isOpen1 });
+    };
+
+    this.onSelect1 = event => {
+      this.setState(prevState => ({
+        isOpen1: !prevState.isOpen1
+      }));
     };
 
     this.boundServiceRows = this.boundServiceRows.bind(this);
@@ -27,9 +44,18 @@ export class MobileServiceView extends Component {
   }
 
   boundServiceRows() {
+    const toggle = id => {
+      const expanded = this.state.expanded;
+      const index = expanded.indexOf(id);
+      const newExpanded =
+        index >= 0 ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)] : [...expanded, id];
+      this.setState(() => ({ expanded: newExpanded }));
+    };
     return (
       <React.Fragment>
-        <h2 key="bound-services">Bound Services</h2>
+        <Title key="bound-services" headingLevel="h4" size="xl">
+          Bound Services
+        </Title>
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
           this.props.boundServices.map(service => (
             <BoundServiceRow

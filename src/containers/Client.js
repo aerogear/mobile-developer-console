@@ -23,18 +23,11 @@ import {
   Card,
   CardBody,
   Button,
-  DataList,
-  DataListItem,
-  DataListItemRow,
-  DataListCell,
-  DataListAction,
-  DataListToggle,
-  DataListContent,
-  DataListCheck,
-  DataListItemCells,
   Dropdown,
+  DropdownToggle,
   DropdownItem,
   DropdownPosition,
+  DropdownSeparator,
   KebabToggle
 } from '@patternfly/react-core';
 import { connect } from 'react-redux';
@@ -51,6 +44,7 @@ import { MobileClientBuildOverviewList } from '../components/build/MobileClientB
 import BuildConfigDialog from './BuildConfigDialog';
 import './Client.css';
 import { fetchAndWatchServices } from '../actions/services';
+import { CaretDownIcon } from '@patternfly/react-icons';
 
 export const TAB_CONFIGURATION = { key: 1, hash: 'configuration' };
 export const TAB_MOBILE_SERVICES = { key: 2, hash: 'services' };
@@ -68,7 +62,18 @@ export class Client extends Component {
 
     this.state = {
       buildConfigs: [],
-      selectedTab: initialTab.key
+      selectedTab: initialTab.key,
+      isOpen: false
+    };
+    this.onToggle = isOpen => {
+      this.setState({
+        isOpen
+      });
+    };
+    this.onSelect = event => {
+      this.setState({
+        isOpen: !this.state.isOpen
+      });
     };
     this.handleNavSelect = this.handleNavSelect.bind(this);
   }
@@ -121,54 +126,75 @@ export class Client extends Component {
     }
   };
 
-  header = mobileApp => {
-    const { selectedTab, showBuildConfigDialog = false } = this.state;
-    const { creationTimestamp = null } = mobileApp.metadata.data;
-    // passing empty string to build config dialog for now as the client id.
-    return (
-      <div className="app-header-wrapper">
-        <div className="app-header">
-          <div>
-            <h1>
-              {mobileApp.getName()}
-              <span className="creation-timestamp">
-                created <Moment fromNow>{creationTimestamp}</Moment>
-              </span>
-            </h1>
-          </div>
-        </div>
-        {/* <div className="app-actions-dropdown">
-          <DropdownButton id="app-actions-dropdown" title="Actions" pullRight>
-            {mobileApp && selectedTab === TAB_BUILDS.key ? (
-              <React.Fragment>
-                <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
-                <BuildConfigDialog
-                  update={false}
-                  clientInfo={{ clientId: mobileApp.getName() }}
-                  show={showBuildConfigDialog}
-                  onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
-                />
-              </React.Fragment>
-            ) : (
-              ''
-            )}
-            <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
-          </DropdownButton>
-        </div> */}
-      </div>
-    );
-  };
+  // header = mobileApp => {
+  //   // const { selectedTab, showBuildConfigDialog = false } = this.state;
+  //   // const { creationTimestamp = null } = mobileApp.metadata.data;
+  //   // passing empty string to build config dialog for now as the client id.
+  //   return (
+  //     <div className="app-header-wrapper">
+  //       <div className="app-header">
+  //         <div>
+  //           <h1>
+  //             {mobileApp.getName()}
+  //             {/* <span className="creation-timestamp">
+  //               created <Moment fromNow>{creationTimestamp}</Moment>
+  //             </span> */}
+  //           </h1>
+  //         </div>
+  //       </div>
+  //       {/* <div className="app-actions-dropdown">
+  //         <DropdownButton id="app-actions-dropdown" title="Actions" pullRight>
+  //           {mobileApp && selectedTab === TAB_BUILDS.key ? (
+  //             <React.Fragment>
+  //               <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
+  //               <BuildConfigDialog
+  //                 update={false}
+  //                 clientInfo={{ clientId: mobileApp.getName() }}
+  //                 show={showBuildConfigDialog}
+  //                 onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
+  //               />
+  //             </React.Fragment>
+  //           ) : (
+  //             ''
+  //           )}
+  //           <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
+  //         </DropdownButton>
+  //       </div> */}
+  //     </div>
+  //   );
+  // };
 
   render() {
     const mobileApp = this.getMobileApp();
+    const { selectedTab, showBuildConfigDialog = false } = this.state;
     const clientInfo = { clientId: mobileApp.getName() };
-    const { selectedTab } = this.state;
+    // const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
     const cardWidth = {width: '300px'};
+    const removePaddingBottom = {paddingBottom: '0px'};
     const { creationTimestamp = null } = mobileApp.metadata.data;
+    const { isOpen } = this.state;
+    const dropdownItems = [
+      <DropdownItem key="/">
+        {mobileApp && selectedTab === TAB_BUILDS.key ? (
+          <React.Fragment>
+            <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
+            <BuildConfigDialog
+              update={false}
+              clientInfo={{ clientId: mobileApp.getName() }}
+              show={showBuildConfigDialog}
+              onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
+            />
+          </React.Fragment>
+            ) : (
+              ''
+            )}
+          <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
+      </DropdownItem>
+    ];
     return mobileApp ? (
       <div>
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection variant={PageSectionVariants.light} style={removePaddingBottom}>
         <Level>
           <LevelItem>
             <Breadcrumb>
@@ -181,7 +207,13 @@ export class Client extends Component {
             </Breadcrumb>
           </LevelItem>
           <LevelItem>
-            Dropdown
+            <Dropdown
+              onSelect={this.onSelect}
+              position={DropdownPosition.right}
+              toggle={<DropdownToggle onToggle={this.onToggle} iconComponent={CaretDownIcon}>Actions</DropdownToggle>}
+              isOpen={isOpen}
+              dropdownItems={dropdownItems}
+            />
           </LevelItem>
           </Level>
       </PageSection>
@@ -196,12 +228,7 @@ export class Client extends Component {
       <Split>
         <SplitItem isFilled>
           <PageSection>
-            <Title headingLevel="h3" size="xl">
-              Bound Services
-            </Title>
-            <DataList aria-label="Exapandable data list example">
-              Data list here
-            </DataList>
+            <MobileServiceView appName={appName} />
           </PageSection>
         </SplitItem>
         <SplitItem>
@@ -227,13 +254,6 @@ export class Client extends Component {
         </SplitItem> 
       </Split>
       <Grid fluid className="client-details">
-        {/* <Breadcrumb>
-          <Breadcrumb.Item active>
-            <Link to="/overview">Mobile Apps</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item active>{mobileApp.getName()}</Breadcrumb.Item>
-        </Breadcrumb> */}
-        {this.header(mobileApp)}
         {this.props.apps.readingError ? (
           <Alert>{this.props.apps.readingError.message}</Alert>
         ) : (
@@ -257,7 +277,7 @@ export class Client extends Component {
                   <ConfigurationView app={mobileApp} appName={appName} />
                 </TabPane>
                 <TabPane eventKey={TAB_MOBILE_SERVICES.key}>
-                  <MobileServiceView appName={appName} />
+                  {/* <MobileServiceView appName={appName} /> */}
                 </TabPane>
                 {this.props.buildTabEnabled ? (
                   <TabPane eventKey={TAB_BUILDS.key}>
