@@ -1,11 +1,12 @@
 import { find } from 'lodash-es';
 import { CustomResource } from './customresource';
 
-function hasPlatform(service, appName, platform) {
+function hasPlatform(service, appUid, platform) {
+  console.log('appName', appUid);
   return (
     service.customResources &&
     find(
-      service.getCustomResourcesForApp(appName),
+      service.getCustomResourcesForApp(appUid),
       cr => typeof cr.getPlatform === 'function' && cr.getPlatform() === platform
     )
   );
@@ -45,8 +46,8 @@ export class PushVariantCR extends CustomResource {
 
   static bindForm(params) {
     const { service } = params;
-    const hasIOS = hasPlatform(service, params.appName, 'IOSVariant');
-    const hasAndroid = hasPlatform(service, params.appName, 'AndroidVariant');
+    const hasIOS = hasPlatform(service, params.appUid, 'IOSVariant');
+    const hasAndroid = hasPlatform(service, params.appUid, 'AndroidVariant');
     let defaultPlatform = 'Android';
     let platforms = ['Android', 'iOS'];
     const androidConfig = {
@@ -235,7 +236,7 @@ export class PushVariantCR extends CustomResource {
   }
 
   static newInstance(params) {
-    const { CLIENT_ID, CLIENT_TYPE } = params;
+    const { CLIENT_ID, CLIENT_TYPE, appUid } = params;
 
     switch (CLIENT_TYPE) {
       case 'Android':
@@ -245,7 +246,7 @@ export class PushVariantCR extends CustomResource {
           metadata: {
             name: `${CLIENT_ID}-android-ups-variant`,
             labels: {
-              'mobile.aerogear.org/client': CLIENT_ID
+              'mobile.aerogear.org/client': appUid
             }
           },
           spec: {

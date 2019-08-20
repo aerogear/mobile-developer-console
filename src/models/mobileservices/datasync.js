@@ -103,7 +103,7 @@ export class DataSyncCR extends CustomResource {
   }
 
   static newInstance(params) {
-    const { CLIENT_ID } = params;
+    const { CLIENT_ID, appUid } = params;
     const { url, graphqlEndpoint } = params.syncServerConfig;
     return {
       apiVersion: 'v1',
@@ -111,7 +111,7 @@ export class DataSyncCR extends CustomResource {
       metadata: {
         name: `${CLIENT_ID}-data-sync-binding`,
         labels: {
-          'mobile.aerogear.org/client': CLIENT_ID
+          'mobile.aerogear.org/client': appUid
         }
       },
       data: {

@@ -121,7 +121,7 @@ export class KeycloakRealmCR extends CustomResource {
   }
 
   static newInstance(params) {
-    const { CLIENT_ID } = params;
+    const { CLIENT_ID, appUid } = params;
     const { realmId, adminUsername, adminPassword } = params.realmSettings;
     const { clientId, CLIENT_TYPE } = params.clientSettings;
     return {
@@ -130,7 +130,7 @@ export class KeycloakRealmCR extends CustomResource {
       metadata: {
         name: realmId,
         labels: {
-          'mobile.aerogear.org/client': CLIENT_ID
+          'mobile.aerogear.org/client': appUid
         }
       },
       spec: {

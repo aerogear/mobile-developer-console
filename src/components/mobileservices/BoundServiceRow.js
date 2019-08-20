@@ -64,7 +64,7 @@ class BoundServiceRow extends Component {
     let propertyFragment;
 
     const docUrl = this.props.service.getDocumentationUrl();
-    const serviceConfigurations = this.props.service.getConfiguration(this.props.appName);
+    const serviceConfigurations = this.props.service.getConfiguration(this.props.appUid);
 
     if (docUrl) {
       documentationFragment = (
@@ -128,7 +128,7 @@ class BoundServiceRow extends Component {
       return null;
     }
 
-    if (this.props.service.getCustomResourcesForApp(this.props.appName).length >= 2) {
+    if (this.props.service.getCustomResourcesForApp(this.props.appUid).length >= 2) {
       return null;
     }
 
@@ -136,7 +136,8 @@ class BoundServiceRow extends Component {
   }
 
   renderDeleteBindingDropdowns() {
-    const crs = this.props.service.getCustomResourcesForApp(this.props.appName);
+    const crs = this.props.service.getCustomResourcesForApp(this.props.appUid);
+
     return (
       <DropdownKebab id="delete-binding-id" pullRight>
         {crs.map(cr => (

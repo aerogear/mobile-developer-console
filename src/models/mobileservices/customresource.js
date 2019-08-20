@@ -26,10 +26,10 @@ export class CustomResource extends Resource {
     return CustomResource.READY_STATUSES.indexOf(phase) > -1;
   }
 
-  hasAppLabel(appName) {
+  hasAppLabel(appUid) {
     const labels = this.metadata.get('labels');
     if (labels) {
-      return labels['mobile.aerogear.org/client'] === appName;
+      return labels['mobile.aerogear.org/client'] === appUid;
     }
     return false;
   }

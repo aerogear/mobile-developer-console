@@ -25,6 +25,10 @@ export default class MobileApp {
     return this.metadata.getName();
   }
 
+  getUID() {
+    return this.metadata.getUID();
+  }
+
   getStatus() {
     return this.status;
   }
