@@ -170,7 +170,7 @@ export class Client extends Component {
     const clientInfo = { clientId: mobileApp.getName() };
     // const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
-    const cardWidth = {width: '300px'};
+    const cardValues = { width: '450px', height: '100%' };
     const removePaddingBottom = {paddingBottom: '0px'};
     const { creationTimestamp = null } = mobileApp.metadata.data;
     const { isOpen } = this.state;
@@ -232,7 +232,7 @@ export class Client extends Component {
           </PageSection>
         </SplitItem>
         <SplitItem>
-          <Card style={cardWidth}>
+          <Card style={cardValues}>
             <CardBody>
               <Title headingLevel="h3" size="xl">
                 Full Mobile Config

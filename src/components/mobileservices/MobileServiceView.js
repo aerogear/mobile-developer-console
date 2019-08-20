@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
-  Title
+  Title,
+  DataList
 } from '@patternfly/react-core';
 import { EmptyState, Spinner } from 'patternfly-react';
 import { connect } from 'react-redux';
@@ -17,21 +18,7 @@ export class MobileServiceView extends Component {
     super(props);
 
     this.state = {
-      bindingPanelService: null,
-      expanded: [],
-      isOpen1: false,
-      isOpen2: false,
-      isOpen3: false
-    };
-
-    this.onToggle1 = isOpen1 => {
-      this.setState({ isOpen1 });
-    };
-
-    this.onSelect1 = event => {
-      this.setState(prevState => ({
-        isOpen1: !prevState.isOpen1
-      }));
+      bindingPanelService: null
     };
 
     this.boundServiceRows = this.boundServiceRows.bind(this);
@@ -44,13 +31,6 @@ export class MobileServiceView extends Component {
   }
 
   boundServiceRows() {
-    const toggle = id => {
-      const expanded = this.state.expanded;
-      const index = expanded.indexOf(id);
-      const newExpanded =
-        index >= 0 ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)] : [...expanded, id];
-      this.setState(() => ({ expanded: newExpanded }));
-    };
     return (
       <React.Fragment>
         <Title key="bound-services" headingLevel="h4" size="xl">
@@ -58,14 +38,16 @@ export class MobileServiceView extends Component {
         </Title>
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
           this.props.boundServices.map(service => (
-            <BoundServiceRow
-              key={service.getId()}
-              appName={this.props.appName}
-              service={service}
-              onCreateBinding={() => this.showBindingPanel(service)}
-              onFinished={this.hideBindingPanel}
-              onDeleteBinding={cr => this.props.deleteCustomResource(service, cr.toJSON())}
-            />
+            <DataList>
+              <BoundServiceRow
+                key={service.getId()}
+                appName={this.props.appName}
+                service={service}
+                onCreateBinding={() => this.showBindingPanel(service)}
+                onFinished={this.hideBindingPanel}
+                onDeleteBinding={cr => this.props.deleteCustomResource(service, cr.toJSON())}
+              />
+            </DataList>
           ))
         ) : (
           <EmptyState>There are no bound services.</EmptyState>
@@ -77,18 +59,23 @@ export class MobileServiceView extends Component {
   unboundServiceRows() {
     return (
       <React.Fragment>
-        <h2 key="unbound-services">Unbound Services</h2>
+        <Title key="unbound-services" headingLevel="h4" size="xl">
+          Available Services
+        </Title>
+        <p>The services listed below are not configured for your mobile application yet. Select "Create a binding" to get started.</p>
         {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
           this.props.unboundServices.map(service => (
-            <UnboundServiceRow
-              key={service.getId()}
-              service={service}
-              onCreateBinding={() => this.showBindingPanel(service)}
-              onFinished={this.hideBindingPanel}
-            />
+            <DataList>
+              <UnboundServiceRow
+                key={service.getId()}
+                service={service}
+                onCreateBinding={() => this.showBindingPanel(service)}
+                onFinished={this.hideBindingPanel}
+              />
+            </DataList>
           ))
         ) : (
-          <EmptyState>There are no unbound services.</EmptyState>
+          <EmptyState>There are no available services.</EmptyState>
         )}
       </React.Fragment>
     );
