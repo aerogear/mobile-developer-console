@@ -13,8 +13,8 @@ class ConfigurationView extends Component {
     const { status } = this.props.app;
     return (
       <React.Fragment>
-        <Row className="configurationView">
-          <Col xs={6}>
+        {/* <Row className="configurationView"> */}
+          {/* <Col xs={6}>
             <ListView>
               {Object.keys(frameworks).map(key => (
                 <FrameworkSDKDocs
@@ -24,14 +24,14 @@ class ConfigurationView extends Component {
                 />
               ))}
             </ListView>
-          </Col>
+          </Col> */}
           <Col xs={6}>
             <Header>mobile-services.json</Header>
             <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
               {JSON.stringify(status, null, 2)}
             </ClipboardCopy>
           </Col>
-        </Row>
+        {/* </Row> */}
       </React.Fragment>
     );
   }

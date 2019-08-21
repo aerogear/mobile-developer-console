@@ -36,14 +36,18 @@ class UnboundServiceRow extends Component {
       icon = <img src={this.props.service.getLogoUrl()} alt="" />;
     }
     return (
-          [<DataListCell isIcon key={this.props.service.getId()} className="service-sdk-info">
-            {icon}
-          </DataListCell>,
-          <DataListCell key="primary content">
-            <div id="ex-item1">{serviceDetailName}</div>
-            <span>{serviceDetailDescription}</span>
-            <a href="#">link</a>
-          </DataListCell>]
+      <DataListItemCells dataListCells={[
+        <DataListCell isIcon key={this.props.service.getId()} className="service-sdk-info">
+          <span>{icon}</span>
+        </DataListCell>,
+      <DataListCell key="primary content">
+        <div id="ex-item1">{serviceDetailName}</div>
+        <span>{serviceDetailDescription}</span>
+        <a href="#">link</a>
+      </DataListCell>
+      ]}
+    />
+
       // <Col md={3} key={this.props.service.getId()} className="service-sdk-info">
       //   <Col md={12}>
       //     {icon}
@@ -89,9 +93,7 @@ class UnboundServiceRow extends Component {
     return (
       <DataListItem key={this.props.service.getId()} aria-labelledby="ex-item1">
       <DataListItemRow>
-        <DataListItemCells 
-          dataListCells={[this.renderServiceBadge(), this.renderBindingStatus()]}
-        />
+        {this.renderServiceBadge()}
         <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1" aria-label="Actions">
           {this.renderBindingButtons()}
         </DataListAction>

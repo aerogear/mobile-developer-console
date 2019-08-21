@@ -1,3 +1,8 @@
+.creation-timestamp {
+  padding-left: 8px;
+  font-size: 16px;
+  color: #757575; }
+
 .client-details {
   width: 100%;
   padding-top: 10px;
@@ -8,10 +13,6 @@
   padding-right: 25px; }
   .client-details .breadcrumb {
     margin-bottom: 10px; }
-  .client-details .creation-timestamp {
-    padding-left: 8px;
-    font-size: 11px;
-    color: #757575; }
   .client-details #basic-tabs-pf {
     flex: 1 100%;
     display: flex;

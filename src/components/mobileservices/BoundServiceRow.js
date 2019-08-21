@@ -74,7 +74,7 @@ class BoundServiceRow extends Component {
 
     const serviceDetailDescription = this.props.service.getDescription();
     return (
-      <div>
+      <span>
         <DataListCell isIcon key={this.props.service.getId()} className="service-sdk-info">
           {icon}
         </DataListCell>
@@ -83,7 +83,7 @@ class BoundServiceRow extends Component {
           <span>{serviceDetailDescription}</span>
           <a href="#">link</a>
         </DataListCell>
-      </div>
+      </span>
       //   <div>
       //   <Col key={this.props.service.getId()} md={3} className="service-sdk-info">
       //     <Col md={12}>

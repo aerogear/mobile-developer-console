@@ -28,7 +28,9 @@ import {
   DropdownItem,
   DropdownPosition,
   DropdownSeparator,
-  KebabToggle
+  KebabToggle,
+  ClipboardCopy,
+  ClipboardCopyVariant
 } from '@patternfly/react-core';
 import { connect } from 'react-redux';
 import { find } from 'lodash-es';
@@ -234,7 +236,7 @@ export class Client extends Component {
         <SplitItem>
           <Card style={cardValues}>
             <CardBody>
-              <Title headingLevel="h3" size="xl">
+              <Title headingLevel="h3" size="2xl">
                 Full Mobile Config
               </Title>
               <p> 
@@ -249,6 +251,9 @@ export class Client extends Component {
               <Title headingLevel="h4" size="md">
                 mobile-services.json
               </Title>
+              <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
+                <ConfigurationView/>
+            </ClipboardCopy>
             </CardBody>
           </Card>
         </SplitItem> 
