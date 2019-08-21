@@ -44,12 +44,12 @@ export class MobileService {
     return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady());
   }
 
-  isBoundToApp(appName) {
-    return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady() && cr.hasAppLabel(appName));
+  isBoundToApp(uid) {
+    return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady() && cr.hasAppLabel(uid));
   }
 
-  getCustomResourcesForApp(appName) {
-    return filter(this.customResources, cr => cr.hasAppLabel(appName));
+  getCustomResourcesForApp(uid) {
+    return filter(this.customResources, cr => cr.hasAppLabel(uid));
   }
 
   getServiceInstanceName() {
@@ -93,12 +93,12 @@ export class MobileService {
     return this.data.bindCustomResource;
   }
 
-  newCustomResource(formdata) {
-    return this.customResourceClass.newInstance(formdata);
+  newCustomResource(formdata, ownerMetadata) {
+    return this.customResourceClass.newInstance({ appUid: ownerMetadata.uid, ...formdata });
   }
 
-  getConfiguration(appName) {
-    const crs = this.getCustomResourcesForApp(appName);
+  getConfiguration(appUid) {
+    const crs = this.getCustomResourcesForApp(appUid);
     const configurations = reduce(crs, (all, cr) => all.concat(cr.getConfiguration(this.data.host)), []);
     const uniqConfigs = uniqBy(configurations, config => config.label);
     return uniqConfigs;

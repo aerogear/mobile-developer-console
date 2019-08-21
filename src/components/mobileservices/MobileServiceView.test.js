@@ -20,6 +20,7 @@ describe('MobileServiceView', () => {
     const wrapper = shallow(
       <MobileServiceView
         appName="appName"
+        appUid="0e35c6cf-0792-4d7a-952d-05618cca6a6e"
         boundServices={props.boundServices}
         unboundServices={props.unboundServices}
         fetchAndWatchServices={() => 'appName'}
@@ -52,6 +53,7 @@ describe('MobileServiceView', () => {
     const wrapper = shallow(
       <MobileServiceView
         appName="appName"
+        appUid="0e35c6cf-0792-4d7a-952d-05618cca6a6e"
         boundServices={props.boundServices}
         unboundServices={props.unboundServices}
         fetchAndWatchServices={() => 'appName'}
@@ -115,6 +117,7 @@ describe('MobileServiceView', () => {
         <BrowserRouter>
           <MobileServiceView
             appName="appName"
+            appUid="0e35c6cf-0792-4d7a-952d-05618cca6a6e"
             boundServices={props.boundServices}
             unboundServices={props.unboundServices}
             fetchAndWatchServices={() => 'appName'}
@@ -174,6 +177,7 @@ describe('MobileServiceView', () => {
         <BrowserRouter>
           <MobileServiceView
             appName="appName"
+            appUid="0e35c6cf-0792-4d7a-952d-05618cca6a6e"
             boundServices={props.boundServices}
             unboundServices={props.unboundServices}
             fetchAndWatchServices={() => 'appName'}
@@ -230,6 +234,7 @@ describe('MobileServiceView', () => {
         <BrowserRouter>
           <MobileServiceView
             appName="appName"
+            appUid="0e35c6cf-0792-4d7a-952d-05618cca6a6e"
             boundServices={props.boundServices}
             unboundServices={props.unboundServices}
             fetchAndWatchServices={() => 'appName'}

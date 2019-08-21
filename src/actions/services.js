@@ -63,7 +63,7 @@ export const fetchAndWatchServices = () => async (dispatch, getState) => {
 
 export const createCustomResourceForService = (service, formdata, app) => async dispatch => {
   const resDef = service.customResourceDef();
-  const reqBody = service.newCustomResource(formdata);
+  const reqBody = service.newCustomResource(formdata, app.metadata);
   // we don't need to handle success event here as it will be handled by the WS handler
   return create(resDef, reqBody, app).catch(err => {
     dispatch(errorCreator(err));
