@@ -5,7 +5,6 @@ import {
   TabContent,
   TabPane,
   TabContainer,
-  Grid,
   DropdownButton,
   Alert,
   MenuItem
@@ -30,7 +29,9 @@ import {
   DropdownSeparator,
   KebabToggle,
   ClipboardCopy,
-  ClipboardCopyVariant
+  ClipboardCopyVariant,
+  Grid, 
+  GridItem
 } from '@patternfly/react-core';
 import { connect } from 'react-redux';
 import { find } from 'lodash-es';
@@ -203,7 +204,7 @@ export class Client extends Component {
               <BreadcrumbItem to="/overview">
                 Mobile Apps
               </BreadcrumbItem>
-              <BreadcrumbItem isActives>
+              <BreadcrumbItem isActive>
                 Review and Edit
               </BreadcrumbItem>
             </Breadcrumb>
@@ -222,10 +223,10 @@ export class Client extends Component {
       <PageSection variant={PageSectionVariants.light}>
         <Title headingLevel="h2" size="3xl">
           {mobileApp.getName()}
-        </Title>
           <span className="creation-timestamp">
             created <Moment fromNow>{creationTimestamp}</Moment>
           </span>
+        </Title>
       </PageSection>
       <Split>
         <SplitItem isFilled>
@@ -235,20 +236,39 @@ export class Client extends Component {
         </SplitItem>
         <SplitItem>
           <Card style={cardValues}>
-            <CardBody>
+            <CardBody isFilled={false}>
               <Title headingLevel="h3" size="2xl">
                 Full Mobile Config
               </Title>
-              <p> 
+              <p className="mobile-config-text"> 
                 JavaScript-based mobile apps can be configured for a variety of mobile platforms. 
                 Our JavaScript SDK supports the following frameworks.
               </p>
-              <div>
-                Add icons in here
+              <div class="pf-grid">
+                <div>
+                  <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />
+                  <p>Cordova</p>
+                </div>
+                <div>
+                  <img src="/img/react.jpg" width="25" height="25" alt="React logo" />
+                  <p>React</p>
+                </div>
+                <div>
+                  <img src="/img/ionic.jpg" width="25" height="25" alt="Ionic logo" />
+                  <p>Ionic</p>
+                </div>
+                <div>
+                  <img src="/img/angular.jpg" width="25" height="25" alt="Angular logo" />
+                  <p>Angular</p>
+                </div>
+                <div>
+                  <img src="/img/vue.jpg" width="25" height="25" alt="Vue logo" />
+                  <p>Vue</p>
+                </div>
               </div>
             </CardBody>
             <CardBody>
-              <Title headingLevel="h4" size="md">
+              <Title headingLevel="h4" size="lg" className="mobile-services-title">
                 mobile-services.json
               </Title>
               <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
@@ -258,7 +278,7 @@ export class Client extends Component {
           </Card>
         </SplitItem> 
       </Split>
-      <Grid fluid className="client-details">
+      {/* <Grid fluid className="client-details">
         {this.props.apps.readingError ? (
           <Alert>{this.props.apps.readingError.message}</Alert>
         ) : (
@@ -283,7 +303,7 @@ export class Client extends Component {
                 </TabPane>
                 <TabPane eventKey={TAB_MOBILE_SERVICES.key}>
                   {/* <MobileServiceView appName={appName} /> */}
-                </TabPane>
+                {/* </TabPane>
                 {this.props.buildTabEnabled ? (
                   <TabPane eventKey={TAB_BUILDS.key}>
                     <MobileClientBuildOverviewList
@@ -297,7 +317,7 @@ export class Client extends Component {
             </div>
           </TabContainer>
         )}
-      </Grid>
+      </Grid> */} */}
     </div>
     ) : (
       <React.Fragment />

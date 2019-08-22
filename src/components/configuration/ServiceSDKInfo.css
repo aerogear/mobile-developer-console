@@ -17,3 +17,7 @@
 
 .service-sdk-info .service-details {
   padding-left: 40px; }
+
+.data-list-icon {
+  display: flex;
+  flex-grow: 0; }

@@ -12,6 +12,7 @@ import BindingStatus from './BindingStatus';
 import BindButton from './BindButton';
 import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
+import './MobileServiceView.css';
 
 class UnboundServiceRow extends Component {
   constructor(props) {
@@ -37,8 +38,8 @@ class UnboundServiceRow extends Component {
     }
     return (
       <DataListItemCells dataListCells={[
-        <DataListCell isIcon key={this.props.service.getId()} className="service-sdk-info">
-          <span>{icon}</span>
+        <DataListCell key={this.props.service.getId()} className="pf-data-list-icon">
+          {icon}
         </DataListCell>,
       <DataListCell key="primary content">
         <div id="ex-item1">{serviceDetailName}</div>

@@ -33,7 +33,7 @@ export class MobileServiceView extends Component {
   boundServiceRows() {
     return (
       <React.Fragment>
-        <Title key="bound-services" headingLevel="h4" size="2xl" className="pf-u-m-xl">
+        <Title key="bound-services" headingLevel="h4" size="2xl" className="bound-service-title">
           Bound Services
         </Title>
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
@@ -59,10 +59,10 @@ export class MobileServiceView extends Component {
   unboundServiceRows() {
     return (
       <React.Fragment>
-        <Title key="unbound-services" headingLevel="h4" size="2xl">
+        <Title key="unbound-services" headingLevel="h4" size="2xl" className="unbound-service-title">
           Available Services
         </Title>
-        <p>The services listed below are not configured for your mobile application yet. Select "Create a binding" to get started.</p>
+        <p className="unbound-service-text">The services listed below are not configured for your mobile application yet. Select "Create a binding" to get started.</p>
         {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
           this.props.unboundServices.map(service => (
             <DataList>
