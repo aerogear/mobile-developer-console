@@ -7,7 +7,7 @@ import { VerticalFormField } from './VerticalFormField';
 
 export const LABEL_APPNAME = '* App Name';
 export const EXAMPLE_APPNAME = 'myapp';
-export const HELP_APPNAME = `App name can not exceed ${MAXLENGTH_APPNAME} characters, and must only contain lowercase letters, numbers and dots.`;
+export const HELP_APPNAME = `App name can not exceed ${MAXLENGTH_APPNAME} characters. It can not start or end with a special character, and can only contain lowercase letters, numbers, dots and hyphens.`;
 
 /**
  * Base component for the create/edit mobile client form.
