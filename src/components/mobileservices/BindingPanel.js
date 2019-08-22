@@ -20,7 +20,7 @@ export class BindingPanel extends Component {
     this.validate = this.validate.bind(this);
     this.onFormChange = this.onFormChange.bind(this);
     const serviceName = this.props.service.getName();
-    const p = { appName: this.props.appName, appUid: this.props.appUid, service: this.props.service };
+    const p = { appName: this.props.appName, service: this.props.service };
     const bindingFormConfig = this.props.service.getBindingForm(p);
     const { schema, uiSchema, validationRules, onChangeHandler } = bindingFormConfig;
     const { service } = this.props;

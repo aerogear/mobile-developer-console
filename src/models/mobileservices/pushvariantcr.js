@@ -1,12 +1,11 @@
 import { find } from 'lodash-es';
 import { CustomResource } from './customresource';
 
-function hasPlatform(service, appUid, platform) {
-  console.log('appName', appUid);
+function hasPlatform(service, appName, platform) {
   return (
     service.customResources &&
     find(
-      service.getCustomResourcesForApp(appUid),
+      service.getCustomResourcesForApp(appName),
       cr => typeof cr.getPlatform === 'function' && cr.getPlatform() === platform
     )
   );
@@ -46,8 +45,8 @@ export class PushVariantCR extends CustomResource {
 
   static bindForm(params) {
     const { service } = params;
-    const hasIOS = hasPlatform(service, params.appUid, 'IOSVariant');
-    const hasAndroid = hasPlatform(service, params.appUid, 'AndroidVariant');
+    const hasIOS = hasPlatform(service, params.appName, 'IOSVariant');
+    const hasAndroid = hasPlatform(service, params.appName, 'AndroidVariant');
     let defaultPlatform = 'Android';
     let platforms = ['Android', 'iOS'];
     const androidConfig = {
@@ -236,7 +235,7 @@ export class PushVariantCR extends CustomResource {
   }
 
   static newInstance(params) {
-    const { CLIENT_ID, CLIENT_TYPE, appUid } = params;
+    const { CLIENT_ID, CLIENT_TYPE } = params;
 
     switch (CLIENT_TYPE) {
       case 'Android':
@@ -244,10 +243,7 @@ export class PushVariantCR extends CustomResource {
           apiVersion: 'push.aerogear.org/v1alpha1',
           kind: 'AndroidVariant',
           metadata: {
-            name: `${CLIENT_ID}-android-ups-variant`,
-            labels: {
-              'mobile.aerogear.org/client': appUid
-            }
+            name: `${CLIENT_ID}-android-ups-variant`
           },
           spec: {
             description: 'UPS Android Variant',
@@ -261,10 +257,7 @@ export class PushVariantCR extends CustomResource {
           apiVersion: 'push.aerogear.org/v1alpha1',
           kind: 'IOSVariant',
           metadata: {
-            name: `${CLIENT_ID}-ios-ups-variant`,
-            labels: {
-              'mobile.aerogear.org/client': CLIENT_ID
-            }
+            name: `${CLIENT_ID}-ios-ups-variant`
           },
           spec: {
             description: 'UPS iOS Variant',

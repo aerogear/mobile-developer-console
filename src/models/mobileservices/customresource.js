@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, find } from 'lodash-es';
 import Resource from '../k8s/resource';
 import Status from '../k8s/status';
 
@@ -26,14 +26,6 @@ export class CustomResource extends Resource {
     return CustomResource.READY_STATUSES.indexOf(phase) > -1;
   }
 
-  hasAppLabel(appUid) {
-    const labels = this.metadata.get('labels');
-    if (labels) {
-      return labels['mobile.aerogear.org/client'] === appUid;
-    }
-    return false;
-  }
-
   isInProgress() {
     const phase = this.status.get('phase');
     return CustomResource.INPROGRESS_STATUSES.indexOf(phase) > -1;
@@ -41,6 +33,10 @@ export class CustomResource extends Resource {
 
   getOwners() {
     return get(this, 'data.metadata.ownerReferences');
+  }
+
+  isOwner(appName) {
+    return !!find(this.getOwners(), o => o.name === appName);
   }
 
   isFailed() {

@@ -136,7 +136,6 @@ export class Client extends Component {
 
   render() {
     const mobileApp = this.getMobileApp();
-    const appUid = mobileApp.getUID();
     const clientInfo = { clientId: mobileApp.getName() };
     const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
@@ -172,7 +171,7 @@ export class Client extends Component {
                   <ConfigurationView app={mobileApp} appName={appName} />
                 </TabPane>
                 <TabPane eventKey={TAB_MOBILE_SERVICES.key}>
-                  <MobileServiceView appName={appName} appUid={appUid} />
+                  <MobileServiceView appName={appName} />
                 </TabPane>
                 {this.props.buildTabEnabled ? (
                   <TabPane eventKey={TAB_BUILDS.key}>
