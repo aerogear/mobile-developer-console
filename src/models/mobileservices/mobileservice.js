@@ -44,12 +44,12 @@ export class MobileService {
     return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady());
   }
 
-  isBoundToApp(uid) {
-    return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady() && cr.hasAppLabel(uid));
+  isBoundToApp(appName) {
+    return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady() && cr.isOwner(appName));
   }
 
-  getCustomResourcesForApp(uid) {
-    return filter(this.customResources, cr => cr.hasAppLabel(uid));
+  getCustomResourcesForApp(appName) {
+    return filter(this.customResources, cr => cr.isOwner(appName));
   }
 
   getServiceInstanceName() {
@@ -64,11 +64,8 @@ export class MobileService {
     return this.customResourceClass.bindForm(params);
   }
 
-  isBindingOperationInProgress(owner) {
-    const inprogressCR = find(
-      this.customResources,
-      cr => (owner ? find(cr.getOwners(), o => o.name === owner) : true) && cr.isInProgress()
-    );
+  isBindingOperationInProgress(appName) {
+    const inprogressCR = find(this.customResources, cr => (!appName || cr.isOwner(appName)) && cr.isInProgress());
     return inprogressCR != null;
   }
 
@@ -93,12 +90,12 @@ export class MobileService {
     return this.data.bindCustomResource;
   }
 
-  newCustomResource(formdata, ownerMetadata) {
-    return this.customResourceClass.newInstance({ appUid: ownerMetadata.uid, ...formdata });
+  newCustomResource(formdata) {
+    return this.customResourceClass.newInstance({ ...formdata });
   }
 
-  getConfiguration(appUid) {
-    const crs = this.getCustomResourcesForApp(appUid);
+  getConfiguration(appName) {
+    const crs = this.getCustomResourcesForApp(appName);
     const configurations = reduce(crs, (all, cr) => all.concat(cr.getConfiguration(this.data.host)), []);
     const uniqConfigs = uniqBy(configurations, config => config.label);
     return uniqConfigs;

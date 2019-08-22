@@ -38,7 +38,6 @@ export class MobileServiceView extends Component {
             <BoundServiceRow
               key={service.getId()}
               appName={this.props.appName}
-              appUid={this.props.appUid}
               service={service}
               onCreateBinding={() => this.showBindingPanel(service)}
               onFinished={this.hideBindingPanel}
@@ -106,7 +105,6 @@ export class MobileServiceView extends Component {
           <BindingPanel
             ref={this.bindingPanelRef}
             appName={this.props.appName}
-            appUid={this.props.appUid}
             service={this.state.bindingPanelService}
             showModal
             close={() => this.hideBindingPanel(true)}
@@ -120,7 +118,7 @@ export class MobileServiceView extends Component {
 function mapStateToProps(state, oldProp) {
   const app = MobileApp.find(state.apps.items, oldProp.appName);
   const services = state.services.items.map(item => new MobileService(item));
-  const filteredServices = partition(services, service => service.isBoundToApp(oldProp.appUid));
+  const filteredServices = partition(services, service => service.isBoundToApp(oldProp.appName));
   return { ...state.services, app, boundServices: filteredServices[0], unboundServices: filteredServices[1] };
 }
 
