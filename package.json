@@ -10,7 +10,7 @@
     "express": "4.17.1",
     "express-prometheus-middleware": "0.6.1",
     "fast-deep-equal": "2.0.1",
-    "highlight.js": "9.15.9",
+    "highlight.js": "9.15.10",
     "is-git-url": "1.0.0",
     "kubernetes-client": "8.3.3",
     "lodash": "4.17.15",
