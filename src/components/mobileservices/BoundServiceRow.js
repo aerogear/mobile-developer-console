@@ -132,7 +132,9 @@ class BoundServiceRow extends Component {
       return null;
     }
 
-    return <BindButton service={this.props.service} onClick={this.props.onCreateBinding} />;
+    return (
+      <BindButton appName={this.props.appName} service={this.props.service} onClick={this.props.onCreateBinding} />
+    );
   }
 
   renderDeleteBindingDropdowns() {
