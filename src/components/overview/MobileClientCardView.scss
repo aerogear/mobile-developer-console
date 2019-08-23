@@ -50,6 +50,13 @@
     border-top: none;
     border-bottom: 1px solid #d1d1d1;
     padding: 10px 20px 20px 20px;
+
+    .creation-timestamp {
+      padding-left:8px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #757575;
+    }
     
     .service-icon {
       width: 30px;

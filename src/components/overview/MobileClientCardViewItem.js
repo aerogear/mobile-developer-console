@@ -39,7 +39,7 @@ const MobileClientCardViewItem = props => {
           </DropdownKebab>
           <Link to={`/mobileclient/${appName}`}>
             <div className="card-pf-title">
-              <h1>{appName}</h1>
+              {appName}
             </div>
           </Link>
         </CardHeading>
