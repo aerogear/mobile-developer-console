@@ -1,6 +1,29 @@
 import { find, filter, reduce, uniqBy } from 'lodash-es';
 import { newCustomResource, newCustomResourceClass } from './customresourcefactory';
 
+class MobileServiceBinding {
+  constructor(customResources) {
+    this.customResources = customResources;
+    this.isResourceOwnedBy = (cr, ownerName) => !ownerName || cr.isOwner(ownerName);
+    this.getResource = (appName, statusCheck) =>
+      find(this.customResources, cr => this.isResourceOwnedBy(cr, appName) && statusCheck(cr));
+  }
+
+  isBindingOperationInProgress = appName => !!this.getResource(appName, cr => cr.isInProgress());
+
+  isBindingOperationFailed = appName => !!this.getResource(appName, cr => cr.isFailed());
+
+  isBound = appName => !!this.getResource(appName, cr => cr.isReady());
+
+  getBindingOperation = appName => {
+    const inprogressCR = this.getResource(appName, cr => cr.isInProgress());
+    if (inprogressCR) {
+      return inprogressCR.getCurrentOperation();
+    }
+    return undefined;
+  };
+}
+
 export class MobileService {
   constructor(json = {}) {
     this.data = json;
@@ -18,81 +41,43 @@ export class MobileService {
         this.customResources.push(newCustomResource(this.data, customResource));
       }
     }
+
+    this.bindings = new MobileServiceBinding(this.customResources);
   }
 
-  getName() {
-    return this.data.name;
-  }
+  getName = () => this.data.name;
 
-  getId() {
-    return this.data.name;
-  }
+  getId = () => this.data.name;
 
-  getDescription() {
-    return this.data.description;
-  }
+  getDescription = () => this.data.description;
 
-  getLogoUrl() {
-    return this.data.icon;
-  }
+  getLogoUrl = () => this.data.icon;
 
-  getIconClass() {
-    return this.data.iconClass;
-  }
+  getIconClass = () => this.data.iconClass;
 
-  isBound() {
-    return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady());
-  }
+  isBound = () => this.bindings.isBound();
 
-  isBoundToApp(appName) {
-    return this.customResources.length > 0 && find(this.customResources, cr => cr.isReady() && cr.isOwner(appName));
-  }
+  isBoundToApp = appName => this.bindings.isBound(appName);
 
-  getCustomResourcesForApp(appName) {
-    return filter(this.customResources, cr => cr.isOwner(appName));
-  }
+  getCustomResourcesForApp = appName => filter(this.customResources, cr => cr.isOwner(appName));
 
-  getServiceInstanceName() {
-    return this.data.name;
-  }
+  getServiceInstanceName = () => this.data.name;
 
-  getSetupText() {
-    return this.setupText;
-  }
+  getSetupText = () => this.setupText;
 
-  getBindingForm(params) {
-    return this.customResourceClass.bindForm(params);
-  }
+  getBindingForm = params => this.customResourceClass.bindForm(params);
 
-  isBindingOperationInProgress(appName) {
-    const inprogressCR = find(this.customResources, cr => (!appName || cr.isOwner(appName)) && cr.isInProgress());
-    return inprogressCR != null;
-  }
+  isBindingOperationInProgress = appName => this.bindings.isBindingOperationInProgress(appName);
 
-  getBindingOperation() {
-    const inprogressCR = find(this.customResources, cr => cr.isInProgress());
-    if (inprogressCR) {
-      return inprogressCR.getCurrentOperation();
-    }
-    return undefined;
-  }
+  getBindingOperation = appName => this.bindings.getBindingOperation(appName);
 
-  isBindingOperationFailed() {
-    const failedCR = find(this.customResources, cr => cr.isFailed());
-    return failedCR != null;
-  }
+  isBindingOperationFailed = appName => this.bindings.isBindingOperationFailed(appName);
 
-  isUPSService() {
-    return this.data.type === 'push';
-  }
+  isUPSService = () => this.data.type === 'push';
 
-  customResourceDef() {
-    return this.data.bindCustomResource;
-  }
+  customResourceDef = () => this.data.bindCustomResource;
 
-  newCustomResource(formdata) {
-    return this.customResourceClass.newInstance({ ...formdata });
-  }
+  newCustomResource = formdata => this.customResourceClass.newInstance({ ...formdata });
 
   getConfiguration(appName) {
     const crs = this.getCustomResourcesForApp(appName);
@@ -101,9 +86,7 @@ export class MobileService {
     return uniqConfigs;
   }
 
-  getConfigurationExt() {
-    return this.data.configurationExt;
-  }
+  getConfigurationExt = () => this.data.configurationExt;
 
   getConfigurationExtAsJSON() {
     // configExt field example value:
@@ -156,11 +139,9 @@ export class MobileService {
     return url || this.customResourceClass.getDocumentationUrl();
   }
 
-  toJSON() {
-    return {
-      ...this.data,
-      configuration: this.configuration,
-      configurationExt: this.configurationExt
-    };
-  }
+  toJSON = () => ({
+    ...this.data,
+    configuration: this.configuration,
+    configurationExt: this.configurationExt
+  });
 }

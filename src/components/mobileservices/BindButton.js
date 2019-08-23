@@ -3,7 +3,7 @@ import { Button } from 'patternfly-react';
 
 class BindButton extends Component {
   render() {
-    if (this.props.service.isBindingOperationInProgress()) {
+    if (this.props.service.isBindingOperationInProgress(this.props.appName)) {
       return null;
     }
     return (

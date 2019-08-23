@@ -35,13 +35,13 @@ class BindingStatus extends Component {
   render() {
     return (
       <ListView.InfoItem key="bind-status">
-        {this.props.service.isBindingOperationInProgress() && (
+        {this.props.service.isBindingOperationInProgress(this.props.appName) && (
           <React.Fragment>
             <Icon name="spinner" spin size="lg" />
-            {this.props.service.getBindingOperation()}
+            {this.props.service.getBindingOperation(this.props.appName)}
           </React.Fragment>
         )}
-        {this.props.service.isBindingOperationFailed() && (
+        {this.props.service.isBindingOperationFailed(this.props.appName) && (
           <React.Fragment>
             <Icon type="pf" name="error-circle-o" />
             Operation Failed. Please Try Again Later.
