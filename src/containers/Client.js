@@ -175,6 +175,7 @@ export class Client extends Component {
     const appName = this.props.match.params.id;
     const cardValues = { width: '450px', height: '100%' };
     const removePaddingBottom = {paddingBottom: '0px'};
+    const boxShadowBottom = {boxShadow: '0px 4px 10px -4px #030303'};
     const { creationTimestamp = null } = mobileApp.metadata.data;
     const { isOpen } = this.state;
     const dropdownItems = [
@@ -220,7 +221,7 @@ export class Client extends Component {
           </LevelItem>
           </Level>
       </PageSection>
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection variant={PageSectionVariants.light} style={boxShadowBottom}>
         <Title headingLevel="h2" size="3xl">
           {mobileApp.getName()}
           <span className="creation-timestamp">

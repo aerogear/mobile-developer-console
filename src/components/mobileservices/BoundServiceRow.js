@@ -74,16 +74,17 @@ class BoundServiceRow extends Component {
 
     const serviceDetailDescription = this.props.service.getDescription();
     return (
-      <span>
-        <DataListCell key={this.props.service.getId()} className="service-sdk-info data-list-icon">
+      <DataListItemCells dataListCells={[
+        <DataListCell key={this.props.service.getId()} className="pf-data-list-icon">
           {icon}
-        </DataListCell>
+        </DataListCell>,
         <DataListCell key="primary content">
           <div id="ex-item1">{serviceDetailName}</div>
           <span>{serviceDetailDescription}</span>
           <a href="#">link</a>
         </DataListCell>
-      </span>
+        ]}
+        />
       //   <div>
       //   <Col key={this.props.service.getId()} md={3} className="service-sdk-info">
       //     <Col md={12}>
@@ -101,6 +102,16 @@ class BoundServiceRow extends Component {
       // </div>
     );
   }
+  // <DataListItemCells dataListCells={[
+  //   <DataListCell key={this.props.service.getId()} className="pf-data-list-icon">
+  //     {icon}
+  //   </DataListCell>,
+  // <DataListCell key="primary content">
+  //   <div id="ex-item1">{serviceDetailName}</div>
+  //   <span>{serviceDetailDescription}</span>
+  //   <a href="#">link</a>
+  // </DataListCell>
+  // ]}
 
   renderServiceDetails() {
     let documentationFragment;
@@ -221,9 +232,7 @@ class BoundServiceRow extends Component {
             id="ex-toggle1"
             aria-controls="ex-expand1"
           />
-          <DataListItemCells 
-            dataListCells={[this.renderServiceBadge(), this.renderBindingStatus()]}
-          />
+          {this.renderServiceBadge()}
           <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1" aria-label="Actions">
             <Dropdown
               isPlain
