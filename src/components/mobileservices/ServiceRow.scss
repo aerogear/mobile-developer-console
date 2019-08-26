@@ -29,3 +29,16 @@
     float: left;
     font-size: 1.6em;
 }
+
+.mdc-unbound-data-list-row {
+    flex-wrap: unset;
+
+    @media only screen and (max-width: 910px) {
+        flex-wrap: wrap;
+
+        .pf-c-data-list__item-action {
+            margin-left: unset;
+            padding-top: unset;
+        }
+    }
+}

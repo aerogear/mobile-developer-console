@@ -1,5 +1,5 @@
 .creation-timestamp {
-  padding-left: var(--pf-global--spacer--lg);
+  padding-left: var(--pf-global--spacer--md);
   font-size: var(--pf-global--FontSize--md);
   color: #757575;
 }
@@ -10,6 +10,18 @@
 
   div {
     text-align: center;
+  }
+}
+
+.mdc-breakpoint-split {
+  @media only screen and (max-width: 900px) {
+    > * {
+      width: 50%;
+    }
+
+    .pf-c-card {
+      width: unset !important;
+    }
   }
 }
 

@@ -21,3 +21,12 @@
   display: block;
   float: left;
   font-size: 1.6em; }
+
+.mdc-unbound-data-list-row {
+  flex-wrap: unset; }
+  @media only screen and (max-width: 910px) {
+    .mdc-unbound-data-list-row {
+      flex-wrap: wrap; }
+      .mdc-unbound-data-list-row .pf-c-data-list__item-action {
+        margin-left: unset;
+        padding-top: unset; } }

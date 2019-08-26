@@ -44,7 +44,6 @@ class UnboundServiceRow extends Component {
       <DataListCell key="primary content">
         <div id="ex-item1">{serviceDetailName}</div>
         <span>{serviceDetailDescription}</span>
-        <a href="#">link</a>
       </DataListCell>
       ]}
     />
@@ -93,7 +92,7 @@ class UnboundServiceRow extends Component {
     };
     return (
       <DataListItem key={this.props.service.getId()} aria-labelledby="ex-item1">
-      <DataListItemRow>
+      <DataListItemRow className="mdc-unbound-data-list-row">
         {this.renderServiceBadge()}
         <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1" aria-label="Actions">
           {this.renderBindingButtons()}

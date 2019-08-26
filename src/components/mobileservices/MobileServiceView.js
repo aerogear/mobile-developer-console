@@ -31,6 +31,7 @@ export class MobileServiceView extends Component {
   }
 
   boundServiceRows() {
+    const removeBorders = ""
     return (
       <React.Fragment>
         <Title key="bound-services" headingLevel="h4" size="2xl" className="pf-u-mb-lg">
@@ -38,7 +39,7 @@ export class MobileServiceView extends Component {
         </Title>
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
           this.props.boundServices.map(service => (
-            <DataList>
+            <DataList style={{ borderTop: '0px', borderBottom: '0px' }}>
               <BoundServiceRow
                 key={service.getId()}
                 appName={this.props.appName}
@@ -63,20 +64,24 @@ export class MobileServiceView extends Component {
           Available Services
         </Title>
         <p className="pf-u-mb-lg">The services listed below are not configured for your mobile application yet. Select "Create a binding" to get started.</p>
+        <DataList style={{ borderTop: '0px', borderBottom: '0px' }}>
         {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
           this.props.unboundServices.map(service => (
-            <DataList>
+            
               <UnboundServiceRow
                 key={service.getId()}
                 service={service}
                 onCreateBinding={() => this.showBindingPanel(service)}
                 onFinished={this.hideBindingPanel}
               />
-            </DataList>
+            
           ))
-        ) : (
+        ) 
+        
+        : (
           <EmptyState>There are no available services.</EmptyState>
         )}
+        </DataList>
       </React.Fragment>
     );
   }

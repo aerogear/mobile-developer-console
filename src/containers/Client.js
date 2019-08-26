@@ -23,17 +23,18 @@ import {
   CardBody,
   Button,
   Dropdown,
+  Modal,
+  Form,
+  FormGroup,
+  TextInput,
   DropdownToggle,
   DropdownItem,
   DropdownPosition,
-  DropdownSeparator,
-  KebabToggle,
   ClipboardCopy,
-  ClipboardCopyVariant,
-  Grid, 
-  GridItem
+  ClipboardCopyVariant
 } from '@patternfly/react-core';
 import { connect } from 'react-redux';
+import { PencilAltIcon } from '@patternfly/react-icons';
 import { find } from 'lodash-es';
 import Moment from 'react-moment';
 import ConfigurationView from '../components/configuration/ConfigurationView';
@@ -66,8 +67,22 @@ export class Client extends Component {
     this.state = {
       buildConfigs: [],
       selectedTab: initialTab.key,
-      isOpen: false
+      isOpen: false,
+      isModalOpen: false,
+      value1: ''
     };
+
+    this.handleTextInputChange1 = value1 => {
+      this.setState({ value1 });
+    };
+
+
+    this.handleModalToggle = () => {
+      this.setState(({ isModalOpen }) => ({
+        isModalOpen: !isModalOpen
+      }));
+    };
+
     this.onToggle = isOpen => {
       this.setState({
         isOpen
@@ -173,9 +188,11 @@ export class Client extends Component {
     const clientInfo = { clientId: mobileApp.getName() };
     // const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
-    const cardValues = { width: '450px', height: '100%' };
+    const cardValues = { width: '450px', height: '100%', boxShadow: 'unset' };
     const { creationTimestamp = null } = mobileApp.metadata.data;
     const { isOpen } = this.state;
+    const { isModalOpen } = this.state;
+    const { value1 } = this.state;
     const dropdownItems = [
       <DropdownItem key="/">
         {mobileApp && selectedTab === TAB_BUILDS.key ? (
@@ -195,7 +212,7 @@ export class Client extends Component {
       </DropdownItem>
     ];
     return mobileApp ? (
-      <div>
+      <React.Fragment>
       <PageSection variant={PageSectionVariants.light} className="pf-u-pb-0">
         <Level>
           <LevelItem>
@@ -219,17 +236,53 @@ export class Client extends Component {
           </LevelItem>
           </Level>
       </PageSection>
-      <PageSection variant={PageSectionVariants.light} className="pf-u-box-shadow-sm-bottom">
+      <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
         <Title headingLevel="h2" size="3xl">
           {mobileApp.getName()}
+          <Button variant="plain" aria-label="Action" onClick={this.handleModalToggle}>
+            <PencilAltIcon/>
+          </Button>
           <span className="creation-timestamp">
-            created <Moment fromNow>{creationTimestamp}</Moment>
+            Created <Moment fromNow>{creationTimestamp}</Moment>
           </span>
         </Title>
+        <Modal
+          isSmall
+          title="Edit mobile app name"
+          isOpen={isModalOpen}
+          onClose={this.handleModalToggle}
+          actions={[
+            <Button key="cancel" variant="secondary" onClick={this.handleModalToggle}>
+              Cancel
+            </Button>,
+            <Button key="cancel" variant="primary" onClick={this.handleModalToggle}>
+              Save
+            </Button>
+          ]}
+        >
+        <p className="pf-u-mb-lg">You may edit the mobile application name in the input below.</p>
+
+        <Form>
+          <FormGroup
+            label="Application Name"
+            fieldId="application-name"
+          >
+            <TextInput
+              isRequired
+              type="text"
+              id="application-name"
+              name="application-name"
+              aria-describedby="application-name"
+              value={value1}
+              onChange={this.handleTextInputChange1}
+            />
+          </FormGroup>
+        </Form>
+      </Modal>
       </PageSection>
-      <Split>
+      <Split className="mdc-breakpoint-split">
         <SplitItem isFilled>
-          <PageSection>
+          <PageSection style={{ height: '100vh' }}>
             <MobileServiceView appName={appName} />
           </PageSection>
         </SplitItem>
@@ -316,8 +369,8 @@ export class Client extends Component {
             </div>
           </TabContainer>
         )}
-      </Grid> */} */}
-    </div>
+      </Grid> */}
+    </ React.Fragment>
     ) : (
       <React.Fragment />
     );

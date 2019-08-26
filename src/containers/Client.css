@@ -1,5 +1,5 @@
 .creation-timestamp {
-  padding-left: var(--pf-global--spacer--lg);
+  padding-left: var(--pf-global--spacer--md);
   font-size: var(--pf-global--FontSize--md);
   color: #757575; }
 
@@ -8,6 +8,12 @@
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
   .pf-grid div {
     text-align: center; }
+
+@media only screen and (max-width: 900px) {
+  .mdc-breakpoint-split > * {
+    width: 50%; }
+  .mdc-breakpoint-split .pf-c-card {
+    width: unset !important; } }
 
 .client-details {
   width: 100%;

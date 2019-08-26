@@ -81,7 +81,6 @@ class BoundServiceRow extends Component {
         <DataListCell key="primary content">
           <div id="ex-item1">{serviceDetailName}</div>
           <span>{serviceDetailDescription}</span>
-          <a href="#">link</a>
         </DataListCell>
         ]}
         />
@@ -231,6 +230,7 @@ class BoundServiceRow extends Component {
             isExpanded={this.state.expanded.includes('ex-toggle1')}
             id="ex-toggle1"
             aria-controls="ex-expand1"
+            style={{ marginRight: 'var(--pf-global--spacer--sm)' }}
           />
           {this.renderServiceBadge()}
           <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1" aria-label="Actions">

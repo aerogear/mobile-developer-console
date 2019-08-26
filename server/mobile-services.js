@@ -33,9 +33,9 @@ function decodeBase64(encoded) {
 
 const PushService = {
   type: PUSH_SERVICE_TYPE,
-  name: 'Push Notification',
+  name: 'Unified Push Server',
   icon: '/img/push.svg',
-  description: 'Unified Push Server',
+  description: 'Allows you to send native push notifications to different mobile operating systems.',
   documentationUrl: UPS_DOCUMENTATION_URL,
   bindCustomResource: {
     name: 'pushapplications',
@@ -152,7 +152,7 @@ const IdentityManagementService = {
   type: IDM_SERVICE_TYPE,
   name: 'Identity Management',
   icon: '/img/keycloak.svg',
-  description: 'Identity Management Service',
+  description: 'Allows you to add authentication and authorization to your mobile app.',
   documentationUrl: IDM_DOCUMENTATION_URL,
   bindCustomResource: {
     name: 'keycloakrealms',
@@ -212,7 +212,7 @@ const DataSyncService = {
   type: DATA_SYNC_TYPE,
   name: 'Data Sync',
   icon: '/img/sync.svg',
-  description: 'Data Sync Service',
+  description: 'Use this library to develop services.',
   documentationUrl: SYNC_DOCUMENTATION_URL,
   bindCustomResource: {
     name: 'configmaps',
@@ -259,9 +259,9 @@ const DataSyncService = {
 
 const MobileSecurityService = {
   type: MOBILE_SECURITY_TYPE,
-  name: 'Mobile Security',
+  name: 'Mobile Metrics',
   icon: '/img/security.svg',
-  description: 'Mobile Security Service',
+  description: 'Gather metrics on mobile apps, device versions, device security checks and more.',
   documentationUrl: MSS_DOCUMENTATION_URL,
   bindCustomResource: {
     name: 'mobilesecurityserviceapps',
