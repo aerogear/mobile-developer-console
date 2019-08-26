@@ -174,8 +174,6 @@ export class Client extends Component {
     // const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
     const cardValues = { width: '450px', height: '100%' };
-    const removePaddingBottom = {paddingBottom: '0px'};
-    const boxShadowBottom = {boxShadow: '0px 4px 10px -4px #030303'};
     const { creationTimestamp = null } = mobileApp.metadata.data;
     const { isOpen } = this.state;
     const dropdownItems = [
@@ -198,7 +196,7 @@ export class Client extends Component {
     ];
     return mobileApp ? (
       <div>
-      <PageSection variant={PageSectionVariants.light} style={removePaddingBottom}>
+      <PageSection variant={PageSectionVariants.light} className="pf-u-pb-0">
         <Level>
           <LevelItem>
             <Breadcrumb>
@@ -221,7 +219,7 @@ export class Client extends Component {
           </LevelItem>
           </Level>
       </PageSection>
-      <PageSection variant={PageSectionVariants.light} style={boxShadowBottom}>
+      <PageSection variant={PageSectionVariants.light} className="pf-u-box-shadow-sm-bottom">
         <Title headingLevel="h2" size="3xl">
           {mobileApp.getName()}
           <span className="creation-timestamp">
@@ -241,7 +239,7 @@ export class Client extends Component {
               <Title headingLevel="h3" size="2xl">
                 Full Mobile Config
               </Title>
-              <p className="mobile-config-text"> 
+              <p className="pf-u-my-md"> 
                 JavaScript-based mobile apps can be configured for a variety of mobile platforms. 
                 Our JavaScript SDK supports the following frameworks.
               </p>
@@ -269,7 +267,7 @@ export class Client extends Component {
               </div>
             </CardBody>
             <CardBody>
-              <Title headingLevel="h4" size="lg" className="mobile-services-title">
+              <Title headingLevel="h4" size="lg" className="pf-u-mb-md">
                 mobile-services.json
               </Title>
               <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">

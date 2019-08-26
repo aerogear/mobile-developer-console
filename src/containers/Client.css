@@ -1,6 +1,6 @@
 .creation-timestamp {
-  padding-left: 24px;
-  font-size: 16px;
+  padding-left: var(--pf-global--spacer--lg);
+  font-size: var(--pf-global--FontSize--md);
   color: #757575; }
 
 .pf-grid {
@@ -8,13 +8,6 @@
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
   .pf-grid div {
     text-align: center; }
-
-.mobile-config-text {
-  margin-top: 16px;
-  margin-bottom: 16px; }
-
-.mobile-services-title {
-  margin-bottom: 16px; }
 
 .client-details {
   width: 100%;
