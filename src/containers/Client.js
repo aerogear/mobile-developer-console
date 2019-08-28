@@ -324,7 +324,7 @@ export class Client extends Component {
                 mobile-services.json
               </Title>
               <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
-                <ConfigurationView/>
+                {/* add json object here */}
             </ClipboardCopy>
             </CardBody>
           </Card>

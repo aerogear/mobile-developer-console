@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { ListViewItem, Col } from 'patternfly-react';
 import {
   DataListItem,
   DataListItemRow,
@@ -47,20 +46,6 @@ class UnboundServiceRow extends Component {
       </DataListCell>
       ]}
     />
-
-      // <Col md={3} key={this.props.service.getId()} className="service-sdk-info">
-      //   <Col md={12}>
-      //     {icon}
-      //     <div className="service-name">
-      //       <h4>
-      //         <div>{serviceDetailName}</div>
-      //         <div>
-      //           <small>{serviceDetailDescription}</small>
-      //         </div>
-      //       </h4>
-      //     </div>
-      //   </Col>
-      // </Col>
     );
   }
 
@@ -99,11 +84,6 @@ class UnboundServiceRow extends Component {
         </DataListAction>
       </DataListItemRow>
     </DataListItem>
-      // <ListViewItem
-      //   additionalInfo={[this.renderServiceBadge(), this.renderBindingStatus()]}
-      //   className="unboundService"
-      //   actions={this.renderBindingButtons()}
-      // />
     );
   }
 }

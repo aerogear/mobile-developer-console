@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { ListViewItem, Row, Col, DropdownKebab } from 'patternfly-react';
 import {
-Button,
 DataListItem,
 DataListItemRow,
 DataListCell,
@@ -84,33 +83,8 @@ class BoundServiceRow extends Component {
         </DataListCell>
         ]}
         />
-      //   <div>
-      //   <Col key={this.props.service.getId()} md={3} className="service-sdk-info">
-      //     <Col md={12}>
-      //       {icon}
-      //       <div className="service-name">
-      //         <h4>
-      //           <div>{serviceDetailName}</div>
-      //           <div>
-      //             <small>{serviceDetailDescription}</small>
-      //           </div>
-      //         </h4>
-      //       </div>
-      //     </Col>
-      //   </Col>
-      // </div>
     );
   }
-  // <DataListItemCells dataListCells={[
-  //   <DataListCell key={this.props.service.getId()} className="pf-data-list-icon">
-  //     {icon}
-  //   </DataListCell>,
-  // <DataListCell key="primary content">
-  //   <div id="ex-item1">{serviceDetailName}</div>
-  //   <span>{serviceDetailDescription}</span>
-  //   <a href="#">link</a>
-  // </DataListCell>
-  // ]}
 
   renderServiceDetails() {
     let documentationFragment;
@@ -127,16 +101,6 @@ class BoundServiceRow extends Component {
               SDK Setup <i className="fa fa-external-link" aria-hidden="true" />
           </a>
         </div>
-        // <Row>
-        //   <Col md={2} className="detailsKey">
-        //     Documentation:
-        //   </Col>
-        //   <Col md={10} className="detailsValue">
-        //     <a href={docUrl} target="_blank" rel="noreferrer noopener">
-        //       SDK Setup <i className="fa fa-external-link" aria-hidden="true" />
-        //     </a>
-        //   </Col>
-        // </Row>
       );
     }
 
@@ -146,14 +110,6 @@ class BoundServiceRow extends Component {
           <span>{configuration.label}: </span>
           {configurationView(configuration)}
         </div>
-        // <Row key={configuration.label}>
-        //   <Col md={2} className="detailsKey">
-        //     {configuration.label}:
-        //   </Col>
-        //   <Col md={10} className="detailsValue">
-        //     {configurationView(configuration)}
-        //   </Col>
-        // </Row>
       ));
     } else {
       propertyFragment = <div>No configuration data to show for this service.</div>;
@@ -252,19 +208,6 @@ class BoundServiceRow extends Component {
           {this.renderServiceDetails()}
       </DataListContent>
       </DataListItem>
-      //     {/* <ListViewItem
-      //     additionalInfo={[this.renderServiceBadge(), this.renderBindingStatus()]}
-      //     className="boundService"
-      //     actions={
-      //       <div>
-      //         {this.renderBindingButtons()}
-      //         {this.renderDeleteBindingDropdowns()}
-      //       </div>
-      //     }
-      //   hideCloseIcon
-      //   >
-      //   {this.renderServiceDetails()}
-      // </ListViewItem> */}
     );
   }
 }
