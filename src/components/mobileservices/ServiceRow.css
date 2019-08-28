@@ -2,6 +2,10 @@
   text-align: left;
   font-weight: 700; }
 
+@media screen and (max-width: 576px) {
+  .mdc-data-list-item--BorderColor {
+    border-top-color: var(--pf-global--BackgroundColor--light-300) !important; } }
+
 .boundService .list-group-item-header {
   background-color: #ededed;
   border-color: #bbb;

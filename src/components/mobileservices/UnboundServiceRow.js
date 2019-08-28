@@ -91,7 +91,7 @@ class UnboundServiceRow extends Component {
       this.setState(() => ({ expanded: newExpanded }));
     };
     return (
-      <DataListItem key={this.props.service.getId()} aria-labelledby="ex-item1">
+      <DataListItem key={this.props.service.getId()} aria-labelledby="ex-item1" className="mdc-data-list-item--BorderColor">
       <DataListItemRow className="mdc-unbound-data-list-row">
         {this.renderServiceBadge()}
         <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1" aria-label="Actions">
