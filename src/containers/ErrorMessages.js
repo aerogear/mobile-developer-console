@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Alert, AlertActionCloseButton } from '@patternfly/react-core';
 import { withRouter } from 'react-router-dom';
 import { dismiss, dismissAll } from '../actions/errors'
-import './../index.css';
+import './style/index.css';
 
 export class ErrorMessages extends Component {
   constructor(props) {
