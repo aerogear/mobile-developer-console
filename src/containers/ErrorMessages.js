@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ToastNotificationList, ToastNotification } from 'patternfly-react';
+import { Alert, AlertActionCloseButton } from '@patternfly/react-core';
 import { withRouter } from 'react-router-dom';
-import { dismiss, dismissAll } from '../actions/errors';
+import { dismiss, dismissAll } from '../actions/errors'
+import './../index.css';
 
 export class ErrorMessages extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {alertOneVisible: true};
+    this.hideAlertOne = () => this.setState({ alertOneVisible: false });
+
+  }
   componentWillMount() {
     const { history, dismissAllErrors } = this.props;
     this.unlisten = history.listen(dismissAllErrors);
@@ -16,14 +23,19 @@ export class ErrorMessages extends Component {
 
   render() {
     const { errors, dismissError } = this.props;
+    const { alertOneVisible } = this.state;
     return (
-      <ToastNotificationList>
+      <div className="mdc-alert-group">
         {[...new Set(errors.map(error => error.message))].map((error, index) => (
-          <ToastNotification key={index} onDismiss={() => dismissError(error)}>
-            <span>{error}</span>
-          </ToastNotification>
+          <React.Fragment>
+            {alertOneVisible && (
+              <Alert key={index} variant="danger" title="Danger alert title" action={<AlertActionCloseButton onClose={this.hideAlertOne} />}>
+                {error}
+              </Alert>
+            )}
+          </React.Fragment>
         ))}
-      </ToastNotificationList>
+      </div>
     );
   }
 }
