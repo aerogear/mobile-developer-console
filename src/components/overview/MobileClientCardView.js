@@ -106,9 +106,14 @@ class MobileClientCardView extends Component {
   renderAppCards() {
     const { mobileClients } = this.props;
     const filteredClients = this.filterClients(mobileClients);
+    console.log(filteredClients)
     return filteredClients.length ? (
-      <Gallery mCardGridatchHeight fluid>
-        <GalleryItem key={1}>{filteredClients}</GalleryItem>
+      <Gallery gutter="md">
+        {filteredClients.map((x, i) => (
+          <GalleryItem key={i}>
+            {x}
+          </GalleryItem>
+        ))}
       </Gallery>
     ) : (
       <EmptyState>
@@ -125,7 +130,7 @@ class MobileClientCardView extends Component {
     const { filter, currentValue } = this.state;
     return (
       <div className="overview">
-        <PageSection variant={PageSectionVariants.light}>
+        <PageSection variant={PageSectionVariants.light} className="pf-c-page__main-section">
           <Title className="overview-title" headingLevel="h2" size="3xl">
               Mobile Apps
           </Title>

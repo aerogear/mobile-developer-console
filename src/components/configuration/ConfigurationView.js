@@ -10,6 +10,7 @@ import frameworks from './sdk-config-docs/frameworks';
 
 class ConfigurationView extends Component {
   render() {
+    console.log("WHAT IS THIS", this.props.docsPrefix)
     const { status } = this.props.app;
     return (
       <React.Fragment>

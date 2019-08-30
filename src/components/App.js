@@ -18,6 +18,8 @@ import {
   NavVariants
 } from '@patternfly/react-core';
 import Overview from '../containers/Overview';
+import Configuration from '../containers/Configuration';
+// import Configuration from '../components/configuration/FrameworkSDKDocs';
 import Client from '../containers/Client';
 import ErrorMessages from '../containers/ErrorMessages';
 import { fetchUserInfo } from '../actions/users';
@@ -109,12 +111,14 @@ class App extends React.Component {
             <PageHeader
               logo={<Brand src={getLogo()} alt="Mobile Developer Console Logo" style={{ width: '150px' }} />}
               toolbar={PageToolbar}
+              topNav={PageNav}
             />
           }
         >
           <Switch>
             <Route exact path="/overview" component={Overview} />
             <Route exact path="/mobileclient/:id" component={Client} />
+            <Route exact path="/configuration" component={Configuration} />
             {/* Default redirect */}
             <Redirect to="/overview" />
           </Switch>

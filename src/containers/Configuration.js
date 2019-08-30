@@ -5,6 +5,14 @@ import { PageSection } from '@patternfly/react-core';
 import { fetchAndWatchApps } from '../actions/apps';
 import { fetchAndWatchBuilds } from '../actions/builds';
 
+import { MobileApp } from '../models';
+import FrameworkSDKDocs from '../components/configuration/FrameworkSDKDocs';
+import { ServiceSDKDocs } from '../components/configuration/ServiceSDKDocs';
+import { ServiceSDKSetup } from '../components/configuration/ServiceSDKSetup';
+
+
+import frameworks from '../components/configuration/sdk-config-docs/frameworks';
+
 export class Overview extends Component {
   componentDidMount() {
     this.props.fetchAndWatchApps();
@@ -14,10 +22,23 @@ export class Overview extends Component {
     }
   }
 
+  getMobileApp() {
+    return MobileApp.find(this.props.apps.items, this.props.match.params.id) || new MobileApp();
+  }
+
+
   render() {
+    const mobileApp = this.getMobileApp();
+    const frameworksAll= Object.keys(frameworks).map(key => (
+        frameworks[key](this.props.docsPrefix)
+    ))
+    console.log("FRAMEWORK", frameworksAll)
     return (
       <PageSection>
-        TODO
+        <h1>SDK Configuration</h1>
+        {frameworksAll.map((docs, index) => (
+         <ServiceSDKSetup docs={docs} key={`docs-${index}`} />
+       ))}
       </PageSection>
     );
   }
