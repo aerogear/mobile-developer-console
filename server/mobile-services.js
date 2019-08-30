@@ -35,6 +35,7 @@ const PushService = {
   type: PUSH_SERVICE_TYPE,
   name: 'Push Notification',
   icon: '/img/push.svg',
+  iconBlackAndWhite: '/img/push-b&w.svg',
   description: 'Unified Push Server',
   documentationUrl: UPS_DOCUMENTATION_URL,
   bindCustomResource: {
@@ -152,6 +153,7 @@ const IdentityManagementService = {
   type: IDM_SERVICE_TYPE,
   name: 'Identity Management',
   icon: '/img/keycloak.svg',
+  iconBlackAndWhite: '/img/keycloak-b&w.svg',
   description: 'Identity Management Service',
   documentationUrl: IDM_DOCUMENTATION_URL,
   bindCustomResource: {
@@ -212,6 +214,7 @@ const DataSyncService = {
   type: DATA_SYNC_TYPE,
   name: 'Data Sync',
   icon: '/img/sync.svg',
+  iconBlackAndWhite: '/img/sync-b&w.svg',
   description: 'Data Sync Service',
   documentationUrl: SYNC_DOCUMENTATION_URL,
   bindCustomResource: {
@@ -261,6 +264,7 @@ const MobileSecurityService = {
   type: MOBILE_SECURITY_TYPE,
   name: 'Mobile Security',
   icon: '/img/security.svg',
+  iconBlackAndWhite: '/img/security-b&w.svg',
   description: 'Mobile Security Service',
   documentationUrl: MSS_DOCUMENTATION_URL,
   bindCustomResource: {
