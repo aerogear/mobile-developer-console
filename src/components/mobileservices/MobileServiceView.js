@@ -34,11 +34,12 @@ export class MobileServiceView extends Component {
     const removeBorders = ""
     return (
       <React.Fragment>
-        <Title key="bound-services" headingLevel="h4" size="2xl" className="pf-u-mb-lg">
-          Bound Services
-        </Title>
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
           this.props.boundServices.map(service => (
+          <React.Fragment>
+            <Title key="bound-services" headingLevel="h4" size="2xl" className="pf-u-mb-lg">
+              Bound Services
+            </Title>
             <DataList style={{ borderTop: '0px', borderBottom: '0px' }}>
               <BoundServiceRow
                 key={service.getId()}
@@ -49,9 +50,11 @@ export class MobileServiceView extends Component {
                 onDeleteBinding={cr => this.props.deleteCustomResource(service, cr.toJSON())}
               />
             </DataList>
+          </React.Fragment>
           ))
         ) : (
-          <EmptyState>There are no bound services.</EmptyState>
+          <React.Fragment>
+          </React.Fragment>
         )}
       </React.Fragment>
     );
@@ -60,7 +63,7 @@ export class MobileServiceView extends Component {
   unboundServiceRows() {
     return (
       <React.Fragment>
-        <Title key="unbound-services" headingLevel="h4" size="2xl" className="pf-u-mt-2xl pf-u-mb-sm">
+        <Title key="unbound-services" headingLevel="h4" size="2xl" className="pf-u-mt-md pf-u-mb-sm">
           Available Services
         </Title>
         <p className="pf-u-mb-lg">The services listed below are not configured for your mobile application yet. Select "Create a binding" to get started.</p>

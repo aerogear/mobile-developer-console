@@ -19,7 +19,6 @@ import ErrorMessages from '../containers/ErrorMessages';
 import { fetchUserInfo } from '../actions/users';
 import { getLogo, getDocumentation } from '../services/openshift';
 import './App.css';
-import './../index.css';
 
 class App extends React.Component {
   state = {

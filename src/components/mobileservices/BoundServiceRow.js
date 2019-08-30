@@ -74,7 +74,7 @@ class BoundServiceRow extends Component {
     const serviceDetailDescription = this.props.service.getDescription();
     return (
       <DataListItemCells dataListCells={[
-        <DataListCell key={this.props.service.getId()} className="pf-data-list-icon">
+        <DataListCell key={this.props.service.getId()} className="mdc-data-list-icon">
           {icon}
         </DataListCell>,
         <DataListCell key="primary content">
