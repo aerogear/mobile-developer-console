@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { PageSection } from '@patternfly/react-core';
+import { PageSection, PageSectionVariants } from '@patternfly/react-core';
 
 import { fetchAndWatchApps } from '../actions/apps';
 import { fetchAndWatchBuilds } from '../actions/builds';
@@ -34,11 +34,22 @@ export class Overview extends Component {
     ))
     console.log("FRAMEWORK", frameworksAll)
     return (
-      <PageSection>
+      <PageSection variant={PageSectionVariants.light}>
         <h1>SDK Configuration</h1>
-        {frameworksAll.map((docs, index) => (
-         <ServiceSDKSetup docs={docs} key={`docs-${index}`} />
+        <PageSection>
+        {frameworksAll.map((framework, index) => (
+          <React.Fragment key={index}>
+            <h1>Steps for framework</h1>
+            <ol>
+              {framework.steps.map((docs, index) => (
+                <ServiceSDKSetup docs={docs} key={`docs-${index}`} />
+              ))}
+            </ol>
+          </React.Fragment>
+        
+        //  <FrameworkSDKDocs framework={framework} key={index} />
        ))}
+       </PageSection>
       </PageSection>
     );
   }
