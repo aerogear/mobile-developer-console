@@ -33,6 +33,5 @@ cd ../
 if [ "$1" != "--skip-npm-install" ]; then
   npm install
 fi
-npm run start:server 
-# &
-# npm run start:client
+npm run start:server &
+npm run start:client

@@ -16,41 +16,23 @@
   color: #757575; }
 
 .mobile-client-card {
-  min-height: 210px; 
   margin: 0 0 20px 0; }
   .mobile-client-card a {
     color: #393f44;
     text-decoration: none; }
     .mobile-client-card a :hover {
       text-decoration: none; }
-  .mobile-client-card .pf-c-card__head {
-    padding-bottom: 0px;}
   .mobile-client-card .card-pf-heading {
     border-bottom: none; }
   .mobile-client-card .card-dropdown-kebab {
     float: right; }
-  .mobile-client-card .pf-c-card__body {
-    padding-top: 0px;
-    text-align: left; }
-    .mobile-client-card .pf-c-card__body .card-icons {
-      min-height: 30px; }
-    .mobile-client-card .pf-c-card__body .card-icons img {
-      padding: 0px;
-      position: relative;
-      width: 30px;
-      height: 30px;
-      margin-right: 5px;
-      overflow: hidden; }
+  .mobile-client-card .card-pf-body {
+    text-align: center; }
   .mobile-client-card .card-pf-footer {
     background-color: #fff;
     border-top: none;
     border-bottom: 1px solid #d1d1d1;
     padding: 10px 20px 20px 20px; }
-    .mobile-client-card .card-pf-footer .creation-timestamp {
-      padding-left: 8px;
-      font-size: 11px;
-      font-weight: bold;
-      color: #757575; }
     .mobile-client-card .card-pf-footer .service-icon {
       width: 30px;
       height: 30px;

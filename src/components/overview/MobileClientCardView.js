@@ -132,7 +132,7 @@ class MobileClientCardView extends Component {
       <div className="overview">
         <PageSection variant={PageSectionVariants.light} className="pf-c-page__main-section">
           <Title className="overview-title" headingLevel="h2" size="3xl">
-              Mobile Apps
+            Mobile Apps
           </Title>
           <br></br>
           <Toolbar>
@@ -156,7 +156,7 @@ class MobileClientCardView extends Component {
             </ToolbarItem>
           </Toolbar>
         </PageSection>
-        <PageSection className="card-gallery">
+        <PageSection className="card-gallery" style={{ height: '100vh' }}>
           {mobileClients.length ? this.renderAppCards() : this.getEmptyState()}
         </PageSection>
       </div>
