@@ -1,19 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { PageSection, PageSectionVariants } from '@patternfly/react-core';
+import { Tabs, Tab, PageSection, PageSectionVariants } from '@patternfly/react-core';
 
 import { fetchAndWatchApps } from '../actions/apps';
 import { fetchAndWatchBuilds } from '../actions/builds';
 
 import { MobileApp } from '../models';
-import FrameworkSDKDocs from '../components/configuration/FrameworkSDKDocs';
-import { ServiceSDKDocs } from '../components/configuration/ServiceSDKDocs';
 import { ServiceSDKSetup } from '../components/configuration/ServiceSDKSetup';
-
-
 import frameworks from '../components/configuration/sdk-config-docs/frameworks';
 
 export class Overview extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeTabKey: 0
+    };
+    this.handleTabClick = (event, tabIndex) => {
+      this.setState({
+        activeTabKey: tabIndex
+      });
+    };
+  }
+
   componentDidMount() {
     this.props.fetchAndWatchApps();
 
@@ -26,29 +34,27 @@ export class Overview extends Component {
     return MobileApp.find(this.props.apps.items, this.props.match.params.id) || new MobileApp();
   }
 
-
   render() {
     const mobileApp = this.getMobileApp();
-    const frameworksAll= Object.keys(frameworks).map(key => (
-        frameworks[key](this.props.docsPrefix)
-    ))
-    console.log("FRAMEWORK", frameworksAll)
+    const activeFramework = this.state.activeTabKey === 0 ? 'cordova' : 'ionic';
+    const framework = frameworks[activeFramework]();
+
+    const status = mobileApp.getStatus();
+    const { services = [] } = { services: status.getServices() };
+
     return (
       <PageSection variant={PageSectionVariants.light}>
         <h1>SDK Configuration</h1>
+        <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
+          <Tab eventKey={0} title="Cordova" />
+          <Tab eventKey={1} title="Ionic" />
+        </Tabs>
         <PageSection>
-        {frameworksAll.map((framework, index) => (
-          <React.Fragment key={index}>
-            <h1>Steps for framework</h1>
-            <ol>
-              {framework.steps.map((docs, index) => (
-                <ServiceSDKSetup docs={docs} key={`docs-${index}`} />
-              ))}
-            </ol>
-          </React.Fragment>
-        
-        //  <FrameworkSDKDocs framework={framework} key={index} />
-       ))}
+          <ol>
+            {framework.steps.map((docs, index) => (
+              <ServiceSDKSetup docs={docs} key={`docs-${index}`} />
+            ))}
+          </ol>
        </PageSection>
       </PageSection>
     );
