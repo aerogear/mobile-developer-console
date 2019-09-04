@@ -13,5 +13,8 @@ a:-webkit-any-link {
   padding-left: 16px;
   padding-right: 16px; }
 
+.modal-button {
+  margin-right: 8px; }
+
 pre {
   margin-top: 16px; }

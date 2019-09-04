@@ -96,7 +96,7 @@ class ClientEditBaseClass extends Component {
           </FormGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.close}>Cancel</Button>
+          <Button className="modal-button" onClick={this.close}>Cancel</Button>
           <Button
             bsStyle="primary"
             onClick={this.createClient}
