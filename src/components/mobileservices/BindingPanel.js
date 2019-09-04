@@ -63,7 +63,9 @@ export class BindingPanel extends Component {
             showErrorList={false}
             formData={this.state.formData}
             onChange={this.onFormChange} // eslint-disable-line no-return-assign
-          />
+          >
+            <div/>
+          </Form>
         )
       },
       {
@@ -128,7 +130,6 @@ export class BindingPanel extends Component {
       this.setState({
         activeStepIndex: 2
       });
-      this.stepChanged(2);
     }
 
     return errors;
