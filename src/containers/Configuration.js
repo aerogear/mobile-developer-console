@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Tab, PageSection, PageSectionVariants } from '@patternfly/react-core';
+import { Tabs, Tab, PageSection, PageSectionVariants, Title } from '@patternfly/react-core';
 
 import { fetchAndWatchApps } from '../actions/apps';
 import { fetchAndWatchBuilds } from '../actions/builds';
@@ -44,7 +44,7 @@ export class Overview extends Component {
 
     return (
       <PageSection variant={PageSectionVariants.light}>
-        <h1>SDK Configuration</h1>
+        <Title className="pf-u-mb-lg" headingLevel="h2" size="2xl">SDK Configuration</Title>
         <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
           <Tab eventKey={0} title="Cordova" />
           <Tab eventKey={1} title="Ionic" />

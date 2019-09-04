@@ -178,7 +178,8 @@ class BoundServiceRow extends Component {
       this.setState(() => ({ expanded: newExpanded }));
     };
     return (
-      <DataListItem 
+      <DataListItem
+        className="mdc-data-list-item--BorderColor"
         key={this.props.service.getId()} 
         aria-labelledby="ex-item1" 
         isExpanded={this.state.expanded.includes('ex-toggle1')}

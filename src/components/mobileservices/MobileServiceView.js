@@ -31,9 +31,14 @@ export class MobileServiceView extends Component {
     // const removeBorders = ""
     return (
       <React.Fragment>
+        {this.props.boundServices && this.props.boundServices.length > 0 ? (
         <Title key="bound-services" headingLevel="h4" size="2xl" className="pf-u-mb-lg">
           Bound Services
         </Title>
+        ) : (
+          <React.Fragment>
+          </React.Fragment>
+        )}
         <DataList style={{ borderTop: '0px', borderBottom: '0px' }}>
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
           this.props.boundServices.map(service => (
