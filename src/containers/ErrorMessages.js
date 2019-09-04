@@ -19,7 +19,12 @@ export class ErrorMessages extends Component {
     return (
       <div className="mdc-alert-group">
         {[...new Set(errors.map(error => error.message))].map((error, index) => (
-          <Alert key={index} variant="danger" title="Request Failed" action={<AlertActionCloseButton onClose={() => dismissError(error)} />}>
+          <Alert 
+            key={index}
+            variant="danger"
+            title="Request Failed"
+            action={<AlertActionCloseButton onClose={() => dismissError(error)} />}
+          >
             {error}
           </Alert>
         ))}
