@@ -19,7 +19,7 @@ export class ErrorMessages extends Component {
     return (
       <div className="mdc-alert-group">
         {[...new Set(errors.map(error => error.message))].map((error, index) => (
-          <Alert 
+          <Alert
             key={index}
             variant="danger"
             title="Request Failed"
