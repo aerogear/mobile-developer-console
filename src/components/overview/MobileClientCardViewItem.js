@@ -68,7 +68,7 @@ class MobileClientCardViewItem extends React.Component {
             </Link>
           </CardHeader>
           </CardHead>
-          <CardBody style={{ paddingTop: 0 }}>
+          <CardBody style={{ paddingTop: 0, paddingBottom: 0 }}>
               {services && services.length > 0 ? "Bound Services" : ""}
               <div className="card-icons">
                 {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}

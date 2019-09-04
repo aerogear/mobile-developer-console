@@ -3,7 +3,7 @@
 }
 
 .pf-c-card {
-  min-height: 250px;
+  min-height: 220px;
 }
 
 .card-icons {
@@ -11,14 +11,17 @@
     height: 40px;
     width: 40px;
   }
-
   margin-top: var(--pf-global--spacer--sm);
+
+  > *:not(:last-child) {
+    margin-right: var(--pf-global--spacer--md);
+  }
 }
 
 .creation-timestamp {
   font-size: 14px;
-  font-weight: 400;
   color: #757575;
+  font-weight: unset !important;
 }
 
 .mobile-client-card {

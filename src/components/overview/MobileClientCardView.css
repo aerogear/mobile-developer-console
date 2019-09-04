@@ -2,18 +2,20 @@
   border-width: 0; }
 
 .pf-c-card {
-  min-height: 250px; }
+  min-height: 220px; }
 
 .card-icons {
   margin-top: var(--pf-global--spacer--sm); }
   .card-icons img {
     height: 40px;
     width: 40px; }
+  .card-icons > *:not(:last-child) {
+    margin-right: var(--pf-global--spacer--md); }
 
 .creation-timestamp {
   font-size: 14px;
-  font-weight: 400;
-  color: #757575; }
+  color: #757575;
+  font-weight: unset !important; }
 
 .mobile-client-card {
   margin: 0 0 20px 0; }
