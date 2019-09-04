@@ -35,6 +35,7 @@ const PushService = {
   type: PUSH_SERVICE_TYPE,
   name: 'Unified Push Server',
   icon: '/img/push.svg',
+  iconBlackAndWhite: '/img/push-b&w.svg',
   description: 'Allows you to send native push notifications to different mobile operating systems.',
   documentationUrl: UPS_DOCUMENTATION_URL,
   bindCustomResource: {
@@ -152,6 +153,7 @@ const IdentityManagementService = {
   type: IDM_SERVICE_TYPE,
   name: 'Identity Management',
   icon: '/img/keycloak.svg',
+  iconBlackAndWhite: '/img/keycloak-b&w.svg',
   description: 'Allows you to add authentication and authorization to your mobile app.',
   documentationUrl: IDM_DOCUMENTATION_URL,
   bindCustomResource: {
@@ -212,6 +214,7 @@ const DataSyncService = {
   type: DATA_SYNC_TYPE,
   name: 'Data Sync',
   icon: '/img/sync.svg',
+  iconBlackAndWhite: '/img/sync-b&w.svg',
   description: 'Use this library to develop services.',
   documentationUrl: SYNC_DOCUMENTATION_URL,
   bindCustomResource: {
@@ -261,6 +264,7 @@ const MobileSecurityService = {
   type: MOBILE_SECURITY_TYPE,
   name: 'Mobile Metrics',
   icon: '/img/security.svg',
+  iconBlackAndWhite: '/img/security-b&w.svg',
   description: 'Gather metrics on mobile apps, device versions, device security checks and more.',
   documentationUrl: MSS_DOCUMENTATION_URL,
   bindCustomResource: {

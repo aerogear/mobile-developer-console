@@ -27,7 +27,7 @@ class UnboundServiceRow extends Component {
     if (this.props.service.getIconClass() != null && this.props.service.getIconClass().length > 0) {
       icon = <span className={`${this.props.service.getIconClass()} logo`} />;
     } else {
-      icon = <img src={this.props.service.getLogoUrl()} alt="" />;
+      icon = <img src={this.props.service.getLogoURLBlackAndWhite()} alt="" />;
     }
     return (
       <DataListItemCells dataListCells={[
