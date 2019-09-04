@@ -1,5 +1,6 @@
 .service-sdk-info {
-  padding: 0px; }
+  padding: 0px;
+  width: unset; }
 
 .service-sdk-info img {
   width: 30px;

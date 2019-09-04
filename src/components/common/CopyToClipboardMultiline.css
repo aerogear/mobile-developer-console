@@ -10,7 +10,7 @@
   flex-direction: column; }
   .copy-to-clipboard-multiline pre span {
     display: block;
-    line-height: 1.5rem; }
+    line-height: 1rem; }
     .copy-to-clipboard-multiline pre span:before {
       counter-increment: line;
       content: counter(line);
