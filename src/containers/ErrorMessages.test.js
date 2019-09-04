@@ -13,13 +13,13 @@ describe('ErrorMessages', () => {
     expect(wrapper.find('.alert.toast-pf')).toHaveLength(2);
     expect(
       wrapper
-        .find('div.toast-notifications-list-pf')
+        .find('div.mdc-alert-group')
         .childAt(0)
         .text()
     ).toEqual('error1');
     expect(
       wrapper
-        .find('div.toast-notifications-list-pf')
+        .find('div.mdc-alert-group')
         .childAt(1)
         .text()
     ).toEqual('error2');
