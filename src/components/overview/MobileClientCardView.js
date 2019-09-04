@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Toolbar, Filter, EmptyState, EmptyStateTitle, EmptyStateAction, CardGrid } from 'patternfly-react';
-import DebounceInput from 'react-debounce-input';
+import { Toolbar, Gallery, GalleryItem, ToolbarItem } from '@patternfly/react-core';
+import { EmptyState, EmptyStateBody, EmptyStateVariant, EmptyStateIcon, TextInput, Title, PageSection, PageSectionVariants } from '@patternfly/react-core';
+import { MobileAltIcon } from '@patternfly/react-icons';
 import './MobileClientCardView.css';
+import './MobileClientCardViewItem.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
 import CreateClient from '../../containers/CreateClient';
+import { InputGroup } from 'patternfly-react/dist/js/components/Form';
 
 class MobileClientCardView extends Component {
   constructor(props) {
@@ -11,7 +14,8 @@ class MobileClientCardView extends Component {
     this.state = { filter: '', currentValue: '' };
 
     this.emptyStateMessage = {
-      noAppsCreated: 'You have no mobile apps right now. Create one to get started.',
+      noAppsCreatedTitle: "You don't have any Mobile Apps.",
+      noAppsCreated: 'JavaScript-based mobile apps can be configured for a variety of mobile platforms.',
       noAppsAfterFiltering: 'No mobile apps match the entered filter.'
     };
   }
@@ -28,11 +32,13 @@ class MobileClientCardView extends Component {
 
   getEmptyState() {
     return (
-      <EmptyState>
-        <EmptyStateTitle>{this.emptyStateMessage.noAppsCreated}</EmptyStateTitle>
-        <EmptyStateAction>
-          <CreateClient createButtonSize="large" />
-        </EmptyStateAction>
+      <EmptyState variant={EmptyStateVariant.full}>
+        <EmptyStateIcon icon={MobileAltIcon} />
+        <Title headingLevel="h5" size="lg">
+          {this.emptyStateMessage.noAppsCreatedTitle}
+        </Title>
+        <EmptyStateBody>{this.emptyStateMessage.noAppsCreated}</EmptyStateBody>
+        <CreateClient createButtonSize="large" />
       </EmptyState>
     );
   }
@@ -45,8 +51,7 @@ class MobileClientCardView extends Component {
     this.setState({ filter: '', currentValue: '' });
   }
 
-  updateCurrentValue(event) {
-    const { value } = event.target;
+  updateCurrentValue(value) {
     this.setState({ currentValue: value });
     this.setFilter(value);
   }
@@ -102,13 +107,21 @@ class MobileClientCardView extends Component {
   renderAppCards() {
     const { mobileClients } = this.props;
     const filteredClients = this.filterClients(mobileClients);
+    console.log(filteredClients)
     return filteredClients.length ? (
-      <CardGrid matchHeight fluid>
-        <CardGrid.Row key={1}>{filteredClients}</CardGrid.Row>
-      </CardGrid>
+      <Gallery gutter="md">
+        {filteredClients.map((x, i) => (
+          <GalleryItem key={i}>
+            {x}
+          </GalleryItem>
+        ))}
+      </Gallery>
     ) : (
       <EmptyState>
-        <EmptyStateTitle>{this.emptyStateMessage.noAppsAfterFiltering}</EmptyStateTitle>
+        <EmptyStateIcon icon={MobileAltIcon} />
+        <Title headingLevel="h5" size="lg">
+          {this.emptyStateMessage.noAppsAfterFiltering}
+        </Title>
       </EmptyState>
     );
   }
@@ -118,34 +131,35 @@ class MobileClientCardView extends Component {
     const { filter, currentValue } = this.state;
     return (
       <div className="overview">
-        <Toolbar>
-          <Filter>
-            <DebounceInput
-              minLength={1}
-              debounceTimeout={300}
-              type="text"
-              placeholder="Filter by Name"
-              className="toolbarFilter"
-              value={currentValue}
-              onChange={e => this.updateCurrentValue(e)}
-              onKeyPress={e => this.onValueKeyPress(e)}
-            />
-          </Filter>
-          <div className="form-group">
-            <CreateClient />
-          </div>
-          {filter && filter.length > 0 && (
-            <Toolbar.Results>
-              <Filter.ActiveLabel>Active Filters:</Filter.ActiveLabel>
-              <Filter.List>
-                <Filter.Item key="1" filterData={{ filter }} onRemove={e => this.removeFilter(e)}>
-                  {filter}
-                </Filter.Item>
-              </Filter.List>
-            </Toolbar.Results>
-          )}
-        </Toolbar>
-        {mobileClients.length ? this.renderAppCards() : this.getEmptyState()}
+        <PageSection variant={PageSectionVariants.light} className="pf-c-page__main-section">
+          <Title className="overview-title" headingLevel="h2" size="3xl">
+            Mobile Apps
+          </Title>
+          <br></br>
+          <Toolbar>
+            <ToolbarItem>
+              <InputGroup>
+                <TextInput
+                  placeholder="Filter by name"
+                  className="toolbarFilter"
+                  type="search"
+                  onChange={e => this.updateCurrentValue(e)}
+                  onKeyPress={e => this.onValueKeyPress(e)}
+                />
+              </InputGroup>  
+            </ToolbarItem>
+            <ToolbarItem>
+              <div>
+                <CreateClient />
+              </div>
+              {filter && filter.length > 0 && (
+                mobileClients.filterClients)}
+            </ToolbarItem>
+          </Toolbar>
+        </PageSection>
+        <PageSection className="card-gallery" style={{ height: '100vh' }}>
+          {mobileClients.length ? this.renderAppCards() : this.getEmptyState()}
+        </PageSection>
       </div>
     );
   }

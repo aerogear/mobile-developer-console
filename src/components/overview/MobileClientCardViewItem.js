@@ -1,8 +1,10 @@
 import Moment from 'react-moment';
 import React from 'react';
-import { Card, CardHeading, CardBody, CardFooter, DropdownKebab } from 'patternfly-react';
+import { Card, CardActions, CardHead, CardHeader, CardBody, CardFooter, Dropdown, DropdownToggle } from '@patternfly/react-core'; 
 import { Link } from 'react-router-dom';
 import DeleteItemButton from '../../containers/DeleteItemButton';
+import { CloseIcon } from '@patternfly/react-icons';
+import './MobileClientCardViewItem.css';
 
 const getServiceIcons = services => {
   const icons = {
@@ -20,60 +22,83 @@ const getServiceIcons = services => {
   ));
 };
 
-const MobileClientCardViewItem = props => {
-  const {
-    app,
-    app: {
-      metadata: { name: appName }
-    },
-    services,
-    builds,
-    buildTabEnabled
-  } = props;
-  return (
-    <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      <Card matchHeight /* accented */ className="mobile-client-card">
-        <CardHeading>
-          <DropdownKebab id={appName} pullRight className="card-dropdown-kebab">
-            <DeleteItemButton itemType="app" itemName={appName} item={app} />
-          </DropdownKebab>
-          <Link to={`/mobileclient/${appName}`}>
-            <div className="card-pf-title">
-              <h1>{appName}</h1>
-            </div>
+class MobileClientCardViewItem extends React.Component {
+  state = {
+    isOpen: false
+  }
+
+  onToggle = isOpen => {
+    this.setState({
+      isOpen
+    });
+  };
+
+  onSelect = event => {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  };
+
+  render(){
+    
+    const {
+      app,
+      app: {
+        metadata: { name: appName }
+      },
+      services,
+      builds,
+      buildTabEnabled
+    } = this.props;
+    return (
+        <Card matchHeight /* accented */ className="mobile-client-card">
+          <CardHead>
+            <CardActions>
+              <Dropdown id={appName}
+                position={'right'}
+                onSelect={this.onSelect}
+                toggle={<DropdownToggle iconComponent={CloseIcon} onToggle={this.onToggle} />}
+                isOpen={this.state.isOpen}
+                isPlain
+                dropdownItems={[<DeleteItemButton itemType="app" itemName={appName} item={app} />]} />
+            </CardActions>
+            <CardHeader>
+            <Link to={`/mobileclient/${appName}`}>
+              <b>{appName}</b>
+            </Link>
+          </CardHeader>
+          </CardHead>
+          <CardBody style={{ paddingTop: 0 }}>
+              {services && services.length > 0 ? "Bound Services" : ""}
+              <div className="card-icons">
+                {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}
+              </div>
+            </CardBody>
+            <Link to={`/mobileclient/${appName}`}>
+            <CardFooter>
+              <div className="creation-timestamp">Created 
+                 <Moment format=" DD MMMM YYYY">{app.metadata.creationTimestamp}</Moment>
+              </div>
+              <span className="builds">
+                {buildTabEnabled && builds.numFailedBuilds > 0 ? (
+                  <span>
+                    <span className="pficon pficon-error-circle-o" />
+                    {builds.numFailedBuilds}
+                  </span>
+                ) : null}
+                {buildTabEnabled && builds.numInProgressBuilds > 0 ? (
+                  <span>
+                    <span className="pficon fa fa-refresh fa-spin fa-fw" />
+                    {builds.numInProgressBuilds}
+                  </span>
+                ) : null}
+                {!buildTabEnabled || (builds.numFailedBuilds === 0 && builds.numInProgressBuilds === 0) ? <span /> : null}
+              </span>
+            </CardFooter>
           </Link>
-        </CardHeading>
-        <Link to={`/mobileclient/${appName}`}>
-          <CardBody>
-            <div className="card-icons">
-              {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}
-            </div>
-          </CardBody>
-          <CardFooter>
-            <div className="creation-timestamp">CREATED</div>
-            <span className="creation-timestamp">
-              <span className="fa fa-globe" /> <Moment format="DD/MM/YYYY">{app.metadata.creationTimestamp}</Moment>
-            </span>
-            <span className="builds">
-              {buildTabEnabled && builds.numFailedBuilds > 0 ? (
-                <span>
-                  <span className="pficon pficon-error-circle-o" />
-                  {builds.numFailedBuilds}
-                </span>
-              ) : null}
-              {buildTabEnabled && builds.numInProgressBuilds > 0 ? (
-                <span>
-                  <span className="pficon fa fa-refresh fa-spin fa-fw" />
-                  {builds.numInProgressBuilds}
-                </span>
-              ) : null}
-              {!buildTabEnabled || (builds.numFailedBuilds === 0 && builds.numInProgressBuilds === 0) ? <span /> : null}
-            </span>
-          </CardFooter>
-        </Link>
-      </Card>
-    </div>
-  );
+        </Card>
+    );
+  };
 };
 
 export default MobileClientCardViewItem;
