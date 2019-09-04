@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import {
-  MenuItem
-} from 'patternfly-react';
+import { MenuItem } from 'patternfly-react';
 import {
   PageSection,
   PageSectionVariants,
@@ -10,7 +8,7 @@ import {
   Level,
   LevelItem,
   Title,
-  Split, 
+  Split,
   SplitItem,
   Card,
   CardBody,
@@ -27,7 +25,7 @@ import {
   ClipboardCopyVariant
 } from '@patternfly/react-core';
 import { connect } from 'react-redux';
-import { PencilAltIcon } from '@patternfly/react-icons';
+import { PencilAltIcon, CaretDownIcon } from '@patternfly/react-icons';
 import { find } from 'lodash-es';
 import Moment from 'react-moment';
 import ConfigurationView from '../components/configuration/ConfigurationView';
@@ -41,7 +39,6 @@ import { MobileApp } from '../models';
 import BuildConfigDialog from './BuildConfigDialog';
 import './Client.css';
 import { fetchAndWatchServices } from '../actions/services';
-import { CaretDownIcon } from '@patternfly/react-icons';
 
 export const TAB_CONFIGURATION = { key: 1, hash: 'configuration' };
 export const TAB_MOBILE_SERVICES = { key: 2, hash: 'services' };
@@ -58,7 +55,7 @@ export class Client extends Component {
     }
 
     this.state = {
-      buildConfigs: [],
+      // buildConfigs: [],
       selectedTab: initialTab.key,
       isOpen: false,
       isModalOpen: false,
@@ -68,7 +65,6 @@ export class Client extends Component {
     this.handleTextInputChange1 = value1 => {
       this.setState({ value1 });
     };
-
 
     this.handleModalToggle = () => {
       this.setState(({ isModalOpen }) => ({
@@ -210,12 +206,8 @@ export class Client extends Component {
         <Level>
           <LevelItem>
             <Breadcrumb>
-              <BreadcrumbItem to="/overview">
-                Mobile Apps
-              </BreadcrumbItem>
-              <BreadcrumbItem isActive>
-                Review and Edit
-              </BreadcrumbItem>
+              <BreadcrumbItem to="/overview">Mobile Apps</BreadcrumbItem>
+              <BreadcrumbItem isActive>Review and Edit</BreadcrumbItem>
             </Breadcrumb>
           </LevelItem>
           <LevelItem>

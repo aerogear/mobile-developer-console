@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { DropdownKebab } from 'patternfly-react';
 import {
-DataListItem,
-DataListItemRow,
-DataListCell,
-DataListAction,
-DataListToggle,
-DataListContent,
-DataListItemCells,
-Dropdown,
-DropdownItem,
-DropdownPosition,
-KebabToggle
+  DataListItem,
+  DataListItemRow,
+  DataListCell,
+  DataListAction,
+  DataListToggle,
+  DataListContent,
+  DataListItemCells,
+  Dropdown,
+  DropdownItem,
+  DropdownPosition,
+  KebabToggle
 } from '@patternfly/react-core';
 import { get as _get } from 'lodash-es';
 import '../configuration/ServiceSDKInfo.css';
@@ -38,9 +38,7 @@ class BoundServiceRow extends Component {
 
     this.state = {
       expanded: [],
-      isOpen1: false,
-      isOpen2: false,
-      isOpen3: false
+      isOpen1: false
     };
 
     this.onToggle1 = isOpen1 => {
@@ -82,7 +80,7 @@ class BoundServiceRow extends Component {
           <span>{serviceDetailDescription}</span>
         </DataListCell>
         ]}
-        />
+      />
     );
   }
 
@@ -179,7 +177,11 @@ class BoundServiceRow extends Component {
       this.setState(() => ({ expanded: newExpanded }));
     };
     return (
-      <DataListItem key={this.props.service.getId()} aria-labelledby="ex-item1" isExpanded={this.state.expanded.includes('ex-toggle1')}>
+      <DataListItem 
+        key={this.props.service.getId()} 
+        aria-labelledby="ex-item1" 
+        isExpanded={this.state.expanded.includes('ex-toggle1')}
+      >
         <DataListItemRow>
           <DataListToggle
             onClick={() => toggle('ex-toggle1')}

@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Title,
-  DataList
-} from '@patternfly/react-core';
+import { Title, DataList } from '@patternfly/react-core';
 import { EmptyState, Spinner } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { partition } from 'lodash-es';
@@ -68,19 +65,16 @@ export class MobileServiceView extends Component {
         </Title>
         <p className="pf-u-mb-lg">The services listed below are not configured for your mobile application yet. Select "Create a binding" to get started.</p>
         <DataList style={{ borderTop: '0px', borderBottom: '0px' }}>
-        {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
-          this.props.unboundServices.map(service => (
-            
+          {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
+            this.props.unboundServices.map(service => (
               <UnboundServiceRow
                 key={service.getId()}
                 service={service}
                 onCreateBinding={() => this.showBindingPanel(service)}
                 onFinished={this.hideBindingPanel}
               />
-            
           ))
-        ) 
-        
+        )
         : (
           <EmptyState>There are no available services.</EmptyState>
         )}

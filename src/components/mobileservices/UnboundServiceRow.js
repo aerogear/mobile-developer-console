@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
-import {
-  DataListItem,
-  DataListItemRow,
-  DataListCell,
-  DataListAction,
-  DataListItemCells
-  } from '@patternfly/react-core';
+import { DataListItem, DataListItemRow, DataListCell, DataListAction, DataListItemCells } from '@patternfly/react-core';
 import { get as _get } from 'lodash-es';
 import BindingStatus from './BindingStatus';
 import BindButton from './BindButton';
