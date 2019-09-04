@@ -1,5 +1,14 @@
 @charset "UTF-8";
 /* PatternFly */
+@import url("~@patternfly/react-core/dist/styles/base.css");
+@import url("~@patternfly/patternfly/patternfly-variables.css");
+@import url("~@patternfly/patternfly/patternfly-common.css");
+@import url("~@patternfly/patternfly/patternfly-globals.css");
+@import url("~@patternfly/patternfly/utilities/Spacing/spacing.css");
+@import url("~@patternfly/patternfly/utilities/BoxShadow/box-shadow.css");
+@import url("~@patternfly/patternfly/layouts/Level/level.css");
+@import url("~@patternfly/patternfly/layouts/Split/split.css");
+@import url("~@patternfly/patternfly/utilities/Display/display.css");
 @font-face {
   font-family: "Open Sans";
   font-style: normal;
@@ -16861,3 +16870,20 @@ table.dataTable {
 .wizard-pf-step-alt-substep.disabled > a:hover,
 .wizard-pf-sidebar .list-group-item.disabled > a:hover {
   cursor: not-allowed; }
+
+/* pf4 base styles */
+/* Overrides until the Alert Group is available in pf4 */
+.mdc-alert-group {
+  position: fixed;
+  top: var(--pf-global--spacer--2xl);
+  right: var(--pf-global--spacer--xl);
+  z-index: var(--pf-global--ZIndex--2xl);
+  width: calc(100% - calc(var(--pf-global--spacer--xl) * 2));
+  max-width: 600px; }
+
+.mdc-alert-group .pf-c-alert:not(:last-child) {
+  margin-bottom: var(--pf-global--spacer--sm); }
+
+.mdc-alert-group .pf-c-alert .pf-c-alert__title {
+  line-height: var(--pf-global--LineHeight--md);
+  font-weight: 500; }
