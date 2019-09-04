@@ -31,13 +31,13 @@ export class MobileServiceView extends Component {
     // const removeBorders = ""
     return (
       <React.Fragment>
+        <Title key="bound-services" headingLevel="h4" size="2xl" className="pf-u-mb-lg">
+          Bound Services
+        </Title>
+        <DataList style={{ borderTop: '0px', borderBottom: '0px' }}>
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
           this.props.boundServices.map(service => (
           <React.Fragment>
-            <Title key="bound-services" headingLevel="h4" size="2xl" className="pf-u-mb-lg">
-              Bound Services
-            </Title>
-            <DataList style={{ borderTop: '0px', borderBottom: '0px' }}>
               <BoundServiceRow
                 key={service.getId()}
                 appName={this.props.appName}
@@ -46,13 +46,14 @@ export class MobileServiceView extends Component {
                 onFinished={this.hideBindingPanel}
                 onDeleteBinding={cr => this.props.deleteCustomResource(service, cr.toJSON())}
               />
-            </DataList>
+            
           </React.Fragment>
           ))
         ) : (
           <React.Fragment>
           </React.Fragment>
         )}
+        </DataList>
       </React.Fragment>
     );
   }
