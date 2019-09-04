@@ -1,8 +1,9 @@
 import Moment from 'react-moment';
 import React from 'react';
-import { Card, CardActions, CardHead, CardHeader, CardBody, CardFooter, Dropdown, DropdownPosition, KebabToggle } from '@patternfly/react-core'; 
+import { Card, CardActions, CardHead, CardHeader, CardBody, CardFooter, Dropdown, DropdownToggle } from '@patternfly/react-core'; 
 import { Link } from 'react-router-dom';
 import DeleteItemButton from '../../containers/DeleteItemButton';
+import { CloseIcon } from '@patternfly/react-icons';
 import './MobileClientCardViewItem.css';
 
 const getServiceIcons = services => {
@@ -56,7 +57,7 @@ class MobileClientCardViewItem extends React.Component {
               <Dropdown id={appName}
                 position={'right'}
                 onSelect={this.onSelect}
-                toggle={<KebabToggle onToggle={this.onToggle} />}
+                toggle={<DropdownToggle iconComponent={CloseIcon} onToggle={this.onToggle} />}
                 isOpen={this.state.isOpen}
                 isPlain
                 dropdownItems={[<DeleteItemButton itemType="app" itemName={appName} item={app} />]} />
