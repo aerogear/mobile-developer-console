@@ -36,6 +36,10 @@ export class MobileService {
     return this.data.icon;
   }
 
+  getLogoURLBlackAndWhite() {
+    return this.data.iconBlackAndWhite;
+  }
+
   getIconClass() {
     return this.data.iconClass;
   }
