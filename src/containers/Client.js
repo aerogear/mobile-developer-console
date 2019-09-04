@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
 import {
-  Nav,
-  NavItem,
-  TabContent,
-  TabPane,
-  TabContainer,
-  DropdownButton,
-  Alert,
   MenuItem
 } from 'patternfly-react';
 import {
@@ -44,7 +37,7 @@ import { fetchAndWatchBuildConfigs } from '../actions/buildConfigs';
 import { fetchAndWatchBuilds } from '../actions/builds';
 import DeleteItemButton from './DeleteItemButton';
 import { MobileApp } from '../models';
-import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
+// import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
 import BuildConfigDialog from './BuildConfigDialog';
 import './Client.css';
 import { fetchAndWatchServices } from '../actions/services';
@@ -185,7 +178,7 @@ export class Client extends Component {
   render() {
     const mobileApp = this.getMobileApp();
     const { selectedTab, showBuildConfigDialog = false } = this.state;
-    const clientInfo = { clientId: mobileApp.getName() };
+    // const clientInfo = { clientId: mobileApp.getName() };
     // const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
     const cardValues = { width: '450px', height: '100%', boxShadow: 'unset' };

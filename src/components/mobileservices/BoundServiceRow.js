@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListViewItem, Row, Col, DropdownKebab } from 'patternfly-react';
+import { DropdownKebab } from 'patternfly-react';
 import {
 DataListItem,
 DataListItemRow,

@@ -68,13 +68,13 @@ class UnboundServiceRow extends Component {
   }
 
   render() {
-    const toggle = id => {
-      const expanded = this.state.expanded;
-      const index = expanded.indexOf(id);
-      const newExpanded =
-        index >= 0 ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)] : [...expanded, id];
-      this.setState(() => ({ expanded: newExpanded }));
-    };
+    // const toggle = id => {
+    //   const expanded = this.state.expanded;
+    //   const index = expanded.indexOf(id);
+    //   const newExpanded =
+    //     index >= 0 ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)] : [...expanded, id];
+    //   this.setState(() => ({ expanded: newExpanded }));
+    // };
     return (
       <DataListItem key={this.props.service.getId()} aria-labelledby="ex-item1" className="mdc-data-list-item--BorderColor">
       <DataListItemRow className="mdc-unbound-data-list-row">

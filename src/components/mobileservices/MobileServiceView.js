@@ -31,7 +31,7 @@ export class MobileServiceView extends Component {
   }
 
   boundServiceRows() {
-    const removeBorders = ""
+    // const removeBorders = ""
     return (
       <React.Fragment>
         {this.props.boundServices && this.props.boundServices.length > 0 ? (

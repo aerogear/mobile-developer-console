@@ -1,12 +1,11 @@
-import { Row, Col, ListView } from 'patternfly-react';
 import { ClipboardCopy, ClipboardCopyVariant } from '@patternfly/react-core';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from './Header';
 
 import './ConfigurationView.css';
-import FrameworkSDKDocs from './FrameworkSDKDocs';
-import frameworks from './sdk-config-docs/frameworks';
+// import FrameworkSDKDocs from './FrameworkSDKDocs';
+// import frameworks from './sdk-config-docs/frameworks';
 
 class ConfigurationView extends Component {
   render() {
@@ -25,12 +24,12 @@ class ConfigurationView extends Component {
               ))}
             </ListView>
           </Col> */}
-          <Col xs={6}>
+          {/* <Col xs={6}> */}
             <Header>mobile-services.json</Header>
             <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
               {JSON.stringify(status, null, 2)}
             </ClipboardCopy>
-          </Col>
+          {/* </Col> */}
         {/* </Row> */}
       </React.Fragment>
     );
