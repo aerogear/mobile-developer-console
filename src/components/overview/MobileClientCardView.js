@@ -3,6 +3,7 @@ import { Toolbar, Gallery, GalleryItem, ToolbarItem } from '@patternfly/react-co
 import { EmptyState, EmptyStateBody, EmptyStateVariant, EmptyStateIcon, TextInput, Title, PageSection, PageSectionVariants } from '@patternfly/react-core';
 import { MobileAltIcon } from '@patternfly/react-icons';
 import './MobileClientCardView.css';
+import './MobileClientCardViewItem.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
 import CreateClient from '../../containers/CreateClient';
 import { InputGroup } from 'patternfly-react/dist/js/components/Form';
