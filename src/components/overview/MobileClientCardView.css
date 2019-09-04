@@ -1,9 +1,19 @@
-.overview {
-  background-color: #f5f5f5;
-  flex: 1 1 auto; }
-
 .blank-slate-pf {
   border-width: 0; }
+
+.pf-c-card {
+  min-height: 250px; }
+
+.card-icons {
+  margin-top: var(--pf-global--spacer--sm); }
+  .card-icons img {
+    height: 40px;
+    width: 40px; }
+
+.creation-timestamp {
+  font-size: 14px;
+  font-weight: 400;
+  color: #757575; }
 
 .mobile-client-card {
   margin: 0 0 20px 0; }
@@ -14,46 +24,15 @@
       text-decoration: none; }
   .mobile-client-card .card-pf-heading {
     border-bottom: none; }
-    .mobile-client-card .card-pf-heading .card-pf-title span {
-      margin-right: 5px; }
-    .mobile-client-card .card-pf-heading .card-pf-title span:not(.pficon) {
-      margin-right: 15px; }
-    .mobile-client-card .card-pf-heading .card-pf-title {
-      flex: 1 1 0%;
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 1.4em;
-      max-height: 4.2em;
-      overflow: hidden;
-      padding: 0 !important;
-      position: relative;
-      word-wrap: break-word;
-      color: #0088ce; }
-      .mobile-client-card .card-pf-heading .card-pf-title h1 {
-        margin-top: 0; }
   .mobile-client-card .card-dropdown-kebab {
     float: right; }
   .mobile-client-card .card-pf-body {
     text-align: center; }
-    .mobile-client-card .card-pf-body .card-icons {
-      min-height: 30px; }
-    .mobile-client-card .card-pf-body .card-icons img {
-      padding: 2px;
-      position: relative;
-      width: 30px;
-      height: 30px;
-      margin-right: 5px;
-      overflow: hidden; }
   .mobile-client-card .card-pf-footer {
     background-color: #fff;
     border-top: none;
     border-bottom: 1px solid #d1d1d1;
     padding: 10px 20px 20px 20px; }
-    .mobile-client-card .card-pf-footer .creation-timestamp {
-      padding-left: 8px;
-      font-size: 11px;
-      font-weight: bold;
-      color: #757575; }
     .mobile-client-card .card-pf-footer .service-icon {
       width: 30px;
       height: 30px;
@@ -85,6 +64,7 @@
 .toolbarFilter {
   height: 26px;
   padding-left: 6px;
+  margin-right: 20px;
   font-weight: 400;
   width: 185px; }
 

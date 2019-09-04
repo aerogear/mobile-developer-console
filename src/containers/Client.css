@@ -1,3 +1,20 @@
+.creation-timestamp {
+  padding-left: var(--pf-global--spacer--md);
+  font-size: var(--pf-global--FontSize--md);
+  color: #757575; }
+
+.pf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
+  .pf-grid div {
+    text-align: center; }
+
+@media only screen and (max-width: 900px) {
+  .mdc-breakpoint-split > * {
+    width: 50%; }
+  .mdc-breakpoint-split .pf-c-card {
+    width: unset !important; } }
+
 .client-details {
   width: 100%;
   padding-top: 10px;
@@ -8,10 +25,6 @@
   padding-right: 25px; }
   .client-details .breadcrumb {
     margin-bottom: 10px; }
-  .client-details .creation-timestamp {
-    padding-left: 8px;
-    font-size: 11px;
-    color: #757575; }
   .client-details #basic-tabs-pf {
     flex: 1 100%;
     display: flex;

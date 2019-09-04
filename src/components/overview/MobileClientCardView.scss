@@ -1,10 +1,24 @@
-.overview {
-  background-color: #f5f5f5;
-  flex: 1 1 auto;
-}
-
 .blank-slate-pf {
   border-width: 0;
+}
+
+.pf-c-card {
+  min-height: 250px;
+}
+
+.card-icons {
+  img {
+    height: 40px;
+    width: 40px;
+  }
+
+  margin-top: var(--pf-global--spacer--sm);
+}
+
+.creation-timestamp {
+  font-size: 14px;
+  font-weight: 400;
+  color: #757575;
 }
 
 .mobile-client-card {
@@ -21,32 +35,6 @@
 
   .card-pf-heading {
     border-bottom: none;
-
-    .card-pf-title {
-      span {
-        margin-right: 5px;
-      }
-      span:not(.pficon) {
-        margin-right: 15px;
-      }
-    }
-
-    .card-pf-title {
-      flex: 1 1 0%;
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 1.4em;
-      max-height: 4.2em;
-      overflow: hidden;
-      padding: 0!important;
-      position: relative;
-      word-wrap: break-word;
-      color: #0088ce;
-
-      h1 {
-        margin-top: 0;
-      }
-    }
   }
 
   .card-dropdown-kebab {
@@ -55,20 +43,6 @@
 
   .card-pf-body {
     text-align: center;
-
-      .card-icons {
-          min-height: 30px;
-      }
-
-      .card-icons img {
-          padding: 2px;
-          position: relative;
-          width: 30px;
-          height: 30px;
-          margin-right: 5px;
-          overflow: hidden;
-      }
-
   }
 
   .card-pf-footer {
@@ -76,14 +50,7 @@
     border-top: none;
     border-bottom: 1px solid #d1d1d1;
     padding: 10px 20px 20px 20px;
-
-    .creation-timestamp {
-      padding-left:8px;
-      font-size: 11px;
-      font-weight: bold;
-      color: #757575;
-    }
-
+    
     .service-icon {
       width: 30px;
       height: 30px;
@@ -127,6 +94,7 @@
 .toolbarFilter {
   height: 26px;
   padding-left: 6px;
+  margin-right: 20px;
   font-weight: 400;
   width: 185px;
 }

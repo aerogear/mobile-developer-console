@@ -1,18 +1,31 @@
 import React, { Component } from 'react';
+import { MenuItem } from 'patternfly-react';
 import {
-  Nav,
-  NavItem,
-  TabContent,
-  TabPane,
-  TabContainer,
-  Grid,
+  PageSection,
+  PageSectionVariants,
   Breadcrumb,
-  DropdownButton,
-  Alert,
-  MenuItem
-} from 'patternfly-react';
+  BreadcrumbItem,
+  Level,
+  LevelItem,
+  Title,
+  Split,
+  SplitItem,
+  Card,
+  CardBody,
+  Button,
+  Dropdown,
+  Modal,
+  Form,
+  FormGroup,
+  TextInput,
+  DropdownToggle,
+  DropdownItem,
+  DropdownPosition,
+  ClipboardCopy,
+  ClipboardCopyVariant
+} from '@patternfly/react-core';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { PencilAltIcon, CaretDownIcon } from '@patternfly/react-icons';
 import { find } from 'lodash-es';
 import Moment from 'react-moment';
 import ConfigurationView from '../components/configuration/ConfigurationView';
@@ -22,7 +35,7 @@ import { fetchAndWatchBuildConfigs } from '../actions/buildConfigs';
 import { fetchAndWatchBuilds } from '../actions/builds';
 import DeleteItemButton from './DeleteItemButton';
 import { MobileApp } from '../models';
-import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
+// import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
 import BuildConfigDialog from './BuildConfigDialog';
 import './Client.css';
 import { fetchAndWatchServices } from '../actions/services';
@@ -42,8 +55,32 @@ export class Client extends Component {
     }
 
     this.state = {
-      buildConfigs: [],
-      selectedTab: initialTab.key
+      // buildConfigs: [],
+      selectedTab: initialTab.key,
+      isOpen: false,
+      isModalOpen: false,
+      value1: ''
+    };
+
+    this.handleTextInputChange1 = value1 => {
+      this.setState({ value1 });
+    };
+
+    this.handleModalToggle = () => {
+      this.setState(({ isModalOpen }) => ({
+        isModalOpen: !isModalOpen
+      }));
+    };
+
+    this.onToggle = isOpen => {
+      this.setState({
+        isOpen
+      });
+    };
+    this.onSelect = event => {
+      this.setState({
+        isOpen: !this.state.isOpen
+      });
     };
     this.handleNavSelect = this.handleNavSelect.bind(this);
   }
@@ -96,58 +133,189 @@ export class Client extends Component {
     }
   };
 
-  header = mobileApp => {
-    const { selectedTab, showBuildConfigDialog = false } = this.state;
-    const { creationTimestamp = null } = mobileApp.metadata.data;
-    // passing empty string to build config dialog for now as the client id.
-    return (
-      <div className="app-header-wrapper">
-        <div className="app-header">
-          <div>
-            <h1>
-              {mobileApp.getName()}
-              <span className="creation-timestamp">
-                created <Moment fromNow>{creationTimestamp}</Moment>
-              </span>
-            </h1>
-          </div>
-        </div>
-        <div className="app-actions-dropdown">
-          <DropdownButton id="app-actions-dropdown" title="Actions" pullRight>
-            {mobileApp && selectedTab === TAB_BUILDS.key ? (
-              <React.Fragment>
-                <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
-                <BuildConfigDialog
-                  update={false}
-                  clientInfo={{ clientId: mobileApp.getName() }}
-                  show={showBuildConfigDialog}
-                  onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
-                />
-              </React.Fragment>
-            ) : (
-              ''
-            )}
-            <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
-          </DropdownButton>
-        </div>
-      </div>
-    );
-  };
+  // header = mobileApp => {
+  //   // const { selectedTab, showBuildConfigDialog = false } = this.state;
+  //   // const { creationTimestamp = null } = mobileApp.metadata.data;
+  //   // passing empty string to build config dialog for now as the client id.
+  //   return (
+  //     <div className="app-header-wrapper">
+  //       <div className="app-header">
+  //         <div>
+  //           <h1>
+  //             {mobileApp.getName()}
+  //             {/* <span className="creation-timestamp">
+  //               created <Moment fromNow>{creationTimestamp}</Moment>
+  //             </span> */}
+  //           </h1>
+  //         </div>
+  //       </div>
+  //       {/* <div className="app-actions-dropdown">
+  //         <DropdownButton id="app-actions-dropdown" title="Actions" pullRight>
+  //           {mobileApp && selectedTab === TAB_BUILDS.key ? (
+  //             <React.Fragment>
+  //               <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
+  //               <BuildConfigDialog
+  //                 update={false}
+  //                 clientInfo={{ clientId: mobileApp.getName() }}
+  //                 show={showBuildConfigDialog}
+  //                 onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
+  //               />
+  //             </React.Fragment>
+  //           ) : (
+  //             ''
+  //           )}
+  //           <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
+  //         </DropdownButton>
+  //       </div> */}
+  //     </div>
+  //   );
+  // };
 
   render() {
     const mobileApp = this.getMobileApp();
-    const clientInfo = { clientId: mobileApp.getName() };
-    const { selectedTab } = this.state;
+    const { selectedTab, showBuildConfigDialog = false } = this.state;
+    // const clientInfo = { clientId: mobileApp.getName() };
+    // const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
+    const cardValues = { width: '450px', height: '100%', boxShadow: 'unset' };
+    const { creationTimestamp = null } = mobileApp.metadata.data;
+    const { isOpen } = this.state;
+    const { isModalOpen } = this.state;
+    const { value1 } = this.state;
+    const dropdownItems = [
+      <DropdownItem key="/">
+        {mobileApp && selectedTab === TAB_BUILDS.key ? (
+          <React.Fragment>
+            <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
+            <BuildConfigDialog
+              update={false}
+              clientInfo={{ clientId: mobileApp.getName() }}
+              show={showBuildConfigDialog}
+              onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
+            />
+          </React.Fragment>
+            ) : (
+              ''
+            )}
+          <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
+      </DropdownItem>
+    ];
     return mobileApp ? (
-      <Grid fluid className="client-details">
-        <Breadcrumb>
-          <Breadcrumb.Item active>
-            <Link to="/overview">Mobile Apps</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item active>{mobileApp.getName()}</Breadcrumb.Item>
-        </Breadcrumb>
-        {this.header(mobileApp)}
+      <React.Fragment>
+      <PageSection variant={PageSectionVariants.light} className="pf-u-pb-0">
+        <Level>
+          <LevelItem>
+            <Breadcrumb>
+              <BreadcrumbItem to="/overview">Mobile Apps</BreadcrumbItem>
+              <BreadcrumbItem isActive>Review and Edit</BreadcrumbItem>
+            </Breadcrumb>
+          </LevelItem>
+          <LevelItem>
+            <Dropdown
+              onSelect={this.onSelect}
+              position={DropdownPosition.right}
+              toggle={<DropdownToggle onToggle={this.onToggle} iconComponent={CaretDownIcon}>Actions</DropdownToggle>}
+              isOpen={isOpen}
+              dropdownItems={dropdownItems}
+            />
+          </LevelItem>
+          </Level>
+      </PageSection>
+      <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
+        <Title headingLevel="h2" size="3xl">
+          {mobileApp.getName()}
+          <Button variant="plain" aria-label="Action" onClick={this.handleModalToggle}>
+            <PencilAltIcon/>
+          </Button>
+          <span className="creation-timestamp">
+            Created <Moment fromNow>{creationTimestamp}</Moment>
+          </span>
+        </Title>
+        <Modal
+          isSmall
+          title="Edit mobile app name"
+          isOpen={isModalOpen}
+          onClose={this.handleModalToggle}
+          actions={[
+            <Button key="cancel" variant="secondary" onClick={this.handleModalToggle}>
+              Cancel
+            </Button>,
+            <Button key="cancel" variant="primary" onClick={this.handleModalToggle}>
+              Save
+            </Button>
+          ]}
+        >
+        <p className="pf-u-mb-lg">You may edit the mobile application name in the input below.</p>
+
+        <Form>
+          <FormGroup
+            label="Application Name"
+            fieldId="application-name"
+          >
+            <TextInput
+              isRequired
+              type="text"
+              id="application-name"
+              name="application-name"
+              aria-describedby="application-name"
+              value={value1}
+              onChange={this.handleTextInputChange1}
+            />
+          </FormGroup>
+        </Form>
+      </Modal>
+      </PageSection>
+      <Split className="mdc-breakpoint-split" style={{ display: 'flex', flex: '1' }}>
+        <SplitItem isFilled style={{ display: 'flex', flexDirection: 'column' }}>
+          <PageSection>
+            <MobileServiceView appName={appName} />
+          </PageSection>
+        </SplitItem>
+        <SplitItem>
+          <Card style={cardValues}>
+            <CardBody isFilled={false}>
+              <Title headingLevel="h3" size="2xl">
+                Full Mobile Config
+              </Title>
+              <p className="pf-u-my-md"> 
+                JavaScript-based mobile apps can be configured for a variety of mobile platforms. 
+                Our JavaScript SDK supports the following frameworks.
+              </p>
+              <div class="pf-grid">
+                <div>
+                  <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />
+                  <p>Cordova</p>
+                </div>
+                <div>
+                  <img src="/img/react.jpg" width="25" height="25" alt="React logo" />
+                  <p>React</p>
+                </div>
+                <div>
+                  <img src="/img/ionic.jpg" width="25" height="25" alt="Ionic logo" />
+                  <p>Ionic</p>
+                </div>
+                <div>
+                  <img src="/img/angular.jpg" width="25" height="25" alt="Angular logo" />
+                  <p>Angular</p>
+                </div>
+                <div>
+                  <img src="/img/vue.jpg" width="25" height="25" alt="Vue logo" />
+                  <p>Vue</p>
+                </div>
+              </div>
+            </CardBody>
+            <CardBody>
+              <Title headingLevel="h4" size="lg" className="pf-u-mb-md">
+                mobile-services.json
+              </Title>
+              <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
+                <ConfigurationView app={mobileApp} appName={appName} />
+            </ClipboardCopy>
+            </CardBody>
+          </Card>
+        </SplitItem> 
+      </Split>
+      {/* <Grid fluid className="client-details">
         {this.props.apps.readingError ? (
           <Alert>{this.props.apps.readingError.message}</Alert>
         ) : (
@@ -171,8 +339,8 @@ export class Client extends Component {
                   <ConfigurationView app={mobileApp} appName={appName} />
                 </TabPane>
                 <TabPane eventKey={TAB_MOBILE_SERVICES.key}>
-                  <MobileServiceView appName={appName} />
-                </TabPane>
+                  {/* <MobileServiceView appName={appName} /> */}
+                {/* </TabPane>
                 {this.props.buildTabEnabled ? (
                   <TabPane eventKey={TAB_BUILDS.key}>
                     <MobileClientBuildOverviewList
@@ -186,7 +354,8 @@ export class Client extends Component {
             </div>
           </TabContainer>
         )}
-      </Grid>
+      </Grid> */}
+    </ React.Fragment>
     ) : (
       <React.Fragment />
     );

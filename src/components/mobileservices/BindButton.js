@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'patternfly-react';
+import { Button } from '@patternfly/react-core';
 
 class BindButton extends Component {
   render() {
@@ -7,8 +7,8 @@ class BindButton extends Component {
       return null;
     }
     return (
-      <Button className="bind-button" onClick={() => this.props.onClick()}>
-        Bind to App
+      <Button variant="secondary" className="bind-button" onClick={() => this.props.onClick()}>
+        Create a binding
       </Button>
     );
   }

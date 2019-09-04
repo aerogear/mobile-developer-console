@@ -16872,6 +16872,8 @@ table.dataTable {
   cursor: not-allowed; }
 
 /* pf4 base styles */
+<<<<<<< HEAD
+=======
 /* Overrides until the Alert Group is available in pf4 */
 .mdc-alert-group {
   position: fixed;
@@ -16887,3 +16889,4 @@ table.dataTable {
 .mdc-alert-group .pf-c-alert .pf-c-alert__title {
   line-height: var(--pf-global--LineHeight--md);
   font-weight: 500; }
+>>>>>>> patternfly4-updates

@@ -3,6 +3,13 @@
     font-weight: 700;
 }
 
+.mdc-data-list-item--BorderColor {
+    @media screen and (max-width: 576px) {
+        border-top-color: var(--pf-global--BackgroundColor--light-300) !important;
+    }
+}
+
+
 .boundService {
     .list-group-item-header {
         background-color: #ededed;
@@ -28,4 +35,17 @@
     display: block;
     float: left;
     font-size: 1.6em;
+}
+
+.mdc-unbound-data-list-row {
+    flex-wrap: unset;
+
+    @media only screen and (max-width: 910px) {
+        flex-wrap: wrap;
+
+        .pf-c-data-list__item-action {
+            margin-left: unset;
+            padding-top: unset;
+        }
+    }
 }
