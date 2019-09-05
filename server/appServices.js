@@ -112,13 +112,16 @@ function getServicesForApp(namespace, app, kubeclient) {
 
 async function updateAppsAndWatch(namespace, kubeclient) {
   connectionAttempts++;
-  updateAll(namespace, kubeclient).then(() => {
+  logAction('About to call updateAll()');
+  updateAll(namespace, kubeclient).then(pickles => {
+    logAction('called from inside the updateAll.then');
     watchMobileClients(namespace, kubeclient);
     watchDataSyncConfigMaps(namespace, kubeclient);
     watchKeyCloakSecrets(namespace, kubeclient);
     watchAndroidVariants(namespace, kubeclient);
     watchIosVariants(namespace, kubeclient);
     watchMobileSecurityApps(namespace, kubeclient);
+
     // reset connection attempts count
     connectionAttempts = 1;
   });
