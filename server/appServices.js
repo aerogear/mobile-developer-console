@@ -4,6 +4,7 @@ const androidVariantCRD = require('./android-variant-crd.json');
 const iosVariantCRD = require('./ios-variant-crd.json');
 const mobileSecurityServiceCRD = require('./mobile-security-crd.json');
 const { debounce } = require('lodash');
+const _ = require('lodash');
 const {
   PushService,
   IdentityManagementService,
@@ -20,6 +21,8 @@ const MOBILE_SECURITY_SUFFIX = '-security';
 
 const { MAX_RETRIES = 60, RETRY_TIMEOUT = 5000 } = process.env;
 
+const { logAction } = require('./helpers');
+
 let updating = false;
 // keeps track of how many attempts were made to connect to the Kubernetes API server
 let connectionAttempts = 0;
@@ -31,14 +34,31 @@ const retryWatchDebounce = debounce((namespace, kubeclient) => {
   retryWatch(namespace, kubeclient);
 }, debounceTime);
 
+let lookat = [];
+let appNames = [];
+
 function updateAll(namespace, kubeclient) {
   updating = true;
-  console.log('Check services for all apps', Date());
+  console.log('\x1b[31mCheck services for all apps', Date());
   return kubeclient.apis[mobileClientCRD.spec.group].v1alpha1
     .namespace(namespace)
-    .mobileclients.get()
+    .mobileclient.get()
     .then(resp => resp.body)
-    .then(mobileclientList => mobileclientList.items)
+    .then(mobileclientList => {
+      if (updating) {
+        mobileclientList.items.forEach(element => {
+          if (!_.includes(appNames, element.metadata.name)) {
+            lookat.push(element);
+            appNames.push(element.metadata.name);
+            logAction(`check value = ${!_.includes(appNames, element.metadata.name)}`);
+          }
+          console.log(appNames);
+        });
+        logAction(`Mobile Apps (lookat): len ${lookat.length}`);
+        updating = false;
+      }
+      return lookat;
+    })
     .then(mobileclients => mobileclients.map(mobileclient => updateApp(namespace, mobileclient, kubeclient)))
     .then(promises => {
       updating = false;
