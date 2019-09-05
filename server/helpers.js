@@ -5,6 +5,14 @@ function addProtocolIfMissing(url) {
   return url;
 }
 
+let counter = 0;
+
+function logAction(msg) {
+  counter++;
+  console.log('\x1b[33m%s\x1b[0m', msg, counter);
+}
+
 module.exports = {
-  addProtocolIfMissing
+  addProtocolIfMissing,
+  logAction
 };
