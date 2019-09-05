@@ -308,8 +308,10 @@ export class Client extends Component {
               <Title headingLevel="h4" size="lg" className="pf-u-mb-md">
                 mobile-services.json
               </Title>
-              <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
-                <ConfigurationView app={mobileApp} appName={appName} />
+              <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">               
+                "client": "myapp",
+                "namespace": "uxd-test-project",
+                "services": []
             </ClipboardCopy>
             </CardBody>
           </Card>
