@@ -134,13 +134,18 @@ async function updateAppsAndWatch(namespace, kubeclient) {
  * @param {*} kubeclient - kubernetes client
  */
 async function watchMobileClients(namespace, kubeclient) {
+  logAction('We are in side the Mobile client watch');
   const appStream = await kubeclient.apis[mobileClientCRD.spec.group].v1alpha1.watch
     .namespaces(namespace)
     .mobileclients.getObjectStream();
 
   appStream.on('data', event => {
-    if (event.type === 'ADDED') {
+    if (event.type === 'ADDED' && !_.includes(appNames, event.object.metadata.name)) {
+      console.log(event); // Trying to work out whats been in the event stream
       updateAll(namespace, kubeclient);
+    } else if (event.type === 'DELETED') {
+      appNames = _.remove(appNames, event.object.metadata.name);
+      lookat = [];
     }
   });
 
