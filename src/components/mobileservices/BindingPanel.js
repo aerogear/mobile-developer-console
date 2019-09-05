@@ -1,4 +1,4 @@
-import { partition, get } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { Component } from 'react';
 import { Wizard } from '@patternfly/react-core';
 import { connect } from 'react-redux';

@@ -35,12 +35,8 @@ export class Overview extends Component {
   }
 
   render() {
-    const mobileApp = this.getMobileApp();
     const activeFramework = this.state.activeTabKey === 0 ? 'cordova' : 'ionic';
     const framework = frameworks[activeFramework]();
-
-    const status = mobileApp.getStatus();
-    const { services = [] } = { services: status.getServices() };
 
     return (
       <PageSection variant={PageSectionVariants.light}>

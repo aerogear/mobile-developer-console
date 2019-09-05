@@ -1,10 +1,12 @@
 import Moment from 'react-moment';
 import React from 'react';
-import { Card, CardActions, CardHead, CardHeader, CardBody, CardFooter, Dropdown, DropdownToggle } from '@patternfly/react-core'; 
+import { Card, CardActions, CardHead, CardHeader, CardBody, CardFooter, Dropdown, DropdownToggle, Button, Modal, DropdownItem } from '@patternfly/react-core'; 
 import { Link } from 'react-router-dom';
-import DeleteItemButton from '../../containers/DeleteItemButton';
 import { CloseIcon } from '@patternfly/react-icons';
 import './MobileClientCardViewItem.css';
+import { deleteApp } from '../../actions/apps';
+import { deleteBuildConfig } from '../../actions/buildConfigs';
+import { connect } from 'react-redux';
 
 const getServiceIcons = services => {
   const icons = {
@@ -24,7 +26,8 @@ const getServiceIcons = services => {
 
 class MobileClientCardViewItem extends React.Component {
   state = {
-    isOpen: false
+    isOpen: false,
+    showModal: false
   }
 
   onToggle = isOpen => {
@@ -39,7 +42,36 @@ class MobileClientCardViewItem extends React.Component {
     });
   };
 
+  triggerDeletion = (itemName) => {
+    console.log("TRIGGERED", this.props)
+    const { onDelete } = this.props;
+    if (onDelete && typeof onDelete === 'function') {
+      onDelete();
+    } else {
+      this.props.deleteApp(itemName);
+    }
+    this.handleDialogClose();
+  };
+
+  openDialog = () => {
+    this.setState({
+      showModal: true
+    });
+  };
+
+  handleDialogClose = () => {
+    this.setState({
+      showModal: false
+    });
+  };
+
+  getItemName() {
+    return this.props.item ? this.props.item.metadata.name : this.props.itemName;
+  }
+
   render(){
+    const { itemType, title = 'Delete' } = this.props;
+    const itemName = this.getItemName();
     
     const {
       app,
@@ -51,7 +83,7 @@ class MobileClientCardViewItem extends React.Component {
       buildTabEnabled
     } = this.props;
     return (
-        <Card matchHeight /* accented */ className="mobile-client-card">
+        <Card matchHeight className="mobile-client-card">
           <CardHead>
             <CardActions>
               <Dropdown id={appName}
@@ -60,7 +92,30 @@ class MobileClientCardViewItem extends React.Component {
                 toggle={<DropdownToggle iconComponent={CloseIcon} onToggle={this.onToggle} />}
                 isOpen={this.state.isOpen}
                 isPlain
-                dropdownItems={[<DeleteItemButton itemType="app" itemName={appName} item={app} />]} />
+                dropdownItems={[<DropdownItem key="app" onClick={this.openDialog}>{title}</DropdownItem>]} />
+              <Modal
+                title="Confirm Delete"
+                isOpen={this.state.showModal}
+                onClose={this.handleDialogClose}
+                actions={[
+                  <Button key="cancel" onClick={this.handleDialogClose}>
+                    Cancel
+                  </Button>,
+                  <Button key="confirm" variant="danger" onClick={() => this.triggerDeletion(appName)}>
+                    Delete
+                  </Button>
+                ]}
+                >
+                  <p>
+                    {`Are you sure you want to delete the ${itemType} '`}
+                    <b>{itemName}</b>
+                    {`'?`}
+                  </p>
+                  <p>
+                    {itemName} and its data will no longer be available. <b>It cannot be undone.</b> Make sure this is
+                    something you really want to do!
+                  </p>
+              </Modal>
             </CardActions>
             <CardHeader>
             <Link to={`/mobileclient/${appName}`}>
@@ -101,4 +156,12 @@ class MobileClientCardViewItem extends React.Component {
   };
 };
 
-export default MobileClientCardViewItem;
+const mapDispatchToProps = {
+  deleteApp,
+  deleteBuildConfig
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(MobileClientCardViewItem);

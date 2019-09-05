@@ -128,7 +128,7 @@ class MobileClientCardView extends Component {
 
   render() {
     const { mobileClients } = this.props;
-    const { filter, currentValue } = this.state;
+    const { filter } = this.state;
     return (
       <div className="overview">
         <PageSection variant={PageSectionVariants.light} className="pf-c-page__main-section">
