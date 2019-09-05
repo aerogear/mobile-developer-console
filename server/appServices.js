@@ -168,8 +168,12 @@ async function watchMobileClients(namespace, kubeclient) {
 async function watchDataSyncConfigMaps(namespace, kubeclient) {
   const configmapStream = await kubeclient.api.v1.watch.namespace(namespace).configmaps.getObjectStream();
   configmapStream.on('data', event => {
+    console.log(event);
     if (event.object && event.object.metadata.name.endsWith(DATASYNC_CONFIGMAP_SUFFIX)) {
       updateAll(namespace, kubeclient);
+    } else if (event.type === 'DELETED') {
+      appNames = _.remove(appNames, event.object.metadata.name);
+      lookat = [];
     }
   });
 
