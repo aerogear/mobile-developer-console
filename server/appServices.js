@@ -52,7 +52,7 @@ function updateAll(namespace, kubeclient) {
             appNames.push(element.metadata.name);
             logAction(`check value = ${!_.includes(appNames, element.metadata.name)}`);
           }
-          console.log(appNames);
+          // console.log(appNames);
         });
         logAction(`Mobile Apps (lookat): len ${lookat.length}`);
         updating = false;
@@ -294,12 +294,17 @@ async function watchIosVariants(namespace, kubeclient) {
  * @param {*} kubeclient - kubernetes client
  */
 async function watchMobileSecurityApps(namespace, kubeclient) {
+  logAction('Called from inside watchMobileSecurityApps');
   const mssAppStream = await kubeclient.apis[mobileSecurityServiceCRD.spec.group].v1alpha1.watch
     .namespaces(namespace)
     .mobilesecurityserviceapps.getObjectStream();
 
   mssAppStream.on('data', event => {
+    console.log(event);
+    
+    // console.log(event); // to see what events have be pust in the stream
     if (event.object && event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX) && !updating) {
+      console.log(event); // check oject been worked on
       updateAll(namespace, kubeclient);
     }
   });
