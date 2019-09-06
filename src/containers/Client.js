@@ -12,12 +12,7 @@ import {
   SplitItem,
   Card,
   CardBody,
-  Button,
   Dropdown,
-  Modal,
-  Form,
-  FormGroup,
-  TextInput,
   DropdownToggle,
   DropdownItem,
   DropdownPosition,
@@ -58,18 +53,11 @@ export class Client extends Component {
       // buildConfigs: [],
       selectedTab: initialTab.key,
       isOpen: false,
-      isModalOpen: false,
       value1: ''
     };
 
     this.handleTextInputChange1 = value1 => {
       this.setState({ value1 });
-    };
-
-    this.handleModalToggle = () => {
-      this.setState(({ isModalOpen }) => ({
-        isModalOpen: !isModalOpen
-      }));
     };
 
     this.onToggle = isOpen => {
@@ -180,7 +168,6 @@ export class Client extends Component {
     const cardValues = { width: '450px', height: '100%', boxShadow: 'unset' };
     const { creationTimestamp = null } = mobileApp.metadata.data;
     const { isOpen } = this.state;
-    const { isModalOpen } = this.state;
     const { value1 } = this.state;
     const dropdownItems = [
       <DropdownItem key="/">
