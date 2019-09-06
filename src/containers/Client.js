@@ -224,46 +224,10 @@ export class Client extends Component {
       <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
         <Title headingLevel="h2" size="3xl">
           {mobileApp.getName()}
-          <Button variant="plain" aria-label="Action" onClick={this.handleModalToggle}>
-            <PencilAltIcon/>
-          </Button>
-          <span className="creation-timestamp">
+          <span className="creation-timestamp pf-u-ml-md">
             Created <Moment fromNow>{creationTimestamp}</Moment>
           </span>
         </Title>
-        <Modal
-          isSmall
-          title="Edit mobile app name"
-          isOpen={isModalOpen}
-          onClose={this.handleModalToggle}
-          actions={[
-            <Button key="cancel" variant="secondary" onClick={this.handleModalToggle}>
-              Cancel
-            </Button>,
-            <Button key="cancel" variant="primary" onClick={this.handleModalToggle}>
-              Save
-            </Button>
-          ]}
-        >
-        <p className="pf-u-mb-lg">You may edit the mobile application name in the input below.</p>
-
-        <Form>
-          <FormGroup
-            label="Application Name"
-            fieldId="application-name"
-          >
-            <TextInput
-              isRequired
-              type="text"
-              id="application-name"
-              name="application-name"
-              aria-describedby="application-name"
-              value={value1}
-              onChange={this.handleTextInputChange1}
-            />
-          </FormGroup>
-        </Form>
-      </Modal>
       </PageSection>
       <Split className="mdc-breakpoint-split" style={{ display: 'flex', flex: '1' }}>
         <SplitItem isFilled style={{ display: 'flex', flexDirection: 'column' }}>
