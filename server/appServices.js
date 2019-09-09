@@ -34,21 +34,21 @@ const retryWatchDebounce = debounce((namespace, kubeclient) => {
   retryWatch(namespace, kubeclient);
 }, debounceTime);
 
-let lookat = [];
-let appNames = [];
+let lookat = []; // created to hold a list of apps, this gets cleared from time to time
+let appNames = []; // Hold a list of the app names used as a refernces
 
 function updateAll(namespace, kubeclient) {
   updating = true;
-  console.log('\x1b[31mCheck services for all apps', Date());
+  console.log('\x1b[31mCheck services for all apps', Date()); // Add a red marker to the log files
   return kubeclient.apis[mobileClientCRD.spec.group].v1alpha1
     .namespace(namespace)
-    .mobileclient.get()
+    .mobileclient.get() // This call returns once for every app that has been created
     .then(resp => resp.body)
     .then(mobileclientList => {
       if (updating) {
         mobileclientList.items.forEach(element => {
           if (!_.includes(appNames, element.metadata.name)) {
-            lookat.push(element);
+            lookat.push(element); // only getting one copy of an app for updating
             appNames.push(element.metadata.name);
             logAction(`check value = ${!_.includes(appNames, element.metadata.name)}`);
           }
@@ -168,7 +168,7 @@ async function watchMobileClients(namespace, kubeclient) {
 async function watchDataSyncConfigMaps(namespace, kubeclient) {
   const configmapStream = await kubeclient.api.v1.watch.namespace(namespace).configmaps.getObjectStream();
   configmapStream.on('data', event => {
-    console.log(event);
+    console.log(event); // watching the on data stream
     if (event.object && event.object.metadata.name.endsWith(DATASYNC_CONFIGMAP_SUFFIX)) {
       updateAll(namespace, kubeclient);
     } else if (event.type === 'DELETED') {
@@ -300,8 +300,7 @@ async function watchMobileSecurityApps(namespace, kubeclient) {
     .mobilesecurityserviceapps.getObjectStream();
 
   mssAppStream.on('data', event => {
-    console.log(event);
-    
+    console.log(event); // watching the on data stream
     // console.log(event); // to see what events have be pust in the stream
     if (event.object && event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX) && !updating) {
       console.log(event); // check oject been worked on
