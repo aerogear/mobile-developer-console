@@ -128,10 +128,7 @@ export class KeycloakRealmCR extends CustomResource {
       apiVersion: 'aerogear.org/v1alpha1',
       kind: 'KeycloakRealm',
       metadata: {
-        name: realmId,
-        labels: {
-          'mobile.aerogear.org/client': CLIENT_ID
-        }
+        name: realmId
       },
       spec: {
         id: realmId,

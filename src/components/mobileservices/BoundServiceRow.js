@@ -135,6 +135,7 @@ class BoundServiceRow extends Component {
         key={`${this.props.service.getId()}binding status`}
         service={this.props.service}
         onFinished={this.props.onFinished}
+        appName={this.props.appName}
       />
     );
   }
@@ -149,11 +150,14 @@ class BoundServiceRow extends Component {
       return null;
     }
 
-    return <BindButton service={this.props.service} onClick={this.props.onCreateBinding} />;
+    return (
+      <BindButton appName={this.props.appName} service={this.props.service} onClick={this.props.onCreateBinding} />
+    );
   }
 
   renderDeleteBindingDropdowns() {
     const crs = this.props.service.getCustomResourcesForApp(this.props.appName);
+
     return (
       <DropdownKebab id="delete-binding-id" pullRight>
         {crs.map(cr => (

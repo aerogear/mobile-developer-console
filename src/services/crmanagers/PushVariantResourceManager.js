@@ -50,7 +50,7 @@ export class PushVariantResourceManager extends GenericResourceManager {
           if (foundApp.status) return foundApp;
           return null;
         },
-        5000,
+        10000,
         1000
       );
     }

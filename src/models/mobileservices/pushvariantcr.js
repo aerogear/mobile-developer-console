@@ -243,10 +243,7 @@ export class PushVariantCR extends CustomResource {
           apiVersion: 'push.aerogear.org/v1alpha1',
           kind: 'AndroidVariant',
           metadata: {
-            name: `${CLIENT_ID}-android-ups-variant`,
-            labels: {
-              'mobile.aerogear.org/client': CLIENT_ID
-            }
+            name: `${CLIENT_ID}-android-ups-variant`
           },
           spec: {
             description: 'UPS Android Variant',
@@ -260,10 +257,7 @@ export class PushVariantCR extends CustomResource {
           apiVersion: 'push.aerogear.org/v1alpha1',
           kind: 'IOSVariant',
           metadata: {
-            name: `${CLIENT_ID}-ios-ups-variant`,
-            labels: {
-              'mobile.aerogear.org/client': CLIENT_ID
-            }
+            name: `${CLIENT_ID}-ios-ups-variant`
           },
           spec: {
             description: 'UPS iOS Variant',

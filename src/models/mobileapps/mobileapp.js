@@ -8,6 +8,8 @@ export const PROPERTIES = {
   NAME: 'name'
 };
 
+export const MAXLENGTH_APPNAME = 70;
+
 export default class MobileApp {
   constructor(json) {
     this.app = json || {};
@@ -23,6 +25,10 @@ export default class MobileApp {
 
   getName() {
     return this.metadata.getName();
+  }
+
+  getUID() {
+    return this.metadata.getUID();
   }
 
   getStatus() {
@@ -43,8 +49,12 @@ export default class MobileApp {
     const value = this.getProperty(propertyName);
     if (value) {
       switch (propertyName) {
-        case PROPERTIES.NAME:
+        case PROPERTIES.NAME: {
+          if (value.length > MAXLENGTH_APPNAME) {
+            return false;
+          }
           return value.match('^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$');
+        }
         default:
           return 'success';
       }

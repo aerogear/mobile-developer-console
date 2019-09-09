@@ -109,10 +109,7 @@ export class DataSyncCR extends CustomResource {
       apiVersion: 'v1',
       kind: 'ConfigMap',
       metadata: {
-        name: `${CLIENT_ID}-data-sync-binding`,
-        labels: {
-          'mobile.aerogear.org/client': CLIENT_ID
-        }
+        name: `${CLIENT_ID}-data-sync-binding`
       },
       data: {
         syncServerUrl: url,

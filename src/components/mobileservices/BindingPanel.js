@@ -116,6 +116,10 @@ export class BindingPanel extends Component {
     });
   }
 
+  isInProgress() {
+    return this.state.loading;
+  }
+
   /**
    * see https://github.com/mozilla-services/react-jsonschema-form/tree/6cb26d17c0206b610b130729db930d5906d3fdd3#form-data-validation
    */
@@ -168,5 +172,7 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  { withRef: true }
 )(BindingPanel);
