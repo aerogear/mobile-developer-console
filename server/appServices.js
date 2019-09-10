@@ -36,7 +36,7 @@ const retryWatchDebounce = debounce((namespace, kubeclient) => {
   retryWatch(namespace, kubeclient);
 }, debounceTime);
 
-let lookat = []; // created to hold a list of apps, this gets cleared from time to time
+let appCollect = []; // created to hold a list of apps, this gets cleared from time to time
 let appNames = []; // Hold a list of the app names used as a refernces
 
 function updateAll(namespace, kubeclient) {
@@ -50,16 +50,15 @@ function updateAll(namespace, kubeclient) {
       if (updating) {
         mobileclientList.items.forEach(element => {
           if (!_.includes(appNames, element.metadata.name)) {
-            lookat.push(element); // only getting one copy of an app for updating
+            appCollect.push(element); // only getting one copy of an app for updating
             appNames.push(element.metadata.name);
             logAction(`check value = ${!_.includes(appNames, element.metadata.name)}`);
           }
-          // console.log(appNames);
         });
-        logAction(`Mobile Apps (lookat): len ${lookat.length}`);
+        logAction(`Mobile Apps (appCollect): len ${appCollect.length}`);
         updating = false;
       }
-      return lookat;
+      return appCollect;
     })
     .then(mobileclients => mobileclients.map(mobileclient => updateApp(namespace, mobileclient, kubeclient)))
     .then(promises => {
@@ -84,7 +83,7 @@ function updateApp(namespace, app, kubeclient) {
     .then(result => {
       const shouldUpdate = result[0];
       if (shouldUpdate) {
-        logAction('The app be should updated');
+        logAction(`App ${appName} should be updated`);
         const newServices = result[1];
         app.status = {
           clientId: appName,
@@ -118,10 +117,9 @@ async function updateAppsAndWatch(namespace, kubeclient) {
   connectionAttempts++;
   logAction('About to call updateAll()');
   updateAll(namespace, kubeclient).then(pickles => {
-    logAction('called from inside the updateAll.then');
     watchMobileClients(namespace, kubeclient);
     watchDataSyncConfigMaps(namespace, kubeclient);
-    // watchKeyCloakSecrets(namespace, kubeclient);
+    watchKeyCloakSecrets(namespace, kubeclient);
     watchAndroidVariants(namespace, kubeclient);
     watchIosVariants(namespace, kubeclient);
     watchMobileSecurityApps(namespace, kubeclient);
@@ -138,20 +136,17 @@ async function updateAppsAndWatch(namespace, kubeclient) {
  * @param {*} kubeclient - kubernetes client
  */
 async function watchMobileClients(namespace, kubeclient) {
-  // I think this is working as expected
-  logAction('We are in side the Mobile client watch');
+  logAction('Watching for new Mobile Clients');
   const appStream = await kubeclient.apis[mobileClientCRD.spec.group].v1alpha1.watch
     .namespaces(namespace)
     .mobileclients.getObjectStream();
 
   appStream.on('data', event => {
-    // console.log(event);
     if (event.type === 'ADDED' && !_.includes(appNames, event.object.metadata.name)) {
-      console.log(event); // Trying to work out whats been in the event stream
       updateAll(namespace, kubeclient);
     } else if (event.type === 'DELETED') {
       appNames = _.remove(appNames, event.object.metadata.name);
-      lookat = [];
+      appCollect = [];
     }
   });
 
@@ -246,7 +241,7 @@ async function watchAndroidVariants(namespace, kubeclient) {
 
   androidVariantStream.on('data', event => {
     logAction('Data stream from android');
-    devhandleEventData(event, ANDROID_UPS_SUFFIX, namespace, kubeclient);
+    handleUPSEventData(event, ANDROID_UPS_SUFFIX, namespace, kubeclient);
   });
 
   // reopens the stream when it closes
@@ -272,7 +267,7 @@ async function watchIosVariants(namespace, kubeclient) {
 
   iosVariantStream.on('data', event => {
     logAction('Data stream from IoS');
-    devhandleEventData(event, IOS_UPS_SUFFIX, namespace, kubeclient);
+    handleUPSEventData(event, IOS_UPS_SUFFIX, namespace, kubeclient);
   });
 
   // reopens the stream when it closes
@@ -292,13 +287,12 @@ async function watchIosVariants(namespace, kubeclient) {
  * @param {*} kubeclient - kubernetes client
  */
 async function watchMobileSecurityApps(namespace, kubeclient) {
-  logAction('Called from inside watchMobileSecurityApps');
   const mssAppStream = await kubeclient.apis[mobileSecurityServiceCRD.spec.group].v1alpha1.watch
     .namespaces(namespace)
     .mobilesecurityserviceapps.getObjectStream();
 
   mssAppStream.on('data', event => {
-    logAction('MSS inside the app stream on data call');
+    logAction('MSS data received');
     handleEventData(event, MOBILE_SECURITY_SUFFIX, namespace, kubeclient);
   });
 
@@ -312,31 +306,25 @@ async function watchMobileSecurityApps(namespace, kubeclient) {
   });
 }
 
-function devhandleEventData(event, suffix, namespace, kubeclient) {
+function handleUPSEventData(event, suffix, namespace, kubeclient) {
   if (event.type === 'ADDED' && event.object && event.object.metadata.name.endsWith(suffix) && !updating) {
-    // console.log(event);
-    // eventAction(event, namespace, kubeclient);
-
-    const data = getApp(lookat, getAppName(event));
+    const data = getApp(appCollect, getAppName(event));
 
     const currentServices = data.status.services.filter(ser => ser.name === 'push');
     const service = currentServices[0];
-    logAction('In dev Actions ');
-    console.log(data.status.services);
-    console.log(service);
 
     if (event.object.kind === 'AndroidVariant') {
       if (service && service.config && typeof service.config.android !== 'undefined') {
-        logAction('There is a android type');
+        console.log('AndroidVariant existing, no action required');
       } else {
-        logAction('About to refresh apps');
+        logAction('Adding a AndroidVariant to apps');
         fullAppRefresh(namespace, kubeclient);
       }
     } else if (event.object.kind === 'IOSVariant') {
       if (service && service.config && typeof service.config.ios !== 'undefined') {
-        logAction('There is a IoS type');
+        console.log('IOSVariant existing, no action required');
       } else {
-        logAction('Adding a IoS to apps');
+        logAction('Adding a IOSVariant to apps');
         fullAppRefresh(namespace, kubeclient);
       }
     }
@@ -346,17 +334,17 @@ function devhandleEventData(event, suffix, namespace, kubeclient) {
 }
 
 function fullAppRefresh(namespace, kubeclient) {
-  lookat = [];
+  // Clear out the collections and update all apps again
+  appCollect = [];
   appNames = [];
   updateAll(namespace, kubeclient);
 }
 
 function handleEventData(event, suffix, namespace, kubeclient) {
   if (event.type === 'ADDED' && event.object && event.object.metadata.name.endsWith(suffix) && !updating) {
-    console.log(event);
     eventAction(event, namespace, kubeclient);
   } else if (event.type === 'DELETED') {
-    lookat = [];
+    appCollect = [];
     appNames = [];
     updateAll(namespace, kubeclient);
   }
@@ -365,9 +353,9 @@ function handleEventData(event, suffix, namespace, kubeclient) {
 function eventAction(event, namespace, kubeclient) {
   try {
     updating = true;
-    const data = getApp(lookat, getAppName(event));
-    logAction('In eventAction about to update app');
-    console.log(data.status.services);
+    const appName = getAppName(event);
+    const data = getApp(appCollect, appName);
+    logAction(`Starting update of App : ${appName}`);
     updateApp(namespace, data, kubeclient);
   } catch (err) {
     console.log(err);
