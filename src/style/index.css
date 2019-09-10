@@ -16887,3 +16887,6 @@ table.dataTable {
 .mdc-alert-group .pf-c-alert .pf-c-alert__title {
   line-height: var(--pf-global--LineHeight--md);
   font-weight: 500; }
+
+.pf-c-modal-box__footer > .pf-c-button:first-of-type {
+  margin-left: 0 !important; }
