@@ -21,7 +21,7 @@ const MOBILE_SECURITY_SUFFIX = '-security';
 
 const { MAX_RETRIES = 60, RETRY_TIMEOUT = 5000 } = process.env;
 
-const { logAction } = require('./helpers');
+const { logAction, getAppName, getApp } = require('./helpers');
 
 let updating = false;
 // keeps track of how many attempts were made to connect to the Kubernetes API server
@@ -74,12 +74,15 @@ function updateAll(namespace, kubeclient) {
 }
 
 function updateApp(namespace, app, kubeclient) {
+  logAction('At the start of the upadateApp()');
   const oldServices = app.status.services;
   const appName = app.metadata.name;
   return getServicesForApp(namespace, app, kubeclient)
     .then(newServices => [!equal(newServices, oldServices), newServices])
     .then(result => {
       const shouldUpdate = result[0];
+      logAction('At if for the should update');
+      console.log(result);
       if (shouldUpdate) {
         const newServices = result[1];
         app.status = {
@@ -87,6 +90,12 @@ function updateApp(namespace, app, kubeclient) {
           namespace,
           services: newServices
         };
+        logAction('Were are stuck here');
+        kubeclient.apis[mobileClientCRD.spec.group].v1alpha1
+          .namespace(namespace)
+          .mobileclients(appName)
+          .get()
+          .then(resp => console.log(resp));
         console.log(`Update services for app ${appName}`);
         return kubeclient.apis[mobileClientCRD.spec.group].v1alpha1
           .namespace(namespace)
@@ -116,10 +125,10 @@ async function updateAppsAndWatch(namespace, kubeclient) {
   updateAll(namespace, kubeclient).then(pickles => {
     logAction('called from inside the updateAll.then');
     watchMobileClients(namespace, kubeclient);
-    watchDataSyncConfigMaps(namespace, kubeclient);
-    watchKeyCloakSecrets(namespace, kubeclient);
-    watchAndroidVariants(namespace, kubeclient);
-    watchIosVariants(namespace, kubeclient);
+    // watchDataSyncConfigMaps(namespace, kubeclient);
+    // watchKeyCloakSecrets(namespace, kubeclient);
+    // watchAndroidVariants(namespace, kubeclient);
+    // watchIosVariants(namespace, kubeclient);
     watchMobileSecurityApps(namespace, kubeclient);
 
     // reset connection attempts count
@@ -134,12 +143,14 @@ async function updateAppsAndWatch(namespace, kubeclient) {
  * @param {*} kubeclient - kubernetes client
  */
 async function watchMobileClients(namespace, kubeclient) {
+  // I think this is working as expected
   logAction('We are in side the Mobile client watch');
   const appStream = await kubeclient.apis[mobileClientCRD.spec.group].v1alpha1.watch
     .namespaces(namespace)
     .mobileclients.getObjectStream();
 
   appStream.on('data', event => {
+    // console.log(event);
     if (event.type === 'ADDED' && !_.includes(appNames, event.object.metadata.name)) {
       console.log(event); // Trying to work out whats been in the event stream
       updateAll(namespace, kubeclient);
@@ -300,10 +311,17 @@ async function watchMobileSecurityApps(namespace, kubeclient) {
     .mobilesecurityserviceapps.getObjectStream();
 
   mssAppStream.on('data', event => {
-    console.log(event); // watching the on data stream
-    // console.log(event); // to see what events have be pust in the stream
-    if (event.object && event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX) && !updating) {
-      console.log(event); // check oject been worked on
+    logAction('MSS inside the app stream on data call');
+    if (
+      event.type === 'ADDED' &&
+      event.object &&
+      event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX) &&
+      !updating
+    ) {
+      eventAction(event, namespace, kubeclient);
+    } else if (event.type === 'DELETED') {
+      lookat = [];
+      appNames = [];
       updateAll(namespace, kubeclient);
     }
   });
@@ -316,6 +334,19 @@ async function watchMobileSecurityApps(namespace, kubeclient) {
   mssAppStream.on('close', () => {
     retryWatchDebounce(namespace, kubeclient);
   });
+}
+
+function eventAction(event, namespace, kubeclient) {
+  try {
+    updating = true;
+    const data = getApp(lookat, getAppName(event));
+    console.log(data);
+    updateApp(namespace, data, kubeclient);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    updating = false;
+  }
 }
 
 module.exports = {
