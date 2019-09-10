@@ -18,6 +18,8 @@ const services = [PushService, IdentityManagementService, MetricsService, DataSy
 const KEYCLOAK_SECRET_SUFFIX = '-install-config';
 const DATASYNC_CONFIGMAP_SUFFIX = '-data-sync-binding';
 const MOBILE_SECURITY_SUFFIX = '-security';
+const ANDROID_UPS_SUFFIX = '-android-ups-variant';
+const IOS_UPS_SUFFIX = '-ios-ups-variant';
 
 const { MAX_RETRIES = 60, RETRY_TIMEOUT = 5000 } = process.env;
 
@@ -81,8 +83,8 @@ function updateApp(namespace, app, kubeclient) {
     .then(newServices => [!equal(newServices, oldServices), newServices])
     .then(result => {
       const shouldUpdate = result[0];
-      logAction('At if for the should update');
       if (shouldUpdate) {
+        logAction('The app be should updated');
         const newServices = result[1];
         app.status = {
           clientId: appName,
@@ -120,8 +122,8 @@ async function updateAppsAndWatch(namespace, kubeclient) {
     watchMobileClients(namespace, kubeclient);
     watchDataSyncConfigMaps(namespace, kubeclient);
     // watchKeyCloakSecrets(namespace, kubeclient);
-    // watchAndroidVariants(namespace, kubeclient);
-    // watchIosVariants(namespace, kubeclient);
+    watchAndroidVariants(namespace, kubeclient);
+    watchIosVariants(namespace, kubeclient);
     watchMobileSecurityApps(namespace, kubeclient);
 
     // reset connection attempts count
@@ -243,9 +245,8 @@ async function watchAndroidVariants(namespace, kubeclient) {
     .androidvariants.getObjectStream();
 
   androidVariantStream.on('data', event => {
-    if (event.object && event.object.status && !updating) {
-      updateAll(namespace, kubeclient);
-    }
+    logAction('Data stream from android');
+    devhandleEventData(event, ANDROID_UPS_SUFFIX, namespace, kubeclient);
   });
 
   // reopens the stream when it closes
@@ -270,9 +271,8 @@ async function watchIosVariants(namespace, kubeclient) {
     .iosvariants.getObjectStream();
 
   iosVariantStream.on('data', event => {
-    if (event.object && event.object.status && !updating) {
-      updateAll(namespace, kubeclient);
-    }
+    logAction('Data stream from IoS');
+    devhandleEventData(event, IOS_UPS_SUFFIX, namespace, kubeclient);
   });
 
   // reopens the stream when it closes
@@ -312,8 +312,48 @@ async function watchMobileSecurityApps(namespace, kubeclient) {
   });
 }
 
+function devhandleEventData(event, suffix, namespace, kubeclient) {
+  if (event.type === 'ADDED' && event.object && event.object.metadata.name.endsWith(suffix) && !updating) {
+    // console.log(event);
+    // eventAction(event, namespace, kubeclient);
+
+    const data = getApp(lookat, getAppName(event));
+
+    const currentServices = data.status.services.filter(ser => ser.name === 'push');
+    const service = currentServices[0];
+    logAction('In dev Actions ');
+    console.log(data.status.services);
+    console.log(service);
+
+    if (event.object.kind === 'AndroidVariant') {
+      if (service && service.config && typeof service.config.android !== 'undefined') {
+        logAction('There is a android type');
+      } else {
+        logAction('About to refresh apps');
+        fullAppRefresh(namespace, kubeclient);
+      }
+    } else if (event.object.kind === 'IOSVariant') {
+      if (service && service.config && typeof service.config.ios !== 'undefined') {
+        logAction('There is a IoS type');
+      } else {
+        logAction('Adding a IoS to apps');
+        fullAppRefresh(namespace, kubeclient);
+      }
+    }
+  } else if (event.type === 'DELETED') {
+    fullAppRefresh(namespace, kubeclient);
+  }
+}
+
+function fullAppRefresh(namespace, kubeclient) {
+  lookat = [];
+  appNames = [];
+  updateAll(namespace, kubeclient);
+}
+
 function handleEventData(event, suffix, namespace, kubeclient) {
   if (event.type === 'ADDED' && event.object && event.object.metadata.name.endsWith(suffix) && !updating) {
+    console.log(event);
     eventAction(event, namespace, kubeclient);
   } else if (event.type === 'DELETED') {
     lookat = [];
@@ -326,7 +366,8 @@ function eventAction(event, namespace, kubeclient) {
   try {
     updating = true;
     const data = getApp(lookat, getAppName(event));
-    console.log(data);
+    logAction('In eventAction about to update app');
+    console.log(data.status.services);
     updateApp(namespace, data, kubeclient);
   } catch (err) {
     console.log(err);
