@@ -1,7 +1,6 @@
 /* eslint guard-for-in: 0 */
 import React, { Component } from 'react';
-import { Grid, Row, Col } from 'patternfly-react';
-import { Form, FormGroup, TextInput, TextArea } from '@patternfly/react-core';
+import { FormGroup, TextInput, TextArea } from '@patternfly/react-core';
 import { MobileApp, MAXLENGTH_APPNAME } from '../../models';
 import { CREATE_CLIENT_NAME } from './Constants';
 import { VerticalFormField } from './VerticalFormField';
