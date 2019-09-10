@@ -82,7 +82,6 @@ function updateApp(namespace, app, kubeclient) {
     .then(result => {
       const shouldUpdate = result[0];
       logAction('At if for the should update');
-      console.log(result);
       if (shouldUpdate) {
         const newServices = result[1];
         app.status = {
@@ -90,12 +89,6 @@ function updateApp(namespace, app, kubeclient) {
           namespace,
           services: newServices
         };
-        logAction('Were are stuck here');
-        kubeclient.apis[mobileClientCRD.spec.group].v1alpha1
-          .namespace(namespace)
-          .mobileclients(appName)
-          .get()
-          .then(resp => console.log(resp));
         console.log(`Update services for app ${appName}`);
         return kubeclient.apis[mobileClientCRD.spec.group].v1alpha1
           .namespace(namespace)
@@ -125,7 +118,7 @@ async function updateAppsAndWatch(namespace, kubeclient) {
   updateAll(namespace, kubeclient).then(pickles => {
     logAction('called from inside the updateAll.then');
     watchMobileClients(namespace, kubeclient);
-    // watchDataSyncConfigMaps(namespace, kubeclient);
+    watchDataSyncConfigMaps(namespace, kubeclient);
     // watchKeyCloakSecrets(namespace, kubeclient);
     // watchAndroidVariants(namespace, kubeclient);
     // watchIosVariants(namespace, kubeclient);
@@ -179,13 +172,7 @@ async function watchMobileClients(namespace, kubeclient) {
 async function watchDataSyncConfigMaps(namespace, kubeclient) {
   const configmapStream = await kubeclient.api.v1.watch.namespace(namespace).configmaps.getObjectStream();
   configmapStream.on('data', event => {
-    console.log(event); // watching the on data stream
-    if (event.object && event.object.metadata.name.endsWith(DATASYNC_CONFIGMAP_SUFFIX)) {
-      updateAll(namespace, kubeclient);
-    } else if (event.type === 'DELETED') {
-      appNames = _.remove(appNames, event.object.metadata.name);
-      lookat = [];
-    }
+    handleEventData(event, DATASYNC_CONFIGMAP_SUFFIX, namespace, kubeclient);
   });
 
   // reopens the stream when it closes
@@ -312,18 +299,7 @@ async function watchMobileSecurityApps(namespace, kubeclient) {
 
   mssAppStream.on('data', event => {
     logAction('MSS inside the app stream on data call');
-    if (
-      event.type === 'ADDED' &&
-      event.object &&
-      event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX) &&
-      !updating
-    ) {
-      eventAction(event, namespace, kubeclient);
-    } else if (event.type === 'DELETED') {
-      lookat = [];
-      appNames = [];
-      updateAll(namespace, kubeclient);
-    }
+    handleEventData(event, MOBILE_SECURITY_SUFFIX, namespace, kubeclient);
   });
 
   // reopens the stream when it closes
@@ -334,6 +310,16 @@ async function watchMobileSecurityApps(namespace, kubeclient) {
   mssAppStream.on('close', () => {
     retryWatchDebounce(namespace, kubeclient);
   });
+}
+
+function handleEventData(event, suffix, namespace, kubeclient) {
+  if (event.type === 'ADDED' && event.object && event.object.metadata.name.endsWith(suffix) && !updating) {
+    eventAction(event, namespace, kubeclient);
+  } else if (event.type === 'DELETED') {
+    lookat = [];
+    appNames = [];
+    updateAll(namespace, kubeclient);
+  }
 }
 
 function eventAction(event, namespace, kubeclient) {
