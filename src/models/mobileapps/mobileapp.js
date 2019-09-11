@@ -40,7 +40,6 @@ export default class MobileApp {
   }
 
   getProperty(propertyName) {
-    console.log("what is", propertyName)
     // the get/set property methods only supports get/set fields on the spec object for now.
     // but it can be extended to support accessing more fields on more objects (like status).
     return this.getSpec().get(propertyName);
@@ -57,7 +56,6 @@ export default class MobileApp {
           return value.match('^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$');
         }
         default:
-          console.log('made it to success')
           return 'success';
       }
     }
@@ -67,14 +65,12 @@ export default class MobileApp {
 
   isValid(propertyName) {
     if (propertyName) {
-      console.log('made it to propertyName')
       return this._validateProperty(propertyName);
     }
     return this._validateProperty(PROPERTIES.NAME);
   }
 
   getSpec() {
-    console.log("did it make it to getSpec", this.spec)
     return this.spec;
   }
 

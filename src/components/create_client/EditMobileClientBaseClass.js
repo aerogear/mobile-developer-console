@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { FormGroup, TextInput, TextArea } from '@patternfly/react-core';
 import { MobileApp, MAXLENGTH_APPNAME } from '../../models';
 import { CREATE_CLIENT_NAME } from './Constants';
-import { VerticalFormField } from './VerticalFormField';
+//import { VerticalFormField } from './VerticalFormField';
 
 export const LABEL_APPNAME = 'Application Name';
 export const EXAMPLE_APPNAME = 'myapp';
@@ -28,9 +28,6 @@ class EditMobileClientBaseClass extends Component {
     };
     this.app = new MobileApp({ ...this.props.ui.app });
     this.handleTextInputChange = this.handleTextInputChange.bind(this);
-    // this.handleTextInputChange = valueInput => {
-    //   this.setState({ valueInput, isValid: _validate(valueInput) });
-    // };
   }
 
   handleTextInputChange = (valueInput) => {
@@ -41,13 +38,9 @@ class EditMobileClientBaseClass extends Component {
   }
 
   _validate(propertyName) {
-    console.log('1:', propertyName)
     if (this.app.getProperty(propertyName) === undefined) {
-      console.log(propertyName);
       return undefined;
-      console.log('got here 2');
     }
-    console.log('got here 3');
     return this.app.isValid(propertyName) ? 'success' : 'error';
   }
 
@@ -76,9 +69,7 @@ class EditMobileClientBaseClass extends Component {
   render() {
     this.app = new MobileApp({ ...this.props.ui.app });
     const { isValid } = this.state;
-    //const { valueInput } = this.state;
     const { valueInput } = this.app.getProperty(CREATE_CLIENT_NAME) || '';
-    console.log('this is value input', valueInput)
     //const generatedFields = this.getFormFields().map(formField => VerticalFormField({ ...formField }));
     return (
       <React.Fragment>

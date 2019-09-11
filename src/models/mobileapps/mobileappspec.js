@@ -6,7 +6,6 @@ export default class AppSpec extends Spec {
   }
 
   getApiKey() {
-    console.log('did it make it to appspec1');
     return this.get('apiKey');
   }
 
