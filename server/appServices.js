@@ -116,7 +116,7 @@ function getServicesForApp(namespace, app, kubeclient) {
 async function updateAppsAndWatch(namespace, kubeclient) {
   connectionAttempts++;
   logAction('About to call updateAll()');
-  updateAll(namespace, kubeclient).then(pickles => {
+  updateAll(namespace, kubeclient).then(() => {
     watchMobileClients(namespace, kubeclient);
     watchDataSyncConfigMaps(namespace, kubeclient);
     watchKeyCloakSecrets(namespace, kubeclient);
@@ -266,7 +266,7 @@ async function watchIosVariants(namespace, kubeclient) {
     .iosvariants.getObjectStream();
 
   iosVariantStream.on('data', event => {
-    logAction('Data stream from IoS');
+    logAction('Data stream from iOS');
     handleUPSEventData(event, IOS_UPS_SUFFIX, namespace, kubeclient);
   });
 
@@ -310,18 +310,17 @@ function handleUPSEventData(event, suffix, namespace, kubeclient) {
   if (event.type === 'ADDED' && event.object && event.object.metadata.name.endsWith(suffix) && !updating) {
     const data = getApp(appCollect, getAppName(event));
 
-    const currentServices = data.status.services.filter(ser => ser.name === 'push');
-    const service = currentServices[0];
+    const service = data.status.services.find(ser => ser.name === 'push');
 
     if (event.object.kind === 'AndroidVariant') {
-      if (service && service.config && typeof service.config.android !== 'undefined') {
+      if (service && service.config && service.config.android) {
         console.log('AndroidVariant existing, no action required');
       } else {
         logAction('Adding a AndroidVariant to apps');
         fullAppRefresh(namespace, kubeclient);
       }
     } else if (event.object.kind === 'IOSVariant') {
-      if (service && service.config && typeof service.config.ios !== 'undefined') {
+      if (service && service.config && service.config.ios) {
         console.log('IOSVariant existing, no action required');
       } else {
         logAction('Adding a IOSVariant to apps');
