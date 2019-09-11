@@ -27,15 +27,27 @@ class EditMobileClientBaseClass extends Component {
       }
     };
     this.app = new MobileApp({ ...this.props.ui.app });
-    this.handleTextInputChange = valueInput => {
-      this.setState({ valueInput, isValid: /^\d+$/.test(valueInput) });
-    };
+    this.handleTextInputChange = this.handleTextInputChange.bind(this);
+    // this.handleTextInputChange = valueInput => {
+    //   this.setState({ valueInput, isValid: _validate(valueInput) });
+    // };
+  }
+
+  handleTextInputChange = (valueInput) => {
+    if (this._validate(CREATE_CLIENT_NAME) == 'success') {
+      this.setState({ valueInput, isValid: true });
+    }
+    this.setState({ valueInput, isValid: false });
   }
 
   _validate(propertyName) {
+    console.log('1:', propertyName)
     if (this.app.getProperty(propertyName) === undefined) {
+      console.log(propertyName);
       return undefined;
+      console.log('got here 2');
     }
+    console.log('got here 3');
     return this.app.isValid(propertyName) ? 'success' : 'error';
   }
 
@@ -64,7 +76,9 @@ class EditMobileClientBaseClass extends Component {
   render() {
     this.app = new MobileApp({ ...this.props.ui.app });
     const { isValid } = this.state;
-    const { valueInput } = this.state;
+    //const { valueInput } = this.state;
+    const { valueInput } = this.app.getProperty(CREATE_CLIENT_NAME) || '';
+    console.log('this is value input', valueInput)
     //const generatedFields = this.getFormFields().map(formField => VerticalFormField({ ...formField }));
     return (
       <React.Fragment>
@@ -74,6 +88,7 @@ class EditMobileClientBaseClass extends Component {
               isRequired
               fieldId={CREATE_CLIENT_NAME}
               isValid={isValid}
+              helperTextInvalid={this.config.appName.help}
             >
               <TextInput
               isValid={isValid}
