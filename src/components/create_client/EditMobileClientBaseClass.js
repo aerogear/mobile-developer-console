@@ -16,7 +16,8 @@ class EditMobileClientBaseClass extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isValid: false
+      isValid: false,
+      valueInput: ''
     };
     this.config = {
       appName: {
@@ -26,6 +27,9 @@ class EditMobileClientBaseClass extends Component {
       }
     };
     this.app = new MobileApp({ ...this.props.ui.app });
+    this.handleTextInputChange = valueInput => {
+      this.setState({ valueInput, isValid: /^\d+$/.test(valueInput) });
+    };
   }
 
   _validate(propertyName) {
@@ -60,6 +64,7 @@ class EditMobileClientBaseClass extends Component {
   render() {
     this.app = new MobileApp({ ...this.props.ui.app });
     const { isValid } = this.state;
+    const { valueInput } = this.state;
     //const generatedFields = this.getFormFields().map(formField => VerticalFormField({ ...formField }));
     return (
       <React.Fragment>
@@ -77,9 +82,9 @@ class EditMobileClientBaseClass extends Component {
               type="text"
               id={CREATE_CLIENT_NAME}
               name="simple-form-name"
-              aria-describedby="simple-form-name-helper"
-              value={this.app.getProperty(CREATE_CLIENT_NAME) || ''}
-              onChange={e => this.props.setFieldValue(CREATE_CLIENT_NAME, e.target.value)}
+              aria-describedby="form-helper"
+              value={valueInput}
+              onChange={this.handleTextInputChange}
               />
             </FormGroup>
       </React.Fragment>

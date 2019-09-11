@@ -96,7 +96,7 @@ class ClientEditBaseClass extends Component {
         <Button key="cancel" variant="secondary" onClick={this.handleModalToggle}>
           Cancel
         </Button>
-      ]} isFooterLeftAligned
+      ]}
       >
       {this.state.error && (
         <Alert key="123" type="error">
@@ -109,7 +109,7 @@ class ClientEditBaseClass extends Component {
         <div className="pf-u-mt-xl">
           <p>Create cross-platform mobile apps using JavaScript.</p>
           <p className="pf-u-pb-md">You can use the following JavaScript frameworks:</p>
-          <div class="pf-grid">
+          <div className="pf-grid">
             <div>
               <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />
               <p>Cordova</p>
