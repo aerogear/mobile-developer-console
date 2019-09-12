@@ -52,7 +52,6 @@ export class ErrorMessages extends Component {
   render() {
     const { errors, dismissError } = this.props;
     return (
-<<<<<<< HEAD
       <div className="mdc-alert-group">
         {[...new Set(errors.map(error => error.message))].map((error, index) => (
           <Alert
@@ -63,13 +62,6 @@ export class ErrorMessages extends Component {
           >
             {error}
           </Alert>
-=======
-      <ToastNotificationList>
-        {[...new Set(errors.map(error => errorMessage(error)))].map((error, index) => (
-          <ToastNotification key={index} onDismiss={() => dismissError(error.message)}>
-            <span>{error.displayMessage || error.message}</span>
-          </ToastNotification>
->>>>>>> upstream/master
         ))}
       </div>
     );

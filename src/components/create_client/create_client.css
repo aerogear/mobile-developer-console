@@ -4,6 +4,9 @@ a:-webkit-any-link {
 .create-client-form {
   padding-top: 16px; }
 
+.modal-button {
+  margin-right: 8px; }
+
 .mobile-client-creation-result {
   font-size: 20px;
   font-weight: 300;
@@ -12,9 +15,6 @@ a:-webkit-any-link {
 .mobile-client-creation-result-text {
   padding-left: 16px;
   padding-right: 16px; }
-
-.modal-button {
-  margin-right: 8px; }
 
 pre {
   margin-top: 16px; }
