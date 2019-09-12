@@ -34,6 +34,7 @@ export const ServiceSDKInfo = ({ framework, mobileApp }) => {
               </Col>
             );
           }
+          // eslint-disable-next-line no-console
           console.error(`Bad service type found '${type}'`);
           return null;
         })}

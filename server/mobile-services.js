@@ -8,6 +8,7 @@ const androidVariantCRD = require('./android-variant-crd.json');
 const iosVariantCRD = require('./ios-variant-crd.json');
 
 const mobileSecurityServiceCRD = require('./mobile-security-crd.json');
+const logger = require('./logger')('mobile-services.js');
 
 const PUSH_SERVICE_TYPE = 'push';
 const IDM_SERVICE_TYPE = 'keycloak';
@@ -67,9 +68,9 @@ const PushService = {
       .catch(err => {
         const name = `${appname}${ANDROID_UPS_SUFFIX}`;
         if (err && err.statusCode && err.statusCode === 404) {
-          console.info(`Can not find AndroidVariant ${name}`);
+          logger.info(`Can not find AndroidVariant ${name}`);
         } else {
-          console.warn(`Error when fetch AndroidVariant ${name}`, err);
+          logger.warn(`Error when fetch AndroidVariant ${name}`, err);
         }
       });
 
@@ -82,9 +83,9 @@ const PushService = {
       .catch(err => {
         const name = `${appname}${IOS_UPS_SUFFIX}`;
         if (err && err.statusCode && err.statusCode === 404) {
-          console.info(`Can not find IOSVariant ${name}`);
+          logger.info(`Can not find IOSVariant ${name}`);
         } else {
-          console.warn(`Error when fetch IOSVariant ${name}`, err);
+          logger.warn(`Error when fetch IOSVariant ${name}`, err);
         }
       });
 
@@ -139,9 +140,9 @@ const PushService = {
       )
       .catch(err => {
         if (err && err.statusCode && err.statusCode === 404) {
-          console.info(`Can not find PushApplication ${appname}`);
+          logger.info(`Can not find PushApplication ${appname}`);
         } else {
-          console.warn(`Error when fetch PushApplication ${appname}`, err);
+          logger.warn(`Error when fetch PushApplication ${appname}`, err);
         }
         return null;
       });
@@ -183,9 +184,9 @@ const IdentityManagementService = {
       })
       .catch(err => {
         if (err && err.statusCode && err.statusCode === 404) {
-          console.info(`Can not find secret ${secretName}`);
+          logger.info(`Can not find secret ${secretName}`);
         } else {
-          console.warn(`Error when fetch secret ${secretName}`, err);
+          logger.warn(`Error when fetch secret ${secretName}`, err);
         }
         return null;
       });
@@ -248,9 +249,9 @@ const DataSyncService = {
       })
       .catch(err => {
         if (err && err.statusCode && err.statusCode === 404) {
-          console.info(`Can not find configmap ${configmapName}`);
+          logger.info(`Can not find configmap ${configmapName}`);
         } else {
-          console.warn(`Error when fetch configmap ${configmapName}`, err);
+          logger.warn(`Error when fetch configmap ${configmapName}`, err);
         }
         return null;
       });
@@ -289,9 +290,9 @@ const MobileSecurityService = {
       )
       .catch(err => {
         if (err && err.statusCode && err.statusCode === 404) {
-          console.info(`Can not find Mobile Security Service App ${resourceName}`);
+          logger.info(`Can not find Mobile Security Service App ${resourceName}`);
         } else {
-          console.warn(`Error when fetch Mobile Security Service App ${resourceName}`, err);
+          logger.warn(`Error when fetch Mobile Security Service App ${resourceName}`, err);
         }
         return null;
       });
@@ -349,13 +350,13 @@ function getServices() {
     if (fs.existsSync(configPath)) {
       return fs.readFile(configPath, (err, data) => {
         if (err) {
-          console.error(`Failed to read service config file ${configPath}, mock data will be used`);
+          logger.error(`Failed to read service config file ${configPath}, mock data will be used`);
           return resolve(DEFAULT_SERVICES);
         }
         return resolve(JSON.parse(data));
       });
     }
-    console.warn(`can not find service config file at ${configPath}, mock data will be used`);
+    logger.warn(`can not find service config file at ${configPath}, mock data will be used`);
     return resolve(DEFAULT_SERVICES);
   })
     .then(servicesUrls => servicesUrls.components.concat([dataSyncService]))

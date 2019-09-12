@@ -17,6 +17,7 @@ export const ServiceSDKDocs = ({ framework, mobileApp }) => {
               <ServiceSDKSetup key={`sdk-setup-${index}`} docs={docs} />
             ));
           }
+          // eslint-disable-next-line no-console
           console.error(`Bad service type found '${type}'`);
           return null;
         })}

@@ -23,17 +23,20 @@ module.exports = function(fileName) {
     info: {
       console: {
         level: 'info',
+        handleExceptions: true,
         format: defaultConsoleFormat
       }
     },
     debug: {
       console: {
         level: 'debug',
+        handleExceptions: true,
         format: defaultConsoleFormat
       },
       file: {
         filename: 'dev-debug.log',
         level: 'debug',
+        handleExceptions: true,
         format: format.combine(format.timestamp(), format.label({ label: fileName }), messageFormat)
       }
     }

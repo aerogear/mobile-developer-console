@@ -12,6 +12,7 @@ const {
   DataSyncService,
   MobileSecurityService
 } = require('./mobile-services');
+const logger = require('./logger')('appServer.js');
 
 const services = [PushService, IdentityManagementService, MetricsService, DataSyncService, MobileSecurityService];
 
@@ -36,7 +37,7 @@ const retryWatchDebounce = debounce((namespace, kubeclient) => {
 }, debounceTime);
 
 function updateAll(namespace, kubeclient) {
-  console.log('Check services for all apps', Date());
+  logger.info('Check services for all apps');
   return kubeclient.apis[mobileClientCRD.spec.group].v1alpha1
     .namespace(namespace)
     .mobileclients.get()
@@ -50,7 +51,7 @@ function updateAll(namespace, kubeclient) {
       }
     })
     .catch(err => {
-      console.error(`Failed to update apps due to error`, err);
+      logger.error(`Failed to update apps due to error: `, err);
 
       retryWatchDebounce(namespace, kubeclient);
 
@@ -72,7 +73,7 @@ function updateApp(namespace, app, kubeclient) {
           namespace,
           services: newServices
         };
-        console.log(`Update services for app ${appName}`);
+        logger.info(`Update services for app ${appName}`);
         return kubeclient.apis[mobileClientCRD.spec.group].v1alpha1
           .namespace(namespace)
           .mobileclients(appName)
@@ -81,7 +82,7 @@ function updateApp(namespace, app, kubeclient) {
       return Promise.resolve();
     })
     .catch(err => {
-      console.error(`Failed to update app ${app.metadata.name} due to error`, err);
+      logger.error(`Failed to update app ${app.metadata.name} due to error: `, err);
 
       retryWatchDebounce();
 
@@ -214,7 +215,7 @@ async function watchKeyCloakSecrets(namespace, kubeclient) {
  */
 function retryWatch(namespace, kubeclient) {
   if (connectionAttempts < MAX_RETRIES) {
-    console.log(
+    logger.warn(
       `waiting ${RETRY_TIMEOUT} milliseconds before attempting services watches again`,
       `attempt ${connectionAttempts} of ${MAX_RETRIES}`
     );
@@ -223,7 +224,7 @@ function retryWatch(namespace, kubeclient) {
       updateAppsAndWatch(namespace, kubeclient);
     }, RETRY_TIMEOUT);
   } else {
-    console.log(`Failed to set up watch ${MAX_RETRIES} times, exiting application`);
+    logger.error(`Failed to set up watch ${MAX_RETRIES} times, exiting application`);
     process.exit(1);
   }
 }

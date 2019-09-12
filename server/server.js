@@ -14,6 +14,7 @@ const pushApplicationCRD = require('./push-application-crd.json');
 const androidVariantCRD = require('./android-variant-crd.json');
 const iosVariantCRD = require('./ios-variant-crd.json');
 const mobileSecurityService = require('./mobile-security-crd.json');
+const logger = require('./logger')('server.js');
 
 const app = express();
 
@@ -118,7 +119,7 @@ async function initKubeClient() {
     kubeclient.addCustomResourceDefinition(mobileSecurityService);
     return kubeclient;
   } catch (e) {
-    console.error('Failed to init kube client', e);
+    logger.error('Failed to init kube client: ', e);
 
     // Exiting the server. Waiting 5 seconds to avoid strict loops
     setTimeout(() => process.exit(1), 5000);
@@ -138,19 +139,22 @@ if (process.env.NODE_ENV === 'production') {
 async function run() {
   const { OPENSHIFT_HOST, OPENSHIFT_USER_TOKEN, NAMESPACE } = process.env;
   if (!OPENSHIFT_HOST) {
-    console.warn('OPENSHIFT_HOST environment variable is not set');
+    logger.warn('OPENSHIFT_HOST environment variable is not set');
   }
   if (!NAMESPACE) {
-    console.warn(`NAMESPACE environment variable is not set, will use the default namespace ${DEFAULT_NAMESPACE}`);
+    logger.warn(`NAMESPACE environment variable is not set, will use the default namespace ${DEFAULT_NAMESPACE}`);
   }
   if (!OPENSHIFT_USER_TOKEN && process.env.NODE_ENV !== 'production') {
-    console.warn('OPENSHIFT_USER_TOKEN environment variable is not set');
+    logger.warn('OPENSHIFT_USER_TOKEN environment variable is not set');
   }
   const kubeclient = await initKubeClient();
 
   updateAppsAndWatch(NAMESPACE || DEFAULT_NAMESPACE, kubeclient);
 
-  app.listen(port, () => console.log(`Listening on port ${port}`));
+  app.listen(port, () => {
+    logger.debug('Running in debug mode');
+    logger.info(`Listening on port ${port}`);
+  });
 }
 
 run();
