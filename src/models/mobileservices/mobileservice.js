@@ -51,7 +51,6 @@ export class MobileService {
 
   getDescription = () => this.data.description;
 
-<<<<<<< HEAD
   getLogoURLBlackAndWhite() {
     return this.data.iconBlackAndWhite;
   }
@@ -59,9 +58,7 @@ export class MobileService {
   getIconClass() {
     return this.data.iconClass;
   }
-=======
   getLogoUrl = () => this.data.icon;
->>>>>>> upstream/master
 
   getIconClass = () => this.data.iconClass;
 
