@@ -68,7 +68,7 @@ const PushService = {
       .catch(err => {
         const name = `${appname}${ANDROID_UPS_SUFFIX}`;
         if (err && err.statusCode && err.statusCode === 404) {
-          logger.info(`Can not find AndroidVariant ${name}`);
+          logger.verbose(`Can not find AndroidVariant ${name}`);
         } else {
           logger.warn(`Error when fetch AndroidVariant ${name}`, err);
         }
@@ -83,7 +83,7 @@ const PushService = {
       .catch(err => {
         const name = `${appname}${IOS_UPS_SUFFIX}`;
         if (err && err.statusCode && err.statusCode === 404) {
-          logger.info(`Can not find IOSVariant ${name}`);
+          logger.verbose(`Can not find IOSVariant ${name}`);
         } else {
           logger.warn(`Error when fetch IOSVariant ${name}`, err);
         }
@@ -140,7 +140,7 @@ const PushService = {
       )
       .catch(err => {
         if (err && err.statusCode && err.statusCode === 404) {
-          logger.info(`Can not find PushApplication ${appname}`);
+          logger.verbose(`Can not find PushApplication ${appname}`);
         } else {
           logger.warn(`Error when fetch PushApplication ${appname}`, err);
         }
@@ -184,7 +184,7 @@ const IdentityManagementService = {
       })
       .catch(err => {
         if (err && err.statusCode && err.statusCode === 404) {
-          logger.info(`Can not find secret ${secretName}`);
+          logger.verbose(`Can not find secret ${secretName}`);
         } else {
           logger.warn(`Error when fetch secret ${secretName}`, err);
         }
@@ -249,7 +249,7 @@ const DataSyncService = {
       })
       .catch(err => {
         if (err && err.statusCode && err.statusCode === 404) {
-          logger.info(`Can not find configmap ${configmapName}`);
+          logger.verbose(`Can not find configmap ${configmapName}`);
         } else {
           logger.warn(`Error when fetch configmap ${configmapName}`, err);
         }
@@ -290,7 +290,7 @@ const MobileSecurityService = {
       )
       .catch(err => {
         if (err && err.statusCode && err.statusCode === 404) {
-          logger.info(`Can not find Mobile Security Service App ${resourceName}`);
+          logger.verbose(`Can not find Mobile Security Service App ${resourceName}`);
         } else {
           logger.warn(`Error when fetch Mobile Security Service App ${resourceName}`, err);
         }

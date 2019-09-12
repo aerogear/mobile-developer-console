@@ -46,7 +46,9 @@ module.exports = function(fileName) {
 
   if (process.env.NODE_ENV !== 'production') {
     logger.add(new transports.Console(options.debug.console));
-    logger.add(new transports.File(options.debug.file)); // creates local dev-debug.log file
+    if (process.env.NODE_ENV === 'development') {
+      logger.add(new transports.File(options.debug.file)); // creates local dev-debug.log file
+    }
   } else {
     logger.add(new transports.Console(options.info.console));
   }
