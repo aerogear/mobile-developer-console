@@ -41,7 +41,7 @@ export class CreateBuildConfigDialog extends Component {
     const { show, title, onCancel } = this.props;
     const { valid = false } = this.state;
     return (
-      <Modal show={show} container={this}>
+      <Modal show={true} container={this}>
         <Modal.Header>
           <Modal.CloseButton onClick={onCancel} />
           <Modal.Title>{title}</Modal.Title>

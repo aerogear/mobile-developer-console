@@ -59,8 +59,11 @@ export class Client extends Component {
       selectedTab: initialTab.key,
       isOpen: false,
       isModalOpen: false,
-      value1: ''
+      value1: '',
+      showBuildConfigDialog: false
     };
+
+    this.openBuildConfigDialog = this.openBuildConfigDialog.bind(this);
 
     this.handleTextInputChange1 = value1 => {
       this.setState({ value1 });
@@ -77,7 +80,7 @@ export class Client extends Component {
         isOpen
       });
     };
-    this.onSelect = event => {
+    this.onSelect = () => {
       this.setState({
         isOpen: !this.state.isOpen
       });
@@ -133,6 +136,12 @@ export class Client extends Component {
     }
   };
 
+  openBuildConfigDialog () {
+    this.setState({
+      showBuildConfigDialog: true
+     })
+  }
+
   // header = mobileApp => {
   //   // const { selectedTab, showBuildConfigDialog = false } = this.state;
   //   // const { creationTimestamp = null } = mobileApp.metadata.data;
@@ -173,8 +182,8 @@ export class Client extends Component {
 
   render() {
     const mobileApp = this.getMobileApp();
-    const { selectedTab, showBuildConfigDialog = false } = this.state;
-    // const clientInfo = { clientId: mobileApp.getName() };
+    const { showBuildConfigDialog } = this.state;
+    const { clientInfo } = { clientId: mobileApp.getName() };
     // const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
     const cardValues = { width: '450px', height: '100%', boxShadow: 'unset' };
@@ -183,22 +192,26 @@ export class Client extends Component {
     const { isModalOpen } = this.state;
     const { value1 } = this.state;
     const dropdownItems = [
-      <DropdownItem key="/">
-        {mobileApp && selectedTab === TAB_BUILDS.key ? (
-          <React.Fragment>
-            <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
-            <BuildConfigDialog
-              update={false}
-              clientInfo={{ clientId: mobileApp.getName() }}
-              show={showBuildConfigDialog}
-              onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
-            />
-          </React.Fragment>
-            ) : (
-              ''
-            )}
-          <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
-      </DropdownItem>
+      // <React.Fragment>
+      //   {mobileApp ? (
+      //     <React.Fragment>
+      //       <DropdownItem>
+      //         <button onClick={this.openBuildConfigDialog}>
+      //           New build config
+      //         </button>
+      //       </DropdownItem>
+      //       <BuildConfigDialog
+      //         update={false}
+      //         clientInfo={ clientInfo }
+      //         show={showBuildConfigDialog}
+      //         onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
+      //       />
+      //     </React.Fragment>
+      //       ) : (
+      //         ''
+      //       )}
+      // </React.Fragment>,
+      <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
     ];
     return mobileApp ? (
       <React.Fragment>
