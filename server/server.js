@@ -125,6 +125,9 @@ async function initKubeClient() {
     return kubeclient;
   } catch (e) {
     console.error('Failed to init kube client', e);
+
+    // Exiting the server. Waiting 5 seconds to avoid strict loops
+    setTimeout(() => process.exit(1), 5000);
     return null;
   }
 }
