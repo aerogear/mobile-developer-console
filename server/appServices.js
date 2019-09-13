@@ -104,7 +104,7 @@ function shouldCallUpdate(task) {
   if (lastQItem && lastQItem.resource === task.resource && task.ts - lastQItem.ts < MINIMUM_GAP_BETWEEN_CALLS) {
     // if the current task is the same type as the last one, and the timestamp is very ver close, it is very likely
     // that the task is generated from the same batch of events, so let's not process them
-    console.log(`ignore task as it's just been processed`, task);
+    logger.info(`ignore task as it's just been processed. Resourse: ${task.resource}, ts: ${task.ts}`);
     return false;
   }
   return true;
