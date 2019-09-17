@@ -4,6 +4,9 @@
   .pf-grid div {
     text-align: center; }
 
+.pf-l-bullseye {
+  height: unset; }
+
 @media only screen and (max-width: 900px) {
   .mdc-breakpoint-split > * {
     width: 50%; }

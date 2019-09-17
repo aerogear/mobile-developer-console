@@ -31,3 +31,10 @@
   line-height: var(--pf-global--LineHeight--md);
   font-weight: 500;
 }
+
+// Remove when new patternfly react package is updated
+.pf-c-modal-box__footer {
+  > .pf-c-button:first-of-type {
+    margin-left: 0 !important;
+  }
+}

@@ -32,6 +32,7 @@ import { fetchApp, fetchAndWatchApps } from '../actions/apps';
 import { fetchAndWatchBuildConfigs } from '../actions/buildConfigs';
 import { fetchAndWatchBuilds } from '../actions/builds';
 import { MobileApp } from '../models';
+import BuildConfigDialog from './BuildConfigDialog';
 import './Client.css';
 import { fetchAndWatchServices } from '../actions/services';
 import { deleteApp } from '../actions/apps';
@@ -41,10 +42,11 @@ export class Client extends Component {
     super(props);
 
     this.state = {
-      isOpen: false,
+      isDropdownOpen: false,
       isEditModalOpen: false,
       isDeleteModalOpen: false,
-      value1: ''
+      value1: '',
+      isBuildConfigDialogOpen: false
     };
 
     this.handleTextInputChange1 = value1 => {
@@ -57,14 +59,14 @@ export class Client extends Component {
       }));
     };
 
-    this.onToggle = isOpen => {
+    this.onToggle = isDropdownOpen => {
       this.setState({
-        isOpen
+        isDropdownOpen
       });
     };
     this.onSelect = () => {
       this.setState({
-        isOpen: !this.state.isOpen
+        isDropdownOpen: !this.state.isDropdownOpen
       });
     };
   }
@@ -81,6 +83,14 @@ export class Client extends Component {
   getMobileApp() {
     return MobileApp.find(this.props.apps.items, this.props.match.params.id) || new MobileApp();
   }
+
+  toggleDeleteModal = () => {
+    this.setState({isDeleteModalOpen: !this.state.isDeleteModalOpen})
+  }
+
+  handleBuildConfigDialog = () => {
+    this.setState({isBuildConfigDialogOpen: !this.state.isBuildConfigDialogOpen})
+  };
 
   componentDidUpdate(prevProps) {
     if (this.props.buildConfigs !== prevProps.buildConfigs || this.props.builds !== prevProps.builds) {
@@ -105,10 +115,6 @@ export class Client extends Component {
     }
   }
 
-  toggleDeleteModal = () => {
-    this.setState({isDeleteModalOpen: !this.state.isDeleteModalOpen})
-  }
-
   triggerDeletion = (itemName) => {
     const { onDelete } = this.props;
     if (onDelete && typeof onDelete === 'function') {
@@ -121,14 +127,28 @@ export class Client extends Component {
 
   render() {
     const mobileApp = this.getMobileApp();
-    const { showBuildConfigDialog = false } = this.state;
     const appName = this.props.match.params.id;
     const cardValues = { width: '450px', height: '100%', boxShadow: 'unset' };
     const { creationTimestamp = null } = mobileApp.metadata.data;
-    const { isOpen } = this.state;
-    const { isEditModalOpen, isDeleteModalOpen } = this.state;
-    const { value1 } = this.state;
+    const { clientInfo } = { clientId: mobileApp.getName() };
+    const { isDropdownOpen } = this.state;
+    const { isEditModalOpen, isDeleteModalOpen, isBuildConfigDialogOpen } = this.state;
+    const { value1 } = this.state; 
     const dropdownItems = [
+      <React.Fragment>
+        {mobileApp ? (
+          <React.Fragment>
+            <DropdownItem
+              key="app"
+              onClick={this.handleBuildConfigDialog}
+              >
+              New build config
+            </DropdownItem>
+          </React.Fragment>
+          ) : (
+            ''
+        )}
+      </React.Fragment>,
       <DropdownItem
         key="app"
         onClick={this.toggleDeleteModal}
@@ -151,7 +171,7 @@ export class Client extends Component {
               onSelect={this.onSelect}
               position={DropdownPosition.right}
               toggle={<DropdownToggle onToggle={this.onToggle} iconComponent={CaretDownIcon}>Actions</DropdownToggle>}
-              isOpen={isOpen}
+              isOpen={isDropdownOpen}
               dropdownItems={dropdownItems}
             />
           </LevelItem>
@@ -200,16 +220,23 @@ export class Client extends Component {
           </FormGroup>
         </Form>
       </Modal>
+      <BuildConfigDialog
+        update={false}
+        clientInfo={ clientInfo }
+        show={isBuildConfigDialogOpen}
+        onShowStateChanged={isShown => this.setState({ isBuildConfigDialogOpen: isShown })}
+      />
       <Modal
+        width={'50%'}
         title="Confirm Delete"
         isOpen={this.state.isDeleteModalOpen}
         onClose={this.toggleDeleteModal}
         actions={[
-          <Button key="cancel" onClick={this.toggleDeleteModal}>
-            Cancel
-          </Button>,
           <Button key="confirm" variant="danger" onClick={() => this.triggerDeletion(appName)}>
             Delete
+          </Button>,
+          <Button key="cancel" variant="secondary" onClick={this.toggleDeleteModal}>
+            Cancel
           </Button>
         ]}
         >
