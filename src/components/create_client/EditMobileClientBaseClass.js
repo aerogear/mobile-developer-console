@@ -1,9 +1,10 @@
 /* eslint guard-for-in: 0 */
 import React, { Component } from 'react';
+import { Form } from 'patternfly-react';
 import { FormGroup, TextInput, TextArea } from '@patternfly/react-core';
 import { MobileApp, MAXLENGTH_APPNAME } from '../../models';
 import { CREATE_CLIENT_NAME } from './Constants';
-//import { VerticalFormField } from './VerticalFormField';
+import { VerticalFormField } from './VerticalFormField';
 
 export const LABEL_APPNAME = 'Application Name';
 export const EXAMPLE_APPNAME = 'myapp';
@@ -16,8 +17,7 @@ class EditMobileClientBaseClass extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isValid: false,
-      valueInput: ''
+      isValid: false
     };
     this.config = {
       appName: {
@@ -27,54 +27,64 @@ class EditMobileClientBaseClass extends Component {
       }
     };
     this.app = new MobileApp({ ...this.props.ui.app });
-    this.handleTextInputChange = this.handleTextInputChange.bind(this);
+    //this.handleTextInputChange = this.handleTextInputChange.bind(this);
   }
 
-  handleTextInputChange = (valueInput) => {
-    if (this._validate(CREATE_CLIENT_NAME) == 'success') {
-      this.setState({ valueInput, isValid: true });
-    }
-    this.setState({ valueInput, isValid: false });
-  }
+  // handleTextInputChange = (valueInput) => {
+  //   if (this._validate(CREATE_CLIENT_NAME) == 'success') {
+  //     this.setState({ valueInput, isValid: true });
+  //   }
+  //   this.setState({ valueInput, isValid: false });
+  // }
 
   _validate(propertyName) {
     if (this.app.getProperty(propertyName) === undefined) {
       return undefined;
     }
     return this.app.isValid(propertyName) ? 'success' : 'error';
-  }
+    // if (this.app.isValid(propertyName) === true) {
+    //   this.setState({ isValid: true });
+    //   console.log ('did it make it here to success');
+    //   return 'success'
+    // }
+    // if (this.app.isValid(propertyName) === false) {
+    //   this.setState({ isValid: false });
+    //   console.log ('did it make it here to error');
+    //   return 'error'
+    // }
+   }
 
   /**
    * Subclasses should override this if they needs to provide custom fields.
    */
-  // getFormFields() {
-  //   return [
-  //     {
-  //       controlId: CREATE_CLIENT_NAME,
-  //       label: this.config.appName.label,
-  //       useFieldLevelHelp: false,
-  //       showHelp: this.app.getName() && !this.app.isValid(CREATE_CLIENT_NAME), // show the help only if some invalid value is entered
-  //       help: this.config.appName.help,
-  //       content: this.config.appName.help,
-  //       placeholder: this.config.appName.example,
-  //       value: this.app.getProperty(CREATE_CLIENT_NAME) || '',
-  //       formControl: ({ validationState, ...props }) => <Form.FormControl type="text" {...props} autoFocus />,
-  //       validationState: this._validate(CREATE_CLIENT_NAME),
-  //       autoComplete: 'off',
-  //       onChange: e => this.props.setFieldValue(CREATE_CLIENT_NAME, e.target.value)
-  //     }
-  //   ];
-  // }
+  getFormFields() {
+    return [
+      {
+        controlId: CREATE_CLIENT_NAME,
+        label: this.config.appName.label,
+        useFieldLevelHelp: false,
+        showHelp: this.app.getName() && !this.app.isValid(CREATE_CLIENT_NAME), // show the help only if some invalid value is entered
+        help: this.config.appName.help,
+        content: this.config.appName.help,
+        placeholder: this.config.appName.example,
+        value: this.app.getProperty(CREATE_CLIENT_NAME) || '',
+        formControl: ({ validationState, ...props }) => <FormGroup type="text" {...props} autoFocus />,
+        validationState: this._validate(CREATE_CLIENT_NAME),
+        autoComplete: 'off',
+        onChange: e => this.props.setFieldValue(CREATE_CLIENT_NAME, e.target.value),
+      }
+    ];
+  }
 
   render() {
     this.app = new MobileApp({ ...this.props.ui.app });
-    const { isValid } = this.state;
-    const { valueInput } = this.app.getProperty(CREATE_CLIENT_NAME) || '';
-    //const generatedFields = this.getFormFields().map(formField => VerticalFormField({ ...formField }));
+    //const { isValid } = this.state;
+    //const { valueInput } = this.app.getProperty(CREATE_CLIENT_NAME) || '';
+    const generatedFields = this.getFormFields().map(formField => VerticalFormField({ ...formField }));
     return (
       <React.Fragment>
-          {/* <Form vertical="true">{generatedFields}</Form> */}
-            <FormGroup
+          {generatedFields}
+            {/* <FormGroup
               label={this.config.appName.label}
               isRequired
               fieldId={CREATE_CLIENT_NAME}
@@ -92,7 +102,7 @@ class EditMobileClientBaseClass extends Component {
               value={valueInput}
               onChange={this.handleTextInputChange}
               />
-            </FormGroup>
+            </FormGroup> */}
       </React.Fragment>
     );
   }
