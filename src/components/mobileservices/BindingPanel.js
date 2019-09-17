@@ -70,7 +70,12 @@ export class BindingPanel extends Component {
       },
       {
         name: 'Results',
-        component: <div>review the binding</div>
+        component:  
+          <div>
+            <b>Mobile binding in progress</b>
+            <br/><br />
+            Your mobile binding is in progress, but this may take a while. You can close this wizard.
+          </div>
       }
     ];
   }
@@ -114,6 +119,10 @@ export class BindingPanel extends Component {
     this.setState({
       activeStepIndex: (activeStepIndex - 1) % 3
     });
+  }
+
+  isInProgress() {
+    return this.state.loading;
   }
 
   isInProgress() {
