@@ -70,7 +70,7 @@ export class MobileServiceView extends Component {
     return (
       <React.Fragment>
         <Title key="unbound-services" headingLevel="h4" size="2xl" className="pf-u-mt-md pf-u-mb-sm">
-          Available Services
+          Available Managed Services
         </Title>
         <p className="pf-u-mb-lg">The services listed below are not configured for your mobile application yet. Select "Create a binding" to get started.</p>
         <DataList style={{ borderTop: '0px', borderBottom: '0px' }}>
