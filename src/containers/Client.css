@@ -1,3 +1,7 @@
+.pf-c-backdrop .pf-l-bullseye {
+  height: unset;
+  margin: unset; }
+
 .pf-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }

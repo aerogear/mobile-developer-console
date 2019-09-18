@@ -1,13 +1,14 @@
 /* eslint guard-for-in: 0 */
 import React, { Component } from 'react';
-import { Grid, Form, Row, Col } from 'patternfly-react';
+import { Form } from 'patternfly-react';
+import { FormGroup, TextInput, TextArea } from '@patternfly/react-core';
 import { MobileApp, MAXLENGTH_APPNAME } from '../../models';
 import { CREATE_CLIENT_NAME } from './Constants';
 import { VerticalFormField } from './VerticalFormField';
 
-export const LABEL_APPNAME = '* App Name';
+export const LABEL_APPNAME = 'Application Name';
 export const EXAMPLE_APPNAME = 'myapp';
-export const HELP_APPNAME = `App name can not exceed ${MAXLENGTH_APPNAME} characters. It can not start or end with a special character, and can only contain lowercase letters, numbers, dots and hyphens.`;
+export const HELP_APPNAME = `Application name can not exceed ${MAXLENGTH_APPNAME} characters. It can not start or end with a special character, and can only contain lowercase letters, numbers, dots and hyphens.`;
 
 /**
  * Base component for the create/edit mobile client form.
@@ -15,6 +16,9 @@ export const HELP_APPNAME = `App name can not exceed ${MAXLENGTH_APPNAME} charac
 class EditMobileClientBaseClass extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isValid: false
+    };
     this.config = {
       appName: {
         label: LABEL_APPNAME,
@@ -23,14 +27,32 @@ class EditMobileClientBaseClass extends Component {
       }
     };
     this.app = new MobileApp({ ...this.props.ui.app });
+    //this.handleTextInputChange = this.handleTextInputChange.bind(this);
   }
+
+  // handleTextInputChange = (valueInput) => {
+  //   if (this._validate(CREATE_CLIENT_NAME) == 'success') {
+  //     this.setState({ valueInput, isValid: true });
+  //   }
+  //   this.setState({ valueInput, isValid: false });
+  // }
 
   _validate(propertyName) {
     if (this.app.getProperty(propertyName) === undefined) {
       return undefined;
     }
     return this.app.isValid(propertyName) ? 'success' : 'error';
-  }
+    // if (this.app.isValid(propertyName) === true) {
+    //   this.setState({ isValid: true });
+    //   console.log ('did it make it here to success');
+    //   return 'success'
+    // }
+    // if (this.app.isValid(propertyName) === false) {
+    //   this.setState({ isValid: false });
+    //   console.log ('did it make it here to error');
+    //   return 'error'
+    // }
+   }
 
   /**
    * Subclasses should override this if they needs to provide custom fields.
@@ -46,47 +68,42 @@ class EditMobileClientBaseClass extends Component {
         content: this.config.appName.help,
         placeholder: this.config.appName.example,
         value: this.app.getProperty(CREATE_CLIENT_NAME) || '',
-        formControl: ({ validationState, ...props }) => <Form.FormControl type="text" {...props} autoFocus />,
+        formControl: ({ validationState, ...props }) => <FormGroup type="text" {...props} autoFocus />,
         validationState: this._validate(CREATE_CLIENT_NAME),
         autoComplete: 'off',
-        onChange: e => this.props.setFieldValue(CREATE_CLIENT_NAME, e.target.value)
+        onChange: e => this.props.setFieldValue(CREATE_CLIENT_NAME, e.target.value),
       }
     ];
   }
 
   render() {
     this.app = new MobileApp({ ...this.props.ui.app });
+    //const { isValid } = this.state;
+    //const { valueInput } = this.app.getProperty(CREATE_CLIENT_NAME) || '';
     const generatedFields = this.getFormFields().map(formField => VerticalFormField({ ...formField }));
     return (
-      <div>
-        <Grid bsClass="create-client-form">
-          <Form vertical="true">{generatedFields}</Form>
-        </Grid>
-        <p>Create cross-platform mobile apps using JavaScript.</p>
-        <p>You can use the following JavaScript frameworks:</p>
-        <Row className="show-grid container">
-          <Col md={1} className="text-center">
-            <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />
-            <p>Cordova</p>
-          </Col>
-          <Col md={1} className="text-center">
-            <img src="/img/react.jpg" width="25" height="25" alt="React logo" />
-            <p>React</p>
-          </Col>
-          <Col md={1} className="text-center">
-            <img src="/img/ionic.jpg" width="25" height="25" alt="Ionic logo" />
-            <p>Ionic</p>
-          </Col>
-          <Col md={1} className="text-center">
-            <img src="/img/angular.jpg" width="25" height="25" alt="Angular logo" />
-            <p>Angular</p>
-          </Col>
-          <Col md={1} className="text-center">
-            <img src="/img/vue.jpg" width="25" height="25" alt="Vue logo" />
-            <p>Vue</p>
-          </Col>
-        </Row>
-      </div>
+      <React.Fragment>
+          {generatedFields}
+            {/* <FormGroup
+              label={this.config.appName.label}
+              isRequired
+              fieldId={CREATE_CLIENT_NAME}
+              isValid={isValid}
+              helperTextInvalid={this.config.appName.help}
+            >
+              <TextInput
+              isValid={isValid}
+              isRequired
+              placeholder={this.config.appName.example}
+              type="text"
+              id={CREATE_CLIENT_NAME}
+              name="simple-form-name"
+              aria-describedby="form-helper"
+              value={valueInput}
+              onChange={this.handleTextInputChange}
+              />
+            </FormGroup> */}
+      </React.Fragment>
     );
   }
 }
