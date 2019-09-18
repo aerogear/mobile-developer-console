@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { MenuItem, MessageDialog } from 'patternfly-react';
+// import { MessageDialog } from 'patternfly-react';
+import { DropdownItem, Modal, Button } from '@patternfly/react-core';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { deleteApp } from '../actions/apps';
@@ -38,6 +39,7 @@ class DeleteItemButton extends Component {
   };
 
   openDialog = () => {
+    console.log("did it make it here");
     this.setState({
       showModal: true
     });
@@ -56,23 +58,30 @@ class DeleteItemButton extends Component {
   render() {
     const { itemType, title = 'Delete' } = this.props;
     const itemName = this.getItemName();
+    const { showModal }  = this.state;
+    console.log( showModal );
 
     return (
       <Route
         render={props => (
           <React.Fragment>
-            <MenuItem onClick={this.openDialog}>{title}</MenuItem>
-            <MessageDialog
-              show={this.state.showModal}
-              onHide={this.handleDialogClose}
-              primaryAction={() => this.triggerDeletion(props.history)}
-              secondaryAction={this.handleDialogClose}
-              primaryActionButtonContent="Delete"
-              secondaryActionButtonContent="Cancel"
-              primaryActionButtonBsStyle="danger"
-              title="Confirm Delete"
-              secondaryContent={
-                <React.Fragment>
+            <DropdownItem key="action">
+              <button onClick={() => this.openDialog}>
+                {title}
+              </button>
+              </DropdownItem>
+              <Modal
+                title="Confirm Delete"
+                isOpen={ showModal }
+                onClose={this.handleDialogClose}
+                actions={[
+                  <Button key="Delete" variant="danger" onClick={() => this.triggerDeletion(props.history)}>
+                    Delete
+                  </Button>,
+                  <Button key="Cancel" variant="secondary" onClick={this.handleDialogClose}>
+                    Cancel
+                  </Button>
+                ]}>
                   <p>
                     {`Are you sure you want to delete the ${itemType} '`}
                     <b>{itemName}</b>
@@ -82,9 +91,7 @@ class DeleteItemButton extends Component {
                     {itemName} and its data will no longer be available. <b>It cannot be undone.</b> Make sure this is
                     something you really want to do!
                   </p>
-                </React.Fragment>
-              }
-            />
+              </Modal>
           </React.Fragment>
         )}
       />

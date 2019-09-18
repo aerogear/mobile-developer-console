@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MenuItem } from 'patternfly-react';
+import { withRouter } from "react-router";
 import {
   PageSection,
   PageSectionVariants,
@@ -7,6 +7,8 @@ import {
   BreadcrumbItem,
   Level,
   LevelItem,
+  Modal,
+  Button,
   Title,
   Split,
   SplitItem,
@@ -17,60 +19,54 @@ import {
   DropdownItem,
   DropdownPosition,
   ClipboardCopy,
-  ClipboardCopyVariant
+  ClipboardCopyVariant,
 } from '@patternfly/react-core';
 import { connect } from 'react-redux';
 import { PencilAltIcon, CaretDownIcon } from '@patternfly/react-icons';
-import { find } from 'lodash-es';
 import Moment from 'react-moment';
 // import ConfigurationView from '../components/configuration/ConfigurationView';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
 import { fetchApp, fetchAndWatchApps } from '../actions/apps';
 import { fetchAndWatchBuildConfigs } from '../actions/buildConfigs';
 import { fetchAndWatchBuilds } from '../actions/builds';
-import DeleteItemButton from './DeleteItemButton';
 import { MobileApp } from '../models';
-// import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
 import BuildConfigDialog from './BuildConfigDialog';
 import './Client.css';
 import { fetchAndWatchServices } from '../actions/services';
-
-export const TAB_CONFIGURATION = { key: 1, hash: 'configuration' };
-export const TAB_MOBILE_SERVICES = { key: 2, hash: 'services' };
-export const TAB_BUILDS = { key: 3, hash: 'builds' };
-
-const TABS = [TAB_CONFIGURATION, TAB_MOBILE_SERVICES, TAB_BUILDS];
+import { deleteApp } from '../actions/apps';
 
 export class Client extends Component {
   constructor(props) {
     super(props);
-    let initialTab = find(TABS, { hash: props.location.hash.substring(1) });
-    if (!initialTab) {
-      initialTab = TAB_CONFIGURATION;
-    }
 
     this.state = {
-      // buildConfigs: [],
-      selectedTab: initialTab.key,
-      isOpen: false,
-      value1: ''
+      isDropdownOpen: false,
+      isEditModalOpen: false,
+      isDeleteModalOpen: false,
+      value1: '',
+      isBuildConfigDialogOpen: false
     };
 
     this.handleTextInputChange1 = value1 => {
       this.setState({ value1 });
     };
 
-    this.onToggle = isOpen => {
+    this.handleModalToggle = () => {
+      this.setState(({ isEditModalOpen }) => ({
+        isEditModalOpen: !isEditModalOpen
+      }));
+    };
+
+    this.onToggle = isDropdownOpen => {
       this.setState({
-        isOpen
+        isDropdownOpen
       });
     };
-    this.onSelect = event => {
+    this.onSelect = () => {
       this.setState({
-        isOpen: !this.state.isOpen
+        isDropdownOpen: !this.state.isDropdownOpen
       });
     };
-    this.handleNavSelect = this.handleNavSelect.bind(this);
   }
 
   componentDidMount() {
@@ -79,17 +75,20 @@ export class Client extends Component {
     this.props.fetchApp(appName);
     this.props.fetchAndWatchApps();
 
-    if (this.props.buildTabEnabled) {
-      this.props.fetchAndWatchBuilds();
-      this.props.fetchAndWatchBuildConfigs();
-    }
-
     this.props.fetchAndWatchServices();
   }
 
   getMobileApp() {
     return MobileApp.find(this.props.apps.items, this.props.match.params.id) || new MobileApp();
   }
+
+  toggleDeleteModal = () => {
+    this.setState({isDeleteModalOpen: !this.state.isDeleteModalOpen})
+  }
+
+  handleBuildConfigDialog = () => {
+    this.setState({isBuildConfigDialogOpen: !this.state.isBuildConfigDialogOpen})
+  };
 
   componentDidUpdate(prevProps) {
     if (this.props.buildConfigs !== prevProps.buildConfigs || this.props.builds !== prevProps.builds) {
@@ -114,81 +113,75 @@ export class Client extends Component {
     }
   }
 
-  handleNavSelect = eventKey => {
-    const { selectedTab } = this.state;
-    if (selectedTab !== eventKey) {
-      this.setState({ selectedTab: eventKey });
+  triggerDeletion = (itemName) => {
+    const { onDelete } = this.props;
+    if (onDelete && typeof onDelete === 'function') {
+      onDelete();
+    } else {
+      this.props.deleteApp(itemName);
     }
+    this.props.history.push('/overview')
   };
-
-  // header = mobileApp => {
-  //   // const { selectedTab, showBuildConfigDialog = false } = this.state;
-  //   // const { creationTimestamp = null } = mobileApp.metadata.data;
-  //   // passing empty string to build config dialog for now as the client id.
-  //   return (
-  //     <div className="app-header-wrapper">
-  //       <div className="app-header">
-  //         <div>
-  //           <h1>
-  //             {mobileApp.getName()}
-  //             {/* <span className="creation-timestamp">
-  //               created <Moment fromNow>{creationTimestamp}</Moment>
-  //             </span> */}
-  //           </h1>
-  //         </div>
-  //       </div>
-  //       {/* <div className="app-actions-dropdown">
-  //         <DropdownButton id="app-actions-dropdown" title="Actions" pullRight>
-  //           {mobileApp && selectedTab === TAB_BUILDS.key ? (
-  //             <React.Fragment>
-  //               <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
-  //               <BuildConfigDialog
-  //                 update={false}
-  //                 clientInfo={{ clientId: mobileApp.getName() }}
-  //                 show={showBuildConfigDialog}
-  //                 onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
-  //               />
-  //             </React.Fragment>
-  //           ) : (
-  //             ''
-  //           )}
-  //           <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
-  //         </DropdownButton>
-  //       </div> */}
-  //     </div>
-  //   );
-  // };
 
   render() {
     const mobileApp = this.getMobileApp();
-    const { selectedTab, showBuildConfigDialog = false } = this.state;
-    // const clientInfo = { clientId: mobileApp.getName() };
-    // const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
     const cardValues = { width: '450px', height: '100%', boxShadow: 'unset' };
     const { creationTimestamp = null } = mobileApp.metadata.data;
-    const { isOpen } = this.state;
-    const { value1 } = this.state;
+    const { clientInfo } = { clientId: mobileApp.getName() };
+    const { isDropdownOpen } = this.state;
+    const { isEditModalOpen, isDeleteModalOpen, isBuildConfigDialogOpen } = this.state;
+    const { value1 } = this.state; 
     const dropdownItems = [
-      <DropdownItem key="/">
-        {mobileApp && selectedTab === TAB_BUILDS.key ? (
+      <React.Fragment>
+        {mobileApp ? (
           <React.Fragment>
-            <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
-            <BuildConfigDialog
-              update={false}
-              clientInfo={{ clientId: mobileApp.getName() }}
-              show={showBuildConfigDialog}
-              onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
-            />
+            <DropdownItem
+              key="app"
+              onClick={this.handleBuildConfigDialog}
+              >
+              New build config
+            </DropdownItem>
           </React.Fragment>
+<<<<<<< HEAD
+          ) : (
+            ''
+        )}
+      </React.Fragment>,
+      <DropdownItem
+        key="app"
+        onClick={this.toggleDeleteModal}
+        >
+        Delete
+=======
         ) : (
           ''
         )}
         <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
+>>>>>>> patternfly4-updates
       </DropdownItem>
     ];
     return mobileApp ? (
       <React.Fragment>
+<<<<<<< HEAD
+      <PageSection variant={PageSectionVariants.light} className="pf-u-pb-0">
+        <Level>
+          <LevelItem>
+            <Breadcrumb>
+              <BreadcrumbItem to="/overview">Mobile Apps</BreadcrumbItem>
+              <BreadcrumbItem isActive>Review and Edit</BreadcrumbItem>
+            </Breadcrumb>
+          </LevelItem>
+          <LevelItem>
+            <Dropdown
+              onSelect={this.onSelect}
+              position={DropdownPosition.right}
+              toggle={<DropdownToggle onToggle={this.onToggle} iconComponent={CaretDownIcon}>Actions</DropdownToggle>}
+              isOpen={isDropdownOpen}
+              dropdownItems={dropdownItems}
+            />
+          </LevelItem>
+=======
         <PageSection variant={PageSectionVariants.light} className="pf-u-pb-0">
           <Level>
             <LevelItem>
@@ -210,6 +203,7 @@ export class Client extends Component {
                 dropdownItems={dropdownItems}
               />
             </LevelItem>
+>>>>>>> patternfly4-updates
           </Level>
       </PageSection>
       <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
@@ -219,6 +213,36 @@ export class Client extends Component {
             Created <Moment fromNow>{creationTimestamp}</Moment>
           </span>
         </Title>
+      <BuildConfigDialog
+        update={false}
+        clientInfo={ clientInfo }
+        show={isBuildConfigDialogOpen}
+        onShowStateChanged={isShown => this.setState({ isBuildConfigDialogOpen: isShown })}
+      />
+      <Modal
+        width={'50%'}
+        title="Confirm Delete"
+        isOpen={this.state.isDeleteModalOpen}
+        onClose={this.toggleDeleteModal}
+        actions={[
+          <Button key="confirm" variant="danger" onClick={() => this.triggerDeletion(appName)}>
+            Delete
+          </Button>,
+          <Button key="cancel" variant="secondary" onClick={this.toggleDeleteModal}>
+            Cancel
+          </Button>
+        ]}
+        >
+          <p>
+            {`Are you sure you want to delete '`}
+            <b>{appName}</b>
+            {`'?`}
+          </p>
+          <p>
+            {appName} and its data will no longer be available. <b>It cannot be undone.</b> Make sure this is
+            something you really want to do!
+          </p>
+      </Modal>
       </PageSection>
       <Split className="mdc-breakpoint-split" style={{ display: 'flex', flex: '1' }}>
         <SplitItem isFilled style={{ display: 'flex', flexDirection: 'column' }}>
@@ -257,6 +281,24 @@ export class Client extends Component {
                   <img src="/img/vue.jpg" width="25" height="25" alt="Vue logo" />
                   <p>Vue</p>
                 </div>
+<<<<<<< HEAD
+              </div>
+            </CardBody>
+            <CardBody>
+              <Title headingLevel="h4" size="lg" className="pf-u-mb-md">
+                mobile-services.json
+              </Title>
+              <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">               
+                "client": "myapp",
+                "namespace": "uxd-test-project",
+                "services": []
+            </ClipboardCopy>
+            </CardBody>
+          </Card>
+        </SplitItem> 
+      </Split>
+    </ React.Fragment>
+=======
               </CardBody>
               <CardBody>
                 <Title headingLevel="h4" size="lg" className="pf-u-mb-md">
@@ -310,6 +352,7 @@ export class Client extends Component {
         )}
       </Grid> */}
       </React.Fragment>
+>>>>>>> patternfly4-updates
     ) : (
       <React.Fragment />
     );
@@ -320,8 +363,7 @@ function mapStateToProps(state) {
   return {
     apps: state.apps,
     buildConfigs: state.buildConfigs,
-    builds: state.builds,
-    buildTabEnabled: state.config.buildTabEnabled
+    builds: state.builds
   };
 }
 
@@ -330,10 +372,11 @@ const mapDispatchToProps = {
   fetchAndWatchBuildConfigs,
   fetchAndWatchBuilds,
   fetchAndWatchServices,
-  fetchAndWatchApps
+  fetchAndWatchApps,
+  deleteApp,
 };
 
-export default connect(
+export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Client);
+)(Client));
