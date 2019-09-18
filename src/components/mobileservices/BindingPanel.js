@@ -64,7 +64,7 @@ export class BindingPanel extends Component {
             formData={this.state.formData}
             onChange={this.onFormChange} // eslint-disable-line no-return-assign
           >
-            <div/>
+            <div />
           </Form>
         )
       },
@@ -85,7 +85,7 @@ export class BindingPanel extends Component {
     this.open();
   }
 
-  onFormChange = (data) => {
+  onFormChange = data => {
     const { formData } = data;
     if (this.state.onChangeHandler) {
       const newSchema = this.state.onChangeHandler(formData, this.state.schema);
@@ -99,8 +99,8 @@ export class BindingPanel extends Component {
       }
     }
     return this.setState({ formData });
-  }
-  
+  };
+
   onNextButtonClick = () => {
     const { activeStepIndex } = this.state;
     if (activeStepIndex === 1) {
@@ -112,18 +112,14 @@ export class BindingPanel extends Component {
       activeStepIndex: (activeStepIndex + 1) % 3
     });
     return true;
-  }
+  };
 
   onBackButtonClick = () => {
     const { activeStepIndex } = this.state;
     this.setState({
       activeStepIndex: (activeStepIndex - 1) % 3
     });
-  }
-
-  isInProgress() {
-    return this.state.loading;
-  }
+  };
 
   isInProgress() {
     return this.state.loading;
@@ -147,7 +143,7 @@ export class BindingPanel extends Component {
 
     return errors;
   };
-  
+
   render() {
     return (
       <Wizard
@@ -161,7 +157,6 @@ export class BindingPanel extends Component {
         onBack={this.onBackButtonClick}
         nextButtonText={this.state.activeStepIndex === 1 ? 'Create' : 'Next'}
         activeStepIndex={this.state.activeStepIndex}
-
       />
     );
   }
