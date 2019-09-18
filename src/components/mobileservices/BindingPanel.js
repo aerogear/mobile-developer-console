@@ -14,6 +14,7 @@ export class BindingPanel extends Component {
   constructor(props) {
     super(props);
 
+    this.validate = this.validate.bind(this);
     const bindingFormConfig = this.props.service.getBindingForm({
       appName: props.appName,
       service: props.service
@@ -26,11 +27,70 @@ export class BindingPanel extends Component {
       service: props.service,
       activeStepIndex: 0,
       validationRules,
+      isFormValid: false,
       onChangeHandler,
       key: Date.now() // required to reset any possible validation errors
     };
+  }
 
-    this.steps = [
+  /**
+   * see https://github.com/mozilla-services/react-jsonschema-form/tree/6cb26d17c0206b610b130729db930d5906d3fdd3#form-data-validation
+   */
+  validate = (formData, errors) => {
+    /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
+    new FormValidator(this.state.validationRules).validate(formData, (key, message) => {
+      get(errors, key).addError(message);
+    });
+
+    return errors;
+  };
+
+  show() {
+    this.stepChanged(0);
+    this.open();
+  }
+
+  onFormChange = (data) => {
+    const { formData } = data;
+    const valid = new FormValidator(this.state.validationRules)
+      .validate(formData, () => {});
+    if (valid) { this.setState({isFormValid: true})}
+    if (this.state.onChangeHandler) {
+      const newSchema = this.state.onChangeHandler(formData, this.state.schema);
+
+      if (newSchema) {
+        this.setState({
+          formData: {},
+          schema: newSchema,
+          key: Date.now() // reset any possible validation errors
+        });
+        return;
+      }
+    }
+    this.setState({ formData });
+  }
+  
+  onNextButtonClick = () => {
+    const { activeStepIndex } = this.state;
+    if (activeStepIndex === 1) {
+      this.props.createCustomResourceForService(this.state.service, this.state.formData, this.props.app);
+      return false; // swallow the event, see validate function
+    }
+    this.setState({
+      activeStepIndex: (activeStepIndex + 1) % 3
+    });
+    return true;
+  }
+
+  onBackButtonClick = () => {
+    const { activeStepIndex } = this.state;
+    this.setState({
+      activeStepIndex: (activeStepIndex - 1) % 3
+    });
+  }
+  
+  render() {
+    const steps = [
       {
         name: 'Binding',
         component: (
@@ -51,6 +111,7 @@ export class BindingPanel extends Component {
       },
       {
         name: 'Parameters',
+        enableNext: this.state.isFormValid,
         component: (
           <Form
             key={this.state.key} // required to reset any possible validation errors
@@ -59,99 +120,34 @@ export class BindingPanel extends Component {
             ref={form => {
               this.form = form;
             }}
-            validate={this.validate}
             showErrorList={false}
+            validate={this.validate}
             formData={this.state.formData}
             onChange={this.onFormChange} // eslint-disable-line no-return-assign
+            liveValidate
           >
-            <div />
+            <div/>
           </Form>
         )
       },
       {
         name: 'Results',
-        component:  
-          <div>
-            <b>Mobile binding in progress</b>
-            <br/><br />
-            Your mobile binding is in progress, but this may take a while. You can close this wizard.
+        component: 
+	        <div> 
+         	  <b>Mobile binding in progress</b> 
+          	<br/><br /> 
+          	Your mobile binding is in progress, but this may take a while. You can close this wizard. 
           </div>
       }
     ];
-  }
 
-  show() {
-    this.stepChanged(0);
-    this.open();
-  }
-
-  onFormChange = data => {
-    const { formData } = data;
-    if (this.state.onChangeHandler) {
-      const newSchema = this.state.onChangeHandler(formData, this.state.schema);
-
-      if (newSchema) {
-        return this.setState({
-          formData: {},
-          schema: newSchema,
-          key: Date.now() // reset any possible validation errors
-        });
-      }
-    }
-    return this.setState({ formData });
-  };
-
-  onNextButtonClick = () => {
-    const { activeStepIndex } = this.state;
-    if (activeStepIndex === 1) {
-      this.form.submit();
-      this.props.createCustomResourceForService(this.state.service, this.state.formData, this.props.app);
-      return false; // swallow the event, see validate function
-    }
-    this.setState({
-      activeStepIndex: (activeStepIndex + 1) % 3
-    });
-    return true;
-  };
-
-  onBackButtonClick = () => {
-    const { activeStepIndex } = this.state;
-    this.setState({
-      activeStepIndex: (activeStepIndex - 1) % 3
-    });
-  };
-
-  isInProgress() {
-    return this.state.loading;
-  }
-
-  /**
-   * see https://github.com/mozilla-services/react-jsonschema-form/tree/6cb26d17c0206b610b130729db930d5906d3fdd3#form-data-validation
-   */
-  validate = (formData, errors) => {
-    /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
-    const valid = new FormValidator(this.state.validationRules).validate(formData, (key, message) => {
-      get(errors, key).addError(message);
-    });
-
-    if (valid) {
-      // Avdance to final screen if valid
-      this.setState({
-        activeStepIndex: 2
-      });
-    }
-
-    return errors;
-  };
-
-  render() {
     return (
       <Wizard
         isOpen
         onClose={this.props.close}
         show={this.props.showModal}
         title="Create a new service binding"
-        steps={this.steps}
+        steps={steps}
         onGoToStep={this.stepChanged}
         onNext={this.onNextButtonClick}
         onBack={this.onBackButtonClick}
@@ -176,7 +172,5 @@ function mapStateToProps(state, ownProps) {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
-  null,
-  { withRef: true }
+  mapDispatchToProps
 )(BindingPanel);
