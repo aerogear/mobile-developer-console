@@ -30,16 +30,17 @@ class UnboundServiceRow extends Component {
       icon = <img src={this.props.service.getLogoURLBlackAndWhite()} alt="" />;
     }
     return (
-      <DataListItemCells dataListCells={[
-        <DataListCell key={this.props.service.getId()} className="mdc-data-list-icon">
-          {icon}
-        </DataListCell>,
-      <DataListCell key="primary content">
-        <div id="ex-item1">{serviceDetailName}</div>
-        <span>{serviceDetailDescription}</span>
-      </DataListCell>
-      ]}
-    />
+      <DataListItemCells
+        dataListCells={[
+          <DataListCell key={this.props.service.getId()} className="mdc-data-list-icon">
+            {icon}
+          </DataListCell>,
+          <DataListCell key="primary content">
+            <div id="ex-item1">{serviceDetailName}</div>
+            <span>{serviceDetailDescription}</span>
+          </DataListCell>
+        ]}
+      />
     );
   }
 
@@ -71,14 +72,18 @@ class UnboundServiceRow extends Component {
     //   this.setState(() => ({ expanded: newExpanded }));
     // };
     return (
-      <DataListItem key={this.props.service.getId()} aria-labelledby="ex-item1" className="mdc-data-list-item--BorderColor">
-      <DataListItemRow className="mdc-unbound-data-list-row">
-        {this.renderServiceBadge()}
-        <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1" aria-label="Actions">
-          {this.renderBindingButtons()}
-        </DataListAction>
-      </DataListItemRow>
-    </DataListItem>
+      <DataListItem
+        key={this.props.service.getId()}
+        aria-labelledby="ex-item1"
+        className="mdc-data-list-item--BorderColor"
+      >
+        <DataListItemRow className="mdc-unbound-data-list-row">
+          {this.renderServiceBadge()}
+          <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1" aria-label="Actions">
+            {this.renderBindingButtons()}
+          </DataListAction>
+        </DataListItemRow>
+      </DataListItem>
     );
   }
 }

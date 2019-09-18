@@ -71,7 +71,7 @@ class BoundServiceRow extends Component {
 
     const serviceDetailDescription = this.props.service.getDescription();
     return (
-      <DataListItemCells 
+      <DataListItemCells
         dataListCells={[
           <DataListCell key={this.props.service.getId()} className="mdc-data-list-icon">
             {icon}
@@ -97,7 +97,7 @@ class BoundServiceRow extends Component {
         <div>
           <span>Documentation: </span>
           <a href={docUrl} target="_blank" rel="noreferrer noopener">
-              SDK Setup <i className="fa fa-external-link" aria-hidden="true" />
+            SDK Setup <i className="fa fa-external-link" aria-hidden="true" />
           </a>
         </div>
       );
@@ -175,7 +175,7 @@ class BoundServiceRow extends Component {
 
   render() {
     const toggle = id => {
-      const expanded = this.state.expanded;
+      const { expanded } = this.state;
       const index = expanded.indexOf(id);
       const newExpanded =
         index >= 0 ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)] : [...expanded, id];
@@ -184,8 +184,8 @@ class BoundServiceRow extends Component {
     return (
       <DataListItem
         className="mdc-data-list-item--BorderColor"
-        key={this.props.service.getId()} 
-        aria-labelledby="ex-item1" 
+        key={this.props.service.getId()}
+        aria-labelledby="ex-item1"
         isExpanded={this.state.expanded.includes('ex-toggle1')}
       >
         <DataListItemRow>
@@ -212,9 +212,13 @@ class BoundServiceRow extends Component {
             />
           </DataListAction>
         </DataListItemRow>
-        <DataListContent aria-label="Primary Content Details" id="ex-expand1" isHidden={!this.state.expanded.includes('ex-toggle1')}>
+        <DataListContent
+          aria-label="Primary Content Details"
+          id="ex-expand1"
+          isHidden={!this.state.expanded.includes('ex-toggle1')}
+        >
           {this.renderServiceDetails()}
-      </DataListContent>
+        </DataListContent>
       </DataListItem>
     );
   }

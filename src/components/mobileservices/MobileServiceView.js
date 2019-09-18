@@ -35,32 +35,29 @@ export class MobileServiceView extends Component {
     return (
       <React.Fragment>
         {this.props.boundServices && this.props.boundServices.length > 0 ? (
-        <Title key="bound-services" headingLevel="h4" size="2xl" className="pf-u-mb-lg">
-          Bound Services
-        </Title>
+          <Title key="bound-services" headingLevel="h4" size="2xl" className="pf-u-mb-lg">
+            Bound Services
+          </Title>
         ) : (
-          <React.Fragment>
-          </React.Fragment>
+          <React.Fragment></React.Fragment>
         )}
         <DataList style={{ borderTop: '0px', borderBottom: '0px' }}>
-        {this.props.boundServices && this.props.boundServices.length > 0 ? (
-          this.props.boundServices.map(service => (
-          <React.Fragment>
-              <BoundServiceRow
-                key={service.getId()}
-                appName={this.props.appName}
-                service={service}
-                onCreateBinding={() => this.showBindingPanel(service)}
-                onFinished={this.hideBindingPanel}
-                onDeleteBinding={cr => this.props.deleteCustomResource(service, cr.toJSON())}
-              />
-            
-          </React.Fragment>
-          ))
-        ) : (
-          <React.Fragment>
-          </React.Fragment>
-        )}
+          {this.props.boundServices && this.props.boundServices.length > 0 ? (
+            this.props.boundServices.map(service => (
+              <React.Fragment>
+                <BoundServiceRow
+                  key={service.getId()}
+                  appName={this.props.appName}
+                  service={service}
+                  onCreateBinding={() => this.showBindingPanel(service)}
+                  onFinished={this.hideBindingPanel}
+                  onDeleteBinding={cr => this.props.deleteCustomResource(service, cr.toJSON())}
+                />
+              </React.Fragment>
+            ))
+          ) : (
+            <React.Fragment></React.Fragment>
+          )}
         </DataList>
       </React.Fragment>
     );
@@ -72,7 +69,10 @@ export class MobileServiceView extends Component {
         <Title key="unbound-services" headingLevel="h4" size="2xl" className="pf-u-mt-md pf-u-mb-sm">
           Available Services
         </Title>
-        <p className="pf-u-mb-lg">The services listed below are not configured for your mobile application yet. Select "Create a binding" to get started.</p>
+        <p className="pf-u-mb-lg">
+          The services listed below are not configured for your mobile application yet. Select <q>Create a binding</q>
+          to get started.
+        </p>
         <DataList style={{ borderTop: '0px', borderBottom: '0px' }}>
           {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
             this.props.unboundServices.map(service => (
@@ -82,11 +82,10 @@ export class MobileServiceView extends Component {
                 onCreateBinding={() => this.showBindingPanel(service)}
                 onFinished={this.hideBindingPanel}
               />
-          ))
-        )
-        : (
-          <EmptyState>There are no available services.</EmptyState>
-        )}
+            ))
+          ) : (
+            <EmptyState>There are no available services.</EmptyState>
+          )}
         </DataList>
       </React.Fragment>
     );
@@ -139,7 +138,12 @@ function mapStateToProps(state, oldProp) {
   const app = MobileApp.find(state.apps.items, oldProp.appName);
   const services = state.services.items.map(item => new MobileService(item));
   const filteredServices = partition(services, service => service.isBoundToApp(oldProp.appName));
-  return { ...state.services, app, boundServices: filteredServices[0], unboundServices: filteredServices[1] };
+  return {
+    ...state.services,
+    app,
+    boundServices: filteredServices[0],
+    unboundServices: filteredServices[1]
+  };
 }
 
 const mapDispatchToProps = {
