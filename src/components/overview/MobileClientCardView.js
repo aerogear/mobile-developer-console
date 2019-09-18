@@ -1,12 +1,25 @@
 import React, { Component } from 'react';
-import { Toolbar, Gallery, GalleryItem, ToolbarItem } from '@patternfly/react-core';
-import { EmptyState, EmptyStateBody, EmptyStateVariant, EmptyStateIcon, TextInput, Title, PageSection, PageSectionVariants } from '@patternfly/react-core';
+import {
+  Toolbar,
+  Gallery,
+  GalleryItem,
+  ToolbarItem,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateVariant,
+  EmptyStateIcon,
+  InputGroup,
+  TextInput,
+  Title,
+  PageSection,
+  PageSectionVariants
+} from '@patternfly/react-core';
+
 import { MobileAltIcon } from '@patternfly/react-icons';
 import './MobileClientCardView.css';
 import './MobileClientCardViewItem.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
 import CreateClient from '../../containers/CreateClient';
-import { InputGroup } from 'patternfly-react/dist/js/components/Form';
 
 class MobileClientCardView extends Component {
   constructor(props) {
@@ -107,13 +120,11 @@ class MobileClientCardView extends Component {
   renderAppCards() {
     const { mobileClients } = this.props;
     const filteredClients = this.filterClients(mobileClients);
-    console.log(filteredClients)
+    console.log(filteredClients);
     return filteredClients.length ? (
       <Gallery gutter="md">
         {filteredClients.map((x, i) => (
-          <GalleryItem key={i}>
-            {x}
-          </GalleryItem>
+          <GalleryItem key={i}>{x}</GalleryItem>
         ))}
       </Gallery>
     ) : (
@@ -135,7 +146,7 @@ class MobileClientCardView extends Component {
           <Title className="overview-title" headingLevel="h2" size="3xl">
             Mobile Apps
           </Title>
-          <br></br>
+          <br />
           <Toolbar>
             <ToolbarItem>
               <InputGroup>
@@ -146,14 +157,13 @@ class MobileClientCardView extends Component {
                   onChange={e => this.updateCurrentValue(e)}
                   onKeyPress={e => this.onValueKeyPress(e)}
                 />
-              </InputGroup>  
+              </InputGroup>
             </ToolbarItem>
             <ToolbarItem>
               <div>
                 <CreateClient />
               </div>
-              {filter && filter.length > 0 && (
-                mobileClients.filterClients)}
+              {filter && filter.length > 0 && mobileClients.filterClients}
             </ToolbarItem>
           </Toolbar>
         </PageSection>

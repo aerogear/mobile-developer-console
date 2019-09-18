@@ -24,6 +24,7 @@ import {
 import { connect } from 'react-redux';
 import { PencilAltIcon, CaretDownIcon } from '@patternfly/react-icons';
 import Moment from 'react-moment';
+// import ConfigurationView from '../components/configuration/ConfigurationView';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
 import { fetchApp, fetchAndWatchApps } from '../actions/apps';
 import { fetchAndWatchBuildConfigs } from '../actions/buildConfigs';
@@ -107,7 +108,7 @@ export class Client extends Component {
           }
         });
 
-        this.setState({ buildConfigs: configs });
+        // this.setState({ buildConfigs: configs });
       }
     }
   }
@@ -142,6 +143,7 @@ export class Client extends Component {
               New build config
             </DropdownItem>
           </React.Fragment>
+<<<<<<< HEAD
           ) : (
             ''
         )}
@@ -151,10 +153,17 @@ export class Client extends Component {
         onClick={this.toggleDeleteModal}
         >
         Delete
+=======
+        ) : (
+          ''
+        )}
+        <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
+>>>>>>> patternfly4-updates
       </DropdownItem>
     ];
     return mobileApp ? (
       <React.Fragment>
+<<<<<<< HEAD
       <PageSection variant={PageSectionVariants.light} className="pf-u-pb-0">
         <Level>
           <LevelItem>
@@ -172,6 +181,29 @@ export class Client extends Component {
               dropdownItems={dropdownItems}
             />
           </LevelItem>
+=======
+        <PageSection variant={PageSectionVariants.light} className="pf-u-pb-0">
+          <Level>
+            <LevelItem>
+              <Breadcrumb>
+                <BreadcrumbItem to="/overview">Mobile Apps</BreadcrumbItem>
+                <BreadcrumbItem isActive>Review and Edit</BreadcrumbItem>
+              </Breadcrumb>
+            </LevelItem>
+            <LevelItem>
+              <Dropdown
+                onSelect={this.onSelect}
+                position={DropdownPosition.right}
+                toggle={
+                  <DropdownToggle onToggle={this.onToggle} iconComponent={CaretDownIcon}>
+                    Actions
+                  </DropdownToggle>
+                }
+                isOpen={isOpen}
+                dropdownItems={dropdownItems}
+              />
+            </LevelItem>
+>>>>>>> patternfly4-updates
           </Level>
       </PageSection>
       <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
@@ -249,6 +281,7 @@ export class Client extends Component {
                   <img src="/img/vue.jpg" width="25" height="25" alt="Vue logo" />
                   <p>Vue</p>
                 </div>
+<<<<<<< HEAD
               </div>
             </CardBody>
             <CardBody>
@@ -265,6 +298,61 @@ export class Client extends Component {
         </SplitItem> 
       </Split>
     </ React.Fragment>
+=======
+              </CardBody>
+              <CardBody>
+                <Title headingLevel="h4" size="lg" className="pf-u-mb-md">
+                  mobile-services.json
+                </Title>
+                <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
+                  {JSON.stringify(mobileApp, null, 2)}
+                </ClipboardCopy>
+              </CardBody>
+            </Card>
+          </SplitItem>
+        </Split>
+        {/* <Grid fluid className="client-details">
+        {this.props.apps.readingError ? (
+          <Alert>{this.props.apps.readingError.message}</Alert>
+        ) : (
+          <TabContainer id="basic-tabs-pf" activeKey={selectedTab} onSelect={this.handleNavSelect}>
+            <div>
+              <Nav bsClass="nav nav-tabs nav-tabs-pf nav-tabs-pf-secondary">
+                <NavItem eventKey={TAB_CONFIGURATION.key} href={`#${TAB_CONFIGURATION.hash}`}>
+                  Configuration
+                </NavItem>
+                {this.props.buildTabEnabled ? (
+                  <NavItem eventKey={TAB_BUILDS.key} href={`#${TAB_BUILDS.hash}`}>
+                    Builds
+                  </NavItem>
+                ) : null}
+                <NavItem eventKey={TAB_MOBILE_SERVICES.key} href={`#${TAB_MOBILE_SERVICES.hash}`}>
+                  Mobile Services
+                </NavItem>
+              </Nav>
+              <TabContent>
+                <TabPane eventKey={TAB_CONFIGURATION.key}>
+                  <ConfigurationView app={mobileApp} appName={appName} />
+                </TabPane>
+                <TabPane eventKey={TAB_MOBILE_SERVICES.key}>
+                  {/* <MobileServiceView appName={appName} /> */}
+        {/* </TabPane>
+                {this.props.buildTabEnabled ? (
+                  <TabPane eventKey={TAB_BUILDS.key}>
+                    <MobileClientBuildOverviewList
+                      appName={appName}
+                      clientInfo={clientInfo}
+                      buildConfigs={this.state.buildConfigs}
+                    />
+                  </TabPane>
+                ) : null}
+              </TabContent>
+            </div>
+          </TabContainer>
+        )}
+      </Grid> */}
+      </React.Fragment>
+>>>>>>> patternfly4-updates
     ) : (
       <React.Fragment />
     );

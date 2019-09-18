@@ -4,6 +4,7 @@ const androidVariantCRD = require('./android-variant-crd.json');
 const iosVariantCRD = require('./ios-variant-crd.json');
 const mobileSecurityServiceCRD = require('./mobile-security-crd.json');
 const { debounce } = require('lodash');
+const { queue } = require('async');
 const {
   PushService,
   IdentityManagementService,
@@ -20,7 +21,10 @@ const MOBILE_SECURITY_SUFFIX = '-security';
 
 const { MAX_RETRIES = 60, RETRY_TIMEOUT = 5000 } = process.env;
 
-let updating = false;
+const MINIMUM_GAP_BETWEEN_CALLS = 2000;
+
+let updateQueue;
+let lastQItem;
 // keeps track of how many attempts were made to connect to the Kubernetes API server
 let connectionAttempts = 0;
 const debounceTime = 250;
@@ -32,7 +36,6 @@ const retryWatchDebounce = debounce((namespace, kubeclient) => {
 }, debounceTime);
 
 function updateAll(namespace, kubeclient) {
-  updating = true;
   console.log('Check services for all apps', Date());
   return kubeclient.apis[mobileClientCRD.spec.group].v1alpha1
     .namespace(namespace)
@@ -40,9 +43,11 @@ function updateAll(namespace, kubeclient) {
     .then(resp => resp.body)
     .then(mobileclientList => mobileclientList.items)
     .then(mobileclients => mobileclients.map(mobileclient => updateApp(namespace, mobileclient, kubeclient)))
-    .then(promises => {
-      updating = false;
-      return Promise.all(promises);
+    .then(promises => Promise.all(promises))
+    .then(() => {
+      if (connectionAttempts > 1) {
+        connectionAttempts = 1;
+      }
     })
     .catch(err => {
       console.error(`Failed to update apps due to error`, err);
@@ -90,18 +95,40 @@ function getServicesForApp(namespace, app, kubeclient) {
   return Promise.all(promises).then(serviceConfigs => serviceConfigs.filter(Boolean));
 }
 
+function addUpdateItemToQueue(type) {
+  updateQueue.push({ resource: type, ts: new Date().getTime() });
+}
+
+function shouldCallUpdate(task) {
+  if (lastQItem && lastQItem.resource === task.resource && task.ts - lastQItem.ts < MINIMUM_GAP_BETWEEN_CALLS) {
+    // if the current task is the same type as the last one, and the timestamp is very ver close, it is very likely
+    // that the task is generated from the same batch of events, so let's not process them
+    console.log(`ignore task as it's just been processed`, task);
+    return false;
+  }
+  return true;
+}
+
 async function updateAppsAndWatch(namespace, kubeclient) {
   connectionAttempts++;
-  updateAll(namespace, kubeclient).then(() => {
-    watchMobileClients(namespace, kubeclient);
-    watchDataSyncConfigMaps(namespace, kubeclient);
-    watchKeyCloakSecrets(namespace, kubeclient);
-    watchAndroidVariants(namespace, kubeclient);
-    watchIosVariants(namespace, kubeclient);
-    watchMobileSecurityApps(namespace, kubeclient);
-    // reset connection attempts count
-    connectionAttempts = 1;
-  });
+  if (updateQueue) {
+    updateQueue.kill();
+  }
+  updateQueue = queue((task, callback) => {
+    const call = shouldCallUpdate(task);
+    lastQItem = task;
+    if (call) {
+      return updateAll(namespace, kubeclient).then(callback);
+    }
+    return callback();
+  }, 1);
+  addUpdateItemToQueue('mobileclient');
+  watchMobileClients(namespace, kubeclient);
+  watchDataSyncConfigMaps(namespace, kubeclient);
+  watchKeyCloakSecrets(namespace, kubeclient);
+  watchAndroidVariants(namespace, kubeclient);
+  watchIosVariants(namespace, kubeclient);
+  watchMobileSecurityApps(namespace, kubeclient);
 }
 
 /**
@@ -117,7 +144,7 @@ async function watchMobileClients(namespace, kubeclient) {
 
   appStream.on('data', event => {
     if (event.type === 'ADDED') {
-      updateAll(namespace, kubeclient);
+      addUpdateItemToQueue('mobileclient');
     }
   });
 
@@ -141,7 +168,7 @@ async function watchDataSyncConfigMaps(namespace, kubeclient) {
   const configmapStream = await kubeclient.api.v1.watch.namespace(namespace).configmaps.getObjectStream();
   configmapStream.on('data', event => {
     if (event.object && event.object.metadata.name.endsWith(DATASYNC_CONFIGMAP_SUFFIX)) {
-      updateAll(namespace, kubeclient);
+      addUpdateItemToQueue('datasync');
     }
   });
 
@@ -165,7 +192,7 @@ async function watchKeyCloakSecrets(namespace, kubeclient) {
   const secretStream = await kubeclient.api.v1.watch.namespace(namespace).secrets.getObjectStream();
   secretStream.on('data', event => {
     if (event.object && event.object.metadata.name.endsWith(KEYCLOAK_SECRET_SUFFIX)) {
-      updateAll(namespace, kubeclient);
+      addUpdateItemToQueue('keycloak');
     }
   });
 
@@ -213,8 +240,8 @@ async function watchAndroidVariants(namespace, kubeclient) {
     .androidvariants.getObjectStream();
 
   androidVariantStream.on('data', event => {
-    if (event.object && event.object.status && !updating) {
-      updateAll(namespace, kubeclient);
+    if (event.object && event.object.status) {
+      addUpdateItemToQueue('androidvariant');
     }
   });
 
@@ -240,8 +267,8 @@ async function watchIosVariants(namespace, kubeclient) {
     .iosvariants.getObjectStream();
 
   iosVariantStream.on('data', event => {
-    if (event.object && event.object.status && !updating) {
-      updateAll(namespace, kubeclient);
+    if (event.object && event.object.status) {
+      addUpdateItemToQueue('iosvariant');
     }
   });
 
@@ -267,8 +294,8 @@ async function watchMobileSecurityApps(namespace, kubeclient) {
     .mobilesecurityserviceapps.getObjectStream();
 
   mssAppStream.on('data', event => {
-    if (event.object && event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX) && !updating) {
-      updateAll(namespace, kubeclient);
+    if (event.object && event.object.metadata.name.endsWith(MOBILE_SECURITY_SUFFIX)) {
+      addUpdateItemToQueue('mobilesecurity');
     }
   });
 
