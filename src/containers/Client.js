@@ -12,12 +12,7 @@ import {
   SplitItem,
   Card,
   CardBody,
-  Button,
   Dropdown,
-  Modal,
-  Form,
-  FormGroup,
-  TextInput,
   DropdownToggle,
   DropdownItem,
   DropdownPosition,
@@ -58,18 +53,11 @@ export class Client extends Component {
       // buildConfigs: [],
       selectedTab: initialTab.key,
       isOpen: false,
-      isModalOpen: false,
       value1: ''
     };
 
     this.handleTextInputChange1 = value1 => {
       this.setState({ value1 });
-    };
-
-    this.handleModalToggle = () => {
-      this.setState(({ isModalOpen }) => ({
-        isModalOpen: !isModalOpen
-      }));
     };
 
     this.onToggle = isOpen => {
@@ -180,7 +168,6 @@ export class Client extends Component {
     const cardValues = { width: '450px', height: '100%', boxShadow: 'unset' };
     const { creationTimestamp = null } = mobileApp.metadata.data;
     const { isOpen } = this.state;
-    const { isModalOpen } = this.state;
     const { value1 } = this.state;
     const dropdownItems = [
       <DropdownItem key="/">
@@ -224,85 +211,51 @@ export class Client extends Component {
               />
             </LevelItem>
           </Level>
-        </PageSection>
-        <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
-          <Title headingLevel="h2" size="3xl">
-            {mobileApp.getName()}
-            <Button variant="plain" aria-label="Action" onClick={this.handleModalToggle}>
-              <PencilAltIcon />
-            </Button>
-            <span className="creation-timestamp">
-              Created <Moment fromNow>{creationTimestamp}</Moment>
-            </span>
-          </Title>
-          <Modal
-            isSmall
-            title="Edit mobile app name"
-            isOpen={isModalOpen}
-            onClose={this.handleModalToggle}
-            actions={[
-              <Button key="cancel" variant="secondary" onClick={this.handleModalToggle}>
-                Cancel
-              </Button>,
-              <Button key="cancel" variant="primary" onClick={this.handleModalToggle}>
-                Save
-              </Button>
-            ]}
-          >
-            <p className="pf-u-mb-lg">You may edit the mobile application name in the input below.</p>
-
-            <Form>
-              <FormGroup label="Application Name" fieldId="application-name">
-                <TextInput
-                  isRequired
-                  type="text"
-                  id="application-name"
-                  name="application-name"
-                  aria-describedby="application-name"
-                  value={value1}
-                  onChange={this.handleTextInputChange1}
-                />
-              </FormGroup>
-            </Form>
-          </Modal>
-        </PageSection>
-        <Split className="mdc-breakpoint-split" style={{ display: 'flex', flex: '1' }}>
-          <SplitItem isFilled style={{ display: 'flex', flexDirection: 'column' }}>
-            <PageSection>
-              <MobileServiceView appName={appName} />
-            </PageSection>
-          </SplitItem>
-          <SplitItem>
-            <Card style={cardValues}>
-              <CardBody isFilled={false}>
-                <Title headingLevel="h3" size="2xl">
-                  Full Mobile Config
-                </Title>
-                <p className="pf-u-my-md">
-                  JavaScript-based mobile apps can be configured for a variety of mobile platforms. Our JavaScript SDK
-                  supports the following frameworks.
-                </p>
-                <div className="pf-grid">
-                  <div>
-                    <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />
-                    <p>Cordova</p>
-                  </div>
-                  <div>
-                    <img src="/img/react.jpg" width="25" height="25" alt="React logo" />
-                    <p>React</p>
-                  </div>
-                  <div>
-                    <img src="/img/ionic.jpg" width="25" height="25" alt="Ionic logo" />
-                    <p>Ionic</p>
-                  </div>
-                  <div>
-                    <img src="/img/angular.jpg" width="25" height="25" alt="Angular logo" />
-                    <p>Angular</p>
-                  </div>
-                  <div>
-                    <img src="/img/vue.jpg" width="25" height="25" alt="Vue logo" />
-                    <p>Vue</p>
-                  </div>
+      </PageSection>
+      <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
+        <Title headingLevel="h2" size="3xl">
+          {mobileApp.getName()}
+          <span className="creation-timestamp pf-u-ml-md">
+            Created <Moment fromNow>{creationTimestamp}</Moment>
+          </span>
+        </Title>
+      </PageSection>
+      <Split className="mdc-breakpoint-split" style={{ display: 'flex', flex: '1' }}>
+        <SplitItem isFilled style={{ display: 'flex', flexDirection: 'column' }}>
+          <PageSection>
+            <MobileServiceView appName={appName} />
+          </PageSection>
+        </SplitItem>
+        <SplitItem>
+          <Card style={cardValues}>
+            <CardBody isFilled={false}>
+              <Title headingLevel="h3" size="2xl">
+                Full Mobile Config
+              </Title>
+              <p className="pf-u-my-md"> 
+                JavaScript-based mobile apps can be configured for a variety of mobile platforms. 
+                Our JavaScript SDK supports the following frameworks.
+              </p>
+              <div class="pf-grid">
+                <div>
+                  <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />
+                  <p>Cordova</p>
+                </div>
+                <div>
+                  <img src="/img/react.jpg" width="25" height="25" alt="React logo" />
+                  <p>React</p>
+                </div>
+                <div>
+                  <img src="/img/ionic.jpg" width="25" height="25" alt="Ionic logo" />
+                  <p>Ionic</p>
+                </div>
+                <div>
+                  <img src="/img/angular.jpg" width="25" height="25" alt="Angular logo" />
+                  <p>Angular</p>
+                </div>
+                <div>
+                  <img src="/img/vue.jpg" width="25" height="25" alt="Vue logo" />
+                  <p>Vue</p>
                 </div>
               </CardBody>
               <CardBody>
