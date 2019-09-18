@@ -23,7 +23,7 @@ import { connect } from 'react-redux';
 import { PencilAltIcon, CaretDownIcon } from '@patternfly/react-icons';
 import { find } from 'lodash-es';
 import Moment from 'react-moment';
-import ConfigurationView from '../components/configuration/ConfigurationView';
+// import ConfigurationView from '../components/configuration/ConfigurationView';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
 import { fetchApp, fetchAndWatchApps } from '../actions/apps';
 import { fetchAndWatchBuildConfigs } from '../actions/buildConfigs';
@@ -109,7 +109,7 @@ export class Client extends Component {
           }
         });
 
-        this.setState({ buildConfigs: configs });
+        // this.setState({ buildConfigs: configs });
       }
     }
   }
@@ -181,31 +181,35 @@ export class Client extends Component {
               onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
             />
           </React.Fragment>
-            ) : (
-              ''
-            )}
-          <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
+        ) : (
+          ''
+        )}
+        <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
       </DropdownItem>
     ];
     return mobileApp ? (
       <React.Fragment>
-      <PageSection variant={PageSectionVariants.light} className="pf-u-pb-0">
-        <Level>
-          <LevelItem>
-            <Breadcrumb>
-              <BreadcrumbItem to="/overview">Mobile Apps</BreadcrumbItem>
-              <BreadcrumbItem isActive>Review and Edit</BreadcrumbItem>
-            </Breadcrumb>
-          </LevelItem>
-          <LevelItem>
-            <Dropdown
-              onSelect={this.onSelect}
-              position={DropdownPosition.right}
-              toggle={<DropdownToggle onToggle={this.onToggle} iconComponent={CaretDownIcon}>Actions</DropdownToggle>}
-              isOpen={isOpen}
-              dropdownItems={dropdownItems}
-            />
-          </LevelItem>
+        <PageSection variant={PageSectionVariants.light} className="pf-u-pb-0">
+          <Level>
+            <LevelItem>
+              <Breadcrumb>
+                <BreadcrumbItem to="/overview">Mobile Apps</BreadcrumbItem>
+                <BreadcrumbItem isActive>Review and Edit</BreadcrumbItem>
+              </Breadcrumb>
+            </LevelItem>
+            <LevelItem>
+              <Dropdown
+                onSelect={this.onSelect}
+                position={DropdownPosition.right}
+                toggle={
+                  <DropdownToggle onToggle={this.onToggle} iconComponent={CaretDownIcon}>
+                    Actions
+                  </DropdownToggle>
+                }
+                isOpen={isOpen}
+                dropdownItems={dropdownItems}
+              />
+            </LevelItem>
           </Level>
       </PageSection>
       <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
@@ -253,22 +257,19 @@ export class Client extends Component {
                   <img src="/img/vue.jpg" width="25" height="25" alt="Vue logo" />
                   <p>Vue</p>
                 </div>
-              </div>
-            </CardBody>
-            <CardBody>
-              <Title headingLevel="h4" size="lg" className="pf-u-mb-md">
-                mobile-services.json
-              </Title>
-              <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">               
-                "client": "myapp",
-                "namespace": "uxd-test-project",
-                "services": []
-            </ClipboardCopy>
-            </CardBody>
-          </Card>
-        </SplitItem> 
-      </Split>
-      {/* <Grid fluid className="client-details">
+              </CardBody>
+              <CardBody>
+                <Title headingLevel="h4" size="lg" className="pf-u-mb-md">
+                  mobile-services.json
+                </Title>
+                <ClipboardCopy isReadOnly variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
+                  {JSON.stringify(mobileApp, null, 2)}
+                </ClipboardCopy>
+              </CardBody>
+            </Card>
+          </SplitItem>
+        </Split>
+        {/* <Grid fluid className="client-details">
         {this.props.apps.readingError ? (
           <Alert>{this.props.apps.readingError.message}</Alert>
         ) : (
@@ -293,7 +294,7 @@ export class Client extends Component {
                 </TabPane>
                 <TabPane eventKey={TAB_MOBILE_SERVICES.key}>
                   {/* <MobileServiceView appName={appName} /> */}
-                {/* </TabPane>
+        {/* </TabPane>
                 {this.props.buildTabEnabled ? (
                   <TabPane eventKey={TAB_BUILDS.key}>
                     <MobileClientBuildOverviewList
@@ -308,7 +309,7 @@ export class Client extends Component {
           </TabContainer>
         )}
       </Grid> */}
-    </ React.Fragment>
+      </React.Fragment>
     ) : (
       <React.Fragment />
     );

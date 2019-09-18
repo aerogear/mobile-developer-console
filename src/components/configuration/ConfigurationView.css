@@ -45,6 +45,7 @@
   text-align: left; }
 
 .mobile-client-config {
+  white-space: pre-wrap;
   display: block;
   flex: 1 100%;
   margin-bottom: 32px; }

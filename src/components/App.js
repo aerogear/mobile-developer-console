@@ -44,15 +44,18 @@ class App extends React.Component {
   };
 
   render() {
-
     const PageNav = (
       <Nav aria-label="Nav">
         <NavList variant={NavVariants.horizontal}>
-          <NavItem to="/overview"> 
-            <NavLink activeClassName="pf-m-current" to="/overview">Mobile Apps</NavLink>
+          <NavItem to="/overview">
+            <NavLink activeClassName="pf-m-current" to="/overview">
+              Mobile Apps
+            </NavLink>
           </NavItem>
           <NavItem to="/configuration">
-            <NavLink activeClassName="pf-m-current" to="/configuration">SDK Configuration</NavLink>
+            <NavLink activeClassName="pf-m-current" to="/configuration">
+              SDK Configuration
+            </NavLink>
           </NavItem>
         </NavList>
       </Nav>

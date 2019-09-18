@@ -40,7 +40,9 @@ export class Overview extends Component {
 
     return (
       <PageSection variant={PageSectionVariants.light}>
-        <Title className="pf-u-mb-lg" headingLevel="h2" size="2xl">SDK Configuration</Title>
+        <Title className="pf-u-mb-lg" headingLevel="h2" size="2xl">
+          SDK Configuration
+        </Title>
         <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
           <Tab eventKey={0} title="Cordova" />
           <Tab eventKey={1} title="Ionic" />
@@ -51,7 +53,7 @@ export class Overview extends Component {
               <ServiceSDKSetup docs={docs} key={`docs-${index}`} />
             ))}
           </ol>
-       </PageSection>
+        </PageSection>
       </PageSection>
     );
   }
