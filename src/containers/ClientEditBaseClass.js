@@ -133,34 +133,6 @@ class ClientEditBaseClass extends Component {
           </div>
         </div>
       </Modal>
-          //   <Modal show={this.state.showModal}>
-          //   <Modal.Header>
-          //     <button className="close" onClick={this.close} aria-hidden="true" aria-label="Close">
-          //       <Icon type="pf" name="close" />
-          //     </button>
-          //     <Modal.Title>{this.state.editingMode ? 'Edit Mobile App' : 'Create Mobile App'}</Modal.Title>
-          //   </Modal.Header>
-          //   <Modal.Body>
-          //     {this.state.error && (
-          //       <Alert key="123" type="error">
-          //         {this.state.error}
-          //       </Alert>
-          //     )}
-          //     <FormGroup onSubmit={this.createClient}>
-          //       <CreateClient editing={this.state.editingMode} />
-          //     </FormGroup>
-          //   </Modal.Body>
-          //   <Modal.Footer>
-          //     <Button className="modal-button" onClick={this.close}>Cancel</Button>
-          //     <Button
-          //       bsStyle="primary"
-          //       onClick={this.createClient}
-          //       disabled={this.getMobileAppToEdit() && !this.getMobileAppToEdit().isValid()}
-          //     >
-          //       {this.state.editingMode ? 'Save' : 'Create'}
-          //     </Button>
-          //   </Modal.Footer>
-          // </Modal>
     );
   }
 
