@@ -15,8 +15,9 @@ import {
   Nav,
   NavList,
   NavItem,
-  NavVariants
+  NavVariants,
 } from '@patternfly/react-core';
+import MDCAboutModal from './MDCAboutModal';
 import Overview from '../containers/Overview';
 import Configuration from '../containers/Configuration';
 // import Configuration from '../components/configuration/FrameworkSDKDocs';
@@ -29,8 +30,10 @@ import './App.css';
 class App extends React.Component {
   state = {
     isDropdownOpen: false,
-    isIconOpen: false
+    isIconOpen: false,
+    isModalOpen: false,
   };
+  
   componentWillMount() {
     this.props.fetchUserInfo();
   }
@@ -41,6 +44,11 @@ class App extends React.Component {
 
   onIconToggle = () => {
     this.setState({ isIconOpen: !this.state.isIconOpen });
+  };
+
+  onModalToggle = () => {
+    console.log('im here', this.state.isModalOpen);
+    this.setState({ isModalOpen: !this.state.isModalOpen });
   };
 
   render() {
@@ -70,6 +78,9 @@ class App extends React.Component {
     const questionIconItems = [
       <DropdownItem key="mdc_docs">
         <a href={getDocumentation()}>Documentation</a>
+      </DropdownItem>,
+      <DropdownItem key="about" onClick={this.onModalToggle}>
+        About
       </DropdownItem>
     ];
 
@@ -109,6 +120,7 @@ class App extends React.Component {
     return (
       <Router>
         <ErrorMessages />
+        <MDCAboutModal isOpen={this.state.isModalOpen} onClose={this.onModalToggle} user={this.props.user}/>
         <Page
           header={
             <PageHeader
