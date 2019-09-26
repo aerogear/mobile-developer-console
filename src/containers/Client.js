@@ -22,7 +22,7 @@ import {
   ClipboardCopyVariant,
 } from '@patternfly/react-core';
 import { connect } from 'react-redux';
-import { PencilAltIcon, CaretDownIcon } from '@patternfly/react-icons';
+import { CaretDownIcon } from '@patternfly/react-icons';
 import Moment from 'react-moment';
 // import ConfigurationView from '../components/configuration/ConfigurationView';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
@@ -30,7 +30,6 @@ import { fetchApp, fetchAndWatchApps } from '../actions/apps';
 import { fetchAndWatchBuildConfigs } from '../actions/buildConfigs';
 import { fetchAndWatchBuilds } from '../actions/builds';
 import { MobileApp } from '../models';
-import BuildConfigDialog from './BuildConfigDialog';
 import './Client.css';
 import { fetchAndWatchServices } from '../actions/services';
 import { deleteApp } from '../actions/apps';
@@ -43,8 +42,7 @@ export class Client extends Component {
       isDropdownOpen: false,
       isEditModalOpen: false,
       isDeleteModalOpen: false,
-      value1: '',
-      isBuildConfigDialogOpen: false
+      value1: ''
     };
 
     this.handleTextInputChange1 = value1 => {
@@ -86,10 +84,6 @@ export class Client extends Component {
     this.setState({isDeleteModalOpen: !this.state.isDeleteModalOpen})
   }
 
-  handleBuildConfigDialog = () => {
-    this.setState({isBuildConfigDialogOpen: !this.state.isBuildConfigDialogOpen})
-  };
-
   componentDidUpdate(prevProps) {
     if (this.props.buildConfigs !== prevProps.buildConfigs || this.props.builds !== prevProps.builds) {
       const mobileApp = this.getMobileApp();
@@ -107,8 +101,6 @@ export class Client extends Component {
             matchingConfig.builds.push(build);
           }
         });
-
-        // this.setState({ buildConfigs: configs });
       }
     }
   }
@@ -128,25 +120,8 @@ export class Client extends Component {
     const appName = this.props.match.params.id;
     const cardValues = { width: '450px', height: '100%', boxShadow: 'unset' };
     const { creationTimestamp = null } = mobileApp.metadata.data;
-    const { clientInfo } = { clientId: mobileApp.getName() };
     const { isDropdownOpen } = this.state;
-    const { isEditModalOpen, isDeleteModalOpen, isBuildConfigDialogOpen } = this.state;
-    const { value1 } = this.state; 
     const dropdownItems = [
-      <React.Fragment>
-        {mobileApp ? (
-          <React.Fragment>
-            <DropdownItem
-              key="app"
-              onClick={this.handleBuildConfigDialog}
-              >
-              New build config
-            </DropdownItem>
-          </React.Fragment>
-          ) : (
-            ''
-        )}
-      </React.Fragment>,
       <DropdownItem
         key="app"
         onClick={this.toggleDeleteModal}
@@ -186,12 +161,6 @@ export class Client extends Component {
             Created <Moment fromNow>{creationTimestamp}</Moment>
           </span>
         </Title>
-      <BuildConfigDialog
-        update={false}
-        clientInfo={ clientInfo }
-        show={isBuildConfigDialogOpen}
-        onShowStateChanged={isShown => this.setState({ isBuildConfigDialogOpen: isShown })}
-      />
       <Modal
         width={'50%'}
         title="Confirm Delete"
