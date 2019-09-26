@@ -12,10 +12,16 @@
     height: 36px;
   }
 
+  .form-control:hover,
+  .form-control:active,
   .form-control:focus {
     border-color: unset;
     outline: unset;
     box-shadow: initial;
+  }
+
+  .form-control:focus {
+    outline: -webkit-focus-ring-color auto 5px;
   }
 
   .has-error .form-control {
