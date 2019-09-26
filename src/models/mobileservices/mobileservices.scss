@@ -4,12 +4,30 @@
     line-height: var(--pf-global--LineHeight--md);
     font-size: var(--pf-global--FontSize--md);
     border: var(--pf-global--BorderWidth--sm) solid;
+    border-top-color: var(--pf-c-form-control--BorderTopColor);
+    border-right-color: var(--pf-c-form-control--BorderRightColor);
+    border-bottom-color: var(--pf-c-form-control--BorderBottomColor);
+    border-left-color: var(--pf-c-form-control--BorderLeftColor);
+    padding: 5px var(--pf-global--spacer--sm) 5px var(--pf-global--spacer--sm);
+    height: var(--pf-c-form-control--Height);
+    box-shadow: unset;
+    background-color: var(--pf-c-button--m-primary--BackgroundColor);
+  }
+
+  select.form-control {
+    padding: 5px 8px 4px 8px;
+    height: 36px;
+    border: var(--pf-global--BorderWidth--sm) solid;
     border-top-color: var(--pf-global--BorderColor--300);
     border-right-color: var(--pf-global--BorderColor--300);
     border-bottom-color: var(--pf-global--BorderColor--200);
     border-left-color: var(--pf-global--BorderColor--300);
-    padding: 5px var(--pf-global--spacer--sm) 5px var(--pf-global--spacer--sm);
-    height: 36px;
+    border-radius: 0;
+    box-shadow: unset;
+    line-height: var(--pf-global--LineHeight--md);
+    font-size: var(--pf-global--FontSize--md);
+    -webkit-appearance: none;
+    -webkit-border-radius: 0px;
   }
 
   .form-control:hover,
@@ -18,10 +36,19 @@
     border-color: unset;
     outline: unset;
     box-shadow: initial;
+    border-top-color: var(--pf-global--BorderColor--300);
+    border-right-color: var(--pf-global--BorderColor--300);
+    border-left-color: var(--pf-global--BorderColor--300);
   }
 
   .form-control:focus {
     outline: -webkit-focus-ring-color auto 5px;
+  }
+
+  .form-control[readonly] {
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-left-color: transparent;
   }
 
   .has-error .form-control {
@@ -30,11 +57,17 @@
     border-right-color: var(--pf-global--BorderColor--300);
     border-left-color: var(--pf-global--BorderColor--300);
     border-bottom-width: calc(var(--pf-global--BorderWidth--sm) * 2);
+
+    &:hover,
+    &:active,
+    &:focus {
+      border-bottom-color: var(--pf-global--danger-color--100);
+    }
   }
 
   .text-danger {
     margin-top: var(--pf-global--spacer--xs);
     font-size: var(--pf-global--FontSize--sm);
-    color: var(--pf-global--Color--100);
+    color: var(--pf-global--danger-color--100);
   }
 }

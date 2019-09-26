@@ -1,5 +1,6 @@
 @charset "UTF-8";
 /* PatternFly */
+@import url("~@patternfly/patternfly/components/FormControl/form-control.css");
 @import url("~@patternfly/react-core/dist/styles/base.css");
 @import url("~@patternfly/patternfly/patternfly-variables.css");
 @import url("~@patternfly/patternfly/patternfly-common.css");
@@ -9,8 +10,6 @@
 @import url("~@patternfly/patternfly/layouts/Level/level.css");
 @import url("~@patternfly/patternfly/layouts/Split/split.css");
 @import url("~@patternfly/patternfly/utilities/Display/display.css");
-@import url("~@patternfly/patternfly/components/FormControl/form-control.css");
-@import url("~@patternfly/patternfly/components/Button/button.css");
 @font-face {
   font-family: "Open Sans";
   font-style: normal;

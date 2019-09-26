@@ -128,7 +128,7 @@ class MobileClientCardView extends Component {
         ))}
       </Gallery>
     ) : (
-      <EmptyState>
+      <EmptyState variant={EmptyStateVariant.full}>
         <EmptyStateIcon icon={MobileAltIcon} />
         <Title headingLevel="h5" size="lg">
           {this.emptyStateMessage.noAppsAfterFiltering}

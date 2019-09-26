@@ -2,6 +2,7 @@
 @import "patternfly";
 
 /* pf4 base styles */
+@import url('~@patternfly/patternfly/components/FormControl/form-control.css');
 @import url('~@patternfly/react-core/dist/styles/base.css');
 @import url('~@patternfly/patternfly/patternfly-variables.css');
 @import url('~@patternfly/patternfly/patternfly-common.css');
@@ -11,9 +12,6 @@
 @import url('~@patternfly/patternfly/layouts/Level/level.css');
 @import url('~@patternfly/patternfly/layouts/Split/split.css');
 @import url('~@patternfly/patternfly/utilities/Display/display.css');
-@import url('~@patternfly/patternfly/components/FormControl/form-control.css');
-@import url('~@patternfly/patternfly/components/Button/button.css');
-
 
 /* Overrides until the Alert Group is available in pf4 */
 .mdc-alert-group {
