@@ -47,8 +47,27 @@ export class PushVariantCR extends CustomResource {
     const { service } = params;
     const hasIOS = hasPlatform(service, params.appName, 'IOSVariant');
     const hasAndroid = hasPlatform(service, params.appName, 'AndroidVariant');
-    let defaultPlatform = 'Android';
-    let platforms = ['Android', 'iOS'];
+    const hasWeb = hasPlatform(service, params.appName, 'WebVariant');
+    let defaultPlatform = 'Web';
+    let platforms = ['Android', 'iOS', 'Web'];
+    const webConfig = {
+      title: 'Web',
+      type: 'object',
+      properties: {
+        alias: {
+          title: 'This is string for the web -> Subject',
+          type: 'string'
+        },
+        publicKey: {
+          title: 'This is a string for the web -> Public',
+          type: 'string'
+        },
+        privateKey: {
+          title: 'This is a string for the web -> Private',
+          type: 'string'
+        }
+      }
+    };
     const androidConfig = {
       title: 'Android',
       type: 'object',
@@ -83,17 +102,23 @@ export class PushVariantCR extends CustomResource {
       }
     };
     let platformConfig = androidConfig;
+
+    // TODO this needs to be though about
     if (hasIOS && hasAndroid) {
       platforms = [];
       defaultPlatform = '';
+    } else if (hasWeb) {
+      defaultPlatform = 'Android';
+      platforms = ['Android'];
+      platformConfig = androidConfig;
     } else if (hasIOS) {
       defaultPlatform = 'Android';
       platforms = ['Android'];
       platformConfig = androidConfig;
     } else if (hasAndroid) {
-      defaultPlatform = 'iOS';
-      platforms = ['iOS'];
-      platformConfig = iosConfig;
+      defaultPlatform = 'Web';
+      platforms = ['Web'];
+      platformConfig = webConfig;
     }
     const schema = {
       additionalProperties: false,
@@ -131,13 +156,29 @@ export class PushVariantCR extends CustomResource {
       },
       onChangeHandler(formData, oldSchema) {
         const s = oldSchema;
-        if (oldSchema.properties.platformConfig.title === 'Android' && formData.CLIENT_TYPE === 'iOS') {
+        if (
+          (oldSchema.properties.platformConfig.title === 'Android' ||
+            oldSchema.properties.platformConfig.title === 'Web') &&
+          formData.CLIENT_TYPE === 'iOS'
+        ) {
           s.properties.CLIENT_TYPE.default = 'iOS';
           s.properties.platformConfig = iosConfig;
           return s;
-        } else if (oldSchema.properties.platformConfig.title === 'iOS' && formData.CLIENT_TYPE === 'Android') {
+        } else if (
+          (oldSchema.properties.platformConfig.title === 'iOS' ||
+            oldSchema.properties.platformConfig.title === 'Web') &&
+          formData.CLIENT_TYPE === 'Android'
+        ) {
           s.properties.CLIENT_TYPE.default = 'Android';
           s.properties.platformConfig = androidConfig;
+          return s;
+        } else if (
+          (oldSchema.properties.platformConfig.title === 'iOS' ||
+            oldSchema.properties.platformConfig.title === 'Android') &&
+          formData.CLIENT_TYPE === 'Web'
+        ) {
+          s.properties.CLIENT_TYPE.default = 'Web';
+          s.properties.platformConfig = webConfig;
           return s;
         }
         return null;
@@ -229,7 +270,46 @@ export class PushVariantCR extends CustomResource {
               }
             }
           }
-        }
+        },
+        WEB_UPS_BINDING: {
+          comment: 'This is the set of rules that will be used to validate Web UPS Binding.',
+          executionConstraints: [
+            {
+              comment: "Execute this ruleset only when the field named 'CLIENT_TYPE' has value 'WEB'",
+              type: 'FIELD_VALUE',
+              name: 'CLIENT_TYPE',
+              value: 'Web'
+            }
+          ],
+          fields: {
+            platformConfig: {
+              alias: {
+              validation_rules: [
+                {
+                type: 'required',
+                error: 'Web push requires an Alias'
+                }
+              ]
+              },
+              publicKey: {
+              validation_rules: [
+                {
+                type: 'required',
+                error: 'Web push requires a Public Key.'
+                }
+              ]
+              },
+              privateKey: {
+              validation_rules: [
+                {
+                type: 'required',
+                error: 'Web Push requires a Private Key.'
+                }
+              ]
+              }
+            }
+            }
+          }
       }
     };
   }
@@ -264,6 +344,20 @@ export class PushVariantCR extends CustomResource {
             certificate: params.platformConfig.cert,
             passphrase: params.platformConfig.passphrase,
             production: params.platformConfig.iosIsProduction,
+            pushApplicationId: null
+          }
+        };
+      case 'Web':
+        return {
+          apiVersion: 'push.aerogear.org/v1alpha1',
+          kind: 'WebVariant',
+          metadata: {
+            name: `${CLIENT_ID}-web-ups-variant`
+          },
+          spec: {
+            description: 'UPS Web Variant',
+            serverKey: params.platformConfig.googlekey,
+            senderId: '',
             pushApplicationId: null
           }
         };
