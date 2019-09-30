@@ -2,6 +2,7 @@ const equal = require('fast-deep-equal');
 const mobileClientCRD = require('./mobile-client-crd.json');
 const androidVariantCRD = require('./android-variant-crd.json');
 const iosVariantCRD = require('./ios-variant-crd.json');
+const webPushVariantCRD = require('./web-variant-crd.json');
 const mobileSecurityServiceCRD = require('./mobile-security-crd.json');
 const { debounce } = require('lodash');
 const { queue } = require('async');
@@ -129,6 +130,7 @@ async function updateAppsAndWatch(namespace, kubeclient) {
   watchAndroidVariants(namespace, kubeclient);
   watchIosVariants(namespace, kubeclient);
   watchMobileSecurityApps(namespace, kubeclient);
+  watchWebPushVariants(namespace, kubeclient);
 }
 
 /**
@@ -279,6 +281,33 @@ async function watchIosVariants(namespace, kubeclient) {
 
   iosVariantStream.on('close', () => {
     retryWatchDebounce(namespace, kubeclient);
+  });
+}
+
+/**
+ * Watch for updates to the Web Push Variant custom resource and update all apps.
+ *
+ * @param {String} namespace - The namespace to watch
+ * @param {*} kubeclient - kubernetes client
+ */
+async function watchWebPushVariants(namespace, kubeclient) {
+  const webPushVariantStream = await kubeclient.apis[webPushVariantCRD.spec.group].v1alpha1.watch
+    .namespaces(namespace)
+    .webpushvariants.getObjectStream();
+
+  webPushVariantStream.on('data', event => {
+    if (event.object && event.object.status) {
+      addUpdateItemToQueue('webpushvariant');
+    }
+  });
+
+  // reopens the stream when it closes
+  webPushVariantStream.on('end', () => {
+    watchAndroidVariants(namespace, kubeclient);
+  });
+
+  webPushVariantStream.on('close', () => {
+    retryWatchDebounce();
   });
 }
 
