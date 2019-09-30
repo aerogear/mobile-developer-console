@@ -11,6 +11,15 @@ function hasPlatform(service, appName, platform) {
   );
 }
 
+function changeToNewBindingConfig(oldTitle, formClientType, checkFor) {
+  // checks if the from data is not the okd title
+  // checks if the new title is where the block wants to go
+  const titles = ['Android', 'iOS', 'Web'].filter(title => title !== checkFor);
+  const isOldTitle = titles.includes(oldTitle);
+  const isNewConfig = formClientType === checkFor;
+  return isOldTitle && isNewConfig;
+}
+
 export class PushVariantCR extends CustomResource {
   constructor(data = {}) {
     super(data);
@@ -55,15 +64,15 @@ export class PushVariantCR extends CustomResource {
       type: 'object',
       properties: {
         alias: {
-          title: 'This is string for the web -> Subject',
+          title: 'Alias for Web Push',
           type: 'string'
         },
         publicKey: {
-          title: 'This is a string for the web -> Public',
+          title: 'Public Key for WEb Push',
           type: 'string'
         },
         privateKey: {
-          title: 'This is a string for the web -> Private',
+          title: 'Private key for Web Push',
           type: 'string'
         }
       }
@@ -102,24 +111,27 @@ export class PushVariantCR extends CustomResource {
       }
     };
     let platformConfig = androidConfig;
+    platforms = [];
+    defaultPlatform = '';
 
-    // TODO this needs to be though about
-    if (hasIOS && hasAndroid) {
-      platforms = [];
-      defaultPlatform = '';
-    } else if (hasWeb) {
+    if (!hasIOS) {
+      platforms.push('iOS');
+      defaultPlatform = 'iOS';
+      platformConfig = iosConfig;
+    }
+
+    if (!hasAndroid) {
+      platforms.push('Android');
       defaultPlatform = 'Android';
-      platforms = ['Android'];
       platformConfig = androidConfig;
-    } else if (hasIOS) {
-      defaultPlatform = 'Android';
-      platforms = ['Android'];
-      platformConfig = androidConfig;
-    } else if (hasAndroid) {
+    }
+
+    if (!hasWeb) {
+      platforms.push('Web');
       defaultPlatform = 'Web';
-      platforms = ['Web'];
       platformConfig = webConfig;
     }
+
     const schema = {
       additionalProperties: false,
       properties: {
@@ -156,27 +168,17 @@ export class PushVariantCR extends CustomResource {
       },
       onChangeHandler(formData, oldSchema) {
         const s = oldSchema;
-        if (
-          (oldSchema.properties.platformConfig.title === 'Android' ||
-            oldSchema.properties.platformConfig.title === 'Web') &&
-          formData.CLIENT_TYPE === 'iOS'
-        ) {
+        if (changeToNewBindingConfig(oldSchema.properties.platformConfig.title, formData.CLIENT_TYPE, 'iOS')) {
           s.properties.CLIENT_TYPE.default = 'iOS';
           s.properties.platformConfig = iosConfig;
           return s;
         } else if (
-          (oldSchema.properties.platformConfig.title === 'iOS' ||
-            oldSchema.properties.platformConfig.title === 'Web') &&
-          formData.CLIENT_TYPE === 'Android'
+          changeToNewBindingConfig(oldSchema.properties.platformConfig.title, formData.CLIENT_TYPE, 'Android')
         ) {
           s.properties.CLIENT_TYPE.default = 'Android';
           s.properties.platformConfig = androidConfig;
           return s;
-        } else if (
-          (oldSchema.properties.platformConfig.title === 'iOS' ||
-            oldSchema.properties.platformConfig.title === 'Android') &&
-          formData.CLIENT_TYPE === 'Web'
-        ) {
+        } else if (changeToNewBindingConfig(oldSchema.properties.platformConfig.title, formData.CLIENT_TYPE, 'Web')) {
           s.properties.CLIENT_TYPE.default = 'Web';
           s.properties.platformConfig = webConfig;
           return s;
@@ -308,8 +310,8 @@ export class PushVariantCR extends CustomResource {
               ]
               }
             }
-            }
           }
+        }
       }
     };
   }
