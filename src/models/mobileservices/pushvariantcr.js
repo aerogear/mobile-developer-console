@@ -68,7 +68,7 @@ export class PushVariantCR extends CustomResource {
           type: 'string'
         },
         publicKey: {
-          title: 'Public Key for WEb Push',
+          title: 'Public Key for Web Push',
           type: 'string'
         },
         privateKey: {
@@ -286,28 +286,28 @@ export class PushVariantCR extends CustomResource {
           fields: {
             platformConfig: {
               alias: {
-              validation_rules: [
-                {
-                type: 'required',
-                error: 'Web push requires an Alias'
-                }
-              ]
+                validation_rules: [
+                  {
+                    type: 'required',
+                    error: 'Web push requires an Alias'
+                  }
+                ]
               },
               publicKey: {
-              validation_rules: [
-                {
-                type: 'required',
-                error: 'Web push requires a Public Key.'
-                }
-              ]
+                validation_rules: [
+                  {
+                    type: 'required',
+                    error: 'Web push requires a Public Key.'
+                  }
+                ]
               },
               privateKey: {
-              validation_rules: [
-                {
-                type: 'required',
-                error: 'Web Push requires a Private Key.'
-                }
-              ]
+                validation_rules: [
+                  {
+                    type: 'required',
+                    error: 'Web Push requires a Private Key.'
+                  }
+                ]
               }
             }
           }
