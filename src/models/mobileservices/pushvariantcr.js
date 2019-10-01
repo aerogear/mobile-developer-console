@@ -354,12 +354,13 @@ export class PushVariantCR extends CustomResource {
           apiVersion: 'push.aerogear.org/v1alpha1',
           kind: 'WebPushVariant',
           metadata: {
-            name: `${CLIENT_ID}-web-ups-variant`
+            name: `${CLIENT_ID}-webpushvariant`
           },
           spec: {
-            description: 'UPS Web Variant',
-            serverKey: params.platformConfig.googlekey,
-            senderId: '',
+            description: 'UPS Web Push Variant',
+            privateKey: params.platformConfig.privateKey,
+            publicKey: params.platformConfig.publicKey,
+            alias: params.platformConfig.alias,
             pushApplicationId: null
           }
         };
