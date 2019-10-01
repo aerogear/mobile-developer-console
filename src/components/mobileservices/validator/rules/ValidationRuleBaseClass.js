@@ -4,7 +4,7 @@ import { isString, isFunction } from 'lodash-es';
  * Base class for validation rules.
  */
 export class ValidationRuleBaseClass {
-  constructor(config) {
+  constructor(config = {}) {
     this.config = config;
   }
 

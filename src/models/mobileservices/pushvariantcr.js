@@ -286,10 +286,20 @@ export class PushVariantCR extends CustomResource {
           fields: {
             platformConfig: {
               alias: {
+                comment: "Alias must be either a valid URL or a mailto address'",
                 validation_rules: [
                   {
-                    type: 'required',
-                    error: 'Web push requires an Alias'
+                    type: 'composite',
+                    error: 'Alias must be either a valid URL or a mailto address',
+                    algorithm: 'any',
+                    validation_rules: [
+                      {
+                        type: 'isurl'
+                      },
+                      {
+                        type: 'ismailto'
+                      }
+                    ]
                   }
                 ]
               },
