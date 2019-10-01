@@ -32,6 +32,7 @@ export class ResourceManagerFactory {
       case 'pushapplications':
       case 'AndroidVariant':
       case 'IOSVariant':
+      case 'WebPushVariant':
         return new UserBoundResourceManager(new PushVariantResourceManager());
       default:
         return new UserBoundResourceManager(new GenericResourceManager());

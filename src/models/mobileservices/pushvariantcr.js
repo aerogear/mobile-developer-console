@@ -56,7 +56,7 @@ export class PushVariantCR extends CustomResource {
     const { service } = params;
     const hasIOS = hasPlatform(service, params.appName, 'IOSVariant');
     const hasAndroid = hasPlatform(service, params.appName, 'AndroidVariant');
-    const hasWeb = hasPlatform(service, params.appName, 'WebVariant');
+    const hasWeb = hasPlatform(service, params.appName, 'WebPushVariant');
     let defaultPlatform = 'Web';
     let platforms = ['Android', 'iOS', 'Web'];
     const webConfig = {
@@ -352,7 +352,7 @@ export class PushVariantCR extends CustomResource {
       case 'Web':
         return {
           apiVersion: 'push.aerogear.org/v1alpha1',
-          kind: 'WebVariant',
+          kind: 'WebPushVariant',
           metadata: {
             name: `${CLIENT_ID}-web-ups-variant`
           },
