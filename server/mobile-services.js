@@ -142,7 +142,7 @@ const PushService = {
             }
 
             // get the AndroidVariant and add it
-            const androidVariant = variants.find(v => !!v && v.kind === ANDROID_VARIANT_KIND);
+            const androidVariant = variants.find(v => v && v.kind === ANDROID_VARIANT_KIND);
             if (androidVariant && androidVariant.status) {
               push.config[ANDROID_VARIANT_TYPE] = {
                 variantSecret: androidVariant.status.secret,
@@ -151,7 +151,7 @@ const PushService = {
             }
 
             // get the IOSVariant and add it
-            const iosVariant = variants.find(v => !!v && v.kind === IOS_VARIANT_KIND);
+            const iosVariant = variants.find(v => v && v.kind === IOS_VARIANT_KIND);
             if (iosVariant && iosVariant.status) {
               push.config[IOS_VARIANT_TYPE] = {
                 variantSecret: iosVariant.status.secret,
@@ -160,7 +160,7 @@ const PushService = {
             }
 
             // get the AndroidVariant and add it
-            const webPushVariant = variants.find(v => !!v && v.kind === WEB_PUSH_VARIANT_KIND);
+            const webPushVariant = variants.find(v => v && v.kind === WEB_PUSH_VARIANT_KIND);
             if (webPushVariant && webPushVariant.status) {
               push.config[WEB_PUSH_VARIANT_TYPE] = {
                 variantSecret: webPushVariant.status.secret,
