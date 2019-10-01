@@ -25,7 +25,7 @@ const WEB_PUSH_VARIANT_KIND = 'WebPushVariant';
 
 const IOS_UPS_SUFFIX = '-ios-ups-variant';
 const ANDROID_UPS_SUFFIX = '-android-ups-variant';
-const WEB_PUSH_UPS_SUFFIX = '-web-push-ups-variant';
+const WEB_PUSH_UPS_SUFFIX = '-webpushvariant';
 
 const configPath = process.env.MOBILE_SERVICES_CONFIG_FILE || '/etc/mdc/servicesConfig.json';
 const { UPS_DOCUMENTATION_URL, IDM_DOCUMENTATION_URL, MSS_DOCUMENTATION_URL, SYNC_DOCUMENTATION_URL } = process.env;
@@ -101,7 +101,7 @@ const PushService = {
     // get the Web Push variant associated with this app
     const getWebPushVariant = kubeclient.apis[webPushVariantCRD.spec.group].v1alpha1
       .namespace(namespace)
-      .webpushvariants(`${appname}${IOS_UPS_SUFFIX}`)
+      .webpushvariants(`${appname}${WEB_PUSH_UPS_SUFFIX}`)
       .get()
       .then(resp => resp.body)
       .catch(err => {
