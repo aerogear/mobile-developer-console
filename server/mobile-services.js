@@ -17,7 +17,7 @@ const DATA_SYNC_TYPE = 'sync-app';
 const MOBILE_SECURITY_TYPE = 'security';
 const ANDROID_VARIANT_TYPE = 'android';
 const IOS_VARIANT_TYPE = 'ios';
-const WEB_PUSH_VARIANT_TYPE = 'web';
+const WEB_PUSH_VARIANT_TYPE = 'web_push';
 
 const IOS_VARIANT_KIND = 'IOSVariant';
 const ANDROID_VARIANT_KIND = 'AndroidVariant';
