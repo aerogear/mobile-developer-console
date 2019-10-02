@@ -126,7 +126,10 @@ const PushService = {
       }))
       .then(push =>
         getServices(configPath).then(services => {
+          console.log(configPath)
           const pushService = services.find(s => s.type === PUSH_SERVICE_TYPE);
+          console.log(pushService)
+          console.log(push)
           return {
             ...push,
             url: pushService.host
@@ -159,12 +162,13 @@ const PushService = {
               };
             }
 
-            // get the AndroidVariant and add it
+            // get the WebPushVariant and add it
             const webPushVariant = variants.find(v => v && v.kind === WEB_PUSH_VARIANT_KIND);
             if (webPushVariant && webPushVariant.status) {
               push.config[WEB_PUSH_VARIANT_TYPE] = {
                 variantSecret: webPushVariant.status.secret,
-                variantId: webPushVariant.status.variantId
+                variantId: webPushVariant.status.variantId,
+                appServerKey: webPushVariant.spec.publicKey
               };
             }
 
