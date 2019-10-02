@@ -308,6 +308,12 @@ export class PushVariantCR extends CustomResource {
                   {
                     type: 'required',
                     error: 'Web push requires a Public Key.'
+                  },
+                  {
+                    type: 'isecdsa',
+                    keyType: 'public',
+                    encoding: 'base64',
+                    error: 'Invalid public key'
                   }
                 ]
               },
@@ -316,6 +322,12 @@ export class PushVariantCR extends CustomResource {
                   {
                     type: 'required',
                     error: 'Web Push requires a Private Key.'
+                  },
+                  {
+                    type: 'isecdsa',
+                    keyType: 'private',
+                    encoding: 'base64',
+                    error: 'Invalid private key'
                   }
                 ]
               }

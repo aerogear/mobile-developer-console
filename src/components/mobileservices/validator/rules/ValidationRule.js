@@ -7,6 +7,7 @@ import { NAME as IS_EMAIL, ValidEmailRule } from './ValidEmailRule';
 import { NAME as IS_MAILTO, ValidMailToRule } from './ValidMailToRule';
 import { NAME as IS_URL, ValidUrlRule } from './ValidUrlRule';
 import { NAME as COMPOSITE, CompositeRule } from './CompositeRule';
+import { NAME as IS_ECDSA, ValidateECDSAKey } from './ValidateECDSAKey';
 import { NoopRule } from './NoopRule';
 
 /**
@@ -43,6 +44,9 @@ export class ValidationRule {
       }
       case IS_URL: {
         return new ValidUrlRule(ruleConfig);
+      }
+      case IS_ECDSA: {
+        return new ValidateECDSAKey(ruleConfig);
       }
       default: {
         return new NoopRule();
