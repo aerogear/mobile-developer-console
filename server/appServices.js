@@ -303,11 +303,11 @@ async function watchWebPushVariants(namespace, kubeclient) {
 
   // reopens the stream when it closes
   webPushVariantStream.on('end', () => {
-    watchAndroidVariants(namespace, kubeclient);
+    watchWebPushVariants(namespace, kubeclient);
   });
 
   webPushVariantStream.on('close', () => {
-    retryWatchDebounce();
+    retryWatchDebounce(namespace, kubeclient);
   });
 }
 
