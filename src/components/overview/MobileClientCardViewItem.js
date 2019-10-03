@@ -55,7 +55,6 @@ class MobileClientCardViewItem extends React.Component {
   };
 
   triggerDeletion = itemName => {
-    console.log('TRIGGERED', this.props);
     const { onDelete } = this.props;
     if (onDelete && typeof onDelete === 'function') {
       onDelete();

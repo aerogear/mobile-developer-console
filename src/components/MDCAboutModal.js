@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux'; 
 import {
   AboutModal,
   TextContent,
@@ -6,8 +7,20 @@ import {
   TextListItem
 } from '@patternfly/react-core';
 import bowser from 'bowser';
+import { fetchAndWatchServices } from '../actions/services';
 
-export default class MDCAboutModal extends React.Component {
+export class MDCAboutModal extends React.Component {
+
+  componentDidMount() {
+    this.props.fetchAndWatchServices();
+  }
+  
+  getVersion(vType) {
+    const filteredService = this.props.items.find(item => item.type === vType)
+    if (filteredService) {
+      return filteredService.bindCustomResource.version
+    }
+  }
 
   render() {
     const browser = bowser.getParser(window.navigator.userAgent);
@@ -21,14 +34,14 @@ export default class MDCAboutModal extends React.Component {
         productName="Mobile Developer Console">
         <TextContent>
           <TextList component="dl">
-              <TextListItem component="dt">Console Version</TextListItem>
-              <TextListItem component="dd"> </TextListItem>
               <TextListItem component="dt">Identity Management Service</TextListItem>
-              <TextListItem component="dd"> </TextListItem>
-              <TextListItem component="dt">Mobile Security Service</TextListItem>
-              <TextListItem component="dd"> </TextListItem>
-              <TextListItem component="dt">Push Service</TextListItem>
-              <TextListItem component="dd"> </TextListItem>
+              <TextListItem component="dd"> {this.getVersion("keycloak")}</TextListItem>
+              <TextListItem component="dt">Unified Push Servier</TextListItem>
+              <TextListItem component="dd"> {this.getVersion("push")}</TextListItem>
+              <TextListItem component="dt">Mobile Metrics</TextListItem>
+              <TextListItem component="dd"> {this.getVersion("security")}</TextListItem>
+              <TextListItem component="dt">Data Sync</TextListItem>
+              <TextListItem component="dd"> {this.getVersion("sync-app")}</TextListItem>
               <TextListItem component="dt">User Name</TextListItem>
               <TextListItem component="dd">{this.props.user.name}</TextListItem>
               <TextListItem component="dt">Browser Version</TextListItem>
@@ -42,3 +55,17 @@ export default class MDCAboutModal extends React.Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    ...state.services
+  };
+}
+
+const mapDispatchToProps = {
+  fetchAndWatchServices
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MDCAboutModal);
