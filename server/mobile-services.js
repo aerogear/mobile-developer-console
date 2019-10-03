@@ -126,10 +126,7 @@ const PushService = {
       }))
       .then(push =>
         getServices(configPath).then(services => {
-          console.log(configPath)
           const pushService = services.find(s => s.type === PUSH_SERVICE_TYPE);
-          console.log(pushService)
-          console.log(push)
           return {
             ...push,
             url: pushService.host
