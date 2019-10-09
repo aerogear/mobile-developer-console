@@ -29,7 +29,8 @@ export class BindingPanel extends Component {
       validationRules,
       isFormValid: false,
       onChangeHandler,
-      key: Date.now() // required to reset any possible validation errors
+      key: Date.now(), // required to reset any possible validation errors
+      formChangeCount: 0
     };
   }
 
@@ -51,6 +52,8 @@ export class BindingPanel extends Component {
   }
 
   onFormChange = (data) => {
+    this.setState({ formChangeCount: this.state.formChangeCount + 1 });
+
     const { formData } = data;
     const valid = new FormValidator(this.state.validationRules)
       .validate(formData, () => {});
@@ -124,7 +127,7 @@ export class BindingPanel extends Component {
             validate={this.validate}
             formData={this.state.formData}
             onChange={this.onFormChange} // eslint-disable-line no-return-assign
-            liveValidate
+            liveValidate={this.state.formChangeCount > 1}
           >
             <div/>
           </Form>
