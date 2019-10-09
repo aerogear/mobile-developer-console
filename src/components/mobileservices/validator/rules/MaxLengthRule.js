@@ -18,7 +18,7 @@ export class MaxLengthRule extends ValidationRuleBaseClass {
   validate(formData, key) {
     const value = get(formData, key);
 
-    if (value.length > this.maxlength) {
+    if (value && value.length > this.maxlength) {
       return {
         valid: false,
         error: this.getErrorMessage({

@@ -6,6 +6,7 @@ const { addProtocolIfMissing } = require('./helpers');
 const pushApplicationCRD = require('./push-application-crd.json');
 const androidVariantCRD = require('./android-variant-crd.json');
 const iosVariantCRD = require('./ios-variant-crd.json');
+const webPushVariantCRD = require('./web-variant-crd.json');
 
 const mobileSecurityServiceCRD = require('./mobile-security-crd.json');
 
@@ -16,12 +17,15 @@ const DATA_SYNC_TYPE = 'sync-app';
 const MOBILE_SECURITY_TYPE = 'security';
 const ANDROID_VARIANT_TYPE = 'android';
 const IOS_VARIANT_TYPE = 'ios';
+const WEB_PUSH_VARIANT_TYPE = 'web_push';
 
 const IOS_VARIANT_KIND = 'IOSVariant';
 const ANDROID_VARIANT_KIND = 'AndroidVariant';
+const WEB_PUSH_VARIANT_KIND = 'WebPushVariant';
 
 const IOS_UPS_SUFFIX = '-ios-ups-variant';
 const ANDROID_UPS_SUFFIX = '-android-ups-variant';
+const WEB_PUSH_UPS_SUFFIX = '-webpushvariant';
 
 const configPath = process.env.MOBILE_SERVICES_CONFIG_FILE || '/etc/mdc/servicesConfig.json';
 const { UPS_DOCUMENTATION_URL, IDM_DOCUMENTATION_URL, MSS_DOCUMENTATION_URL, SYNC_DOCUMENTATION_URL } = process.env;
@@ -55,6 +59,12 @@ const PushService = {
         version: 'v1alpha1',
         group: 'push.aerogear.org',
         kind: 'IOSVariant'
+      },
+      {
+        name: 'webpushvariants',
+        version: 'v1alpha1',
+        group: 'push.aerogear.org',
+        kind: 'WebPushVariant'
       }
     ]
   },
@@ -89,6 +99,21 @@ const PushService = {
         }
       });
 
+    // get the Web Push variant associated with this app
+    const getWebPushVariant = kubeclient.apis[webPushVariantCRD.spec.group].v1alpha1
+      .namespace(namespace)
+      .webpushvariants(`${appname}${WEB_PUSH_UPS_SUFFIX}`)
+      .get()
+      .then(resp => resp.body)
+      .catch(err => {
+        const name = `${appname}${WEB_PUSH_UPS_SUFFIX}`;
+        if (err && err.statusCode && err.statusCode === 404) {
+          console.info(`Can not find WebPushVariant ${name}`);
+        } else {
+          console.warn(`Error when fetch WebPushVariant ${name}`, err);
+        }
+      });
+
     return kubeclient.apis[pushApplicationCRD.spec.group].v1alpha1
       .namespace(namespace)
       .pushapplications(appname)
@@ -110,7 +135,7 @@ const PushService = {
         })
       )
       .then(push =>
-        Promise.all([getAndroidVariant, getIOSVariant])
+        Promise.all([getAndroidVariant, getIOSVariant, getWebPushVariant])
           .then(variants => variants.filter(Boolean))
           .then(variants => {
             if (!variants || !variants.length) {
@@ -118,7 +143,7 @@ const PushService = {
             }
 
             // get the AndroidVariant and add it
-            const androidVariant = variants.find(v => !!v && v.kind === ANDROID_VARIANT_KIND);
+            const androidVariant = variants.find(v => v && v.kind === ANDROID_VARIANT_KIND);
             if (androidVariant && androidVariant.status) {
               push.config[ANDROID_VARIANT_TYPE] = {
                 variantSecret: androidVariant.status.secret,
@@ -127,11 +152,21 @@ const PushService = {
             }
 
             // get the IOSVariant and add it
-            const iosVariant = variants.find(v => !!v && v.kind === IOS_VARIANT_KIND);
+            const iosVariant = variants.find(v => v && v.kind === IOS_VARIANT_KIND);
             if (iosVariant && iosVariant.status) {
               push.config[IOS_VARIANT_TYPE] = {
                 variantSecret: iosVariant.status.secret,
                 variantId: iosVariant.status.variantId
+              };
+            }
+
+            // get the WebPushVariant and add it
+            const webPushVariant = variants.find(v => v && v.kind === WEB_PUSH_VARIANT_KIND);
+            if (webPushVariant && webPushVariant.status) {
+              push.config[WEB_PUSH_VARIANT_TYPE] = {
+                variantSecret: webPushVariant.status.secret,
+                variantId: webPushVariant.status.variantId,
+                appServerKey: webPushVariant.spec.publicKey
               };
             }
 
