@@ -186,6 +186,87 @@ describe('BoundServiceRow - UPS - 2 bindings', () => {
       }
     ]
   };
+  it('should render the bind button, render the binding status and not update the bind panel platform selection', () => {
+    const wrapper = mount(
+      <Provider store={store} key="provider">
+        <BrowserRouter>
+          <BoundServiceRow service={service} />
+        </BrowserRouter>
+      </Provider>
+    );
+    expect(wrapper.find('BindButton')).toHaveLength(1);
+    // normally we show the binding status in the UnboundServiceRow, not in the bound one.
+    // but, as there might be a binding in progress, we still need to show this status in BoundServiceRow too
+    expect(wrapper.find('BindingStatus')).toHaveLength(1);
+    expect(bindingSchema.properties.CLIENT_TYPE.default).toEqual('Foo');
+    expect(bindingSchema.properties.CLIENT_TYPE.enum).toEqual(['Foo', 'Bar']);
+  });
+});
+
+describe('BoundServiceRow - UPS - 3 bindings', () => {
+  const bindingSchema = {
+    properties: {
+      CLIENT_TYPE: {
+        default: 'Foo',
+        enum: ['Foo', 'Bar', 'Moo']
+      }
+    }
+  };
+  const service = {
+    getConfiguration: () => undefined,
+    getConfigurationExtAsJSON: () => [
+      [
+        {
+          type: 'AndroidVariant',
+          typeLabel: 'AndroidVariant',
+          url:
+            'https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/2d76d1eb-65ef-471c-8d21-75f80c3f370f',
+          id: '2d76d1eb-65ef-471c-8d21-75f80c3f370f'
+        },
+        {
+          type: 'IOSVariant',
+          typeLabel: 'IOSVariant',
+          url:
+            'https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/c8d70b96-bd52-499c-845b-756089e06d36',
+          id: 'c8d70b96-bd52-499c-845b-756089e06d36'
+        },
+        {
+          type: 'WebPushVariant',
+          typeLabel: 'WebPushVariant',
+          url:
+            'https://ups-mdc.127.0.0.1.nip.io/#/app/8936dead-7552-4b55-905c-926752c759af/variants/8c029630-e435-11e9-926a-0efc861c3a30',
+          id: '8c029630-e435-11e9-926a-0efc861c3a30'
+        }
+      ]
+    ],
+    getDocumentationUrl: () => undefined,
+    getBindingName: () => 'test-ups-r66b9',
+    getIconClass: () => 'fa fa-something',
+    getId: () => 'UPS',
+    getLogoUrl: () => undefined,
+    getName: () => 'UPS',
+    getDescription: () => 'UPS description',
+    isUPSService: () => true,
+    isBindingOperationInProgress: () => false,
+    isBindingOperationFailed: () => false,
+    getBindingSchema: () => bindingSchema,
+    getFormDefinition: () => undefined,
+    isBound: () => true,
+    getCustomResourcesForApp: () => [
+      {
+        getName: () => 'test-ups-r66b9-android',
+        getPlatform: () => 'android'
+      },
+      {
+        getName: () => 'test-ups-r66b9-ios',
+        getPlatform: () => 'ios'
+      },
+      {
+        getName: () => 'test-ups-r66b9-web',
+        getPlatform: () => 'web'
+      }
+    ]
+  };
   it('should not render the bind button, render the binding status and not update the bind panel platform selection', () => {
     const wrapper = mount(
       <Provider store={store} key="provider">
@@ -199,6 +280,6 @@ describe('BoundServiceRow - UPS - 2 bindings', () => {
     // but, as there might be a binding in progress, we still need to show this status in BoundServiceRow too
     expect(wrapper.find('BindingStatus')).toHaveLength(1);
     expect(bindingSchema.properties.CLIENT_TYPE.default).toEqual('Foo');
-    expect(bindingSchema.properties.CLIENT_TYPE.enum).toEqual(['Foo', 'Bar']);
+    expect(bindingSchema.properties.CLIENT_TYPE.enum).toEqual(['Foo', 'Bar', 'Moo']);
   });
 });

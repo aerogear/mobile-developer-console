@@ -11,6 +11,15 @@ function hasPlatform(service, appName, platform) {
   );
 }
 
+function changeToNewBindingConfig(oldTitle, formClientType, checkFor) {
+  // checks if the from data is not the okd title
+  // checks if the new title is where the block wants to go
+  const titles = ['Android', 'iOS', 'Web'].filter(title => title !== checkFor);
+  const isOldTitle = titles.includes(oldTitle);
+  const isNewConfig = formClientType === checkFor;
+  return isOldTitle && isNewConfig;
+}
+
 export class PushVariantCR extends CustomResource {
   constructor(data = {}) {
     super(data);
@@ -47,8 +56,27 @@ export class PushVariantCR extends CustomResource {
     const { service } = params;
     const hasIOS = hasPlatform(service, params.appName, 'IOSVariant');
     const hasAndroid = hasPlatform(service, params.appName, 'AndroidVariant');
-    let defaultPlatform = 'Android';
-    let platforms = ['Android', 'iOS'];
+    const hasWeb = hasPlatform(service, params.appName, 'WebPushVariant');
+    let defaultPlatform = 'Web';
+    let platforms = ['Android', 'iOS', 'Web'];
+    const webConfig = {
+      title: 'Web',
+      type: 'object',
+      properties: {
+        alias: {
+          title: 'Alias for Web Push',
+          type: 'string'
+        },
+        publicKey: {
+          title: 'Public Key for Web Push',
+          type: 'string'
+        },
+        privateKey: {
+          title: 'Private key for Web Push',
+          type: 'string'
+        }
+      }
+    };
     const androidConfig = {
       title: 'Android',
       type: 'object',
@@ -83,18 +111,27 @@ export class PushVariantCR extends CustomResource {
       }
     };
     let platformConfig = androidConfig;
-    if (hasIOS && hasAndroid) {
-      platforms = [];
-      defaultPlatform = '';
-    } else if (hasIOS) {
-      defaultPlatform = 'Android';
-      platforms = ['Android'];
-      platformConfig = androidConfig;
-    } else if (hasAndroid) {
+    platforms = [];
+    defaultPlatform = '';
+
+    if (!hasIOS) {
+      platforms.push('iOS');
       defaultPlatform = 'iOS';
-      platforms = ['iOS'];
       platformConfig = iosConfig;
     }
+
+    if (!hasAndroid) {
+      platforms.push('Android');
+      defaultPlatform = 'Android';
+      platformConfig = androidConfig;
+    }
+
+    if (!hasWeb) {
+      platforms.push('Web');
+      defaultPlatform = 'Web';
+      platformConfig = webConfig;
+    }
+
     const schema = {
       additionalProperties: false,
       properties: {
@@ -131,13 +168,19 @@ export class PushVariantCR extends CustomResource {
       },
       onChangeHandler(formData, oldSchema) {
         const s = oldSchema;
-        if (oldSchema.properties.platformConfig.title === 'Android' && formData.CLIENT_TYPE === 'iOS') {
+        if (changeToNewBindingConfig(oldSchema.properties.platformConfig.title, formData.CLIENT_TYPE, 'iOS')) {
           s.properties.CLIENT_TYPE.default = 'iOS';
           s.properties.platformConfig = iosConfig;
           return s;
-        } else if (oldSchema.properties.platformConfig.title === 'iOS' && formData.CLIENT_TYPE === 'Android') {
+        } else if (
+          changeToNewBindingConfig(oldSchema.properties.platformConfig.title, formData.CLIENT_TYPE, 'Android')
+        ) {
           s.properties.CLIENT_TYPE.default = 'Android';
           s.properties.platformConfig = androidConfig;
+          return s;
+        } else if (changeToNewBindingConfig(oldSchema.properties.platformConfig.title, formData.CLIENT_TYPE, 'Web')) {
+          s.properties.CLIENT_TYPE.default = 'Web';
+          s.properties.platformConfig = webConfig;
           return s;
         }
         return null;
@@ -229,6 +272,67 @@ export class PushVariantCR extends CustomResource {
               }
             }
           }
+        },
+        WEB_UPS_BINDING: {
+          comment: 'This is the set of rules that will be used to validate Web UPS Binding.',
+          executionConstraints: [
+            {
+              comment: "Execute this ruleset only when the field named 'CLIENT_TYPE' has value 'WEB'",
+              type: 'FIELD_VALUE',
+              name: 'CLIENT_TYPE',
+              value: 'Web'
+            }
+          ],
+          fields: {
+            platformConfig: {
+              alias: {
+                comment: "Alias must be either a valid URL or a mailto address'",
+                validation_rules: [
+                  {
+                    type: 'composite',
+                    error: 'Alias must be either a valid URL or a mailto address',
+                    algorithm: 'any',
+                    validation_rules: [
+                      {
+                        type: 'isurl'
+                      },
+                      {
+                        type: 'ismailto'
+                      }
+                    ]
+                  }
+                ]
+              },
+              publicKey: {
+                validation_rules: [
+                  {
+                    type: 'required',
+                    error: 'Web push requires a Public Key.'
+                  },
+                  {
+                    type: 'isecdsa',
+                    keyType: 'public',
+                    encoding: 'base64',
+                    error: 'Invalid public key'
+                  }
+                ]
+              },
+              privateKey: {
+                validation_rules: [
+                  {
+                    type: 'required',
+                    error: 'Web Push requires a Private Key.'
+                  },
+                  {
+                    type: 'isecdsa',
+                    keyType: 'private',
+                    encoding: 'base64',
+                    error: 'Invalid private key'
+                  }
+                ]
+              }
+            }
+          }
         }
       }
     };
@@ -264,6 +368,21 @@ export class PushVariantCR extends CustomResource {
             certificate: params.platformConfig.cert,
             passphrase: params.platformConfig.passphrase,
             production: params.platformConfig.iosIsProduction,
+            pushApplicationId: null
+          }
+        };
+      case 'Web':
+        return {
+          apiVersion: 'push.aerogear.org/v1alpha1',
+          kind: 'WebPushVariant',
+          metadata: {
+            name: `${CLIENT_ID}-webpushvariant`
+          },
+          spec: {
+            description: 'UPS Web Push Variant',
+            privateKey: params.platformConfig.privateKey,
+            publicKey: params.platformConfig.publicKey,
+            alias: params.platformConfig.alias,
             pushApplicationId: null
           }
         };

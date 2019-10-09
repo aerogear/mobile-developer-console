@@ -13,6 +13,7 @@ const mobileClientCRD = require('./mobile-client-crd.json');
 const pushApplicationCRD = require('./push-application-crd.json');
 const androidVariantCRD = require('./android-variant-crd.json');
 const iosVariantCRD = require('./ios-variant-crd.json');
+const webPushVariantCRD = require('./web-variant-crd.json');
 const mobileSecurityService = require('./mobile-security-crd.json');
 
 const app = express();
@@ -115,6 +116,7 @@ async function initKubeClient() {
     kubeclient.addCustomResourceDefinition(pushApplicationCRD);
     kubeclient.addCustomResourceDefinition(androidVariantCRD);
     kubeclient.addCustomResourceDefinition(iosVariantCRD);
+    kubeclient.addCustomResourceDefinition(webPushVariantCRD);
     kubeclient.addCustomResourceDefinition(mobileSecurityService);
     return kubeclient;
   } catch (e) {
