@@ -14,7 +14,13 @@ import {
   PageSection,
   PageSectionVariants
 } from '@patternfly/react-core';
-
+import { 
+  DataToolbar,
+  DataToolbarItem,
+  DataToolbarContent,
+  DataToolbarFilter,
+  DataToolbarToggleGroup,
+  DataToolbarGroup } from '@patternfly/react-core/dist/esm/experimental';
 import { MobileAltIcon } from '@patternfly/react-icons';
 import './MobileClientCardView.css';
 import './MobileClientCardViewItem.css';
@@ -24,7 +30,7 @@ import CreateClient from '../../containers/CreateClient';
 class MobileClientCardView extends Component {
   constructor(props) {
     super(props);
-    this.state = { filter: '', currentValue: '' };
+    this.state = { filters: [], currentValue: '' };
 
     this.emptyStateMessage = {
       noAppsCreatedTitle: "You don't have any Mobile Apps.",
@@ -57,16 +63,26 @@ class MobileClientCardView extends Component {
   }
 
   setFilter(filterValue) {
-    this.setState({ filter: filterValue });
+    this.setState({ filters: [...this.state.filters, filterValue] });
   }
 
-  removeFilter() {
-    this.setState({ filter: '', currentValue: '' });
+  removeFilter = (type = "", id = "") => {
+    if (id) {
+      this.setState((prevState) => {
+        prevState.filters = prevState.filters.filter(s => s !== id);
+        return {
+          filters: prevState.filters,
+        }
+      });
+    };
+  }
+
+  clearFilters = () => {
+    this.setState({ filters: [] });
   }
 
   updateCurrentValue(value) {
     this.setState({ currentValue: value });
-    this.setFilter(value);
   }
 
   getBuilds = app => {
@@ -103,8 +119,8 @@ class MobileClientCardView extends Component {
         const {
           metadata: { name: clientAppName }
         } = app;
-        const { filter } = this.state;
-        return clientAppName.indexOf(filter) > -1 ? (
+        const { filters } = this.state;
+        return clientAppName.indexOf(filters) > -1 ? (
           <MobileClientCardViewItem
             key={clientAppName}
             app={app}
@@ -138,7 +154,7 @@ class MobileClientCardView extends Component {
 
   render() {
     const { mobileClients } = this.props;
-    const { filter } = this.state;
+    const { filters } = this.state;
     return (
       <div className="overview">
         <PageSection variant={PageSectionVariants.light} className="pf-c-page__main-section">
@@ -146,25 +162,32 @@ class MobileClientCardView extends Component {
             Mobile Apps
           </Title>
           <br />
-          <Toolbar>
-            <ToolbarItem>
-              <InputGroup>
-                <TextInput
-                  placeholder="Filter by name"
-                  className="toolbarFilter"
+          <DataToolbar 
+            clearAllFilters={this.clearFilters} 
+            showClearFiltersButton={ filters.length !== 0 }>
+            <DataToolbarItem>
+              <DataToolbarGroup>
+                <TextInput 
+                  placeholder="Filter by name..."
+                  className="datatoolbarInput"
                   type="search"
                   onChange={e => this.updateCurrentValue(e)}
                   onKeyPress={e => this.onValueKeyPress(e)}
+                  />
+                <DataToolbarFilter
+                  className="toolbarFilter"
+                  chips={this.state.filters}
+                  deleteChip={this.removeFilter}
                 />
-              </InputGroup>
-            </ToolbarItem>
-            <ToolbarItem>
+              </DataToolbarGroup>
+            </DataToolbarItem>
+            <DataToolbarItem>
               <div>
                 <CreateClient />
               </div>
-              {filter && filter.length > 0 && mobileClients.filterClients}
-            </ToolbarItem>
-          </Toolbar>
+              {filters && filters.length > 0 && mobileClients.filterClients}
+            </DataToolbarItem>
+          </DataToolbar>
         </PageSection>
         <PageSection className="card-gallery" style={{ height: '100vh' }}>
           {mobileClients.length ? this.renderAppCards() : this.getEmptyState()}
