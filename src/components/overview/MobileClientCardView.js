@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Toolbar,
+  Button,
   Gallery,
   GalleryItem,
-  ToolbarItem,
   EmptyState,
   EmptyStateBody,
   EmptyStateVariant,
@@ -21,7 +20,7 @@ import {
   DataToolbarFilter,
   DataToolbarToggleGroup,
   DataToolbarGroup } from '@patternfly/react-core/dist/esm/experimental';
-import { MobileAltIcon } from '@patternfly/react-icons';
+import { MobileAltIcon, SearchIcon } from '@patternfly/react-icons';
 import './MobileClientCardView.css';
 import './MobileClientCardViewItem.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
@@ -46,6 +45,14 @@ class MobileClientCardView extends Component {
       this.setFilter(currentValue);
       keyEvent.stopPropagation();
       keyEvent.preventDefault();
+    }
+  }
+
+  onClick() {
+    const { currentValue } = this.state;
+    if (currentValue && currentValue.length > 0) {
+      this.setState({ currentValue: '' });
+      this.setFilter(currentValue);
     }
   }
 
@@ -155,38 +162,47 @@ class MobileClientCardView extends Component {
   render() {
     const { mobileClients } = this.props;
     const { filters } = this.state;
+    const filteredClients = this.filterClients(mobileClients);
     return (
       <div className="overview">
         <PageSection variant={PageSectionVariants.light} className="pf-c-page__main-section">
-          <Title className="overview-title" headingLevel="h2" size="3xl">
-            Mobile Apps
-          </Title>
+            <Title className="overview-title" headingLevel="h2" size="3xl">
+              Mobile Apps
+              <span className="create-button">
+                <CreateClient />              
+              </span>
+            </Title>
           <br />
           <DataToolbar 
             clearAllFilters={this.clearFilters} 
             showClearFiltersButton={ filters.length !== 0 }>
-            <DataToolbarItem>
-              <DataToolbarGroup>
-                <TextInput 
-                  placeholder="Filter by name..."
-                  className="datatoolbarInput"
-                  type="search"
-                  onChange={e => this.updateCurrentValue(e)}
-                  onKeyPress={e => this.onValueKeyPress(e)}
-                  />
+            <DataToolbarContent>
+              <DataToolbarItem>
+                <InputGroup>
+                  <TextInput 
+                    placeholder="Filter by name..."
+                    className="datatoolbarInput"
+                    type="search"
+                    onChange={e => this.updateCurrentValue(e)}
+                    onKeyPress={e => this.onValueKeyPress(e)}
+                    />
+                  <Button variant="tertiary" onClick={e => this.onClick(e)}>
+                    <SearchIcon />
+                  </Button>
+                </InputGroup>
+              </DataToolbarItem>
+              <DataToolbarItem>
                 <DataToolbarFilter
                   className="toolbarFilter"
                   chips={this.state.filters}
                   deleteChip={this.removeFilter}
                 />
-              </DataToolbarGroup>
-            </DataToolbarItem>
-            <DataToolbarItem>
-              <div>
-                <CreateClient />
-              </div>
-              {filters && filters.length > 0 && mobileClients.filterClients}
-            </DataToolbarItem>
+              </DataToolbarItem>
+                {/* {filters && filters.length > 0 && mobileClients.filterClients} */}
+              <DataToolbarItem breakpointMods={[{modifier:"align-right"}]}>
+                {filteredClients ? filteredClients.length : mobileClients.length} of {mobileClients.length} items
+              </DataToolbarItem>
+            </DataToolbarContent>
           </DataToolbar>
         </PageSection>
         <PageSection className="card-gallery" style={{ height: '100vh' }}>

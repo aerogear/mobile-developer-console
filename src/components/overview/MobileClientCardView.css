@@ -12,6 +12,10 @@
   .card-icons > *:not(:last-child) {
     margin-right: var(--pf-global--spacer--md); }
 
+.create-button {
+  margin-left: 40px;
+}
+
 .creation-timestamp {
   font-size: 14px;
   color: #757575;
