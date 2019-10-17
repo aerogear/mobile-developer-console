@@ -12,7 +12,9 @@ export const _buildOpenShiftUrl = (baseUrl, res) => {
 
 export const _buildRequestUrl = res => `${_buildOpenShiftUrl(window.OPENSHIFT_CONFIG.masterUri, res)}`;
 
-export const _buildWatchUrl = res => `${_buildOpenShiftUrl(window.OPENSHIFT_CONFIG.wssMasterUri, res)}?watch=true`;
+export const _buildWatchUrl = res => {
+  // TODO: dynamically decide between ws and wss
+  return `wss://${window.location.hostname}${window.location.port ? ':'+window.location.port : ''}${_buildOpenShiftUrl(window.OPENSHIFT_CONFIG.wssMasterUri, res)}?watch=true`; }
 
 export const _labelsToQuery = labels => {
   const labelsArr = map(labels, (value, name) => `${name}%3D${value}`);
