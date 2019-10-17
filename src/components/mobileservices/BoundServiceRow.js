@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { DropdownKebab } from 'patternfly-react';
 import {
+  Button,
   DataListItem,
   DataListItemRow,
   DataListCell,
@@ -157,9 +158,8 @@ class BoundServiceRow extends Component {
 
   renderDeleteBindingDropdowns() {
     const crs = this.props.service.getCustomResourcesForApp(this.props.appName);
-
     return (
-      <DropdownKebab id="delete-binding-id" pullRight>
+      <React.Fragment>
         {crs.map(cr => (
           <DeleteItemButton
             key={`delete-cr-${cr.getName()}`}
@@ -169,7 +169,7 @@ class BoundServiceRow extends Component {
             onDelete={() => this.props.onDeleteBinding(cr)}
           />
         ))}
-      </DropdownKebab>
+      </React.Fragment>
     );
   }
 
@@ -197,19 +197,8 @@ class BoundServiceRow extends Component {
             style={{ marginRight: 'var(--pf-global--spacer--sm)' }}
           />
           {this.renderServiceBadge()}
-          <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1" aria-label="Actions">
-            <Dropdown
-              isPlain
-              position={DropdownPosition.right}
-              isOpen={this.state.isOpen1}
-              onSelect={this.onSelect1}
-              toggle={<KebabToggle onToggle={this.onToggle1} />}
-              dropdownItems={[
-                <DropdownItem key="action" component="button">
-                  Action
-                </DropdownItem>
-              ]}
-            />
+          <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1">
+            {this.renderDeleteBindingDropdowns()}
           </DataListAction>
         </DataListItemRow>
         <DataListContent

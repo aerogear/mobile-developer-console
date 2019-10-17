@@ -12,6 +12,12 @@ class DeleteItemButton extends Component {
     this.state = {
       showModal: false
     };
+
+    this.openDialog = () => {
+      this.setState({
+        showModal: true
+      });
+    };
   }
 
   triggerDeletion = history => {
@@ -38,13 +44,6 @@ class DeleteItemButton extends Component {
     this.handleDialogClose();
   };
 
-  openDialog = () => {
-    console.log("did it make it here");
-    this.setState({
-      showModal: true
-    });
-  };
-
   handleDialogClose = () => {
     this.setState({
       showModal: false
@@ -59,17 +58,15 @@ class DeleteItemButton extends Component {
     const { itemType, title = 'Delete' } = this.props;
     const itemName = this.getItemName();
     const { showModal }  = this.state;
-    console.log( showModal );
+    console.log("did it make it to heree");
 
     return (
       <Route
         render={props => (
           <React.Fragment>
-            <DropdownItem key="action">
-              <button onClick={() => this.openDialog}>
+              <Button onClick={this.openDialog}>
                 {title}
-              </button>
-              </DropdownItem>
+              </Button>
               <Modal
                 title="Confirm Delete"
                 isOpen={ showModal }
