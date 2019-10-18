@@ -1,5 +1,5 @@
 import { CustomResource } from './customresource';
-import './mobileservices.css';
+import './datasync.css';
 
 export class DataSyncCR extends CustomResource {
   constructor(data = {}) {
