@@ -5,7 +5,6 @@
   }
 }
 
-
 .pf-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -15,8 +14,10 @@
   }
 }
 
-.pf-l-bullseye {
-  height: unset;
+.pf-c-card {
+  width: 450px;
+  height: 100%;
+  box-shadow: unset;
 }
 
 .mdc-breakpoint-split {

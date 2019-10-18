@@ -8,8 +8,10 @@
   .pf-grid div {
     text-align: center; }
 
-.pf-l-bullseye {
-  height: unset; }
+.pf-c-card {
+  width: 450px;
+  height: 100%;
+  box-shadow: unset; }
 
 @media only screen and (max-width: 900px) {
   .mdc-breakpoint-split > * {

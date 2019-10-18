@@ -24,7 +24,6 @@ import {
 import { connect } from 'react-redux';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import Moment from 'react-moment';
-// import ConfigurationView from '../components/configuration/ConfigurationView';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
 import { fetchApp, fetchAndWatchApps } from '../actions/apps';
 import { fetchAndWatchBuildConfigs } from '../actions/buildConfigs';
@@ -118,7 +117,6 @@ export class Client extends Component {
   render() {
     const mobileApp = this.getMobileApp();
     const appName = this.props.match.params.id;
-    const cardValues = { width: '450px', height: '100%', boxShadow: 'unset' };
     const { creationTimestamp = null } = mobileApp.metadata.data;
     const { isDropdownOpen } = this.state;
     const dropdownItems = [
@@ -193,7 +191,7 @@ export class Client extends Component {
           </PageSection>
         </SplitItem>
         <SplitItem>
-          <Card style={cardValues}>
+          <Card>
             <CardBody isFilled={false}>
               <Title headingLevel="h3" size="2xl">
                 Full Mobile Config
