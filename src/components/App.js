@@ -47,7 +47,6 @@ class App extends React.Component {
   };
 
   onModalToggle = () => {
-    console.log('im here', this.state.isModalOpen);
     this.setState({ isModalOpen: !this.state.isModalOpen });
   };
 
