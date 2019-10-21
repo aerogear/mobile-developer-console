@@ -57,9 +57,9 @@ class DeleteItemButton extends Component {
     this.handleDialogClose();
   };
 
-  handleDialogClose = () => {
+  openDialog = () => {
     this.setState({
-      showModal: false
+      showModal: true
     });
   };
 
