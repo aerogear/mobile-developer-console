@@ -58,7 +58,6 @@ class DeleteItemButton extends Component {
     const { itemType, title = 'Delete' } = this.props;
     const itemName = this.getItemName();
     const { showModal }  = this.state;
-    console.log("did it make it to heree");
 
     return (
       <Route
