@@ -183,7 +183,7 @@ class MobileClientCardView extends Component {
                     onChange={e => this.updateCurrentValue(e)}
                     onKeyPress={e => this.onValueKeyPress(e)}
                   />
-                  <Button variant="tertiary" onClick={e => this.onClick(e)}>
+                  <Button variant="tertiary" onClick={e => this.onClick(e)} className="pf-m-control">
                     <SearchIcon />
                   </Button>
                 </InputGroup>

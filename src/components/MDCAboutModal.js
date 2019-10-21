@@ -38,7 +38,7 @@ export class MDCAboutModal extends React.Component {
             <TextListItem component="dt">Data Sync</TextListItem>
             <TextListItem component="dd"> {this.getVersion('sync-app')}</TextListItem>
             <TextListItem component="dt">User Name</TextListItem>
-            <TextListItem component="dd">{this.props.user.name}</TextListItem>
+            {/* <TextListItem component="dd">{this.props.user.name}</TextListItem> */}
             <TextListItem component="dt">Browser Version</TextListItem>
             <TextListItem component="dd">{browser.getBrowserVersion()}</TextListItem>
             <TextListItem component="dt">Browser OS</TextListItem>
