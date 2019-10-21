@@ -68,6 +68,7 @@ class DeleteItemButton extends Component {
                 {title}
               </Button>
               <Modal
+                width={'50%'}
                 title="Confirm Delete"
                 isOpen={ showModal }
                 onClose={this.handleDialogClose}
