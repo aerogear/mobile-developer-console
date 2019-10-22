@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Modal, Button } from '@patternfly/react-core';
+import { OverflowMenu, OverflowMenuControl, OverflowMenuContent, OverflowMenuGroup, OverflowMenuItem, OverflowMenuDropdownItem } from '@patternfly/react-core/dist/esm/experimental';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { deleteApp } from '../actions/apps';
@@ -65,6 +66,8 @@ class DeleteItemButton extends Component {
               <Button onClick={this.openDialog}>
                 {title}
               </Button>
+              <OverflowMenu>
+              </OverflowMenu>
               <Modal
                 width={'50%'}
                 title="Confirm Delete"
