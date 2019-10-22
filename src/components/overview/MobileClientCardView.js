@@ -120,7 +120,6 @@ class MobileClientCardView extends Component {
   renderAppCards() {
     const { mobileClients } = this.props;
     const filteredClients = this.filterClients(mobileClients);
-    console.log(filteredClients);
     return filteredClients.length ? (
       <Gallery gutter="md">
         {filteredClients.map((x, i) => (
