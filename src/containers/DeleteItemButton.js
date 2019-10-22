@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button } from '@patternfly/react-core';
+import { Dropdown, DropdownItem, DropdownPosition, KebabToggle, Modal, Button } from '@patternfly/react-core';
 import { OverflowMenu, OverflowMenuControl, OverflowMenuContent, OverflowMenuGroup, OverflowMenuItem, OverflowMenuDropdownItem } from '@patternfly/react-core/dist/esm/experimental';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
@@ -10,7 +10,20 @@ class DeleteItemButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showModal: false
+      showModal: false,
+      isOpen: false
+    };
+
+    this.onToggle = isOpen => {
+      this.setState({
+        isOpen
+      });
+    };
+
+    this.onSelect = event => {
+      this.setState({
+        isOpen: !this.state.isOpen
+      });
     };
 
     this.openDialog = () => {
@@ -58,16 +71,38 @@ class DeleteItemButton extends Component {
     const { itemType, title = 'Delete' } = this.props;
     const itemName = this.getItemName();
     const { showModal }  = this.state;
-
+    const { isOpen } = this.state;
+    const dropdownItems = [
+      <DropdownItem key="action" onClick={this.openDialog}>
+        {title}
+      </DropdownItem>
+    ];
     return (
       <Route
         render={props => (
           <React.Fragment>
+            { title.includes("Android") || title.includes("IOS") ?
+              <OverflowMenu breakpoint="xl">
+                <OverflowMenuContent>
+                  <OverflowMenuItem>
+                    <Button onClick={this.openDialog}>{title}</Button>
+                  </OverflowMenuItem>
+                </OverflowMenuContent>
+                <OverflowMenuControl>
+                  <Dropdown
+                    onSelect={this.onSelect}
+                    position={DropdownPosition.right}
+                    toggle={<KebabToggle onToggle={this.onToggle} />}
+                    isOpen={isOpen}
+                    isPlain
+                    dropdownItems={dropdownItems}
+                  />
+                </OverflowMenuControl>
+              </OverflowMenu> :
               <Button onClick={this.openDialog}>
                 {title}
               </Button>
-              <OverflowMenu>
-              </OverflowMenu>
+              }
               <Modal
                 width={'50%'}
                 title="Confirm Delete"
