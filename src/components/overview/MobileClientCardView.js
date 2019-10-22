@@ -191,8 +191,10 @@ class MobileClientCardView extends Component {
               <DataToolbarItem>
                 <DataToolbarFilter
                   className="toolbarFilter"
+                  categoryName="Filters"
                   chips={this.state.filters}
                   deleteChip={this.removeFilter}
+                  style={{ display: 'none' }}
                 />
               </DataToolbarItem>
               {/* {filters && filters.length > 0 && mobileClients.filterClients} */}
