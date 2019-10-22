@@ -246,7 +246,7 @@ export class PushVariantCR extends CustomResource {
             name: `${CLIENT_ID}-android-ups-variant`
           },
           spec: {
-            description: 'UPS Android Variant',
+            description: 'UPS AndroidVariant',
             serverKey: params.platformConfig.googlekey,
             senderId: '',
             pushApplicationId: null

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-// import { MessageDialog } from 'patternfly-react';
-import { DropdownItem, Modal, Button } from '@patternfly/react-core';
+import { Modal, Button } from '@patternfly/react-core';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { deleteApp } from '../actions/apps';
