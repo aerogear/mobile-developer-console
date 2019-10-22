@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Dropdown, DropdownItem, DropdownPosition, KebabToggle, Modal, Button } from '@patternfly/react-core';
-import { OverflowMenu, OverflowMenuControl, OverflowMenuContent, OverflowMenuGroup, OverflowMenuItem, OverflowMenuDropdownItem } from '@patternfly/react-core/dist/esm/experimental';
+import { OverflowMenu, OverflowMenuControl, OverflowMenuContent, OverflowMenuItem } from '@patternfly/react-core/dist/esm/experimental';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { deleteApp } from '../actions/apps';

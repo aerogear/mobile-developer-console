@@ -1,18 +1,12 @@
 import React, { Component } from 'react';
-import { DropdownKebab } from 'patternfly-react';
 import {
-  Button,
   DataListItem,
   DataListItemRow,
   DataListCell,
   DataListAction,
   DataListToggle,
   DataListContent,
-  DataListItemCells,
-  Dropdown,
-  DropdownItem,
-  DropdownPosition,
-  KebabToggle
+  DataListItemCells
 } from '@patternfly/react-core';
 import { get as _get } from 'lodash-es';
 import '../configuration/ServiceSDKInfo.css';
