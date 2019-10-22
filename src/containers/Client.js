@@ -229,7 +229,7 @@ export class Client extends Component {
                 <Title headingLevel="h4" size="lg" className="pf-u-mb-md">
                   mobile-services.json
                 </Title>
-                <ClipboardCopy isReadOnly isExpanded variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
+                <ClipboardCopy isCode isReadOnly isExpanded variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
                   {JSON.stringify(mobileApp, null, 2)}
                 </ClipboardCopy>
               </CardBody>
