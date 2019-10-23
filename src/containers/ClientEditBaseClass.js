@@ -85,24 +85,29 @@ class ClientEditBaseClass extends Component {
     const { isModalOpen } = this.state;
     return (
       <Modal
-      isSmall
-      title={this.state.editingMode ? 'Edit mobile app' : 'Create a mobile app'}
-      isOpen={isModalOpen}
-      onClose={this.handleModalToggle}
-      actions={[
-        <Button key="save" variant="primary" onClick={this.createClient} disabled={this.getMobileAppToEdit() && !this.getMobileAppToEdit().isValid()}>
-          {this.state.editingMode ? 'Save' : 'Create'}
-        </Button>,
-        <Button key="cancel" variant="secondary" onClick={this.handleModalToggle}>
-          Cancel
-        </Button>
-      ]}
+        isSmall
+        title={this.state.editingMode ? 'Edit mobile app' : 'Create a mobile app'}
+        isOpen={isModalOpen}
+        onClose={this.handleModalToggle}
+        actions={[
+          <Button
+            key="save"
+            variant="primary"
+            onClick={this.createClient}
+            disabled={this.getMobileAppToEdit() && !this.getMobileAppToEdit().isValid()}
+          >
+            {this.state.editingMode ? 'Save' : 'Create'}
+          </Button>,
+          <Button key="cancel" variant="secondary" onClick={this.handleModalToggle}>
+            Cancel
+          </Button>
+        ]}
       >
-      {this.state.error && (
-        <Alert key="123" type="error">
-          {this.state.error}
-        </Alert>
-      )}
+        {this.state.error && (
+          <Alert key="123" type="error">
+            {this.state.error}
+          </Alert>
+        )}
         <Form onSubmit={this.createClient}>
           <CreateClient editing={this.state.editingMode} />
         </Form>
@@ -139,9 +144,7 @@ class ClientEditBaseClass extends Component {
   render() {
     return (
       <Fragment>
-        <Button onClick={this.handleModalToggle}>
-          Create a mobile app
-        </Button>
+        <Button onClick={this.handleModalToggle}>Create a mobile app</Button>
         {this.renderModal()}
       </Fragment>
     );

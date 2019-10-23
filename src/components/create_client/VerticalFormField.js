@@ -56,15 +56,15 @@ export const VerticalFormField = ({
       helperTextInvalid={help}
     >
       {formControl(controlProps)}
-     <TextInput
-      isRequired
-      isValid={!showHelp}
-      placeholder={placeholder}
-      type="text"
-      id={controlId}
-      name="simple-form-name"
-      aria-describedby="form-helper"
-    />
+      <TextInput
+        isRequired
+        isValid={!showHelp}
+        placeholder={placeholder}
+        type="text"
+        id={controlId}
+        name="simple-form-name"
+        aria-describedby="form-helper"
+      />
     </FormGroup>
   );
 };
