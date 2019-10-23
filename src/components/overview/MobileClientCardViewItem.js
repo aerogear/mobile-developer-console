@@ -112,7 +112,7 @@ class MobileClientCardViewItem extends React.Component {
             />
             <Modal
               title="Confirm Delete"
-              width={'50%'}
+              width="50%"
               isOpen={this.state.showModal}
               onClose={this.handleDialogClose}
               actions={[
