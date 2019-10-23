@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   Button,
+  ButtonVariant,
   Gallery,
   GalleryItem,
   EmptyState,
@@ -183,7 +184,7 @@ class MobileClientCardView extends Component {
                     onChange={e => this.updateCurrentValue(e)}
                     onKeyPress={e => this.onValueKeyPress(e)}
                   />
-                  <Button variant="tertiary" onClick={e => this.onClick(e)} className="pf-m-control">
+                  <Button variant={ButtonVariant.control} onClick={e => this.onClick(e)} aria-label="search button for apps">
                     <SearchIcon />
                   </Button>
                 </InputGroup>
@@ -197,7 +198,6 @@ class MobileClientCardView extends Component {
                   style={{ display: 'none' }}
                 />
               </DataToolbarItem>
-              {/* {filters && filters.length > 0 && mobileClients.filterClients} */}
               <DataToolbarItem breakpointMods={[{ modifier: 'align-right' }]}>
                 {filteredClients ? filteredClients.length : mobileClients.length} of {mobileClients.length} items
               </DataToolbarItem>
