@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { Dropdown, DropdownItem, DropdownPosition, KebabToggle, Modal, Button } from '@patternfly/react-core';
-import { OverflowMenu, OverflowMenuControl, OverflowMenuContent, OverflowMenuItem } from '@patternfly/react-core/dist/esm/experimental';
+import {
+  OverflowMenu,
+  OverflowMenuControl,
+  OverflowMenuContent,
+  OverflowMenuItem
+} from '@patternfly/react-core/dist/esm/experimental';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { deleteApp } from '../actions/apps';
@@ -70,7 +75,7 @@ class DeleteItemButton extends Component {
   render() {
     const { itemType, title = 'Delete' } = this.props;
     const itemName = this.getItemName();
-    const { showModal }  = this.state;
+    const { showModal } = this.state;
     const { isOpen } = this.state;
     const dropdownItems = [
       <DropdownItem key="action" onClick={this.openDialog}>
@@ -81,7 +86,7 @@ class DeleteItemButton extends Component {
       <Route
         render={props => (
           <React.Fragment>
-            { title.includes("Android") || title.includes("IOS") ?
+            {title.includes('Android') || title.includes('IOS') ? (
               <OverflowMenu breakpoint="xl">
                 <OverflowMenuContent>
                   <OverflowMenuItem>
@@ -98,34 +103,34 @@ class DeleteItemButton extends Component {
                     dropdownItems={dropdownItems}
                   />
                 </OverflowMenuControl>
-              </OverflowMenu> :
-              <Button onClick={this.openDialog}>
-                {title}
-              </Button>
-              }
-              <Modal
-                width={'50%'}
-                title="Confirm Delete"
-                isOpen={ showModal }
-                onClose={this.handleDialogClose}
-                actions={[
-                  <Button key="Delete" variant="danger" onClick={() => this.triggerDeletion(props.history)}>
-                    Delete
-                  </Button>,
-                  <Button key="Cancel" variant="secondary" onClick={this.handleDialogClose}>
-                    Cancel
-                  </Button>
-                ]}>
-                  <p>
-                    {`Are you sure you want to delete the ${itemType} '`}
-                    <b>{itemName}</b>
-                    {`'?`}
-                  </p>
-                  <p>
-                    {itemName} and its data will no longer be available. <b>It cannot be undone.</b> Make sure this is
-                    something you really want to do!
-                  </p>
-              </Modal>
+              </OverflowMenu>
+            ) : (
+              <Button onClick={this.openDialog}>{title}</Button>
+            )}
+            <Modal
+              width="50%"
+              title="Confirm Delete"
+              isOpen={showModal}
+              onClose={this.handleDialogClose}
+              actions={[
+                <Button key="Delete" variant="danger" onClick={() => this.triggerDeletion(props.history)}>
+                  Delete
+                </Button>,
+                <Button key="Cancel" variant="secondary" onClick={this.handleDialogClose}>
+                  Cancel
+                </Button>
+              ]}
+            >
+              <p>
+                {`Are you sure you want to delete the ${itemType} '`}
+                <b>{itemName}</b>
+                {`'?`}
+              </p>
+              <p>
+                {itemName} and its data will no longer be available. <b>It cannot be undone.</b> Make sure this is
+                something you really want to do!
+              </p>
+            </Modal>
           </React.Fragment>
         )}
       />

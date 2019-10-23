@@ -184,7 +184,11 @@ class MobileClientCardView extends Component {
                     onChange={e => this.updateCurrentValue(e)}
                     onKeyPress={e => this.onValueKeyPress(e)}
                   />
-                  <Button variant={ButtonVariant.control} onClick={e => this.onClick(e)} aria-label="search button for apps">
+                  <Button
+                    variant={ButtonVariant.control}
+                    onClick={e => this.onClick(e)}
+                    aria-label="search button for apps"
+                  >
                     <SearchIcon />
                   </Button>
                 </InputGroup>
