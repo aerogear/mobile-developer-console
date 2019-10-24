@@ -146,7 +146,7 @@ export class Client extends Component {
         <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
           <Title headingLevel="h2" size="3xl">
             {mobileApp.getName()}
-            <span className="creation-timestamp pf-u-ml-md">
+            <span className="mdc-creation-timestamp pf-u-ml-md">
               Created <Moment fromNow>{creationTimestamp}</Moment>
             </span>
           </Title>
@@ -182,7 +182,7 @@ export class Client extends Component {
             </PageSection>
           </SplitItem>
           <SplitItem>
-            <Card style={cardValues}>
+            <Card className="mdc-card-client">
               <CardBody isFilled={false}>
                 <Title headingLevel="h3" size="2xl">
                   Full Mobile Config

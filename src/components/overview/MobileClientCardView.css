@@ -1,58 +1,57 @@
-.blank-slate-pf {
-  border-width: 0; }
-
 .pf-c-card {
   min-height: 220px; }
 
-.card-icons {
+.pf-c-page__main-section > .pf-l-flex {
+  align-items: initial; }
+
+.mdc-card .pf-c-card__header a {
+  color: #393f44;
+  text-decoration: none; }
+  .mdc-card .pf-c-card__header a :hover {
+    text-decoration: none; }
+
+.mdc-card .mdc-card-icons {
   margin-top: var(--pf-global--spacer--sm); }
-  .card-icons img {
+  .mdc-card .mdc-card-icons img {
     height: 40px;
     width: 40px; }
-  .card-icons > *:not(:last-child) {
+  .mdc-card .mdc-card-icons > *:not(:last-child) {
     margin-right: var(--pf-global--spacer--md); }
 
-.create-button {
-  margin-left: 40px; }
-
-.creation-timestamp {
-  font-size: 14px;
-  color: #757575;
+.mdc-card .mdc-creation-timestamp {
+  font-size: var(--pf-global--FontSize--sm);
+  color: var(--pf-global--Color--200);
   font-weight: unset !important; }
 
-.mobile-client-card {
-  margin: 0 0 20px 0; }
-  .mobile-client-card a {
-    color: #393f44;
-    text-decoration: none; }
-    .mobile-client-card a :hover {
-      text-decoration: none; }
-  .mobile-client-card .card-pf-heading {
-    border-bottom: none; }
-  .mobile-client-card .card-dropdown-kebab {
-    float: right; }
-  .mobile-client-card .card-pf-body {
-    text-align: center; }
-  .mobile-client-card .card-pf-footer {
-    background-color: #fff;
-    border-top: none;
-    border-bottom: 1px solid #d1d1d1;
-    padding: 10px 20px 20px 20px; }
-    .mobile-client-card .card-pf-footer .service-icon {
+.mdc-card .card-pf-heading {
+  border-bottom: none; }
+
+.mdc-card .card-dropdown-kebab {
+  float: right; }
+
+.mdc-card .card-pf-body {
+  text-align: center; }
+
+.mdc-card .card-pf-footer {
+  background-color: #fff;
+  border-top: none;
+  border-bottom: 1px solid #d1d1d1;
+  padding: 10px 20px 20px 20px; }
+  .mdc-card .card-pf-footer .service-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 15px;
+    align-items: center;
+    justify-content: center;
+    position: relative; }
+    .mdc-card .card-pf-footer .service-icon .icon {
       width: 30px;
-      height: 30px;
-      margin-right: 15px;
-      align-items: center;
-      justify-content: center;
-      position: relative; }
-      .mobile-client-card .card-pf-footer .service-icon .icon {
-        width: 30px;
-        height: 30px; }
-      .mobile-client-card .card-pf-footer .service-icon .fa {
-        font-size: 25px;
-        vertical-align: middle; }
-    .mobile-client-card .card-pf-footer .builds {
-      float: right; }
+      height: 30px; }
+    .mdc-card .card-pf-footer .service-icon .fa {
+      font-size: 25px;
+      vertical-align: middle; }
+  .mdc-card .card-pf-footer .builds {
+    float: right; }
 
 .toolbarContainer {
   border-top: 1px solid lightgrey;

@@ -150,7 +150,7 @@ class MobileClientCardView extends Component {
         ))}
       </Gallery>
     ) : (
-      <EmptyState>
+      <EmptyState variant={EmptyStateVariant.full}>
         <EmptyStateIcon icon={MobileAltIcon} />
         <Title headingLevel="h5" size="lg">
           {this.emptyStateMessage.noAppsAfterFiltering}
@@ -164,15 +164,16 @@ class MobileClientCardView extends Component {
     const { filters } = this.state;
     const filteredClients = this.filterClients(mobileClients);
     return (
-      <div className="overview">
-        <PageSection variant={PageSectionVariants.light} className="pf-c-page__main-section">
-          <Title className="overview-title" headingLevel="h2" size="3xl">
-            Mobile Apps
-            <span className="create-button">
-              <CreateClient />
-            </span>
-          </Title>
-          <br />
+      <React.Fragment>
+        <PageSection variant={PageSectionVariants.light}>
+          <div class="pf-l-flex">
+            <Title headingLevel="h2" size="3xl">
+              Mobile Apps
+            </Title>
+            <CreateClient />
+          </div>
+        </PageSection>
+        <PageSection variant={PageSectionVariants.light} noPadding={true}>
           <DataToolbar clearAllFilters={this.clearFilters} showClearFiltersButton={filters.length !== 0}>
             <DataToolbarContent>
               <DataToolbarItem>
@@ -211,7 +212,7 @@ class MobileClientCardView extends Component {
         <PageSection className="card-gallery" style={{ height: '100vh' }}>
           {mobileClients.length ? this.renderAppCards() : this.getEmptyState()}
         </PageSection>
-      </div>
+      </React.Fragment>
     );
   }
 }

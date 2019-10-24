@@ -94,7 +94,7 @@ class MobileClientCardViewItem extends React.Component {
       buildTabEnabled
     } = this.props;
     return (
-      <Card matchHeight className="mobile-client-card">
+      <Card matchHeight className="mdc-card">
         <CardHead>
           <CardActions>
             <Dropdown
@@ -116,11 +116,11 @@ class MobileClientCardViewItem extends React.Component {
               isOpen={this.state.showModal}
               onClose={this.handleDialogClose}
               actions={[
-                <Button key="cancel" onClick={this.handleDialogClose}>
-                  Cancel
-                </Button>,
                 <Button key="confirm" variant="danger" onClick={() => this.triggerDeletion(appName)}>
                   Delete
+                </Button>,
+                <Button key="cancel" onClick={this.handleDialogClose}>
+                  Cancel
                 </Button>
               ]}
             >
@@ -143,13 +143,13 @@ class MobileClientCardViewItem extends React.Component {
         </CardHead>
         <CardBody style={{ paddingTop: 0, paddingBottom: 0 }}>
           {services && services.length > 0 ? 'Bound Services' : ''}
-          <div className="card-icons">
+          <div className="mdc-card-icons">
             {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}
           </div>
         </CardBody>
         <Link to={`/mobileclient/${appName}`}>
           <CardFooter>
-            <div className="creation-timestamp">
+            <div className="mdc-creation-timestamp">
               Created
               <Moment format=" DD MMMM YYYY">{app.metadata.creationTimestamp}</Moment>
             </div>

@@ -15,7 +15,7 @@
   .pf-grid div {
     text-align: center; }
 
-.pf-c-card {
+.mdc-card-client {
   width: 450px;
   height: 100%;
   box-shadow: unset; }
