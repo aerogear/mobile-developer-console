@@ -55,7 +55,6 @@ class MobileClientCardViewItem extends React.Component {
   };
 
   triggerDeletion = itemName => {
-    console.log('TRIGGERED', this.props);
     const { onDelete } = this.props;
     if (onDelete && typeof onDelete === 'function') {
       onDelete();
@@ -113,6 +112,7 @@ class MobileClientCardViewItem extends React.Component {
             />
             <Modal
               title="Confirm Delete"
+              width="50%"
               isOpen={this.state.showModal}
               onClose={this.handleDialogClose}
               actions={[

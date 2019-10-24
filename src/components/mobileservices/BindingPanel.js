@@ -29,7 +29,8 @@ export class BindingPanel extends Component {
       validationRules,
       isFormValid: false,
       onChangeHandler,
-      key: Date.now() // required to reset any possible validation errors
+      key: Date.now(), // required to reset any possible validation errors
+      formChangeCount: 0
     };
   }
 
@@ -39,7 +40,10 @@ export class BindingPanel extends Component {
   validate = (formData, errors) => {
     /* Very important facts : We only have 4 services right now and must manually validate the form data.  In Mobile core the angular form did a lot of this for free */
     new FormValidator(this.state.validationRules).validate(formData, (key, message) => {
-      get(errors, key).addError(message);
+      const error = get(errors, key);
+      if (error) {
+        error.addError(message);
+      }
     });
 
     return errors;
@@ -50,11 +54,14 @@ export class BindingPanel extends Component {
     this.open();
   }
 
-  onFormChange = (data) => {
+  onFormChange = data => {
+    this.setState({ formChangeCount: this.state.formChangeCount + 1 });
+
     const { formData } = data;
-    const valid = new FormValidator(this.state.validationRules)
-      .validate(formData, () => {});
-    if (valid) { this.setState({isFormValid: true})}
+    const valid = new FormValidator(this.state.validationRules).validate(formData, () => {});
+    if (valid) {
+      this.setState({ isFormValid: true });
+    }
     if (this.state.onChangeHandler) {
       const newSchema = this.state.onChangeHandler(formData, this.state.schema);
 
@@ -68,8 +75,7 @@ export class BindingPanel extends Component {
       }
     }
     this.setState({ formData });
-  }
-  
+  };
   onNextButtonClick = () => {
     const { activeStepIndex } = this.state;
     if (activeStepIndex === 1) {
@@ -80,15 +86,14 @@ export class BindingPanel extends Component {
       activeStepIndex: (activeStepIndex + 1) % 3
     });
     return true;
-  }
+  };
 
   onBackButtonClick = () => {
     const { activeStepIndex } = this.state;
     this.setState({
       activeStepIndex: (activeStepIndex - 1) % 3
     });
-  }
-  
+  };
   render() {
     const steps = [
       {
@@ -124,20 +129,22 @@ export class BindingPanel extends Component {
             validate={this.validate}
             formData={this.state.formData}
             onChange={this.onFormChange} // eslint-disable-line no-return-assign
-            liveValidate
+            liveValidate={this.state.formChangeCount > 1}
           >
-            <div/>
+            <div />
           </Form>
         )
       },
       {
         name: 'Results',
-        component: 
-	        <div> 
-         	  <b>Mobile binding in progress</b> 
-          	<br/><br /> 
-          	Your mobile binding is in progress, but this may take a while. You can close this wizard. 
+        component: (
+          <div>
+            <b>Mobile binding in progress</b> 
+            <br />
+            <br />
+            Your mobile binding is in progress, but this may take a while. You can close this wizard. 
           </div>
+        )
       }
     ];
 

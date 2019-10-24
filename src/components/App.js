@@ -15,7 +15,7 @@ import {
   Nav,
   NavList,
   NavItem,
-  NavVariants,
+  NavVariants
 } from '@patternfly/react-core';
 import MDCAboutModal from './MDCAboutModal';
 import Overview from '../containers/Overview';
@@ -30,9 +30,9 @@ class App extends React.Component {
   state = {
     isDropdownOpen: false,
     isIconOpen: false,
-    isModalOpen: false,
+    isModalOpen: false
   };
-  
+
   componentWillMount() {
     this.props.fetchUserInfo();
   }
@@ -46,7 +46,6 @@ class App extends React.Component {
   };
 
   onModalToggle = () => {
-    console.log('im here', this.state.isModalOpen);
     this.setState({ isModalOpen: !this.state.isModalOpen });
   };
 
@@ -119,7 +118,7 @@ class App extends React.Component {
     return (
       <Router>
         <ErrorMessages />
-        <MDCAboutModal isOpen={this.state.isModalOpen} onClose={this.onModalToggle} user={this.props.user}/>
+        <MDCAboutModal isOpen={this.state.isModalOpen} onClose={this.onModalToggle} user={this.props.user} />
         <Page
           header={
             <PageHeader

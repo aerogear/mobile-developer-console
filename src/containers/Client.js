@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter } from "react-router";
+import { withRouter } from 'react-router-dom';
 import {
   PageSection,
   PageSectionVariants,
@@ -19,19 +19,18 @@ import {
   DropdownItem,
   DropdownPosition,
   ClipboardCopy,
-  ClipboardCopyVariant,
+  ClipboardCopyVariant
 } from '@patternfly/react-core';
 import { connect } from 'react-redux';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import Moment from 'react-moment';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
-import { fetchApp, fetchAndWatchApps } from '../actions/apps';
+import { fetchApp, fetchAndWatchApps, deleteApp } from '../actions/apps';
 import { fetchAndWatchBuildConfigs } from '../actions/buildConfigs';
 import { fetchAndWatchBuilds } from '../actions/builds';
 import { MobileApp } from '../models';
 import './Client.css';
 import { fetchAndWatchServices } from '../actions/services';
-import { deleteApp } from '../actions/apps';
 
 export class Client extends Component {
   constructor(props) {
@@ -40,12 +39,7 @@ export class Client extends Component {
     this.state = {
       isDropdownOpen: false,
       isEditModalOpen: false,
-      isDeleteModalOpen: false,
-      value1: ''
-    };
-
-    this.handleTextInputChange1 = value1 => {
-      this.setState({ value1 });
+      isDeleteModalOpen: false
     };
 
     this.handleModalToggle = () => {
@@ -80,8 +74,8 @@ export class Client extends Component {
   }
 
   toggleDeleteModal = () => {
-    this.setState({isDeleteModalOpen: !this.state.isDeleteModalOpen})
-  }
+    this.setState({ isDeleteModalOpen: !this.state.isDeleteModalOpen });
+  };
 
   componentDidUpdate(prevProps) {
     if (this.props.buildConfigs !== prevProps.buildConfigs || this.props.builds !== prevProps.builds) {
@@ -104,14 +98,14 @@ export class Client extends Component {
     }
   }
 
-  triggerDeletion = (itemName) => {
+  triggerDeletion = itemName => {
     const { onDelete } = this.props;
     if (onDelete && typeof onDelete === 'function') {
       onDelete();
     } else {
       this.props.deleteApp(itemName);
     }
-    this.props.history.push('/overview')
+    this.props.history.push('/overview');
   };
 
   render() {
@@ -120,10 +114,7 @@ export class Client extends Component {
     const { creationTimestamp = null } = mobileApp.metadata.data;
     const { isDropdownOpen } = this.state;
     const dropdownItems = [
-      <DropdownItem
-        key="app"
-        onClick={this.toggleDeleteModal}
-        >
+      <DropdownItem key="app" onClick={this.toggleDeleteModal}>
         Delete
       </DropdownItem>
     ];
@@ -151,83 +142,89 @@ export class Client extends Component {
               />
             </LevelItem>
           </Level>
-      </PageSection>
-      <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
-        <Title headingLevel="h2" size="3xl">
-          {mobileApp.getName()}
-          <span className="creation-timestamp pf-u-ml-md">
-            Created <Moment fromNow>{creationTimestamp}</Moment>
-          </span>
-        </Title>
-      <Modal
-        width={'50%'}
-        title="Confirm Delete"
-        isOpen={this.state.isDeleteModalOpen}
-        onClose={this.toggleDeleteModal}
-        actions={[
-          <Button key="confirm" variant="danger" onClick={() => this.triggerDeletion(appName)}>
-            Delete
-          </Button>,
-          <Button key="cancel" variant="secondary" onClick={this.toggleDeleteModal}>
-            Cancel
-          </Button>
-        ]}
-        >
-          <p>
-            {`Are you sure you want to delete '`}
-            <b>{appName}</b>
-            {`'?`}
-          </p>
-          <p>
-            {appName} and its data will no longer be available. <b>It cannot be undone.</b> Make sure this is
-            something you really want to do!
-          </p>
-      </Modal>
-      </PageSection>
-      <Split className="mdc-breakpoint-split" style={{ display: 'flex', flex: '1' }}>
-        <SplitItem isFilled style={{ display: 'flex', flexDirection: 'column' }}>
-          <PageSection>
-            <MobileServiceView appName={appName} />
-          </PageSection>
-        </SplitItem>
-        <SplitItem>
-          <Card>
-            <CardBody isFilled={false}>
-              <Title headingLevel="h3" size="2xl">
-                Full Mobile Config
-              </Title>
-              <p className="pf-u-my-md"> 
-                JavaScript-based mobile apps can be configured for a variety of mobile platforms. 
-                Our JavaScript SDK supports the following frameworks.
-              </p>
-              <div class="pf-grid">
-                <div>
-                  <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />
-                  <p>Cordova</p>
+        </PageSection>
+        <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
+          <Title headingLevel="h2" size="3xl">
+            {mobileApp.getName()}
+            <span className="creation-timestamp pf-u-ml-md">
+              Created <Moment fromNow>{creationTimestamp}</Moment>
+            </span>
+          </Title>
+          <Modal
+            width="50%"
+            title="Confirm Delete"
+            isOpen={this.state.isDeleteModalOpen}
+            onClose={this.toggleDeleteModal}
+            actions={[
+              <Button key="confirm" variant="danger" onClick={() => this.triggerDeletion(appName)}>
+                Delete
+              </Button>,
+              <Button key="cancel" variant="secondary" onClick={this.toggleDeleteModal}>
+                Cancel
+              </Button>
+            ]}
+          >
+            <p>
+              {`Are you sure you want to delete '`}
+              <b>{appName}</b>
+              {`'?`}
+            </p>
+            <p>
+              {appName} and its data will no longer be available. <b>It cannot be undone.</b> Make sure this is
+              something you really want to do!
+            </p>
+          </Modal>
+        </PageSection>
+        <Split className="mdc-breakpoint-split" style={{ display: 'flex', flex: '1' }}>
+          <SplitItem isFilled style={{ display: 'flex', flexDirection: 'column' }}>
+            <PageSection>
+              <MobileServiceView appName={appName} />
+            </PageSection>
+          </SplitItem>
+          <SplitItem>
+            <Card style={cardValues}>
+              <CardBody isFilled={false}>
+                <Title headingLevel="h3" size="2xl">
+                  Full Mobile Config
+                </Title>
+                <p className="pf-u-my-md">
+                  JavaScript-based mobile apps can be configured for a variety of mobile platforms. Our JavaScript SDK
+                  supports the following frameworks.
+                </p>
+                <div className="pf-grid">
+                  <div>
+                    <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />
+                    <p>Cordova</p>
+                  </div>
+                  <div>
+                    <img src="/img/react.jpg" width="25" height="25" alt="React logo" />
+                    <p>React</p>
+                  </div>
+                  <div>
+                    <img src="/img/ionic.jpg" width="25" height="25" alt="Ionic logo" />
+                    <p>Ionic</p>
+                  </div>
+                  <div>
+                    <img src="/img/angular.jpg" width="25" height="25" alt="Angular logo" />
+                    <p>Angular</p>
+                  </div>
+                  <div>
+                    <img src="/img/vue.jpg" width="25" height="25" alt="Vue logo" />
+                    <p>Vue</p>
+                  </div>
                 </div>
-                <div>
-                  <img src="/img/react.jpg" width="25" height="25" alt="React logo" />
-                  <p>React</p>
-                </div>
-                <div>
-                  <img src="/img/ionic.jpg" width="25" height="25" alt="Ionic logo" />
-                  <p>Ionic</p>
-                </div>
-                <div>
-                  <img src="/img/angular.jpg" width="25" height="25" alt="Angular logo" />
-                  <p>Angular</p>
-                </div>
-                <div>
-                  <img src="/img/vue.jpg" width="25" height="25" alt="Vue logo" />
-                  <p>Vue</p>
-                </div>
-              </div>
               </CardBody>
               <CardBody>
                 <Title headingLevel="h4" size="lg" className="pf-u-mb-md">
                   mobile-services.json
                 </Title>
-                <ClipboardCopy isReadOnly isExpanded variant={ClipboardCopyVariant.expansion} className="mobile-client-config">
+                <ClipboardCopy
+                  isCode
+                  isReadOnly
+                  isExpanded
+                  variant={ClipboardCopyVariant.expansion}
+                  className="mobile-client-config"
+                >
                   {JSON.stringify(mobileApp, null, 2)}
                 </ClipboardCopy>
               </CardBody>
@@ -255,10 +252,12 @@ const mapDispatchToProps = {
   fetchAndWatchBuilds,
   fetchAndWatchServices,
   fetchAndWatchApps,
-  deleteApp,
+  deleteApp
 };
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Client));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Client)
+);
