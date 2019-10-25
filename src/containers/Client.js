@@ -175,8 +175,8 @@ export class Client extends Component {
             </p>
           </Modal>
         </PageSection>
-        <Split className="mdc-breakpoint-split" style={{ display: 'flex', flex: '1' }}>
-          <SplitItem isFilled style={{ display: 'flex', flexDirection: 'column' }}>
+        <Split className="mdc-breakpoint-split">
+          <SplitItem isFilled className="mdc-breakpoint-split-item-1">
             <PageSection>
               <MobileServiceView appName={appName} />
             </PageSection>

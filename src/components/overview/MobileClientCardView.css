@@ -4,6 +4,11 @@
 .pf-c-page__main-section > .pf-l-flex {
   align-items: initial; }
 
+.mdc-creation-timestamp {
+  font-size: var(--pf-global--FontSize--sm);
+  color: var(--pf-global--Color--200);
+  font-weight: unset !important; }
+
 .mdc-card .pf-c-card__header a {
   color: #393f44;
   text-decoration: none; }
@@ -17,60 +22,3 @@
     width: 40px; }
   .mdc-card .mdc-card-icons > *:not(:last-child) {
     margin-right: var(--pf-global--spacer--md); }
-
-.mdc-card .mdc-creation-timestamp {
-  font-size: var(--pf-global--FontSize--sm);
-  color: var(--pf-global--Color--200);
-  font-weight: unset !important; }
-
-.mdc-card .card-pf-heading {
-  border-bottom: none; }
-
-.mdc-card .card-dropdown-kebab {
-  float: right; }
-
-.mdc-card .card-pf-body {
-  text-align: center; }
-
-.mdc-card .card-pf-footer {
-  background-color: #fff;
-  border-top: none;
-  border-bottom: 1px solid #d1d1d1;
-  padding: 10px 20px 20px 20px; }
-  .mdc-card .card-pf-footer .service-icon {
-    width: 30px;
-    height: 30px;
-    margin-right: 15px;
-    align-items: center;
-    justify-content: center;
-    position: relative; }
-    .mdc-card .card-pf-footer .service-icon .icon {
-      width: 30px;
-      height: 30px; }
-    .mdc-card .card-pf-footer .service-icon .fa {
-      font-size: 25px;
-      vertical-align: middle; }
-  .mdc-card .card-pf-footer .builds {
-    float: right; }
-
-.toolbarContainer {
-  border-top: 1px solid lightgrey;
-  box-shadow: 1px 1px 1px #ECECEC;
-  padding-top: 4px; }
-
-.toolbarButtonContainer {
-  float: right;
-  margin-right: -10px; }
-
-.toolbarButton {
-  margin-right: 10px; }
-
-.toolbarFilter {
-  height: 26px;
-  padding-left: 6px;
-  margin-right: 20px;
-  font-weight: 400;
-  width: 185px; }
-
-.toolbarFilter::placeholder {
-  font-style: italic; }

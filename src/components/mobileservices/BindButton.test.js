@@ -29,7 +29,6 @@ describe('Binding operation not in progress', () => {
   const { wrapper } = setup();
 
   it('should render component', () => {
-    expect(wrapper.find('Button').hasClass('bind-button')).toEqual(true);
     expect(wrapper.find('Button').contains('Bind to App')).toEqual(true);
   });
 });

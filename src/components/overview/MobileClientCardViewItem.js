@@ -16,7 +16,6 @@ import {
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { CloseIcon } from '@patternfly/react-icons';
-import './MobileClientCardViewItem.css';
 import { deleteApp } from '../../actions/apps';
 import { deleteBuildConfig } from '../../actions/buildConfigs';
 

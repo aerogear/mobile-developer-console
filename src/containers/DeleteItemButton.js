@@ -68,6 +68,12 @@ class DeleteItemButton extends Component {
     });
   };
 
+  handleDialogClose = () => {
+    this.setState({
+      showModal: false
+    });
+  };
+
   getItemName() {
     return this.props.item ? this.props.item.metadata.name : this.props.itemName;
   }

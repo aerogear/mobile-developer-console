@@ -22,7 +22,6 @@ import {
 } from '@patternfly/react-core/dist/esm/experimental';
 import { MobileAltIcon, SearchIcon } from '@patternfly/react-icons';
 import './MobileClientCardView.css';
-import './MobileClientCardViewItem.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
 import CreateClient from '../../containers/CreateClient';
 

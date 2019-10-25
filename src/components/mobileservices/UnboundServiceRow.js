@@ -75,7 +75,6 @@ class UnboundServiceRow extends Component {
       <DataListItem
         key={this.props.service.getId()}
         aria-labelledby="ex-item1"
-        className="mdc-data-list-item--BorderColor"
       >
         <DataListItemRow className="mdc-unbound-data-list-row">
           {this.renderServiceBadge()}

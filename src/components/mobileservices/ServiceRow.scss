@@ -1,42 +1,4 @@
-.detailsKey {
-	text-align: left;
-	font-weight: 700;
-}
-
-.mdc-data-list-item--BorderColor {
-	@media screen and (max-width: 576px) {
-		border-top-color: var(--pf-global--BackgroundColor--light-300) !important;
-	}
-}
-
-
-.boundService {
-	.list-group-item-header {
-		background-color: #ededed;
-		border-color: #bbb;
-		border-bottom-width: 1px;
-		border-bottom-style: solid;
-	}
-  .bind-button{
-		margin-right: 10px;
-	}
-}
-
-.unboundService {
-	.bind-button{
-		margin-right: 25px;
-	}
-}
-
-.list-group-item .logo {
-	width: 30px;
-	height: 30px;
-	margin: 0 10px;
-	display: block;
-	float: left;
-	font-size: 1.6em;
-}
-
+// Override button position on mobile
 .mdc-unbound-data-list-row {
 	flex-wrap: unset;
   @media only screen and (max-width: 910px) {
