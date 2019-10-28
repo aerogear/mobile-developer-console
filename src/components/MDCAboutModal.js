@@ -8,10 +8,18 @@ export class MDCAboutModal extends React.Component {
   componentDidMount() {
     this.props.fetchAndWatchServices();
   }
+  getMobileConsoleVersion() {
+    const MDCService = this.props.items.find(item => item.name === 'Mobile Developer Console');
+    if (MDCService) {
+      return MDCService.version;
+    }
+    return '';
+  }
+
   getVersion(vType) {
     const filteredService = this.props.items.find(item => item.type === vType);
     if (filteredService) {
-      return filteredService.bindCustomResource.version;
+      return filteredService.version;
     }
     return null;
   }
@@ -29,6 +37,8 @@ export class MDCAboutModal extends React.Component {
       >
         <TextContent>
           <TextList component="dl">
+            <TextListItem component="dt">Version</TextListItem>
+            <TextListItem component="dt"> {this.getMobileConsoleVersion()}</TextListItem>
             <TextListItem component="dt">Identity Management Service</TextListItem>
             <TextListItem component="dd"> {this.getVersion('keycloak')}</TextListItem>
             <TextListItem component="dt">Unified Push Servier</TextListItem>
