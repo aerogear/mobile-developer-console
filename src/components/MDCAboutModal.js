@@ -11,7 +11,7 @@ export class MDCAboutModal extends React.Component {
   getMobileConsoleVersion() {
     const MDCService = this.props.items.find(item => item.name === 'Mobile Developer Console');
     if (MDCService) {
-      return MDCService.bindCustomResource.version;
+      return MDCService.version;
     }
     return '';
   }
@@ -19,7 +19,7 @@ export class MDCAboutModal extends React.Component {
   getVersion(vType) {
     const filteredService = this.props.items.find(item => item.type === vType);
     if (filteredService) {
-      return filteredService.bindCustomResource.version;
+      return filteredService.version;
     }
     return null;
   }
