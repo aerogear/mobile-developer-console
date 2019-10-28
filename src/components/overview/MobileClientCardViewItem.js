@@ -8,7 +8,7 @@ import {
   CardBody,
   CardFooter,
   Dropdown,
-  DropdownToggle,
+  KebabToggle,
   Button,
   Modal,
   DropdownItem
@@ -100,7 +100,7 @@ class MobileClientCardViewItem extends React.Component {
               id={appName}
               position="right"
               onSelect={this.onSelect}
-              toggle={<DropdownToggle iconComponent={CloseIcon} onToggle={this.onToggle} />}
+              toggle={<KebabToggle onToggle={this.onToggle} />}
               isOpen={this.state.isOpen}
               isPlain
               dropdownItems={[
@@ -110,8 +110,8 @@ class MobileClientCardViewItem extends React.Component {
               ]}
             />
             <Modal
+              isSmall
               title="Confirm Delete"
-              width="50%"
               isOpen={this.state.showModal}
               onClose={this.handleDialogClose}
               actions={[

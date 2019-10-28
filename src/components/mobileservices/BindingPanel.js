@@ -4,7 +4,6 @@ import { Wizard } from '@patternfly/react-core';
 import { connect } from 'react-redux';
 import Form from 'react-jsonschema-form';
 import { createCustomResourceForService } from '../../actions/services';
-import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 
 import { FormValidator } from './validator/FormValidator';

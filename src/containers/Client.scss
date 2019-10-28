@@ -29,6 +29,19 @@
   width: 450px;
   height: 100%;
   box-shadow: unset;
+
+  // Override padding for card at mobile so that it responds to size of page section
+  @media only screen and (max-width: 768px) {
+    .pf-c-card__header {
+      padding: var(--pf-global--spacer--md);
+    }
+
+    .pf-c-card__body {
+      padding-right: var(--pf-global--spacer--md);
+      padding-bottom: var(--pf-global--spacer--md);
+      padding-left: var(--pf-global--spacer--md);
+    }
+  }
 }
 
 .mdc-breakpoint-split {

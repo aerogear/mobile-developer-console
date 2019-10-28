@@ -3,7 +3,6 @@ import { DataListItem, DataListItemRow, DataListCell, DataListAction, DataListIt
 import { get as _get } from 'lodash-es';
 import BindingStatus from './BindingStatus';
 import BindButton from './BindButton';
-import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import './MobileServiceView.css';
 

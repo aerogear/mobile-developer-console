@@ -13,6 +13,7 @@ import {
   Split,
   SplitItem,
   Card,
+  CardHeader,
   CardBody,
   Dropdown,
   DropdownToggle,
@@ -151,7 +152,7 @@ export class Client extends Component {
             </span>
           </Title>
           <Modal
-            width="50%"
+            isSmall
             title="Confirm Delete"
             isOpen={this.state.isDeleteModalOpen}
             onClose={this.toggleDeleteModal}
@@ -183,14 +184,18 @@ export class Client extends Component {
           </SplitItem>
           <SplitItem>
             <Card className="mdc-card-client">
-              <CardBody isFilled={false}>
+              <CardHeader>
                 <Title headingLevel="h3" size="2xl">
                   Full Mobile Config
                 </Title>
-                <p className="pf-u-my-md">
+              </CardHeader>
+              <CardBody isFilled={false}>
+                <p>
                   JavaScript-based mobile apps can be configured for a variety of mobile platforms. Our JavaScript SDK
                   supports the following frameworks.
                 </p>
+              </CardBody>
+              <CardBody isFilled={false}>
                 <div className="pf-grid">
                   <div>
                     <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />
