@@ -26,7 +26,7 @@ class UnboundServiceRow extends Component {
     if (this.props.service.getIconClass() != null && this.props.service.getIconClass().length > 0) {
       icon = <span className={`${this.props.service.getIconClass()} logo`} />;
     } else {
-      icon = <img src={this.props.service.getLogoURLBlackAndWhite()} alt=""/>;
+      icon = <img src={this.props.service.getLogoURLBlackAndWhite()} alt="" />;
     }
     return (
       <DataListItemCells
@@ -64,8 +64,7 @@ class UnboundServiceRow extends Component {
 
   render() {
     return (
-      <DataListItem
-        key={this.props.service.getId()} aria-labelledby="ex-item1">
+      <DataListItem key={this.props.service.getId()} aria-labelledby="ex-item1">
         <DataListItemRow className="mdc-unbound-data-list-row">
           {this.renderServiceBadge()}
           <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1" aria-label="Actions">
