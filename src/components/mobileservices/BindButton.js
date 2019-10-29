@@ -7,7 +7,7 @@ class BindButton extends Component {
       return null;
     }
     return (
-      <Button variant="secondary" className="bind-button" onClick={() => this.props.onClick()}>
+      <Button variant="secondary" onClick={() => this.props.onClick()}>
         Create a binding
       </Button>
     );

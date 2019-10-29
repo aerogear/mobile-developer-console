@@ -20,7 +20,6 @@ import {
 import MDCAboutModal from './MDCAboutModal';
 import Overview from '../containers/Overview';
 import Configuration from '../containers/Configuration';
-// import Configuration from '../components/configuration/FrameworkSDKDocs';
 import Client from '../containers/Client';
 import ErrorMessages from '../containers/ErrorMessages';
 import { fetchUserInfo } from '../actions/users';

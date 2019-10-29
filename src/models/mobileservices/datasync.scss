@@ -85,6 +85,19 @@
     box-shadow: unset;
   }
 
+  .checkbox {
+    label {
+      display: inline-flex;
+      align-items: center;
+      padding-left: 0;
+
+      input {
+        margin-top: 0;
+        margin-right: var(--pf-global--spacer--sm);
+      }
+    }
+  }
+
   select.form-control {
     padding: var(--pf-c-form-control--PaddingTop) var(--pf-c-form-control__select--PaddingRight) var(--pf-c-form-control--PaddingBottom) var(--pf-c-form-control--PaddingLeft);
     height: 36px;

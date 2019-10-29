@@ -13,6 +13,7 @@ import {
   Split,
   SplitItem,
   Card,
+  CardHeader,
   CardBody,
   Dropdown,
   DropdownToggle,
@@ -111,7 +112,6 @@ export class Client extends Component {
   render() {
     const mobileApp = this.getMobileApp();
     const appName = this.props.match.params.id;
-    const cardValues = { width: '450px', height: '100%', boxShadow: 'unset' };
     const { creationTimestamp = null } = mobileApp.metadata.data;
     const { isDropdownOpen } = this.state;
     const dropdownItems = [
@@ -147,12 +147,12 @@ export class Client extends Component {
         <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
           <Title headingLevel="h2" size="3xl">
             {mobileApp.getName()}
-            <span className="creation-timestamp pf-u-ml-md">
+            <span className="mdc-creation-timestamp pf-u-ml-md">
               Created <Moment fromNow>{creationTimestamp}</Moment>
             </span>
           </Title>
           <Modal
-            width="50%"
+            isSmall
             title="Confirm Delete"
             isOpen={this.state.isDeleteModalOpen}
             onClose={this.toggleDeleteModal}
@@ -176,22 +176,26 @@ export class Client extends Component {
             </p>
           </Modal>
         </PageSection>
-        <Split className="mdc-breakpoint-split" style={{ display: 'flex', flex: '1' }}>
-          <SplitItem isFilled style={{ display: 'flex', flexDirection: 'column' }}>
+        <Split className="mdc-breakpoint-split">
+          <SplitItem isFilled className="mdc-breakpoint-split-item-1">
             <PageSection>
               <MobileServiceView appName={appName} />
             </PageSection>
           </SplitItem>
           <SplitItem>
-            <Card style={cardValues}>
-              <CardBody isFilled={false}>
+            <Card className="mdc-card-client">
+              <CardHeader>
                 <Title headingLevel="h3" size="2xl">
                   Full Mobile Config
                 </Title>
-                <p className="pf-u-my-md">
+              </CardHeader>
+              <CardBody isFilled={false}>
+                <p>
                   JavaScript-based mobile apps can be configured for a variety of mobile platforms. Our JavaScript SDK
                   supports the following frameworks.
                 </p>
+              </CardBody>
+              <CardBody isFilled={false}>
                 <div className="pf-grid">
                   <div>
                     <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />

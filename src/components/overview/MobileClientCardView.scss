@@ -1,37 +1,20 @@
-.blank-slate-pf {
-  border-width: 0;
-}
-
 .pf-c-card {
   min-height: 220px;
 }
 
-.card-icons {
-  img {
-    height: 40px;
-    width: 40px;
-  }
-  margin-top: var(--pf-global--spacer--sm);
-
-  > *:not(:last-child) {
-    margin-right: var(--pf-global--spacer--md);
-  }
+// Reverses the default flex alignment of align-items: basem
+.pf-c-page__main-section > .pf-l-flex {
+  align-items: initial;
 }
 
-.create-button {
-  margin-left: 40px;
-}
-
-.creation-timestamp {
-  font-size: 14px;
-  color: #757575;
+.mdc-creation-timestamp {
+  font-size: var(--pf-global--FontSize--sm);
+  color: var(--pf-global--Color--200);
   font-weight: unset !important;
 }
 
-.mobile-client-card {
-  margin: 0 0 20px 0;
-
-  a {
+.mdc-card {
+  .pf-c-card__header a {
     color: #393f44;
     text-decoration: none;
 
@@ -40,73 +23,15 @@
     }
   }
 
-  .card-pf-heading {
-    border-bottom: none;
-  }
-
-  .card-dropdown-kebab {
-    float: right;
-  }
-
-  .card-pf-body {
-    text-align: center;
-  }
-
-  .card-pf-footer {
-    background-color: #fff;
-    border-top: none;
-    border-bottom: 1px solid #d1d1d1;
-    padding: 10px 20px 20px 20px;
-    
-    .service-icon {
-      width: 30px;
-      height: 30px;
-      margin-right: 15px;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-
-      .icon {
-        width: 30px;
-        height: 30px;
-      }
-
-      .fa {
-        font-size: 25px;
-        vertical-align: middle;
-      }
+  .mdc-card-icons {
+    img {
+      height: 40px;
+      width: 40px;
     }
-
-    .builds {
-      float:right
+    margin-top: var(--pf-global--spacer--sm);
+  
+    > *:not(:last-child) {
+      margin-right: var(--pf-global--spacer--md);
     }
   }
 }
-
-.toolbarContainer {
-  border-top: 1px solid lightgrey;
-  box-shadow: 1px 1px 1px #ECECEC;
-  padding-top: 4px;
-}
-
-.toolbarButtonContainer {
-  float: right;
-  margin-right: -10px;
-}
-
-.toolbarButton {
-  margin-right: 10px;
-}
-
-.toolbarFilter {
-  height: 26px;
-  padding-left: 6px;
-  margin-right: 20px;
-  font-weight: 400;
-  width: 185px;
-}
-
-.toolbarFilter::placeholder {
-  font-style: italic;
-}
-

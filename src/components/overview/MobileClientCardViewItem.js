@@ -8,15 +8,13 @@ import {
   CardBody,
   CardFooter,
   Dropdown,
-  DropdownToggle,
+  KebabToggle,
   Button,
   Modal,
   DropdownItem
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { CloseIcon } from '@patternfly/react-icons';
-import './MobileClientCardViewItem.css';
 import { deleteApp } from '../../actions/apps';
 import { deleteBuildConfig } from '../../actions/buildConfigs';
 
@@ -94,14 +92,14 @@ class MobileClientCardViewItem extends React.Component {
       buildTabEnabled
     } = this.props;
     return (
-      <Card matchHeight className="mobile-client-card">
+      <Card matchHeight className="mdc-card">
         <CardHead>
           <CardActions>
             <Dropdown
               id={appName}
               position="right"
               onSelect={this.onSelect}
-              toggle={<DropdownToggle iconComponent={CloseIcon} onToggle={this.onToggle} />}
+              toggle={<KebabToggle onToggle={this.onToggle} />}
               isOpen={this.state.isOpen}
               isPlain
               dropdownItems={[
@@ -111,16 +109,16 @@ class MobileClientCardViewItem extends React.Component {
               ]}
             />
             <Modal
+              isSmall
               title="Confirm Delete"
-              width="50%"
               isOpen={this.state.showModal}
               onClose={this.handleDialogClose}
               actions={[
-                <Button key="cancel" onClick={this.handleDialogClose}>
-                  Cancel
-                </Button>,
                 <Button key="confirm" variant="danger" onClick={() => this.triggerDeletion(appName)}>
                   Delete
+                </Button>,
+                <Button key="cancel" onClick={this.handleDialogClose}>
+                  Cancel
                 </Button>
               ]}
             >
@@ -143,13 +141,13 @@ class MobileClientCardViewItem extends React.Component {
         </CardHead>
         <CardBody style={{ paddingTop: 0, paddingBottom: 0 }}>
           {services && services.length > 0 ? 'Bound Services' : ''}
-          <div className="card-icons">
+          <div className="mdc-card-icons">
             {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}
           </div>
         </CardBody>
         <Link to={`/mobileclient/${appName}`}>
           <CardFooter>
-            <div className="creation-timestamp">
+            <div className="mdc-creation-timestamp">
               Created
               <Moment format=" DD MMMM YYYY">{app.metadata.creationTimestamp}</Moment>
             </div>

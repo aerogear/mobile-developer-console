@@ -68,6 +68,12 @@ class DeleteItemButton extends Component {
     });
   };
 
+  handleDialogClose = () => {
+    this.setState({
+      showModal: false
+    });
+  };
+
   getItemName() {
     return this.props.item ? this.props.item.metadata.name : this.props.itemName;
   }
@@ -108,7 +114,7 @@ class DeleteItemButton extends Component {
               <Button onClick={this.openDialog}>{title}</Button>
             )}
             <Modal
-              width="50%"
+              isSmall
               title="Confirm Delete"
               isOpen={showModal}
               onClose={this.handleDialogClose}

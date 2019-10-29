@@ -9,7 +9,6 @@ import {
   DataListItemCells
 } from '@patternfly/react-core';
 import { get as _get } from 'lodash-es';
-import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
 import DeleteItemButton from '../../containers/DeleteItemButton';
 import BindingStatus from './BindingStatus';
@@ -177,7 +176,6 @@ class BoundServiceRow extends Component {
     };
     return (
       <DataListItem
-        className="mdc-data-list-item--BorderColor"
         key={this.props.service.getId()}
         aria-labelledby="ex-item1"
         isExpanded={this.state.expanded.includes('ex-toggle1')}
@@ -188,7 +186,6 @@ class BoundServiceRow extends Component {
             isExpanded={this.state.expanded.includes('ex-toggle1')}
             id="ex-toggle1"
             aria-controls="ex-expand1"
-            style={{ marginRight: 'var(--pf-global--spacer--sm)' }}
           />
           {this.renderServiceBadge()}
           <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1">

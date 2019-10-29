@@ -15,9 +15,6 @@ export const HELP_APPNAME = `Application name can not exceed ${MAXLENGTH_APPNAME
 class EditMobileClientBaseClass extends Component {
   constructor(props) {
     super(props);
-    // this.state = {
-    //   isValid: false
-    // };
     this.config = {
       appName: {
         label: LABEL_APPNAME,
@@ -26,31 +23,13 @@ class EditMobileClientBaseClass extends Component {
       }
     };
     this.app = new MobileApp({ ...this.props.ui.app });
-    // this.handleTextInputChange = this.handleTextInputChange.bind(this);
   }
-
-  // handleTextInputChange = (valueInput) => {
-  //   if (this._validate(CREATE_CLIENT_NAME) == 'success') {
-  //     this.setState({ valueInput, isValid: true });
-  //   }
-  //   this.setState({ valueInput, isValid: false });
-  // }
 
   _validate(propertyName) {
     if (this.app.getProperty(propertyName) === undefined) {
       return undefined;
     }
     return this.app.isValid(propertyName) ? 'success' : 'error';
-    // if (this.app.isValid(propertyName) === true) {
-    //   this.setState({ isValid: true });
-    //   console.log ('did it make it here to success');
-    //   return 'success'
-    // }
-    // if (this.app.isValid(propertyName) === false) {
-    //   this.setState({ isValid: false });
-    //   console.log ('did it make it here to error');
-    //   return 'error'
-    // }
   }
 
   /**
@@ -77,33 +56,8 @@ class EditMobileClientBaseClass extends Component {
 
   render() {
     this.app = new MobileApp({ ...this.props.ui.app });
-    // const { isValid } = this.state;
-    // const { valueInput } = this.app.getProperty(CREATE_CLIENT_NAME) || '';
     const generatedFields = this.getFormFields().map(formField => VerticalFormField({ ...formField }));
-    return (
-      <React.Fragment>
-        {generatedFields}
-        {/* <FormGroup
-          label={this.config.appName.label}
-          isRequired
-          fieldId={CREATE_CLIENT_NAME}
-          isValid={isValid}
-          helperTextInvalid={this.config.appName.help}
-          >
-          <TextInput
-          isValid={isValid}
-          isRequired
-          placeholder={this.config.appName.example}
-          type="text"
-          id={CREATE_CLIENT_NAME}
-          name="simple-form-name"
-          aria-describedby="form-helper"
-          value={valueInput}
-          onChange={this.handleTextInputChange}
-          />
-        </FormGroup> */}
-      </React.Fragment>
-    );
+    return (<React.Fragment>{generatedFields}</React.Fragment>);
   }
 }
 
