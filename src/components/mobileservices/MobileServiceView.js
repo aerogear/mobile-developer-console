@@ -32,17 +32,13 @@ export class MobileServiceView extends Component {
   boundServiceRows() {
     return (
       <React.Fragment>
-        {this.props.boundServices && this.props.boundServices.length > 0 ? (
-          <Title key="bound-services" headingLevel="h4" size="2xl" className="pf-u-mb-lg">
-            Bound Services
-          </Title>
-        ) : (
-          <React.Fragment></React.Fragment>
-        )}
-        <DataList className="pf-u-mb-xl">
-          {this.props.boundServices && this.props.boundServices.length > 0 ? (
-            this.props.boundServices.map(service => (
-              <React.Fragment>
+        {this.props.boundServices && this.props.boundServices.length > 0 &&
+          <React.Fragment>
+            <Title key="bound-services" headingLevel="h4" size="2xl" className="pf-u-mb-lg">
+              Bound Services
+            </Title>
+            <DataList className="pf-u-mb-xl">
+            {this.props.boundServices.map(service => (
                 <BoundServiceRow
                   key={service.getId()}
                   appName={this.props.appName}
@@ -51,12 +47,10 @@ export class MobileServiceView extends Component {
                   onFinished={this.hideBindingPanel}
                   onDeleteBinding={cr => this.props.deleteCustomResource(service, cr.toJSON())}
                 />
-              </React.Fragment>
-            ))
-          ) : (
-            <React.Fragment></React.Fragment>
-          )}
-        </DataList>
+            ))}
+          </DataList>
+        </React.Fragment>
+      }
       </React.Fragment>
     );
   }
@@ -64,29 +58,28 @@ export class MobileServiceView extends Component {
   unboundServiceRows() {
     return (
       <React.Fragment>
-        <Title key="unbound-services" headingLevel="h4" size="2xl" className="pf-u-mb-md">
-          Available Managed Services
-        </Title>
-        <p className="pf-u-mb-lg">
-          The services listed below are not configured for your mobile application yet. Select <q>Create a binding</q> 
-            to get started.
-        </p>
-        <DataList>
-          {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
-            this.props.unboundServices.map(service => (
-              <UnboundServiceRow
-                key={service.getId()}
-                service={service}
-                onCreateBinding={() => this.showBindingPanel(service)}
-                onFinished={this.hideBindingPanel}
-              />
-            ))
-          ) : (
-            <EmptyState variant={EmptyStateVariant.full}>
-              There are no available services.
-            </EmptyState>
-          )}
-        </DataList>
+        {this.props.unboundServices && this.props.unboundServices.length > 0 ?
+          <React.Fragment>
+            <Title key="unbound-services" headingLevel="h4" size="2xl" className="pf-u-mb-md">
+              Available Managed Services
+            </Title>
+            <p className="pf-u-mb-lg">
+              The services listed below are not configured for your mobile application yet. Select "Create a binding" 
+                to get started.
+            </p>
+            <DataList>
+              {this.props.unboundServices.map(service => (
+                <UnboundServiceRow
+                  key={service.getId()}
+                  service={service}
+                  onCreateBinding={() => this.showBindingPanel(service)}
+                  onFinished={this.hideBindingPanel}
+                />
+              ))}
+            </DataList>
+          </React.Fragment>
+          : <p className="pf-u-text-align-center">There are no more available services for binding.</p>
+          }
       </React.Fragment>
     );
   }
