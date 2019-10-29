@@ -209,7 +209,7 @@ class MobileClientCardView extends Component {
             </DataToolbarContent>
           </DataToolbar>
         </PageSection>
-        <PageSection className="card-gallery" style={{ height: '100vh' }}>
+        <PageSection className="card-gallery">
           {mobileClients.length ? this.renderAppCards() : this.getEmptyState()}
         </PageSection>
       </React.Fragment>
