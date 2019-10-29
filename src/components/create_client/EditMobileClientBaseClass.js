@@ -57,7 +57,9 @@ class EditMobileClientBaseClass extends Component {
   render() {
     this.app = new MobileApp({ ...this.props.ui.app });
     const generatedFields = this.getFormFields().map(formField => VerticalFormField({ ...formField }));
-    return (<React.Fragment>{generatedFields}</React.Fragment>);
+    return (
+      <React.Fragment>{generatedFields}</React.Fragment>
+    );
   }
 }
 
