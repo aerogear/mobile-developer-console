@@ -77,7 +77,7 @@ class MobileClientCardViewItem extends React.Component {
   };
 
   getItemName() {
-    return this.props.app ? this.props.app.metadata.name : "app";
+    return this.props.app ? this.props.app.metadata.name : 'app';
   }
 
   render() {
