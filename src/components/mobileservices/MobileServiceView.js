@@ -63,7 +63,7 @@ export class MobileServiceView extends Component {
             <Title key="unbound-services" headingLevel="h4" size="2xl" className="pf-u-mb-md">
               Available Managed Services
             </Title>
-            <p className="pf-u-mb-lg">The services listed below are not configured for your mobile application yet. Select "Create a binding" to get started.</p>
+            <p className="pf-u-mb-lg">The services listed below are not configured for your mobile application yet. Select <q>Create a binding</q> to get started.</p>
             <DataList>
               {this.props.unboundServices.map(service => (
                 <UnboundServiceRow
