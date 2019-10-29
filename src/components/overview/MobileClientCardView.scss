@@ -31,7 +31,11 @@
     margin-top: var(--pf-global--spacer--sm);
   
     > *:not(:last-child) {
-      margin-right: var(--pf-global--spacer--md);
+      margin-right: var(--pf-global--spacer--sm);
+
+      @media only screen and (min-width: 768px) {
+        margin-right: var(--pf-global--spacer--md);
+      }
     }
   }
 }

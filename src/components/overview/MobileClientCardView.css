@@ -21,4 +21,7 @@
     height: 40px;
     width: 40px; }
   .mdc-card .mdc-card-icons > *:not(:last-child) {
-    margin-right: var(--pf-global--spacer--md); }
+    margin-right: var(--pf-global--spacer--sm); }
+    @media only screen and (min-width: 768px) {
+      .mdc-card .mdc-card-icons > *:not(:last-child) {
+        margin-right: var(--pf-global--spacer--md); } }

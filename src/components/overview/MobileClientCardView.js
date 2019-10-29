@@ -12,7 +12,8 @@ import {
   TextInput,
   Title,
   PageSection,
-  PageSectionVariants
+  PageSectionVariants,
+  Flex
 } from '@patternfly/react-core';
 import {
   DataToolbar,
@@ -165,12 +166,12 @@ class MobileClientCardView extends Component {
     return (
       <React.Fragment>
         <PageSection variant={PageSectionVariants.light}>
-          <div className="pf-l-flex">
+          <Flex>
             <Title headingLevel="h2" size="3xl">
               Mobile Apps
             </Title>
-            <CreateClient />
-          </div>
+            <CreateClient/>
+          </Flex>
         </PageSection>
         <PageSection variant={PageSectionVariants.light} noPadding="true">
           <DataToolbar clearAllFilters={this.clearFilters} showClearFiltersButton={filters.length !== 0}>
@@ -208,7 +209,7 @@ class MobileClientCardView extends Component {
             </DataToolbarContent>
           </DataToolbar>
         </PageSection>
-        <PageSection className="card-gallery" style={{ height: '100vh' }}>
+        <PageSection className="card-gallery">
           {mobileClients.length ? this.renderAppCards() : this.getEmptyState()}
         </PageSection>
       </React.Fragment>

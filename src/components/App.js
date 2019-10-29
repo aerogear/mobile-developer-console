@@ -122,7 +122,7 @@ class App extends React.Component {
         <Page
           header={
             <PageHeader
-              logo={<Brand src={getLogo()} alt="Mobile Developer Console Logo" style={{ width: '150px' }} />}
+              logo={<Brand src={getLogo()} alt="Mobile Developer Console Logo"/>}
               toolbar={PageToolbar}
               topNav={PageNav}
             />
