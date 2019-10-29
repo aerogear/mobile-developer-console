@@ -165,14 +165,14 @@ class MobileClientCardView extends Component {
     return (
       <React.Fragment>
         <PageSection variant={PageSectionVariants.light}>
-          <div class="pf-l-flex">
+          <div className="pf-l-flex">
             <Title headingLevel="h2" size="3xl">
               Mobile Apps
             </Title>
             <CreateClient />
           </div>
         </PageSection>
-        <PageSection variant={PageSectionVariants.light} noPadding={true}>
+        <PageSection variant={PageSectionVariants.light} noPadding="true">
           <DataToolbar clearAllFilters={this.clearFilters} showClearFiltersButton={filters.length !== 0}>
             <DataToolbarContent>
               <DataToolbarItem>
