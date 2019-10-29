@@ -77,11 +77,11 @@ class MobileClientCardViewItem extends React.Component {
   };
 
   getItemName() {
-    return this.props.item ? this.props.item.metadata.name : this.props.itemName;
+    return this.props.app ? this.props.app.metadata.name : "app";
   }
 
   render() {
-    const { itemType, title = 'Delete' } = this.props;
+    const { title = 'Delete' } = this.props;
     const itemName = this.getItemName();
 
     const {
@@ -125,7 +125,7 @@ class MobileClientCardViewItem extends React.Component {
               ]}
             >
               <p>
-                {`Are you sure you want to delete the ${itemType} '`}
+                {`Are you sure you want to delete '`}
                 <b>{itemName}</b>
                 {`'?`}
               </p>
