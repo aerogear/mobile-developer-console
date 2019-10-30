@@ -1,6 +1,5 @@
 /* eslint guard-for-in: 0 */
 import React, { Component, Fragment } from 'react';
-import { Alert } from 'patternfly-react';
 import { Form, Modal, Button } from '@patternfly/react-core';
 import CreateClient from '../components/create_client/CreateClient';
 import '../components/create_client/create_client.css';
@@ -12,7 +11,7 @@ class ClientEditBaseClass extends Component {
     this.state = {
       isModalOpen: false,
       loading: false,
-      editingMode
+      editingMode,
     };
     this.createClient = this.createClient.bind(this);
     this.handleModalToggle = () => {
@@ -103,11 +102,6 @@ class ClientEditBaseClass extends Component {
           </Button>
         ]}
       >
-        {this.state.error && (
-          <Alert key="123" type="error">
-            {this.state.error}
-          </Alert>
-        )}
         <Form onSubmit={this.createClient}>
           <CreateClient editing={this.state.editingMode} />
         </Form>
