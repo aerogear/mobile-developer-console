@@ -170,7 +170,7 @@ class MobileClientCardView extends Component {
             <Title headingLevel="h2" size="3xl">
               Mobile Apps
             </Title>
-            <CreateClient/>
+            <CreateClient />
           </Flex>
         </PageSection>
         <PageSection variant={PageSectionVariants.light} noPadding="true">
