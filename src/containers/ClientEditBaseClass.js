@@ -1,7 +1,6 @@
 /* eslint guard-for-in: 0 */
 import React, { Component, Fragment } from 'react';
-import { Alert } from 'patternfly-react';
-import { Form, Modal, Button } from '@patternfly/react-core';
+import { Alert, AlertActionCloseButton, Form, Modal, Button } from '@patternfly/react-core';
 import CreateClient from '../components/create_client/CreateClient';
 import '../components/create_client/create_client.css';
 import { MobileApp } from '../models';
@@ -44,6 +43,7 @@ class ClientEditBaseClass extends Component {
   open = async () => {
     const app = this.getMobileAppToEdit(true);
     this.props.editApp(app);
+    this.hideAlert = () => this.setState({ error: null });
 
     this.setState({
       error: null,
@@ -104,7 +104,7 @@ class ClientEditBaseClass extends Component {
         ]}
       >
         {this.state.error && (
-          <Alert key="123" type="error">
+          <Alert key="123" type="error" action={<AlertActionCloseButton onClose={this.hideAlert} />}>
             {this.state.error}
           </Alert>
         )}
