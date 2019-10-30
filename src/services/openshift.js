@@ -21,6 +21,13 @@ const getUser = () => {
   return Promise.reject(new Error('no user found'));
 };
 
+const getFavIcon = () => {
+  if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.favicon) {
+    return window.OPENSHIFT_CONFIG.favicon;
+  }
+  return '/favicon.ico';
+};
+
 const getLogo = () => {
   if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.logo) {
     return window.OPENSHIFT_CONFIG.logo;
@@ -58,6 +65,7 @@ export {
   remove,
   OpenShiftWatchEvents,
   getUser,
+  getFavIcon,
   getLogo,
   getDocumentation,
   listWithLabels,

@@ -23,7 +23,7 @@ import Configuration from '../containers/Configuration';
 import Client from '../containers/Client';
 import ErrorMessages from '../containers/ErrorMessages';
 import { fetchUserInfo } from '../actions/users';
-import { getLogo, getDocumentation } from '../services/openshift';
+import { getFavIcon, getLogo, getDocumentation } from '../services/openshift';
 import './App.css';
 
 class App extends React.Component {
@@ -31,6 +31,16 @@ class App extends React.Component {
     isDropdownOpen: false,
     isIconOpen: false,
     isModalOpen: false
+  };
+
+  constructor() {
+    super();
+    this.setFavIcon();
+  }
+
+  setFavIcon = () => {
+    const favicon = document.getElementById('favicon');
+    favicon.href = getFavIcon();
   };
 
   componentWillMount() {

@@ -60,6 +60,7 @@ function getConfigData(req) {
     NAMESPACE,
     ENABLE_BUILD_TAB,
     DOCS_PREFIX,
+    MDC_FAVICON,
     MDC_LOGO,
     MDC_DOCUMENTATION
   } = process.env;
@@ -67,6 +68,7 @@ function getConfigData(req) {
   let userName = OPENSHIFT_USER_NAME || 'testuser';
   let userEmail = OPENSHIFT_USER_EMAIL || 'testuser@localhost';
   const mdcNamespace = NAMESPACE || DEFAULT_NAMESPACE;
+  const mdcFavicon = MDC_FAVICON || '/favicon.ico';
   const mdcLogo = MDC_LOGO || '/img/aerogear_logo.svg';
   const mdcDocumentation = MDC_DOCUMENTATION || 'https://docs.aerogear.org/aerogear/latest/getting-started.html';
   const docsPrefix = DOCS_PREFIX || 'https://docs.aerogear.org/aerogear/latest';
@@ -96,6 +98,7 @@ function getConfigData(req) {
       name: '${userName}',
       email: '${userEmail}'
     },
+    favicon: '${mdcFavicon}',
     logo: '${mdcLogo}',
     documentation: '${mdcDocumentation}'
   }; window.SERVER_DATA= { ENABLE_BUILD_TAB: ${enableBuildTab}, DOCS_PREFIX: '${docsPrefix}' };`;
