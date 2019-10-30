@@ -111,7 +111,8 @@ export class BindingPanel extends Component {
               </span>
             </div>
           </form>
-        )
+        ),
+        nextButtonText: 'Next'
       },
       {
         name: 'Parameters',
@@ -132,7 +133,8 @@ export class BindingPanel extends Component {
           >
             <div />
           </Form>
-        )
+        ),
+        nextButtonText: 'Create'
       },
       {
         name: 'Results',
@@ -143,7 +145,9 @@ export class BindingPanel extends Component {
             <br />
             Your mobile binding is in progress, but this may take a while. You can close this wizard. 
           </div>
-        )
+        ),
+        nextButtonText: 'Close',
+        hideCancelButton: true
       }
     ];
 
@@ -157,7 +161,6 @@ export class BindingPanel extends Component {
         onGoToStep={this.stepChanged}
         onNext={this.onNextButtonClick}
         onBack={this.onBackButtonClick}
-        nextButtonText={this.state.activeStepIndex === 1 ? 'Create' : 'Next'}
         activeStepIndex={this.state.activeStepIndex}
       />
     );
