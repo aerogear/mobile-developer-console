@@ -2,6 +2,8 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import BindButton from './BindButton';
 
+/* TODO: Test needs update to work with latest PF4 changes */
+
 const setup = (propOverrides = {}) => {
   const defaultProps = {
     buildConfig: {
@@ -26,18 +28,18 @@ const setup = (propOverrides = {}) => {
 };
 
 describe('Binding operation not in progress', () => {
-  // const { wrapper } = setup();
-  // it('should render component', () => {
-  //   expect(wrapper.find('Button').contains('Bind to App')).toEqual(true);
-  // });
+  const { wrapper } = setup();
+  xit('should render component', () => {
+    expect(wrapper.find('Button').contains('Bind to App')).toEqual(true);
+  });
 });
 
 describe('onClick()', () => {
-  // const { wrapper } = setup();
+  const { wrapper } = setup();
 
-  it('should press button', () => {
-    // const saveButton = wrapper.find('Button');
-    // expect(saveButton.simulate('click')).toHaveLength(1);
+  xit('should press button', () => {
+    const saveButton = wrapper.find('Button');
+    expect(saveButton.simulate('click')).toHaveLength(1);
   });
 });
 

@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { shallow, mount } from 'enzyme';
 import { MobileServiceView } from './MobileServiceView';
 
+/* TODO: Test needs update to work with latest PF4 changes */
+
 describe('MobileServiceView', () => {
   const store = {
     subscribe: jest.fn(),
@@ -132,114 +134,114 @@ describe('MobileServiceView', () => {
     }
   });
 
-  it('triggers getConfigurationOptions', () => {
-    // const expected = 'http://example.com';
-    // const props = {
-    //   app: {
-    //     status: {
-    //       data: {
-    //         services: {
-    //           name: 'security',
-    //           find: () => ({ url: 'http://example.com' })
-    //         }
-    //       }
-    //     }
-    //   },
-    //   boundServices: [
-    //     {
-    //       getId: () => 'service1 id',
-    //       getConfiguration: () => [{ label: 1, value: 'http://example.com' }],
-    //       getDescription: () => 'sample service1',
-    //       getIconClass: () => '/img/push.svg',
-    //       isBindingOperationInProgress: () => false,
-    //       isBindingOperationFailed: () => false,
-    //       isUPSService: () => false,
-    //       getDocumentationUrl: () => undefined,
-    //       getCustomResourcesForApp: () => [
-    //         {
-    //           getName: () => 'sampel-service',
-    //           getPlatform: () => undefined
-    //         }
-    //       ],
-    //       data: {
-    //         type: 'security'
-    //       }
-    //     }
-    //   ],
-    //   unboundServices: []
-    // };
-    // const wrapper = mount(
-    //   <Provider store={store} key="provider">
-    //     <BrowserRouter>
-    //       <MobileServiceView
-    //         appName="appName"
-    //         boundServices={props.boundServices}
-    //         unboundServices={props.unboundServices}
-    //         fetchAndWatchServices={() => 'appName'}
-    //         app={props.app}
-    //       />
-    //     </BrowserRouter>
-    //   </Provider>
-    // );
-    // const service = wrapper.find('.list-group-item.boundService').at(0);
-    // const serviceHeader = service.find('.list-group-item-header');
-    // serviceHeader.simulate('click');
-    // expect(service.html()).toContain(expected);
+  xit('triggers getConfigurationOptions', () => {
+    const expected = 'http://example.com';
+    const props = {
+      app: {
+        status: {
+          data: {
+            services: {
+              name: 'security',
+              find: () => ({ url: 'http://example.com' })
+            }
+          }
+        }
+      },
+      boundServices: [
+        {
+          getId: () => 'service1 id',
+          getConfiguration: () => [{ label: 1, value: 'http://example.com' }],
+          getDescription: () => 'sample service1',
+          getIconClass: () => '/img/push.svg',
+          isBindingOperationInProgress: () => false,
+          isBindingOperationFailed: () => false,
+          isUPSService: () => false,
+          getDocumentationUrl: () => undefined,
+          getCustomResourcesForApp: () => [
+            {
+              getName: () => 'sampel-service',
+              getPlatform: () => undefined
+            }
+          ],
+          data: {
+            type: 'security'
+          }
+        }
+      ],
+      unboundServices: []
+    };
+    const wrapper = mount(
+      <Provider store={store} key="provider">
+        <BrowserRouter>
+          <MobileServiceView
+            appName="appName"
+            boundServices={props.boundServices}
+            unboundServices={props.unboundServices}
+            fetchAndWatchServices={() => 'appName'}
+            app={props.app}
+          />
+        </BrowserRouter>
+      </Provider>
+    );
+    const service = wrapper.find('.list-group-item.boundService').at(0);
+    const serviceHeader = service.find('.list-group-item-header');
+    serviceHeader.simulate('click');
+    expect(service.html()).toContain(expected);
   });
 
-  it('delete bound service', () => {
-    // const props = {
-    //   app: {
-    //     status: {
-    //       data: {
-    //         services: {
-    //           name: 'security',
-    //           find: () => ({ url: 'http://example.com' })
-    //         }
-    //       }
-    //     }
-    //   },
-    //   boundServices: [
-    //     {
-    //       getId: () => 'service1 id',
-    //       getConfiguration: () => [{ label: 1, value: 'http://example.com' }],
-    //       getDescription: () => 'sample service1',
-    //       getIconClass: () => '/img/push.svg',
-    //       isBindingOperationInProgress: () => false,
-    //       isBindingOperationFailed: () => false,
-    //       isUPSService: () => false,
-    //       getDocumentationUrl: () => undefined,
-    //       getCustomResourcesForApp: () => [
-    //         {
-    //           getName: () => 'sampel-service',
-    //           getPlatform: () => undefined
-    //         }
-    //       ],
-    //       data: {
-    //         type: 'security'
-    //       }
-    //     }
-    //   ],
-    //   unboundServices: []
-    // };
-    // const wrapper = mount(
-    //   <Provider store={store} key="provider">
-    //     <BrowserRouter>
-    //       <MobileServiceView
-    //         appName="appName"
-    //         boundServices={props.boundServices}
-    //         unboundServices={props.unboundServices}
-    //         fetchAndWatchServices={() => 'appName'}
-    //         app={props.app}
-    //       />
-    //     </BrowserRouter>
-    //   </Provider>
-    // );
-    // expect(wrapper.html()).toContain('There are no unbound services');
-    // const service = wrapper.find('.list-group-item.boundService').at(0);
-    // const dropdown = service.find('.dropdown-kebab-pf.dropdown.btn-group #delete-binding-id').at(0);
-    // dropdown.simulate('click');
-    // const deleteApp = service.find('.dropdown-menu.dropdown-menu-right li a').at(0);
-    // expect(deleteApp.simulate('click')).toHaveLength(1);
+  xit('delete bound service', () => {
+    const props = {
+      app: {
+        status: {
+          data: {
+            services: {
+              name: 'security',
+              find: () => ({ url: 'http://example.com' })
+            }
+          }
+        }
+      },
+      boundServices: [
+        {
+          getId: () => 'service1 id',
+          getConfiguration: () => [{ label: 1, value: 'http://example.com' }],
+          getDescription: () => 'sample service1',
+          getIconClass: () => '/img/push.svg',
+          isBindingOperationInProgress: () => false,
+          isBindingOperationFailed: () => false,
+          isUPSService: () => false,
+          getDocumentationUrl: () => undefined,
+          getCustomResourcesForApp: () => [
+            {
+              getName: () => 'sampel-service',
+              getPlatform: () => undefined
+            }
+          ],
+          data: {
+            type: 'security'
+          }
+        }
+      ],
+      unboundServices: []
+    };
+    const wrapper = mount(
+      <Provider store={store} key="provider">
+        <BrowserRouter>
+          <MobileServiceView
+            appName="appName"
+            boundServices={props.boundServices}
+            unboundServices={props.unboundServices}
+            fetchAndWatchServices={() => 'appName'}
+            app={props.app}
+          />
+        </BrowserRouter>
+      </Provider>
+    );
+    expect(wrapper.html()).toContain('There are no unbound services');
+    const service = wrapper.find('.list-group-item.boundService').at(0);
+    const dropdown = service.find('.dropdown-kebab-pf.dropdown.btn-group #delete-binding-id').at(0);
+    dropdown.simulate('click');
+    const deleteApp = service.find('.dropdown-menu.dropdown-menu-right li a').at(0);
+    expect(deleteApp.simulate('click')).toHaveLength(1);
   });
 });
