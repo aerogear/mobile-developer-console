@@ -11,7 +11,7 @@ class ClientEditBaseClass extends Component {
     this.state = {
       isModalOpen: false,
       loading: false,
-      editingMode,
+      editingMode
     };
     this.createClient = this.createClient.bind(this);
     this.handleModalToggle = () => {
