@@ -64,8 +64,9 @@ export class MobileServiceView extends Component {
               Available Managed Services
             </Title>
             <p className="pf-u-mb-lg">
-              The services listed below are not configured for your mobile application yet. Select{' '}
-              <q>Create a binding</q> to get started.
+              The services listed below are not configured for your mobile application yet. Select
+              <q>Create a binding</q>
+              to get started.
             </p>
             <DataList>
               {this.props.unboundServices.map(service => (
