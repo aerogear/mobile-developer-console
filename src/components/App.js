@@ -87,7 +87,7 @@ class App extends React.Component {
       <DropdownItem key="mdc_docs">
         <a href='https://access.redhat.com/documentation/en-us/red_hat_managed_integration/1/html/getting_started_with_mobile_developer_services/index' target='_blank' className='getting-started'>Getting Started</a>
       </DropdownItem>,
-      <DropdownItem key="about" onClick={this.onModalToggle}>
+      <DropdownItem key="about" onClick={this.onModalToggle} component="button">
         About
       </DropdownItem>
     ];
