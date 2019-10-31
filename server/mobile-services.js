@@ -37,7 +37,7 @@ function decodeBase64(encoded) {
 
 const PushService = {
   type: PUSH_SERVICE_TYPE,
-  name: 'Unified Push Server',
+  name: 'Push Notification Service',
   icon: '/img/push.svg',
   iconBlackAndWhite: '/img/push-b&w.svg',
   description: 'Allows you to send native push notifications to different mobile operating systems.',
@@ -186,7 +186,7 @@ const PushService = {
 
 const IdentityManagementService = {
   type: IDM_SERVICE_TYPE,
-  name: 'Identity Management',
+  name: 'Identity Management Service',
   icon: '/img/keycloak.svg',
   iconBlackAndWhite: '/img/keycloak-b&w.svg',
   description: 'Allows you to add authentication and authorization to your mobile app.',
@@ -247,7 +247,7 @@ const MetricsService = {
 
 const DataSyncService = {
   type: DATA_SYNC_TYPE,
-  name: 'Data Sync',
+  name: 'Data Sync Server',
   icon: '/img/sync.svg',
   iconBlackAndWhite: '/img/sync-b&w.svg',
   description: 'Use this library to develop services.',
