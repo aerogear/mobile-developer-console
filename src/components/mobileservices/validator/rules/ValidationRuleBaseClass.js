@@ -4,9 +4,13 @@ import { isString, isFunction } from 'lodash-es';
  * Base class for validation rules.
  */
 export class ValidationRuleBaseClass {
-  constructor(config) {
+  constructor(config = {}) {
     this.config = config;
+    this.validateConfig(config);
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  validateConfig(config) {}
 
   getErrorMessage(error) {
     const customError = this.config.error;

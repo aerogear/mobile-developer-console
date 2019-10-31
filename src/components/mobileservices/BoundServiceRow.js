@@ -140,7 +140,7 @@ class BoundServiceRow extends Component {
       return null;
     }
 
-    if (this.props.service.getCustomResourcesForApp(this.props.appName).length >= 2) {
+    if (this.props.service.getCustomResourcesForApp(this.props.appName).length >= 3) {
       return null;
     }
 
