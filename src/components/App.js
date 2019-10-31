@@ -23,7 +23,7 @@ import Configuration from '../containers/Configuration';
 import Client from '../containers/Client';
 import ErrorMessages from '../containers/ErrorMessages';
 import { fetchUserInfo } from '../actions/users';
-import { getFavIcon, getLogo, getDocumentation } from '../services/openshift';
+import { getFavIcon, getLogo } from '../services/openshift';
 import './App.css';
 
 class App extends React.Component {
@@ -85,7 +85,14 @@ class App extends React.Component {
 
     const questionIconItems = [
       <DropdownItem key="mdc_docs">
-        <a href='https://access.redhat.com/documentation/en-us/red_hat_managed_integration/1/html/getting_started_with_mobile_developer_services/index' target='_blank' className='getting-started'>Getting Started</a>
+        <a
+          href="https://access.redhat.com/documentation/en-us/red_hat_managed_integration/1/html/getting_started_with_mobile_developer_services/index"
+          target="_blank"
+          className="getting-started"
+          rel="noopener noreferrer"
+        >
+          Getting Started
+        </a>
       </DropdownItem>,
       <DropdownItem key="about" onClick={this.onModalToggle} component="button">
         About
