@@ -149,7 +149,7 @@ class BoundServiceRow extends Component {
     );
   }
 
-  renderDeleteBindingDropdowns() {
+  renderDeleteBindingButtons() {
     const crs = this.props.service.getCustomResourcesForApp(this.props.appName);
     return (
       <React.Fragment>
@@ -189,7 +189,8 @@ class BoundServiceRow extends Component {
           />
           {this.renderServiceBadge()}
           <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1">
-            {this.renderDeleteBindingDropdowns()}
+            {this.renderBindingButtons()}
+            {this.renderDeleteBindingButtons()}
           </DataListAction>
         </DataListItemRow>
         <DataListContent
