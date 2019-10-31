@@ -90,11 +90,19 @@ class App extends React.Component {
           target="_blank"
           className="getting-started"
           rel="noopener noreferrer"
+          aria-label="getting started"
         >
           Getting Started
         </a>
       </DropdownItem>,
-      <DropdownItem key="about" onClick={this.onModalToggle} component="button">
+      <DropdownItem
+        key="about"
+        onClick={this.onModalToggle}
+        component="button"
+        role="button"
+        aria-label="about"
+        aria-expanded={this.state.isModalOpen}
+      >
         About
       </DropdownItem>
     ];
