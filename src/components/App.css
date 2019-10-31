@@ -9,4 +9,5 @@ html, body, #root, .App {
   flex: 0 0 60px; }
 
 .getting-started {
-  color: #151515; }
+  color: #151515;
+  font-weight: 400; }
