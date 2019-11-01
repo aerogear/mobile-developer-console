@@ -5,7 +5,6 @@ const promMid = require('express-prometheus-middleware');
 const { Client, KubeConfig } = require('kubernetes-client');
 const Request = require('kubernetes-client/backends/request');
 const packageJson = require('../package.json');
-const { URL } = require('url');
 const { updateAppsAndWatch } = require('./appServices');
 const { getServices } = require('./mobile-services');
 const { addProtocolIfMissing } = require('./helpers');
@@ -32,35 +31,20 @@ const app = express();
 const httpProxyOptions = {
   target: addProtocolIfMissing(process.env.OPENSHIFT_HOST, 'https'),
   secure: false,
-  logLevel: 'debug',
+  logLevel: 'warn',
   changeOrigin: true,
   ws: true,
   pathRewrite: {
-    [`^${OPENSHIFT_PROXY_PATH}`]: '', // remove base path
+    [`^${OPENSHIFT_PROXY_PATH}`]: '' // remove base path
   },
   onProxyReq: (proxyReq, req) => {
-    // Object.keys(req.headers).forEach(key => {
-    //   console.log({ [key]: req.headers[key] });
-    //   proxyReq.setHeader(key, req.headers[key]);
-    // });
-
-    proxyReq.setHeader('authorization', `Bearer ${req.headers['x-forwarded-access-token']}`);
-
-    console.log({ proxyReq });
-  },
-  // onProxyRes: (proxyRes, req, res) => {
-  //   Object.keys(res.headers || {}).forEach(key => {
-  //     console.log({ [key]: res.headers[key] });
-  //     proxyRes.headers[key] = res.headers[key];
-  //   });
-  //   proxyRes.headers['Access-Control-Allow-Origin'] =   '*';
-  // }
+    if (req.headers['x-forwarded-access-token']) {
+      proxyReq.setHeader('authorization', `Bearer ${req.headers['x-forwarded-access-token']}`);
+    }
+  }
 };
 
-app.use(
-  OPENSHIFT_PROXY_PATH,
-  proxy(httpProxyOptions)
-);
+app.use(OPENSHIFT_PROXY_PATH, proxy(httpProxyOptions));
 
 app.use(bodyParser.json());
 
@@ -121,12 +105,6 @@ function getConfigData(req) {
     userName = req.get('X-Forwarded-User');
     userEmail = req.get('X-Forwarded-Email');
   }
-  let host = process.env.OPENSHIFT_HOST;
-  host = addProtocolIfMissing(host, 'https');
-  const parsedHost = new URL(host);
-  const masterUri = parsedHost.origin;
-  parsedHost.protocol = 'wss';
-  const wssMasterUri = parsedHost.origin;
 
   return `window.OPENSHIFT_CONFIG = {
     mdcNamespace: '${mdcNamespace}',
@@ -196,7 +174,7 @@ async function run() {
 
   updateAppsAndWatch(NAMESPACE || DEFAULT_NAMESPACE, kubeclient);
 
-  const server = app.listen(port, () => {
+  app.listen(port, () => {
     console.log(`Listening on port ${port} - oc api proxy on ${OPENSHIFT_PROXY_PATH}`);
   });
 }
