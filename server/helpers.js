@@ -1,8 +1,8 @@
-function addProtocolIfMissing(url) {
-  if (url && !url.startsWith('http')) {
-    return `https://${url}`;
+function addProtocolIfMissing(url, protocol = 'https') {
+  if (/^(?:[a-z]+:)?\/\//i.test(url)) {
+    return url;
   }
-  return url;
+  return `${protocol}://${url}`;
 }
 
 module.exports = {
