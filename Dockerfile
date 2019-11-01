@@ -1,4 +1,4 @@
-FROM nodeshift/centos7-s2i-nodejs:10.x
+FROM registry.access.redhat.com/ubi8/nodejs-10:1
 EXPOSE 4000
 
 USER default
