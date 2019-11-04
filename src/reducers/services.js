@@ -18,7 +18,7 @@ const defaultState = {
   isReading: false
 };
 
-function addOrReplaceItem(array, item, predicate) {
+function addOrReplaceItem(array = [], item, predicate) {
   const index = array.findIndex(predicate);
   if (index >= 0) {
     return [...array.slice(0, index), item, ...array.slice(index + 1)];
