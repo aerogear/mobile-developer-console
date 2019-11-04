@@ -6,8 +6,18 @@ import {
   DataListAction,
   DataListToggle,
   DataListContent,
-  DataListItemCells
+  DataListItemCells,
+  Dropdown,
+  DropdownItem,
+  DropdownPosition,
+  KebabToggle
 } from '@patternfly/react-core';
+import {
+  OverflowMenu,
+  OverflowMenuControl,
+  OverflowMenuContent,
+  OverflowMenuItem
+} from '@patternfly/react-core/dist/esm/experimental';
 import { get as _get } from 'lodash-es';
 import './ServiceRow.css';
 import DeleteItemButton from '../../containers/DeleteItemButton';
@@ -33,6 +43,12 @@ class BoundServiceRow extends Component {
     this.state = {
       expanded: [],
       isOpen1: false
+    };
+
+    this.onToggle = isOpen => {
+      this.setState({
+        isOpen
+      });
     };
 
     this.onToggle1 = isOpen1 => {
@@ -149,7 +165,7 @@ class BoundServiceRow extends Component {
     );
   }
 
-  renderDeleteBindingButtons() {
+  renderDeleteBindingButtons(parent) {
     const crs = this.props.service.getCustomResourcesForApp(this.props.appName);
     return (
       <React.Fragment>
@@ -160,6 +176,7 @@ class BoundServiceRow extends Component {
             itemType="config"
             itemName={cr.getName()}
             onDelete={() => this.props.onDeleteBinding(cr)}
+            parent={parent}
           />
         ))}
       </React.Fragment>
@@ -174,6 +191,14 @@ class BoundServiceRow extends Component {
         index >= 0 ? [...expanded.slice(0, index), ...expanded.slice(index + 1, expanded.length)] : [...expanded, id];
       this.setState(() => ({ expanded: newExpanded }));
     };
+    const isPushVariant = this.props.service.isUPSService();
+    const { isOpen } = this.state;
+    const dropdownItems = [
+      <DropdownItem key="action" onClick={this.props.onCreateBinding}>
+        {this.renderDeleteBindingButtons() ? 'Create a binding' : undefined}
+      </DropdownItem>,
+      this.renderDeleteBindingButtons('isDropdown')
+    ];
     return (
       <DataListItem
         key={this.props.service.getId()}
@@ -189,8 +214,29 @@ class BoundServiceRow extends Component {
           />
           {this.renderServiceBadge()}
           <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1">
-            {this.renderBindingButtons()}
-            {this.renderDeleteBindingButtons()}
+            {isPushVariant ? (
+              <OverflowMenu breakpoint="xl">
+              <OverflowMenuContent>
+                <OverflowMenuItem>
+                  {this.renderBindingButtons()}
+                </OverflowMenuItem>
+                {this.renderDeleteBindingButtons('isOverflowMenu')}
+              </OverflowMenuContent>
+              <OverflowMenuControl>
+                <Dropdown
+                  onSelect={this.onSelect}
+                  position={DropdownPosition.right}
+                  toggle={<KebabToggle onToggle={this.onToggle} />}
+                  isOpen={isOpen}
+                  isPlain
+                  dropdownItems={dropdownItems}
+                />
+              </OverflowMenuControl>
+            </OverflowMenu>
+            ) : (
+            this.renderBindingButtons(),
+            this.renderDeleteBindingButtons()
+            )}
           </DataListAction>
         </DataListItemRow>
         <DataListContent
