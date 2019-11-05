@@ -73,13 +73,13 @@ const setup = (propOverrides = {}) => {
 };
 
 describe('MobileClientCardView', () => {
-  xit('renders an empty state when there are no apps', () => {
+  it('renders an empty state when there are no apps', () => {
     const { wrapper } = setup({ mobileClients: [] });
 
     expect(wrapper.find('EmptyState')).toHaveLength(1);
     expect(
       wrapper
-        .find('Title')
+        .find('Title').last()
         .render()
         .text()
     ).toBe("You don't have any Mobile Apps.");
@@ -92,15 +92,18 @@ describe('MobileClientCardView', () => {
     ).toBe('JavaScript-based mobile apps can be configured for a variety of mobile platforms.');
   });
 
-  xit('renders apps', () => {
+  it('renders apps', () => {
     const { wrapper } = setup();
-    expect(wrapper.find('MobileClientCardViewItem')).toHaveLength(2);
+    expect(wrapper.find('GalleryItem')).toHaveLength(2);
   });
 
-  xit('filters apps when the DebounceInput value is changed', () => {
+  xit('filters apps when the Text Input value is changed', () => {
     const { wrapper } = setup();
-    wrapper.find('DebounceInput').simulate('change', { target: { value: 'your-' } });
-    expect(wrapper.find('MobileClientCardViewItem')).toHaveLength(1);
+    wrapper.find('TextInput').simulate('change', { target: { value: 'your-' } });
+    const button = wrapper.find('Button');
+    expect(button.length).toBe(1);
+    // wrapper.find('Button').simulate('click'); //need to press enter now
+    // expect(wrapper.find('GalleryItem')).toHaveLength(1);
   });
 
   describe('filters apps by their name', () => {
@@ -142,22 +145,20 @@ describe('MobileClientCardView', () => {
 
     const { wrapper } = setup({ mobileClients });
 
-    xit('should show render 2 apps', () => {
-      wrapper.setState({ filter: 'my-app' });
+    it('should show render 2 apps', () => {
+      wrapper.setState({ filters: ['my-app'] });
 
-      expect(wrapper.find('MobileClientCardViewItem')).toHaveLength(2);
-      expect(wrapper.find('FilterItem')).toHaveLength(1);
-      expect(wrapper.find('CardGrid')).toHaveLength(1);
+      expect(wrapper.find('GalleryItem')).toHaveLength(2);
     });
 
-    xit('should not render any apps', () => {
-      wrapper.setState({ filter: 'no-matches' });
+    it('should not render any apps', () => {
+      wrapper.setState({ filters: ['no-matches'] });
 
       expect(wrapper.find('MobileClientCardViewItem')).toHaveLength(0);
-      expect(wrapper.find('FilterItem')).toHaveLength(1);
+      // expect(wrapper.find('FilterItem')).toHaveLength(1);
       expect(
         wrapper
-          .find('Title')
+          .find('Title').last()
           .render()
           .text()
       ).toBe('No mobile apps match the entered filter.');
@@ -165,12 +166,12 @@ describe('MobileClientCardView', () => {
   });
 
   describe('events', () => {
-    describe('DebounceInput', () => {
+    describe('TextInput', () => {
       const { wrapper } = setup();
 
-      wrapper.setState({ filter: 'app', currentValue: 'ap' });
+      wrapper.setState({ filters: ['app'], currentValue: 'ap' });
 
-      xit('onValueKeyPress is called', () => {
+      it('onValueKeyPress is called', () => {
         const spy = jest.spyOn(wrapper.instance(), 'onValueKeyPress');
 
         const keypressEvent = {
@@ -180,7 +181,7 @@ describe('MobileClientCardView', () => {
         };
 
         wrapper.instance().forceUpdate();
-        wrapper.find('DebounceInput').simulate('keypress', keypressEvent);
+        wrapper.find('TextInput').simulate('keypress', keypressEvent);
 
         expect(spy).toBeCalledWith(keypressEvent);
         expect(wrapper.state().currentValue).toBe('');
@@ -196,19 +197,18 @@ describe('MobileClientCardView', () => {
           target: { value: 'myapp' }
         };
 
-        const DebounceInput = wrapper.find('DebounceInput');
-        DebounceInput.simulate('change', changeEvent);
+        const TextInput = wrapper.find('TextInput');
+        TextInput.simulate('change', changeEvent);
 
         expect(spy).toBeCalled();
         expect(wrapper.state().currentValue).toBe(changeEvent.target.value);
-        expect(wrapper.state().filter).toBe(changeEvent.target.value);
       });
     });
 
     describe('FilterList', () => {
       const { wrapper } = setup();
 
-      wrapper.setState({ filter: 'app' });
+      wrapper.setState({ filters: ['app'] });
 
       xit('removeFilter is called', () => {
         const spy = jest.spyOn(wrapper.instance(), 'removeFilter');

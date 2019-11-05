@@ -66,7 +66,6 @@ export class Client extends Component {
 
     this.props.fetchApp(appName);
     this.props.fetchAndWatchApps();
-
     this.props.fetchAndWatchServices();
   }
 
