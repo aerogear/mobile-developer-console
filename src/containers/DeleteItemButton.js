@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { Dropdown, DropdownItem, DropdownPosition, KebabToggle, Modal, Button } from '@patternfly/react-core';
+import { Modal, Button, DropdownItem } from '@patternfly/react-core';
 import {
-  OverflowMenu,
-  OverflowMenuControl,
-  OverflowMenuContent,
   OverflowMenuItem
 } from '@patternfly/react-core/dist/esm/experimental';
 import { connect } from 'react-redux';
@@ -79,40 +76,27 @@ class DeleteItemButton extends Component {
   }
 
   render() {
-    const { itemType, title = 'Delete' } = this.props;
+    const { itemType, title = 'Delete', parent } = this.props;
     const itemName = this.getItemName();
     const { showModal } = this.state;
-    const { isOpen } = this.state;
-    const dropdownItems = [
-      <DropdownItem key="action" onClick={this.openDialog}>
-        {title}
-      </DropdownItem>
-    ];
     return (
       <Route
         render={props => (
           <React.Fragment>
-            {title.includes('Android') || title.includes('IOS') ? (
-              <OverflowMenu breakpoint="xl">
-                <OverflowMenuContent>
+            { parent === 'isDropdown' ? (
+              <DropdownItem onClick={this.openDialog}>
+                {title}
+              </DropdownItem>
+              ) : (
+                parent === 'isOverflowMenu' ? (
                   <OverflowMenuItem>
                     <Button onClick={this.openDialog}>{title}</Button>
                   </OverflowMenuItem>
-                </OverflowMenuContent>
-                <OverflowMenuControl>
-                  <Dropdown
-                    onSelect={this.onSelect}
-                    position={DropdownPosition.right}
-                    toggle={<KebabToggle onToggle={this.onToggle} />}
-                    isOpen={isOpen}
-                    isPlain
-                    dropdownItems={dropdownItems}
-                  />
-                </OverflowMenuControl>
-              </OverflowMenu>
-            ) : (
-              <Button onClick={this.openDialog}>{title}</Button>
-            )}
+                ) : (
+                  <Button onClick={this.openDialog}>{title}</Button>
+                )
+              )
+            }
             <Modal
               isSmall
               title="Confirm Delete"
