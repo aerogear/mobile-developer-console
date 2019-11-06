@@ -21,6 +21,20 @@ const getUser = () => {
   return Promise.reject(new Error('no user found'));
 };
 
+const getBranding = () => {
+  if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.branding) {
+    return window.OPENSHIFT_CONFIG.branding;
+  }
+  return '/img/branding.svg';
+};
+
+const getBackground = () => {
+  if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.background) {
+    return window.OPENSHIFT_CONFIG.background;
+  }
+  return '';
+};
+
 const getFavIcon = () => {
   if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.favicon) {
     return window.OPENSHIFT_CONFIG.favicon;
@@ -32,7 +46,7 @@ const getLogo = () => {
   if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.logo) {
     return window.OPENSHIFT_CONFIG.logo;
   }
-  return '/img/aerogear_logo.svg';
+  return '/img/branding_logo.svg';
 };
 
 const getDocumentation = () => {
@@ -65,6 +79,8 @@ export {
   remove,
   OpenShiftWatchEvents,
   getUser,
+  getBranding,
+  getBackground,
   getFavIcon,
   getLogo,
   getDocumentation,

@@ -230,7 +230,7 @@ export class Client extends Component {
                   variant={ClipboardCopyVariant.expansion}
                   className="mobile-client-config"
                 >
-                  {JSON.stringify(mobileApp, null, 2)}
+                  {JSON.stringify(mobileApp.status, null, 2)}
                 </ClipboardCopy>
               </CardBody>
             </Card>
