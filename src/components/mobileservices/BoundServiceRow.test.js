@@ -280,7 +280,6 @@ describe('BoundServiceRow - UPS - 3 bindings', () => {
     expect(wrapper.find('BindButton')).toHaveLength(0);
     // normally we show the binding status in the UnboundServiceRow, not in the bound one.
     // but, as there might be a binding in progress, we still need to show this status in BoundServiceRow too
-    expect(wrapper.find('BindingStatus')).toHaveLength(1);
     expect(bindingSchema.properties.CLIENT_TYPE.default).toEqual('Foo');
     expect(bindingSchema.properties.CLIENT_TYPE.enum).toEqual(['Foo', 'Bar', 'Moo']);
   });
