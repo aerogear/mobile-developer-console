@@ -90,6 +90,8 @@ This will start the MDC in development mode, and you should see the console open
 
 ### Enable CORS in the OpenShift cluster
 
+> **_NOTE:_** As of version 1.1.12 this is not required anymore as MDC provides a proxy between itself and the Openshift API 
+
 The mobile developer console will need to talk to the OpenShift API server directly. However, the requests will likely to be blocked by the browser due to [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) restrictions.
 
 To fix this, you will need to manually update the OpenShift master configuration to allow CORS requests from the mobile developer console.
