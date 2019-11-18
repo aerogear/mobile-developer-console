@@ -30,7 +30,7 @@ const setup = (propOverrides = {}) => {
 describe('Binding operation not in progress', () => {
   const { wrapper } = setup();
   xit('should render component', () => {
-    expect(wrapper.find('Button').contains('Bind to App')).toEqual(true);
+    expect(wrapper.find('Button').contains('Create a binding')).toEqual(true);
   });
 });
 

@@ -4,9 +4,7 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { BindingPanel } from './BindingPanel';
 
-/* TODO: Test needs update to work with latest PF4 changes */
-
-xdescribe('BindingPanel', () => {
+describe('BindingPanel', () => {
   const service = {
     getName: () => 'Data Sync',
     getBindingForm: () => ({
@@ -23,6 +21,6 @@ xdescribe('BindingPanel', () => {
   };
   it('should render the Wizard for binding the service', () => {
     const wrapper = shallow(<BindingPanel service={service} />);
-    expect(wrapper.find('WizardPattern')).toHaveLength(1);
+    expect(wrapper.find('Wizard')).toHaveLength(1);
   });
 });

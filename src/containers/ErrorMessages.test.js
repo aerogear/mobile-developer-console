@@ -2,26 +2,22 @@ import { mount } from 'enzyme';
 import React from 'react';
 import { ErrorMessages, errorMessage, mobileClientError, MOBILECLIENT, ALREADYEXISTS } from './ErrorMessages';
 
-/* TODO: Test needs update to work with latest PF4 changes */
-
 describe('ErrorMessages', () => {
-  xit('test render', () => {
+  it('test render', () => {
     const errors = [{ message: 'error1' }, { message: 'error2' }];
     const history = {
       listen: () => {}
     };
     const wrapper = mount(<ErrorMessages errors={errors} history={history} />);
-    expect(wrapper.find('.alert.toast-pf')).toHaveLength(2);
+    expect(wrapper.find('.pf-c-alert')).toHaveLength(2);
     expect(
       wrapper
-        .find('div.mdc-alert-group')
-        .childAt(0)
+        .find('div.pf-c-alert__description').first()
         .text()
     ).toEqual('error1');
     expect(
       wrapper
-        .find('div.mdc-alert-group')
-        .childAt(1)
+        .find('div.pf-c-alert__description').last()
         .text()
     ).toEqual('error2');
   });
