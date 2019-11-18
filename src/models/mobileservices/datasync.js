@@ -1,4 +1,5 @@
 import { CustomResource } from './customresource';
+import './datasync.css';
 
 export class DataSyncCR extends CustomResource {
   constructor(data = {}) {

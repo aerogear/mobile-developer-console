@@ -1,5 +1,4 @@
 import React from 'react';
-import './ServiceSDKDocs.css';
 import { ServiceSDKSetup } from './ServiceSDKSetup';
 
 export const ServiceSDKDocs = ({ framework, mobileApp }) => {

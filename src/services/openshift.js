@@ -21,6 +21,41 @@ const getUser = () => {
   return Promise.reject(new Error('no user found'));
 };
 
+const getBranding = () => {
+  if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.branding) {
+    return window.OPENSHIFT_CONFIG.branding;
+  }
+  return '/img/branding.svg';
+};
+
+const getBackground = () => {
+  if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.background) {
+    return window.OPENSHIFT_CONFIG.background;
+  }
+  return '';
+};
+
+const getFavIcon = () => {
+  if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.favicon) {
+    return window.OPENSHIFT_CONFIG.favicon;
+  }
+  return '/favicon.ico';
+};
+
+const getLogo = () => {
+  if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.logo) {
+    return window.OPENSHIFT_CONFIG.logo;
+  }
+  return '/img/branding_logo.svg';
+};
+
+const getDocumentation = () => {
+  if (window.OPENSHIFT_CONFIG && window.OPENSHIFT_CONFIG.documentation) {
+    return window.OPENSHIFT_CONFIG.documentation;
+  }
+  return 'https://docs.aerogear.org/aerogear/latest/getting-started.html';
+};
+
 const get = (res, name) => ResourceManagerFactory.forResource(res.kind).get(res, name);
 
 const update = (res, obj) => ResourceManagerFactory.forResource(obj.kind || res.kind).update(res, obj);
@@ -44,6 +79,11 @@ export {
   remove,
   OpenShiftWatchEvents,
   getUser,
+  getBranding,
+  getBackground,
+  getFavIcon,
+  getLogo,
+  getDocumentation,
   listWithLabels,
   getNamespace,
   getMasterUri

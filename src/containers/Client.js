@@ -1,51 +1,64 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import {
-  Nav,
-  NavItem,
-  TabContent,
-  TabPane,
-  TabContainer,
-  Grid,
+  PageSection,
+  PageSectionVariants,
   Breadcrumb,
-  DropdownButton,
-  Alert,
-  MenuItem
-} from 'patternfly-react';
+  BreadcrumbItem,
+  Level,
+  LevelItem,
+  Modal,
+  Button,
+  Title,
+  Split,
+  SplitItem,
+  Card,
+  CardHeader,
+  CardBody,
+  Dropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownPosition,
+  ClipboardCopy,
+  ClipboardCopyVariant
+} from '@patternfly/react-core';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { find } from 'lodash-es';
+import { CaretDownIcon } from '@patternfly/react-icons';
 import Moment from 'react-moment';
-import ConfigurationView from '../components/configuration/ConfigurationView';
 import MobileServiceView from '../components/mobileservices/MobileServiceView';
-import { fetchApp, fetchAndWatchApps } from '../actions/apps';
+import { fetchApp, fetchAndWatchApps, deleteApp } from '../actions/apps';
 import { fetchAndWatchBuildConfigs } from '../actions/buildConfigs';
 import { fetchAndWatchBuilds } from '../actions/builds';
-import DeleteItemButton from './DeleteItemButton';
 import { MobileApp } from '../models';
-import { MobileClientBuildOverviewList } from '../components/build/MobileClientBuildOverviewList';
-import BuildConfigDialog from './BuildConfigDialog';
 import './Client.css';
 import { fetchAndWatchServices } from '../actions/services';
-
-export const TAB_CONFIGURATION = { key: 1, hash: 'configuration' };
-export const TAB_MOBILE_SERVICES = { key: 2, hash: 'services' };
-export const TAB_BUILDS = { key: 3, hash: 'builds' };
-
-const TABS = [TAB_CONFIGURATION, TAB_MOBILE_SERVICES, TAB_BUILDS];
 
 export class Client extends Component {
   constructor(props) {
     super(props);
-    let initialTab = find(TABS, { hash: props.location.hash.substring(1) });
-    if (!initialTab) {
-      initialTab = TAB_CONFIGURATION;
-    }
 
     this.state = {
-      buildConfigs: [],
-      selectedTab: initialTab.key
+      isDropdownOpen: false,
+      isEditModalOpen: false,
+      isDeleteModalOpen: false
     };
-    this.handleNavSelect = this.handleNavSelect.bind(this);
+
+    this.handleModalToggle = () => {
+      this.setState(({ isEditModalOpen }) => ({
+        isEditModalOpen: !isEditModalOpen
+      }));
+    };
+
+    this.onToggle = isDropdownOpen => {
+      this.setState({
+        isDropdownOpen
+      });
+    };
+    this.onSelect = () => {
+      this.setState({
+        isDropdownOpen: !this.state.isDropdownOpen
+      });
+    };
   }
 
   componentDidMount() {
@@ -54,17 +67,16 @@ export class Client extends Component {
     this.props.fetchApp(appName);
     this.props.fetchAndWatchApps();
 
-    if (this.props.buildTabEnabled) {
-      this.props.fetchAndWatchBuilds();
-      this.props.fetchAndWatchBuildConfigs();
-    }
-
     this.props.fetchAndWatchServices();
   }
 
   getMobileApp() {
     return MobileApp.find(this.props.apps.items, this.props.match.params.id) || new MobileApp();
   }
+
+  toggleDeleteModal = () => {
+    this.setState({ isDeleteModalOpen: !this.state.isDeleteModalOpen });
+  };
 
   componentDidUpdate(prevProps) {
     if (this.props.buildConfigs !== prevProps.buildConfigs || this.props.builds !== prevProps.builds) {
@@ -83,110 +95,148 @@ export class Client extends Component {
             matchingConfig.builds.push(build);
           }
         });
-
-        this.setState({ buildConfigs: configs });
       }
     }
   }
 
-  handleNavSelect = eventKey => {
-    const { selectedTab } = this.state;
-    if (selectedTab !== eventKey) {
-      this.setState({ selectedTab: eventKey });
+  triggerDeletion = itemName => {
+    const { onDelete } = this.props;
+    if (onDelete && typeof onDelete === 'function') {
+      onDelete();
+    } else {
+      this.props.deleteApp(itemName);
     }
-  };
-
-  header = mobileApp => {
-    const { selectedTab, showBuildConfigDialog = false } = this.state;
-    const { creationTimestamp = null } = mobileApp.metadata.data;
-    // passing empty string to build config dialog for now as the client id.
-    return (
-      <div className="app-header-wrapper">
-        <div className="app-header">
-          <div>
-            <h1>
-              {mobileApp.getName()}
-              <span className="creation-timestamp">
-                created <Moment fromNow>{creationTimestamp}</Moment>
-              </span>
-            </h1>
-          </div>
-        </div>
-        <div className="app-actions-dropdown">
-          <DropdownButton id="app-actions-dropdown" title="Actions" pullRight>
-            {mobileApp && selectedTab === TAB_BUILDS.key ? (
-              <React.Fragment>
-                <MenuItem onClick={() => this.setState({ showBuildConfigDialog: true })}>New build config</MenuItem>
-                <BuildConfigDialog
-                  update={false}
-                  clientInfo={{ clientId: mobileApp.getName() }}
-                  show={showBuildConfigDialog}
-                  onShowStateChanged={isShown => this.setState({ showBuildConfigDialog: isShown })}
-                />
-              </React.Fragment>
-            ) : (
-              ''
-            )}
-            <DeleteItemButton itemType="app" itemName={this.props.match.params.id} navigate="/" />
-          </DropdownButton>
-        </div>
-      </div>
-    );
+    this.props.history.push('/overview');
   };
 
   render() {
     const mobileApp = this.getMobileApp();
-    const clientInfo = { clientId: mobileApp.getName() };
-    const { selectedTab } = this.state;
     const appName = this.props.match.params.id;
+    const { creationTimestamp = null } = mobileApp.metadata.data;
+    const { isDropdownOpen } = this.state;
+    const dropdownItems = [
+      <DropdownItem key="app" onClick={this.toggleDeleteModal}>
+        Delete
+      </DropdownItem>
+    ];
     return mobileApp ? (
-      <Grid fluid className="client-details">
-        <Breadcrumb>
-          <Breadcrumb.Item active>
-            <Link to="/overview">Mobile Apps</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item active>{mobileApp.getName()}</Breadcrumb.Item>
-        </Breadcrumb>
-        {this.header(mobileApp)}
-        {this.props.apps.readingError ? (
-          <Alert>{this.props.apps.readingError.message}</Alert>
-        ) : (
-          <TabContainer id="basic-tabs-pf" activeKey={selectedTab} onSelect={this.handleNavSelect}>
-            <div>
-              <Nav bsClass="nav nav-tabs nav-tabs-pf nav-tabs-pf-secondary">
-                <NavItem eventKey={TAB_CONFIGURATION.key} href={`#${TAB_CONFIGURATION.hash}`}>
-                  Configuration
-                </NavItem>
-                {this.props.buildTabEnabled ? (
-                  <NavItem eventKey={TAB_BUILDS.key} href={`#${TAB_BUILDS.hash}`}>
-                    Builds
-                  </NavItem>
-                ) : null}
-                <NavItem eventKey={TAB_MOBILE_SERVICES.key} href={`#${TAB_MOBILE_SERVICES.hash}`}>
-                  Mobile Services
-                </NavItem>
-              </Nav>
-              <TabContent>
-                <TabPane eventKey={TAB_CONFIGURATION.key}>
-                  <ConfigurationView app={mobileApp} appName={appName} />
-                </TabPane>
-                <TabPane eventKey={TAB_MOBILE_SERVICES.key}>
-                  <MobileServiceView appName={appName} />
-                </TabPane>
-                {this.props.buildTabEnabled ? (
-                  <TabPane eventKey={TAB_BUILDS.key}>
-                    <MobileClientBuildOverviewList
-                      appName={appName}
-                      clientInfo={clientInfo}
-                      buildConfigs={this.state.buildConfigs}
-                    />
-                  </TabPane>
-                ) : null}
-              </TabContent>
-            </div>
-          </TabContainer>
-        )}
-      </Grid>
+      <React.Fragment>
+        <PageSection variant={PageSectionVariants.light} className="pf-u-pb-0">
+          <Level>
+            <LevelItem>
+              <Breadcrumb>
+                <BreadcrumbItem to="/overview">Mobile Apps</BreadcrumbItem>
+                <BreadcrumbItem isActive>Review and Edit</BreadcrumbItem>
+              </Breadcrumb>
+            </LevelItem>
+            <LevelItem>
+              <Dropdown
+                onSelect={this.onSelect}
+                position={DropdownPosition.right}
+                toggle={
+                  <DropdownToggle onToggle={this.onToggle} iconComponent={CaretDownIcon}>
+                    Actions
+                  </DropdownToggle>
+                }
+                isOpen={isDropdownOpen}
+                dropdownItems={dropdownItems}
+              />
+            </LevelItem>
+          </Level>
+        </PageSection>
+        <PageSection variant={PageSectionVariants.light} style={{ flex: '0', borderBottom: '1px solid #e0e0e0' }}>
+          <Title headingLevel="h2" size="3xl">
+            {mobileApp.getName()}
+            <span className="mdc-creation-timestamp pf-u-ml-md">
+              Created <Moment fromNow>{creationTimestamp}</Moment>
+            </span>
+          </Title>
+          <Modal
+            isSmall
+            title="Confirm Delete"
+            isOpen={this.state.isDeleteModalOpen}
+            onClose={this.toggleDeleteModal}
+            actions={[
+              <Button key="confirm" variant="danger" onClick={() => this.triggerDeletion(appName)}>
+                Delete
+              </Button>,
+              <Button key="cancel" variant="secondary" onClick={this.toggleDeleteModal}>
+                Cancel
+              </Button>
+            ]}
+          >
+            <p>
+              {`Are you sure you want to delete '`}
+              <b>{appName}</b>
+              {`'?`}
+            </p>
+            <p>
+              {appName} and its data will no longer be available. <b>It cannot be undone.</b> Make sure this is
+              something you really want to do!
+            </p>
+          </Modal>
+        </PageSection>
+        <Split className="mdc-breakpoint-split">
+          <SplitItem isFilled className="mdc-breakpoint-split-item-1">
+            <PageSection>
+              <MobileServiceView appName={appName} />
+            </PageSection>
+          </SplitItem>
+          <SplitItem>
+            <Card className="mdc-card-client">
+              <CardHeader>
+                <Title headingLevel="h3" size="2xl">
+                  Full Mobile Config
+                </Title>
+              </CardHeader>
+              <CardBody isFilled={false}>
+                <p>
+                  JavaScript-based mobile apps can be configured for a variety of mobile platforms. Our JavaScript SDK
+                  supports the following frameworks.
+                </p>
+              </CardBody>
+              <CardBody isFilled={false}>
+                <div className="pf-grid">
+                  <div>
+                    <img src="/img/cordova.jpg" width="25" height="25" alt="React logo" />
+                    <p>Cordova</p>
+                  </div>
+                  <div>
+                    <img src="/img/react.jpg" width="25" height="25" alt="React logo" />
+                    <p>React</p>
+                  </div>
+                  <div>
+                    <img src="/img/ionic.jpg" width="25" height="25" alt="Ionic logo" />
+                    <p>Ionic</p>
+                  </div>
+                  <div>
+                    <img src="/img/angular.jpg" width="25" height="25" alt="Angular logo" />
+                    <p>Angular</p>
+                  </div>
+                  <div>
+                    <img src="/img/vue.jpg" width="25" height="25" alt="Vue logo" />
+                    <p>Vue</p>
+                  </div>
+                </div>
+              </CardBody>
+              <CardBody>
+                <Title headingLevel="h4" size="lg" className="pf-u-mb-md">
+                  mobile-services.json
+                </Title>
+                <ClipboardCopy
+                  isCode
+                  isReadOnly
+                  isExpanded
+                  variant={ClipboardCopyVariant.expansion}
+                  className="mobile-client-config"
+                >
+                  {JSON.stringify(mobileApp.status, null, 2)}
+                </ClipboardCopy>
+              </CardBody>
+            </Card>
+          </SplitItem>
+        </Split>
+      </React.Fragment>
     ) : (
       <React.Fragment />
     );
@@ -197,8 +247,7 @@ function mapStateToProps(state) {
   return {
     apps: state.apps,
     buildConfigs: state.buildConfigs,
-    builds: state.builds,
-    buildTabEnabled: state.config.buildTabEnabled
+    builds: state.builds
   };
 }
 
@@ -207,10 +256,13 @@ const mapDispatchToProps = {
   fetchAndWatchBuildConfigs,
   fetchAndWatchBuilds,
   fetchAndWatchServices,
-  fetchAndWatchApps
+  fetchAndWatchApps,
+  deleteApp
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Client);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Client)
+);

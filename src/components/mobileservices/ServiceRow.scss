@@ -1,31 +1,23 @@
-.detailsKey {
-    text-align: left;
-    font-weight: 700;
+// Override button position on mobile
+.mdc-unbound-data-list-row {
+	flex-wrap: unset;
+  @media only screen and (max-width: 910px) {
+  	flex-wrap: wrap;
+    .pf-c-data-list__item-action {
+      margin-left: unset;
+    	padding-top: unset;
+    }
+  }
 }
 
-.boundService {
-    .list-group-item-header {
-        background-color: #ededed;
-        border-color: #bbb;
-        border-bottom-width: 1px;
-        border-bottom-style: solid;
-    }
-    .bind-button{
-        margin-right: 10px;
-    }
-}
+//Data List icons
+.mdc-data-list-icon {
+  flex: unset;
 
-.unboundService {
-    .bind-button{
-        margin-right: 25px;
-    }
-}
-
-.list-group-item .logo {
-    width: 30px;
-    height: 30px;
-    margin: 0 10px;
-    display: block;
-    float: left;
-    font-size: 1.6em;
+  img {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    vertical-align: middle;
+  }
 }

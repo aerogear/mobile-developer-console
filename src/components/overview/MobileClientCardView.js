@@ -1,6 +1,27 @@
 import React, { Component } from 'react';
-import { Toolbar, Filter, EmptyState, EmptyStateTitle, EmptyStateAction, CardGrid } from 'patternfly-react';
-import DebounceInput from 'react-debounce-input';
+import {
+  Button,
+  ButtonVariant,
+  Gallery,
+  GalleryItem,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateVariant,
+  EmptyStateIcon,
+  InputGroup,
+  TextInput,
+  Title,
+  PageSection,
+  PageSectionVariants,
+  Flex
+} from '@patternfly/react-core';
+import {
+  DataToolbar,
+  DataToolbarItem,
+  DataToolbarContent,
+  DataToolbarFilter
+} from '@patternfly/react-core/dist/esm/experimental';
+import { MobileAltIcon, SearchIcon } from '@patternfly/react-icons';
 import './MobileClientCardView.css';
 import MobileClientCardViewItem from './MobileClientCardViewItem';
 import CreateClient from '../../containers/CreateClient';
@@ -8,10 +29,11 @@ import CreateClient from '../../containers/CreateClient';
 class MobileClientCardView extends Component {
   constructor(props) {
     super(props);
-    this.state = { filter: '', currentValue: '' };
+    this.state = { filters: [], currentValue: '' };
 
     this.emptyStateMessage = {
-      noAppsCreated: 'You have no mobile apps right now. Create one to get started.',
+      noAppsCreatedTitle: "You don't have any Mobile Apps.",
+      noAppsCreated: 'JavaScript-based mobile apps can be configured for a variety of mobile platforms.',
       noAppsAfterFiltering: 'No mobile apps match the entered filter.'
     };
   }
@@ -26,29 +48,48 @@ class MobileClientCardView extends Component {
     }
   }
 
+  onClick() {
+    const { currentValue } = this.state;
+    if (currentValue && currentValue.length > 0) {
+      this.setState({ currentValue: '' });
+      this.setFilter(currentValue);
+    }
+  }
+
   getEmptyState() {
     return (
-      <EmptyState>
-        <EmptyStateTitle>{this.emptyStateMessage.noAppsCreated}</EmptyStateTitle>
-        <EmptyStateAction>
-          <CreateClient createButtonSize="large" />
-        </EmptyStateAction>
+      <EmptyState variant={EmptyStateVariant.full}>
+        <EmptyStateIcon icon={MobileAltIcon} />
+        <Title headingLevel="h5" size="lg">
+          {this.emptyStateMessage.noAppsCreatedTitle}
+        </Title>
+        <EmptyStateBody>{this.emptyStateMessage.noAppsCreated}</EmptyStateBody>
+        <CreateClient createButtonSize="large" />
       </EmptyState>
     );
   }
 
   setFilter(filterValue) {
-    this.setState({ filter: filterValue });
+    this.setState({ filters: [...this.state.filters, filterValue] });
   }
 
-  removeFilter() {
-    this.setState({ filter: '', currentValue: '' });
-  }
+  removeFilter = (type = '', id = '') => {
+    if (id) {
+      this.setState(prevState => {
+        prevState.filters = prevState.filters.filter(s => s !== id);
+        return {
+          filters: prevState.filters
+        };
+      });
+    }
+  };
 
-  updateCurrentValue(event) {
-    const { value } = event.target;
+  clearFilters = () => {
+    this.setState({ filters: [] });
+  };
+
+  updateCurrentValue(value) {
     this.setState({ currentValue: value });
-    this.setFilter(value);
   }
 
   getBuilds = app => {
@@ -85,8 +126,8 @@ class MobileClientCardView extends Component {
         const {
           metadata: { name: clientAppName }
         } = app;
-        const { filter } = this.state;
-        return clientAppName.indexOf(filter) > -1 ? (
+        const { filters } = this.state;
+        return clientAppName.indexOf(filters) > -1 ? (
           <MobileClientCardViewItem
             key={clientAppName}
             app={app}
@@ -103,50 +144,75 @@ class MobileClientCardView extends Component {
     const { mobileClients } = this.props;
     const filteredClients = this.filterClients(mobileClients);
     return filteredClients.length ? (
-      <CardGrid matchHeight fluid>
-        <CardGrid.Row key={1}>{filteredClients}</CardGrid.Row>
-      </CardGrid>
+      <Gallery gutter="md">
+        {filteredClients.map((x, i) => (
+          <GalleryItem key={i}>{x}</GalleryItem>
+        ))}
+      </Gallery>
     ) : (
-      <EmptyState>
-        <EmptyStateTitle>{this.emptyStateMessage.noAppsAfterFiltering}</EmptyStateTitle>
+      <EmptyState variant={EmptyStateVariant.full}>
+        <EmptyStateIcon icon={MobileAltIcon} />
+        <Title headingLevel="h5" size="lg">
+          {this.emptyStateMessage.noAppsAfterFiltering}
+        </Title>
       </EmptyState>
     );
   }
 
   render() {
     const { mobileClients } = this.props;
-    const { filter, currentValue } = this.state;
+    const { filters } = this.state;
+    const filteredClients = this.filterClients(mobileClients);
     return (
-      <div className="overview">
-        <Toolbar>
-          <Filter>
-            <DebounceInput
-              minLength={1}
-              debounceTimeout={300}
-              type="text"
-              placeholder="Filter by Name"
-              className="toolbarFilter"
-              value={currentValue}
-              onChange={e => this.updateCurrentValue(e)}
-              onKeyPress={e => this.onValueKeyPress(e)}
-            />
-          </Filter>
-          <div className="form-group">
+      <React.Fragment>
+        <PageSection variant={PageSectionVariants.light}>
+          <Flex>
+            <Title headingLevel="h2" size="3xl">
+              Mobile Apps
+            </Title>
             <CreateClient />
-          </div>
-          {filter && filter.length > 0 && (
-            <Toolbar.Results>
-              <Filter.ActiveLabel>Active Filters:</Filter.ActiveLabel>
-              <Filter.List>
-                <Filter.Item key="1" filterData={{ filter }} onRemove={e => this.removeFilter(e)}>
-                  {filter}
-                </Filter.Item>
-              </Filter.List>
-            </Toolbar.Results>
-          )}
-        </Toolbar>
-        {mobileClients.length ? this.renderAppCards() : this.getEmptyState()}
-      </div>
+          </Flex>
+        </PageSection>
+        <PageSection variant={PageSectionVariants.light} noPadding="true">
+          <DataToolbar clearAllFilters={this.clearFilters} showClearFiltersButton={filters.length !== 0}>
+            <DataToolbarContent>
+              <DataToolbarItem>
+                <InputGroup>
+                  <TextInput
+                    placeholder="Filter by name..."
+                    className="datatoolbarInput"
+                    type="search"
+                    onChange={e => this.updateCurrentValue(e)}
+                    onKeyPress={e => this.onValueKeyPress(e)}
+                  />
+                  <Button
+                    variant={ButtonVariant.control}
+                    onClick={e => this.onClick(e)}
+                    aria-label="search button for apps"
+                  >
+                    <SearchIcon />
+                  </Button>
+                </InputGroup>
+              </DataToolbarItem>
+              <DataToolbarItem>
+                <DataToolbarFilter
+                  className="toolbarFilter"
+                  categoryName="Filters"
+                  chips={this.state.filters}
+                  deleteChip={this.removeFilter}
+                  style={{ display: 'none' }}
+                />
+              </DataToolbarItem>
+              <DataToolbarItem breakpointMods={[{ modifier: 'align-right' }]}>
+                {filteredClients ? filteredClients.length : mobileClients.length} of {mobileClients.length} items
+              </DataToolbarItem>
+            </DataToolbarContent>
+          </DataToolbar>
+        </PageSection>
+        <PageSection className="card-gallery">
+          {mobileClients.length ? this.renderAppCards() : this.getEmptyState()}
+        </PageSection>
+      </React.Fragment>
     );
   }
 }

@@ -1,8 +1,22 @@
 import Moment from 'react-moment';
 import React from 'react';
-import { Card, CardHeading, CardBody, CardFooter, DropdownKebab } from 'patternfly-react';
+import {
+  Card,
+  CardActions,
+  CardHead,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Dropdown,
+  KebabToggle,
+  Button,
+  Modal,
+  DropdownItem
+} from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
-import DeleteItemButton from '../../containers/DeleteItemButton';
+import { connect } from 'react-redux';
+import { deleteApp } from '../../actions/apps';
+import { deleteBuildConfig } from '../../actions/buildConfigs';
 
 const getServiceIcons = services => {
   const icons = {
@@ -20,40 +34,123 @@ const getServiceIcons = services => {
   ));
 };
 
-const MobileClientCardViewItem = props => {
-  const {
-    app,
-    app: {
-      metadata: { name: appName }
-    },
-    services,
-    builds,
-    buildTabEnabled
-  } = props;
-  return (
-    <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      <Card matchHeight /* accented */ className="mobile-client-card">
-        <CardHeading>
-          <DropdownKebab id={appName} pullRight className="card-dropdown-kebab">
-            <DeleteItemButton itemType="app" itemName={appName} item={app} />
-          </DropdownKebab>
-          <Link to={`/mobileclient/${appName}`}>
-            <div className="card-pf-title">
-              <h1>{appName}</h1>
-            </div>
-          </Link>
-        </CardHeading>
+class MobileClientCardViewItem extends React.Component {
+  state = {
+    isOpen: false,
+    showModal: false
+  };
+
+  onToggle = isOpen => {
+    this.setState({
+      isOpen
+    });
+  };
+
+  onSelect = event => {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  };
+
+  triggerDeletion = itemName => {
+    const { onDelete } = this.props;
+    if (onDelete && typeof onDelete === 'function') {
+      onDelete();
+    } else {
+      this.props.deleteApp(itemName);
+    }
+    this.handleDialogClose();
+  };
+
+  openDialog = () => {
+    this.setState({
+      showModal: true
+    });
+  };
+
+  handleDialogClose = () => {
+    this.setState({
+      showModal: false
+    });
+  };
+
+  getItemName() {
+    return this.props.app ? this.props.app.metadata.name : 'app';
+  }
+
+  render() {
+    const { title = 'Delete' } = this.props;
+    const itemName = this.getItemName();
+
+    const {
+      app,
+      app: {
+        metadata: { name: appName }
+      },
+      services,
+      builds,
+      buildTabEnabled
+    } = this.props;
+    return (
+      <Card matchHeight className="mdc-card">
+        <CardHead>
+          <CardActions>
+            <Dropdown
+              id={appName}
+              position="right"
+              onSelect={this.onSelect}
+              toggle={<KebabToggle onToggle={this.onToggle} />}
+              isOpen={this.state.isOpen}
+              isPlain
+              dropdownItems={[
+                <DropdownItem key="app" onClick={this.openDialog}>
+                  {title}
+                </DropdownItem>
+              ]}
+            />
+            <Modal
+              isSmall
+              title="Confirm Delete"
+              isOpen={this.state.showModal}
+              onClose={this.handleDialogClose}
+              actions={[
+                <Button key="confirm" variant="danger" onClick={() => this.triggerDeletion(appName)}>
+                  Delete
+                </Button>,
+                <Button key="cancel" onClick={this.handleDialogClose}>
+                  Cancel
+                </Button>
+              ]}
+            >
+              <p>
+                {`Are you sure you want to delete '`}
+                <b>{itemName}</b>
+                {`'?`}
+              </p>
+              <p>
+                {itemName} and its data will no longer be available. <b>It cannot be undone.</b> Make sure this is
+                something you really want to do!
+              </p>
+            </Modal>
+          </CardActions>
+          <CardHeader>
+            <Link to={`/mobileclient/${appName}`}>
+              <b>{appName}</b>
+            </Link>
+          </CardHeader>
+        </CardHead>
+        <CardBody style={{ paddingTop: 0, paddingBottom: 0 }}>
+          {services && services.length > 0 ? 'Bound Services' : ''}
+          <div className="mdc-card-icons">
+            {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}
+          </div>
+        </CardBody>
         <Link to={`/mobileclient/${appName}`}>
-          <CardBody>
-            <div className="card-icons">
-              {services && services.length > 0 ? getServiceIcons(services) : <div className="service-icon" />}
-            </div>
-          </CardBody>
           <CardFooter>
-            <div className="creation-timestamp">CREATED</div>
-            <span className="creation-timestamp">
-              <span className="fa fa-globe" /> <Moment format="DD/MM/YYYY">{app.metadata.creationTimestamp}</Moment>
-            </span>
+            <div className="mdc-creation-timestamp">
+              Created
+              <Moment format=" DD MMMM YYYY">{app.metadata.creationTimestamp}</Moment>
+            </div>
             <span className="builds">
               {buildTabEnabled && builds.numFailedBuilds > 0 ? (
                 <span>
@@ -72,8 +169,16 @@ const MobileClientCardViewItem = props => {
           </CardFooter>
         </Link>
       </Card>
-    </div>
-  );
+    );
+  }
+}
+
+const mapDispatchToProps = {
+  deleteApp,
+  deleteBuildConfig
 };
 
-export default MobileClientCardViewItem;
+export default connect(
+  null,
+  mapDispatchToProps
+)(MobileClientCardViewItem);

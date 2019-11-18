@@ -1,38 +1,40 @@
-.client-details {
-  width: 100%;
-  padding-top: 10px;
-  flex: 1;
-  flex-direction: column;
+.pf-c-backdrop .pf-l-bullseye {
+  height: unset;
+  margin: unset; }
+
+.pf-c-clipboard-copy__expandable-content pre {
+  background-color: #fff;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 13px; }
+
+.pf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
+  .pf-grid div {
+    text-align: center; }
+
+.mdc-card-client {
+  width: 450px;
+  height: 100%;
+  box-shadow: unset; }
+  @media only screen and (max-width: 768px) {
+    .mdc-card-client .pf-c-card__header {
+      padding: var(--pf-global--spacer--md); }
+    .mdc-card-client .pf-c-card__body {
+      padding-right: var(--pf-global--spacer--md);
+      padding-bottom: var(--pf-global--spacer--md);
+      padding-left: var(--pf-global--spacer--md); } }
+
+.mdc-breakpoint-split {
   display: flex;
-  padding-left: 25px;
-  padding-right: 25px; }
-  .client-details .breadcrumb {
-    margin-bottom: 10px; }
-  .client-details .creation-timestamp {
-    padding-left: 8px;
-    font-size: 11px;
-    color: #757575; }
-  .client-details #basic-tabs-pf {
-    flex: 1 100%;
+  flex: 1; }
+  .mdc-breakpoint-split .mdc-breakpoint-split-item-1 {
     display: flex;
     flex-direction: column; }
-  .client-details .nav-tabs {
-    border-bottom: 1px solid #ededed;
-    margin-left: -15px; }
-  .client-details #basic-tabs-content {
-    flex: 1 100%; }
-  .client-details #basic-tabs-content > * {
-    height: 100%; }
-  .client-details h3.header {
-    border-bottom: none; }
-  .client-details .app-header-wrapper {
-    display: flex;
-    justify-content: space-between; }
-    .client-details .app-header-wrapper .app-header {
-      display: flex;
-      margin-bottom: 30px; }
-      .client-details .app-header-wrapper .app-header h1 {
-        margin-top: 0;
-        margin-bottom: 0; }
-    .client-details .app-header-wrapper .app-actions-dropdown {
-      margin-top: 15px; }
+  @media only screen and (max-width: 900px) {
+    .mdc-breakpoint-split > * {
+      width: 50%; }
+    .mdc-breakpoint-split .pf-c-card {
+      width: unset !important; } }

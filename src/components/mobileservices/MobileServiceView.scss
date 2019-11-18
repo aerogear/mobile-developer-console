@@ -1,6 +1,20 @@
 .mobile-service-view {
-    .spinner-padding {
-        margin-top:32px;
-        margin-bottom: 32px;
-    }
+  .spinner-padding {
+      margin-top:32px;
+      margin-bottom: 32px;
+  }
+}
+
+// Override default data list borders
+.pf-c-data-list {
+  border-top: 0px;
+
+  .pf-c-data-list__item:not(.pf-m-expanded):last-child {
+    border-bottom: 0px;
+  }
+}
+
+// Override data list control
+.pf-c-data-list__item-control {
+  margin-right: var(--pf-global--spacer--sm);
 }

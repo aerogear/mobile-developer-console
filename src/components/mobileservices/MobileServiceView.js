@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { EmptyState, Spinner } from 'patternfly-react';
+import { Title, DataList } from '@patternfly/react-core';
+import { Spinner } from 'patternfly-react';
 import { connect } from 'react-redux';
 import { partition } from 'lodash-es';
-
 import BoundServiceRow from './BoundServiceRow';
 import UnboundServiceRow from './UnboundServiceRow';
 import './MobileServiceView.css';
@@ -32,20 +32,24 @@ export class MobileServiceView extends Component {
   boundServiceRows() {
     return (
       <React.Fragment>
-        <h2 key="bound-services">Bound Services</h2>
-        {this.props.boundServices && this.props.boundServices.length > 0 ? (
-          this.props.boundServices.map(service => (
-            <BoundServiceRow
-              key={service.getId()}
-              appName={this.props.appName}
-              service={service}
-              onCreateBinding={() => this.showBindingPanel(service)}
-              onFinished={this.hideBindingPanel}
-              onDeleteBinding={cr => this.props.deleteCustomResource(service, cr.toJSON())}
-            />
-          ))
-        ) : (
-          <EmptyState>There are no bound services.</EmptyState>
+        {this.props.boundServices && this.props.boundServices.length > 0 && (
+          <React.Fragment>
+            <Title key="bound-services" headingLevel="h4" size="2xl" className="pf-u-mb-lg">
+              Bound Services
+            </Title>
+            <DataList className="pf-u-mb-xl">
+              {this.props.boundServices.map(service => (
+                <BoundServiceRow
+                  key={service.getId()}
+                  appName={this.props.appName}
+                  service={service}
+                  onCreateBinding={() => this.showBindingPanel(service)}
+                  onFinished={this.hideBindingPanel}
+                  onDeleteBinding={cr => this.props.deleteCustomResource(service, cr.toJSON())}
+                />
+              ))}
+            </DataList>
+          </React.Fragment>
         )}
       </React.Fragment>
     );
@@ -54,19 +58,29 @@ export class MobileServiceView extends Component {
   unboundServiceRows() {
     return (
       <React.Fragment>
-        <h2 key="unbound-services">Unbound Services</h2>
         {this.props.unboundServices && this.props.unboundServices.length > 0 ? (
-          this.props.unboundServices.map(service => (
-            <UnboundServiceRow
-              key={service.getId()}
-              appName={this.props.appName}
-              service={service}
-              onCreateBinding={() => this.showBindingPanel(service)}
-              onFinished={this.hideBindingPanel}
-            />
-          ))
+          <React.Fragment>
+            <Title key="unbound-services" headingLevel="h4" size="2xl" className="pf-u-mb-md">
+              Available Managed Services
+            </Title>
+            <p className="pf-u-mb-lg">
+              The services listed below are not configured for your mobile application yet. Select
+              <q>Create a binding</q>
+              to get started.
+            </p>
+            <DataList>
+              {this.props.unboundServices.map(service => (
+                <UnboundServiceRow
+                  key={service.getId()}
+                  service={service}
+                  onCreateBinding={() => this.showBindingPanel(service)}
+                  onFinished={this.hideBindingPanel}
+                />
+              ))}
+            </DataList>
+          </React.Fragment>
         ) : (
-          <EmptyState>There are no unbound services.</EmptyState>
+          <p className="pf-u-text-align-center">There are no more available services for binding.</p>
         )}
       </React.Fragment>
     );
@@ -119,7 +133,12 @@ function mapStateToProps(state, oldProp) {
   const app = MobileApp.find(state.apps.items, oldProp.appName);
   const services = state.services.items.map(item => new MobileService(item));
   const filteredServices = partition(services, service => service.isBoundToApp(oldProp.appName));
-  return { ...state.services, app, boundServices: filteredServices[0], unboundServices: filteredServices[1] };
+  return {
+    ...state.services,
+    app,
+    boundServices: filteredServices[0],
+    unboundServices: filteredServices[1]
+  };
 }
 
 const mapDispatchToProps = {

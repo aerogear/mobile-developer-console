@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ToastNotificationList, ToastNotification } from 'patternfly-react';
+import { Alert, AlertActionCloseButton } from '@patternfly/react-core';
 import { withRouter } from 'react-router-dom';
 import { get } from 'lodash-es';
 import { dismiss, dismissAll } from '../actions/errors';
@@ -52,13 +52,18 @@ export class ErrorMessages extends Component {
   render() {
     const { errors, dismissError } = this.props;
     return (
-      <ToastNotificationList>
-        {[...new Set(errors.map(error => errorMessage(error)))].map((error, index) => (
-          <ToastNotification key={index} onDismiss={() => dismissError(error.message)}>
-            <span>{error.displayMessage || error.message}</span>
-          </ToastNotification>
+      <div className="mdc-alert-group">
+        {[...new Set(errors.map(error => error.message))].map((error, index) => (
+          <Alert
+            key={index}
+            variant="danger"
+            title="Request Failed"
+            action={<AlertActionCloseButton onClose={() => dismissError(error)} />}
+          >
+            {error}
+          </Alert>
         ))}
-      </ToastNotificationList>
+      </div>
     );
   }
 }

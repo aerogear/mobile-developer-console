@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { ListViewItem, Col } from 'patternfly-react';
+import { DataListItem, DataListItemRow, DataListCell, DataListAction, DataListItemCells } from '@patternfly/react-core';
 import { get as _get } from 'lodash-es';
 import BindingStatus from './BindingStatus';
 import BindButton from './BindButton';
-import '../configuration/ServiceSDKInfo.css';
 import './ServiceRow.css';
+import './MobileServiceView.css';
 
 class UnboundServiceRow extends Component {
   constructor(props) {
@@ -26,22 +26,20 @@ class UnboundServiceRow extends Component {
     if (this.props.service.getIconClass() != null && this.props.service.getIconClass().length > 0) {
       icon = <span className={`${this.props.service.getIconClass()} logo`} />;
     } else {
-      icon = <img src={this.props.service.getLogoUrl()} alt="" />;
+      icon = <img src={this.props.service.getLogoURLBlackAndWhite()} alt="" />;
     }
     return (
-      <Col md={3} key={this.props.service.getId()} className="service-sdk-info">
-        <Col md={12}>
-          {icon}
-          <div className="service-name">
-            <h4>
-              <div>{serviceDetailName}</div>
-              <div>
-                <small>{serviceDetailDescription}</small>
-              </div>
-            </h4>
-          </div>
-        </Col>
-      </Col>
+      <DataListItemCells
+        dataListCells={[
+          <DataListCell key={this.props.service.getId()} className="mdc-data-list-icon">
+            {icon}
+          </DataListCell>,
+          <DataListCell key="primary content">
+            <div id="ex-item1">{serviceDetailName}</div>
+            <span>{serviceDetailDescription}</span>
+          </DataListCell>
+        ]}
+      />
     );
   }
 
@@ -66,11 +64,14 @@ class UnboundServiceRow extends Component {
 
   render() {
     return (
-      <ListViewItem
-        additionalInfo={[this.renderServiceBadge(), this.renderBindingStatus()]}
-        className="unboundService"
-        actions={this.renderBindingButtons()}
-      />
+      <DataListItem key={this.props.service.getId()} aria-labelledby="ex-item1">
+        <DataListItemRow className="mdc-unbound-data-list-row">
+          {this.renderServiceBadge()}
+          <DataListAction aria-labelledby="ex-item1 ex-action1" id="ex-action1" aria-label="Actions">
+            {this.renderBindingButtons()}
+          </DataListAction>
+        </DataListItemRow>
+      </DataListItem>
     );
   }
 }
